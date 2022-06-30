@@ -21,6 +21,24 @@ module.exports = {
           },
         ],
       },
+      {
+        test: /\.css$/i,
+        exclude: /\.module\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.s[ac]ss$/i,
+        exclude: /\.module\.s[ac]ss$/i,
+        use: ["style-loader", "css-loader", "sass-loader"],
+      },
+      {
+        test: /\.module\.s[ac]ss$/i,
+        use: [
+          "style-loader",
+          { loader: "css-loader", options: { modules: { localIdentName: "[local]--[hash:base64:5]" } } },
+          "sass-loader",
+        ],
+      },
     ],
   },
   output: {
