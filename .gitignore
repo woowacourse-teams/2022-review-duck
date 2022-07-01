@@ -181,3 +181,7 @@ sketch
 *.code-workspace
 
 # End of https://www.toptal.com/developers/gitignore/api/java,intellij,react,visualstudiocode
+
+
+# Front-end ignore settings.
+build
