@@ -1,0 +1,77 @@
+{
+  "global": {
+    "color": {
+      "purple": {
+        "100": {
+          "value": "#683FE9",
+          "type": "color"
+        }
+      },
+      "white": {
+        "1000": {
+          "value": "#fff",
+          "type": "color"
+        }
+      },
+      "black": {
+        "100": {
+          "value": "#000",
+          "type": "color"
+        },
+        "150": {
+          "value": "#151515",
+          "type": "color"
+        },
+        "500": {
+          "value": "#555",
+          "type": "color"
+        },
+        "700": {
+          "value": "#777",
+          "type": "color"
+        },
+        "1000": {
+          "value": "#f3f3f3",
+          "type": "color"
+        }
+      }
+    }
+  },
+  "light": {
+    "color": {
+      "status": {
+        "primary": {
+          "value": "{color.purple.100}",
+          "type": "color",
+          "description": "강조 컬러입니다."
+        },
+        "inner": {
+          "primary": {
+            "value": "{color.white.1000}",
+            "type": "color"
+          }
+        }
+      },
+      "theme": {
+        "background": {
+          "value": "{color.white.1000}",
+          "type": "color",
+          "description": "기본 배경화면 색입니다."
+        },
+        "text": {
+          "value": "{color.black.100}",
+          "type": "color"
+        },
+        "input": {
+          "value": "{color.black.1000}",
+          "type": "color"
+        },
+        "placeholder": {
+          "value": "{color.black.700}",
+          "type": "color"
+        }
+      }
+    }
+  },
+  "$themes": []
+}
