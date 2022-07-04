@@ -1,6 +1,6 @@
 # Front-End
 # Figma를 통해 디자인 토큰이 업데이트 될 시
-# design-tokens-converter를 통해 Design Tokens를 Sass 변수로 자동으로 변환하여주는 액션입니다.
+# design-tokens-converter를 통해 Design Tokens를 Sass 변수로 자동으로 변환하여주는 액션입니다.!!!
 
 name: Design Tokens JSON To Sass Converter
 
