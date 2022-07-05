@@ -39,7 +39,7 @@ public class ReviewFormServiceTest {
         assertAll(
             () -> assertThat(reviewForm).isNotNull(),
             () -> assertThat(reviewForm.getId()).isNotNull(),
-            () -> assertThat(reviewForm.getCode().length()).isEqualTo(16),
+            () -> assertThat(reviewForm.getCode().length()).isEqualTo(8),
             () -> assertThat(reviewForm.getReviewTitle()).isEqualTo(reviewTitle),
             () -> assertThat(reviewForm.getQuestions())
                 .usingRecursiveComparison()
