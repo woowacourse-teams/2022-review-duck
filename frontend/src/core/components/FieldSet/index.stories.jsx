@@ -1,0 +1,15 @@
+import FieldSet from 'core/components/FieldSet';
+
+export default {
+  title: 'Component/Common/FieldSet',
+  component: FieldSet,
+};
+
+const Template = (args) => <FieldSet {...args} />;
+
+export const DefaultFieldSet = Template.bind({});
+
+DefaultFieldSet.args = {
+  title: '참여 코드',
+  children: '이 곳에 입력폼이 들어옵니다.',
+};

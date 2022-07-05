@@ -6,17 +6,14 @@
     "allowJs": true,
     "jsx": "preserve",
     "sourceMap": true,
-    "outDir": "./dist",
+    "outDir": "./build",
     "isolatedModules": true,
     "strict": true,
     "moduleResolution": "node",
-    "baseUrl": "./",
-    "paths": {
-      "@components/*": ["components/*"],
-      "@pages/*": ["pages/*"]
-    },
+    "baseUrl": "src",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true
-  }
+  },
+  "exclude": ["node_modules"]
 }

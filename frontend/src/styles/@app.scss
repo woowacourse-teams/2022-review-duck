@@ -1,0 +1,14 @@
+$material-icons-font-path: '~material-icons/iconfont/';
+@import 'material-icons/iconfont/material-icons.scss';
+@import './fontFace.scss';
+
+:root {
+  font-size: 16px;
+}
+
+html,
+body,
+button {
+  font-family: 'NanumBarunGothic', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}

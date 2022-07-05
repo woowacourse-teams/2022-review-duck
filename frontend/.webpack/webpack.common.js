@@ -5,7 +5,8 @@ const path = require('path');
 module.exports = {
   entry: './src/index.tsx',
   resolve: {
-    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+    modules: [path.resolve(__dirname, '../src'), 'node_modules'],
+    extensions: ['.tsx', '.ts', '.js'],
   },
   module: {
     rules: [
@@ -37,7 +38,11 @@ module.exports = {
           'style-loader',
           {
             loader: 'css-loader',
-            options: { modules: { localIdentName: '[local]--[hash:base64:5]' } },
+            options: {
+              modules: {
+                localIdentName: '[local]--[hash:base64:5]',
+              },
+            },
           },
           'sass-loader',
         ],
