@@ -6,7 +6,7 @@ name: Design Tokens JSON To Sass Converter
 
 on:
   push:
-    branches: ["design-tokens"]
+    branches: ["figma"]
 
 jobs:
   build:
@@ -15,7 +15,7 @@ jobs:
     env:
       SETTING_JSON_PATH: ./frontend/.design-tokens/designTokens.json
       SETTING_OUTPUT_PATH: ./frontend/src/styles/designTokens.scss
-      SETTING_UPDATE_BRANCHES: design-tokens
+      SETTING_UPDATE_BRANCHES: figma
 
     strategy:
       matrix:
