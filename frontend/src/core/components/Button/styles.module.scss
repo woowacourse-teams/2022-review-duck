@@ -1,3 +1,58 @@
+@import 'styles/@global.scss';
+
 .button {
-  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  border-radius: 999px;
+  font-weight: bold;
+
+  border: 2px solid $LIGHT_COLOR_STATUS_PRIMARY;
+  color: $LIGHT_COLOR_STATUS_PRIMARY;
+  background-color: transparent;
+
+  &:disabled {
+    cursor: default;
+    filter: grayscale(1) brightness(1.5);
+    pointer-events: none;
+  }
+}
+
+.filled {
+  border: none;
+  color: $LIGHT_COLOR_STATUS_INNER_PRIMARY;
+  background-color: $LIGHT_COLOR_STATUS_PRIMARY;
+
+  &:hover {
+    filter: brightness(1.2);
+  }
+}
+
+.button:not(.filled):hover {
+  color: $LIGHT_COLOR_STATUS_INNER_PRIMARY;
+  background-color: $LIGHT_COLOR_STATUS_PRIMARY;
+}
+
+.button :global(.icon) {
+  margin-right: 0.45em;
+}
+
+.small {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.small:not(.filled) {
+  border-width: 1px;
+}
+
+.medium {
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+}
+
+.large {
+  padding: 0.875rem 1.25rem;
+  font-size: 1.5rem;
 }
