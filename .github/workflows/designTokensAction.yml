@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: JSON_PATH=$SETTING_JSON_PATH OUTPUT_PATH=$SETTING_OUTPUT_PATH node ./frontend/.design-tokens/designTokenConverter.js
+      - run: JSON_PATH=$SETTING_JSON_PATH OUTPUT_PATH=$SETTING_OUTPUT_PATH node ./frontend/.design-tokens/designTokensConverter.js
 
       - name: Add & Commit
         uses: EndBug/add-and-commit@v4.4.0
