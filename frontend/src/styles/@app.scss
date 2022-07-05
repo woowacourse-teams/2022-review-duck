@@ -1,5 +1,5 @@
-$material-icons-font-path: '~material-icons/iconfont/';
-@import 'material-icons/iconfont/material-icons.scss';
+@import './resetCss.css';
+@import 'material-icons/iconfont/material-icons.css';
 @import './fontFace.scss';
 
 :root {
