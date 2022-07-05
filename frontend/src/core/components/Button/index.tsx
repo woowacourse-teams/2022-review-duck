@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import styles from './styles.module.scss';
 import cn from 'classnames';
 
-export interface Props {
+interface Props {
   type: 'button' | 'submit';
   size: 'small' | 'medium' | 'large';
   filled: boolean;
