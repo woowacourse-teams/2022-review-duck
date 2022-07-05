@@ -8,17 +8,67 @@
         }
       },
       "white": {
+        "50": {
+          "value": "rgba(255,255,255,0.05)",
+          "type": "color"
+        },
+        "100": {
+          "value": "rgba(255,255,255,0.1)",
+          "type": "color"
+        },
+        "200": {
+          "value": "rgba(255,255,255,0.2)",
+          "type": "color"
+        },
+        "400": {
+          "value": "rgba(255,255,255,0.4)",
+          "type": "color"
+        },
+        "600": {
+          "value": "rgba(255,255,255,0.6)",
+          "type": "color"
+        },
+        "800": {
+          "value": "rgba(255,255,255,0.8)",
+          "type": "color"
+        },
         "900": {
           "value": "#fff",
           "type": "color"
         }
       },
       "black": {
-        "100": {
-          "value": "#000",
+        "50": {
+          "value": "rgba(0,0,0,0.05)",
           "type": "color"
         },
-        "150": {
+        "100": {
+          "value": "rgba(0,0,0,0.1)",
+          "type": "color"
+        },
+        "200": {
+          "value": "rgba(0,0,0,0.2)",
+          "type": "color"
+        },
+        "400": {
+          "value": "rgba(0,0,0,0.4)",
+          "type": "color"
+        },
+        "600": {
+          "value": "rgba(0,0,0,0.6)",
+          "type": "color"
+        },
+        "800": {
+          "value": "rgba(0,0,0,0.8)",
+          "type": "color"
+        },
+        "900": {
+          "value": "#000",
+          "type": "color"
+        }
+      },
+      "gray": {
+        "100": {
           "value": "#151515",
           "type": "color"
         },
@@ -105,19 +155,19 @@
           "description": "기본 배경화면 색입니다."
         },
         "text": {
-          "value": "{color.black.100}",
-          "type": "color"
-        },
-        "input": {
           "value": "{color.black.900}",
           "type": "color"
         },
+        "input": {
+          "value": "{color.gray.900}",
+          "type": "color"
+        },
         "placeholder": {
-          "value": "{color.black.700}",
+          "value": "{color.gray.700}",
           "type": "color"
         },
         "label": {
-          "value": "{color.black.500}",
+          "value": "{color.gray.500}",
           "type": "color"
         }
       }
