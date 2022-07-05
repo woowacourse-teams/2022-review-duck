@@ -1,7 +1,7 @@
 {
   "global": {
     "color": {
-      "green": {
+      "purple": {
         "500": {
           "value": "#683FE9",
           "type": "color"
@@ -34,6 +34,52 @@
           "value": "#f3f3f3",
           "type": "color"
         }
+      },
+      "deep-green": {
+        "25": {
+          "value": "#F4F6F7",
+          "type": "color"
+        },
+        "50": {
+          "value": "#E9EEEF",
+          "type": "color"
+        },
+        "100": {
+          "value": "#D5DEDF",
+          "type": "color"
+        },
+        "200": {
+          "value": "#ACBDBF",
+          "type": "color"
+        },
+        "300": {
+          "value": "#849EA0",
+          "type": "color"
+        },
+        "400": {
+          "value": "#617F82",
+          "type": "color"
+        },
+        "500": {
+          "value": "#317172",
+          "type": "color"
+        },
+        "600": {
+          "value": "#344E50",
+          "type": "color"
+        },
+        "700": {
+          "value": "#273A3C",
+          "type": "color"
+        },
+        "800": {
+          "value": "#1C2729",
+          "type": "color"
+        },
+        "900": {
+          "value": "#111617",
+          "type": "color"
+        }
       }
     }
   },
@@ -41,7 +87,7 @@
     "color": {
       "status": {
         "primary": {
-          "value": "#317172",
+          "value": "{color.deep-green.500}",
           "type": "color",
           "description": "강조 컬러입니다."
         },
@@ -72,5 +118,6 @@
         }
       }
     }
-  }
+  },
+  "$themes": []
 }
