@@ -115,6 +115,10 @@
         "placeholder": {
           "value": "{color.black.700}",
           "type": "color"
+        },
+        "label": {
+          "value": "{color.black.500}",
+          "type": "color"
         }
       }
     }
