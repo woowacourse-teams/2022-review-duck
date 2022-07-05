@@ -1,4 +1,4 @@
-package com.reviewduck.dto;
+package com.reviewduck.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

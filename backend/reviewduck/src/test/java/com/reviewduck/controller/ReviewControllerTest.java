@@ -17,11 +17,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.reviewduck.dto.request.ReviewFormCreateRequest;
+import com.reviewduck.dto.request.AnswerRequest;
+import com.reviewduck.dto.request.ReviewCreateRequest;
 import com.reviewduck.service.ReviewFormService;
+import com.reviewduck.service.ReviewService;
 
-@WebMvcTest(ReviewFormController.class)
-public class ReviewFormControllerTest {
+@WebMvcTest(ReviewController.class)
+public class ReviewControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -30,28 +32,31 @@ public class ReviewFormControllerTest {
     private ObjectMapper objectMapper;
 
     @MockBean
+    private ReviewService reviewService;
+
+    @MockBean
     private ReviewFormService reviewFormService;
 
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("회고 제목에 빈 값이 들어갈 경우 예외가 발생한다.")
-    void emptyReviewTitle(String title) throws Exception {
+    @DisplayName("닉네임에 빈 값이 들어갈 경우 예외가 발생한다.")
+    void emptyNickName(String nickname) throws Exception {
         // given
-        ReviewFormCreateRequest request = new ReviewFormCreateRequest(title, List.of());
+        ReviewCreateRequest request = new ReviewCreateRequest(nickname, List.of());
 
         // when, then
-        assertBadRequestFromPost("/api/review-forms", request, "회고 폼의 제목은 비어있을 수 없습니다.");
+        assertBadRequestFromPost("/api/review-forms/aaaaaaaa", request, "닉네임은 비어있을 수 없습니다.");
     }
 
     @ParameterizedTest
     @NullSource
-    @DisplayName("회고 질문 목록에 null 값이 들어갈 경우 예외가 발생한다.")
-    void nullQuestionList(List<String> questions) throws Exception {
+    @DisplayName("답변 목록에 null 값이 들어갈 경우 예외가 발생한다.")
+    void nullAnswerRequests(List<AnswerRequest> answers) throws Exception {
         // given
-        ReviewFormCreateRequest request = new ReviewFormCreateRequest("title", questions);
+        ReviewCreateRequest request = new ReviewCreateRequest("제이슨", answers);
 
         // when, then
-        assertBadRequestFromPost("/api/review-forms", request, "회고 폼의 질문 목록 생성 중 오류가 발생했습니다.");
+        assertBadRequestFromPost("/api/review-forms/aaaaaaaa", request, "회고 작성 중 오류가 발생했습니다.");
     }
 
     void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {

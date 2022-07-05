@@ -11,11 +11,13 @@ import javax.persistence.Id;
 import com.reviewduck.exception.QuestionException;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
 @Getter
 public class Question {
 
