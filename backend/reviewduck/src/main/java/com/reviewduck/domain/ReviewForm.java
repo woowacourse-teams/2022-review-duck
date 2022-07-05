@@ -43,7 +43,6 @@ public class ReviewForm {
 
     public ReviewForm(String reviewTitle, List<String> questions) {
         validate(reviewTitle, questions);
-
         this.reviewTitle = reviewTitle;
         this.questions = questions.stream()
             .map(Question::new)
@@ -52,14 +51,26 @@ public class ReviewForm {
     }
 
     private void validate(String reviewTitle, List<String> questions) {
-        if (Objects.isNull(reviewTitle) || reviewTitle.isBlank()) {
-            throw new ReviewFormException("회고 폼의 제목은 비어있을 수 없습니다.");
+        validateBlankTitle(reviewTitle);
+        validateTitleLength(reviewTitle);
+        validateNullQuestions(questions);
+    }
+
+    private void validateNullQuestions(List<String> questions) {
+        if (Objects.isNull(questions)) {
+            throw new ReviewFormException("회고 폼의 질문 목록 생성 중 오류가 발생했습니다.");
         }
+    }
+
+    private void validateTitleLength(String reviewTitle) {
         if (reviewTitle.length() > 100) {
             throw new ReviewFormException("회고 폼의 제목은 100자를 넘을 수 없습니다.");
         }
-        if (Objects.isNull(questions)) {
-            throw new ReviewFormException("회고 폼의 질문 목록 생성 중 오류가 발생했습니다.");
+    }
+
+    private void validateBlankTitle(String reviewTitle) {
+        if (Objects.isNull(reviewTitle) || reviewTitle.isBlank()) {
+            throw new ReviewFormException("회고 폼의 제목은 비어있을 수 없습니다.");
         }
     }
 }

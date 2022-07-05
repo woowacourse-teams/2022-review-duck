@@ -33,11 +33,19 @@ public class Question {
     }
 
     private void validate(String value) {
-        if (Objects.isNull(value) || value.isBlank()) {
-            throw new QuestionException("질문 내용은 비어있을 수 없습니다.");
-        }
+        validateNull(value);
+        validateLength(value);
+    }
+
+    private void validateLength(String value) {
         if (value.length() > 200) {
             throw new QuestionException("질문은 200자를 넘을 수 없습니다.");
+        }
+    }
+
+    private void validateNull(String value) {
+        if (Objects.isNull(value) || value.isBlank()) {
+            throw new QuestionException("질문 내용은 비어있을 수 없습니다.");
         }
     }
 }
