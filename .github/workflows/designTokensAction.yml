@@ -12,30 +12,32 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      SETTING_JSON_PATH: ./frontend/.design-tokens/designTokens.json
+      SETTING_OUTPUT_PATH: ./frontend/src/styles/designTokens.scss
+      SETTING_UPDATE_BRANCHES: design-tokens
+
     strategy:
       matrix:
         node-version: [17.x]
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: cd /frontend/.design-tokens
-      - run: node designTokensConverter.js
+      - run: JSON_PATH=$SETTING_JSON_PATH OUTPUT_PATH=$SETTING_OUTPUT_PATH node ./frontend/.design-tokens/designTokenConverter.js
 
       - name: Add & Commit
         uses: EndBug/add-and-commit@v4.4.0
         with:
-          add: "designTokens.scss"
-          message: "[FE] design : Github Action - 디자인 토큰 업데이트"
-          ref: "design-tokens"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          add: "${{ env.SETTING_OUTPUT_PATH }}"
+          message: "[FE] design : Github Action 디자인 토큰 자동 생성"
+          ref: "${{ env.SETTING_UPDATE_BRANCHES }}"
 
       - name: Push commit
         uses: ad-m/github-push-action@master
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: "design-tokens"
+          branch: "${{ env.SETTING_UPDATE_BRANCHES }}"
