@@ -36,7 +36,7 @@ public class ReviewFormRepositoryTest {
         // then
         assertAll(
             () -> assertThat(savedReviewForm.getId()).isNotNull(),
-            () -> assertThat(savedReviewForm.getCode().length()).isEqualTo(16),
+            () -> assertThat(savedReviewForm.getCode().length()).isEqualTo(8),
             () -> assertThat(savedReviewForm.getQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")

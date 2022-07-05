@@ -47,7 +47,7 @@ public class ReviewForm {
         this.questions = questions.stream()
             .map(Question::new)
             .collect(Collectors.toList());
-        this.code = RandomStringUtils.randomAlphanumeric(16);
+        this.code = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
     }
 
     private void validate(String reviewTitle, List<String> questions) {
