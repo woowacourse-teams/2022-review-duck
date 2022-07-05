@@ -91,6 +91,10 @@
         "900": {
           "value": "#f3f3f3",
           "type": "color"
+        },
+        "950": {
+          "value": "#f5f5f5",
+          "type": "color"
         }
       },
       "deep-green": {
