@@ -8,6 +8,10 @@
         }
       },
       "white": {
+        "20": {
+          "value": "rgba(255,255,255,0.02)",
+          "type": "color"
+        },
         "50": {
           "value": "rgba(255,255,255,0.05)",
           "type": "color"
@@ -38,6 +42,10 @@
         }
       },
       "black": {
+        "20": {
+          "value": "rgba(0,0,0,0.02)",
+          "type": "color"
+        },
         "50": {
           "value": "rgba(0,0,0,0.05)",
           "type": "color"
