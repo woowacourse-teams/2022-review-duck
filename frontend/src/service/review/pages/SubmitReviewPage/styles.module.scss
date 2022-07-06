@@ -1,0 +1,32 @@
+@import 'styles/@global.scss';
+
+.container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.title {
+  width: 80%;
+  font-size: 2.25rem;
+  font-weight: bold;
+  margin-top: 1.75rem;
+  letter-spacing: 0.25rem;
+  line-height: 3.5rem;
+  word-break: keep-all;
+}
+
+.description {
+  display: block;
+  font-size: 1rem;
+  color: $LIGHT_COLOR_THEME_TEXT_DEFAULT;
+  margin-top: 1rem;
+}
+
+.progress {
+  font-size: 0.9rem;
+  color: $LIGHT_COLOR_THEME_TEXT_SOFT;
+  margin-top: 0.5rem;
+}
