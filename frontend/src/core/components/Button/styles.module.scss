@@ -10,8 +10,8 @@
   font-weight: bold;
 
   border: none;
-  color: $LIGHT_COLOR_STATUS_INNER_PRIMARY;
-  background-color: $LIGHT_COLOR_STATUS_PRIMARY;
+  color: $LIGHT_COLOR_STATUS_INNER_PRIMARY_500;
+  background-color: $LIGHT_COLOR_STATUS_PRIMARY_500;
 
   &:disabled {
     cursor: default;
@@ -21,13 +21,13 @@
 }
 
 .outlined {
-  border: 2px solid $LIGHT_COLOR_STATUS_PRIMARY;
+  border: 2px solid $LIGHT_COLOR_STATUS_PRIMARY_500;
   color: $LIGHT_COLOR_STATUS_PRIMARY;
   background-color: transparent;
 
   &:hover {
-    color: $LIGHT_COLOR_STATUS_INNER_PRIMARY;
-    background-color: $LIGHT_COLOR_STATUS_PRIMARY;
+    color: $LIGHT_COLOR_STATUS_INNER_PRIMARY_500;
+    background-color: $LIGHT_COLOR_STATUS_PRIMARY_500;
   }
 }
 
