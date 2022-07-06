@@ -44,7 +44,7 @@
 .container {
   position: relative;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20%, auto));
+  grid-template-columns: repeat(auto-fit, 50%);
   grid-template-rows: 100%;
 
   width: 1024px;
@@ -52,4 +52,8 @@
 
   margin: 0 auto;
   z-index: 1;
+
+  & > div {
+    padding: 3rem;
+  }
 }
