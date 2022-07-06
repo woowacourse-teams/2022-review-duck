@@ -29,7 +29,6 @@ Button.propTypes = {
   size: PropTypes.oneOf(['small', 'medium', 'large']),
   outlined: PropTypes.bool,
   disabled: PropTypes.bool,
-  children: PropTypes.element.isRequired,
 };
 
 Button.defaultProps = {
