@@ -4,9 +4,8 @@
   "main": "index.tsx",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack-dev-server --config ./.webpack/webpack.dev.js --open --hot",
+    "start": "webpack-dev-server --config ./.webpack/webpack.dev.js --open --hot",
     "build": "webpack --config ./.webpack/webpack.prod.js",
-    "start": "webpack --config ./.webpack/webpack.dev.js",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
