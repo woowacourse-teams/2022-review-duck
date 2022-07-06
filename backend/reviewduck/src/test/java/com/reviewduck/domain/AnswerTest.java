@@ -12,6 +12,13 @@ import com.reviewduck.exception.AnswerException;
 
 public class AnswerTest {
 
+    @Test
+    @DisplayName("제약조건을 만족하면 답변이 정상적으로 생성된다.")
+    void properAnswerValue() {
+        //when, then
+        assertDoesNotThrow(() -> new Answer("a"));
+    }
+
     @ParameterizedTest
     @NullSource
     @DisplayName("답변 내용은 비어있을 수 없다.")
@@ -21,12 +28,4 @@ public class AnswerTest {
             .isInstanceOf(AnswerException.class)
             .hasMessageContaining("답변 작성 중 오류가 발생했습니다.");
     }
-
-    @Test
-    @DisplayName("제약조건을 만족하면 답변이 정상적으로 생성된다.")
-    void properAnswerValue() {
-        //when, then
-        assertDoesNotThrow(() -> new Answer("a"));
-    }
-
 }

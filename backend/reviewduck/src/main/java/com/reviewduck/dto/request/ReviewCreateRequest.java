@@ -2,6 +2,7 @@ package com.reviewduck.dto.request;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -19,5 +20,6 @@ public class ReviewCreateRequest {
     private String nickname;
 
     @NotNull(message = "회고 작성 중 오류가 발생했습니다.")
+    @Valid
     private List<AnswerRequest> answers;
 }

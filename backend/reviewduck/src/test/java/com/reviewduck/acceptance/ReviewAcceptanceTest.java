@@ -26,17 +26,10 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         // when, then
         // 질문조회
-        ReviewFormResponse reviewFormResponse = get("/api/review-forms/" + code)
-            .statusCode(HttpStatus.OK.value())
-            .extract()
-            .as(ReviewFormResponse.class);
-        assertThat(reviewFormResponse.getReviewTitle()).isEqualTo(reviewTitle);
+        assertReviewTitleFromFoundReviewForm(code, reviewTitle);
 
         // 리뷰생성
-        ReviewCreateRequest createRequest = new ReviewCreateRequest("제이슨",
-            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
-        post("/api/review-forms/" + code, createRequest)
-            .statusCode(HttpStatus.CREATED.value());
+        assertStatusCodeFromReviewCreation(code, HttpStatus.CREATED);
     }
 
     @Test
@@ -49,18 +42,10 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         // when, then
         // 질문조회
-        ReviewFormResponse reviewFormResponse = get("/api/review-forms/" + code)
-            .statusCode(HttpStatus.OK.value())
-            .extract()
-            .as(ReviewFormResponse.class);
-        assertThat(reviewFormResponse.getReviewTitle()).isEqualTo(reviewTitle);
+        assertReviewTitleFromFoundReviewForm(code, reviewTitle);
 
         // 리뷰생성
-        ReviewCreateRequest createRequest = new ReviewCreateRequest("제이슨",
-            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
-        post("/api/review-forms/" + code, createRequest)
-            .statusCode(HttpStatus.BAD_REQUEST.value());
-
+        assertStatusCodeFromReviewCreation(code, HttpStatus.BAD_REQUEST);
     }
 
     private String createReviewFormAndGetCode(String reviewTitle, List<String> questions) {
@@ -72,5 +57,20 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             .extract()
             .as(ReviewFormCreateResponse.class)
             .getReviewFormCode();
+    }
+
+    private void assertReviewTitleFromFoundReviewForm(String code, String reviewTitle){
+        ReviewFormResponse reviewFormResponse = get("/api/review-forms/" + code)
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .as(ReviewFormResponse.class);
+        assertThat(reviewFormResponse.getReviewTitle()).isEqualTo(reviewTitle);
+    }
+
+    private void assertStatusCodeFromReviewCreation(String code, HttpStatus statusCode){
+        ReviewCreateRequest createRequest = new ReviewCreateRequest("제이슨",
+            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
+        post("/api/review-forms/" + code, createRequest)
+            .statusCode(statusCode.value());
     }
 }

@@ -46,7 +46,7 @@ public class ReviewForm {
         this.reviewTitle = reviewTitle;
         this.questions = questions.stream()
             .map(Question::new)
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
         this.code = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
     }
 

@@ -52,8 +52,7 @@ public class Review {
     }
 
     public static Review of(String nickname, ReviewForm reviewForm, List<String> answers) {
-        validate(nickname);
-        validateSameSizeOfQuestionsAndAnswers(reviewForm.getQuestions(), answers);
+        validate(nickname, reviewForm, answers);
 
         return new Review(nickname, reviewForm, convertToAnswersByQuestions(reviewForm, answers));
     }
@@ -68,8 +67,9 @@ public class Review {
         return answersByQuestions;
     }
 
-    private static void validate(String nickname) {
+    private static void validate(String nickname, ReviewForm reviewForm, List<String> answers) {
         validateBlankNickname(nickname);
+        validateSameSizeOfQuestionsAndAnswers(reviewForm.getQuestions(), answers);
     }
 
     private static void validateBlankNickname(String nickname) {

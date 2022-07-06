@@ -17,7 +17,7 @@ public class AnswerRepositoryTest {
     private AnswerRepository answerRepository;
 
     @Test
-    @DisplayName("질문을 저장한다.")
+    @DisplayName("답변을 저장한다.")
     void saveAnswer() {
         // given
         Answer answer = new Answer("new answer");

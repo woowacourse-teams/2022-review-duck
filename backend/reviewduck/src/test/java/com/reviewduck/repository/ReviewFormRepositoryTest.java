@@ -27,7 +27,7 @@ public class ReviewFormRepositoryTest {
         List<String> questionValues = List.of("question1", "question2");
         List<Question> questions = questionValues.stream()
             .map(Question::new)
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
         ReviewForm reviewForm = new ReviewForm("title", questionValues);
 
         // when

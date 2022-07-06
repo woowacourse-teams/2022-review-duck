@@ -33,7 +33,7 @@ public class ReviewFormServiceTest {
         List<String> questionValues = List.of("question1", "question2");
         List<Question> questions = questionValues.stream()
             .map(Question::new)
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questionValues);
 
         // when

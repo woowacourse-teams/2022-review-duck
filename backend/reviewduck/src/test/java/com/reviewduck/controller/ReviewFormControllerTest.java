@@ -54,7 +54,7 @@ public class ReviewFormControllerTest {
         assertBadRequestFromPost("/api/review-forms", request, "회고 폼의 질문 목록 생성 중 오류가 발생했습니다.");
     }
 
-    void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {
+   private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {
         mockMvc.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))

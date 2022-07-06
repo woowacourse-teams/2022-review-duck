@@ -50,6 +50,28 @@ public class ReviewControllerTest {
 
     @ParameterizedTest
     @NullSource
+    @DisplayName("질문 번호에 null 값이 들어갈 경우 예외가 발생한다.")
+    void nullQuestionIdRequest(Long questionId) throws Exception {
+        // given
+        ReviewCreateRequest request = new ReviewCreateRequest("제이슨", List.of(new AnswerRequest(questionId, "answer")));
+
+        // when, then
+        assertBadRequestFromPost("/api/review-forms/aaaaaaaa", request, "질문 번호는 비어있을 수 없습니다.");
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("답변에 null 값이 들어갈 경우 예외가 발생한다.")
+    void nullAnswerRequest(String answer) throws Exception {
+        // given
+        ReviewCreateRequest request = new ReviewCreateRequest("제이슨", List.of(new AnswerRequest(1L, answer)));
+
+        // when, then
+        assertBadRequestFromPost("/api/review-forms/aaaaaaaa", request, "답변은 비어있을 수 없습니다.");
+    }
+
+    @ParameterizedTest
+    @NullSource
     @DisplayName("답변 목록에 null 값이 들어갈 경우 예외가 발생한다.")
     void nullAnswerRequests(List<AnswerRequest> answers) throws Exception {
         // given
@@ -59,7 +81,7 @@ public class ReviewControllerTest {
         assertBadRequestFromPost("/api/review-forms/aaaaaaaa", request, "회고 작성 중 오류가 발생했습니다.");
     }
 
-    void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {
+    private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {
         mockMvc.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
