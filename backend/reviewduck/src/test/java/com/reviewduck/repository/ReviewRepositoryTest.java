@@ -4,12 +4,14 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import com.reviewduck.domain.Answer;
 import com.reviewduck.domain.Review;
 import com.reviewduck.domain.ReviewForm;
 
@@ -30,7 +32,9 @@ public class ReviewRepositoryTest {
         ReviewForm savedReviewForm = reviewFormRepository.save(reviewForm);
 
         // when
-        Review review = Review.of("제이슨", savedReviewForm, List.of("answer1", "answer2"));
+        Review review = Review.of("제이슨", savedReviewForm,
+            Map.of(reviewForm.getQuestions().get(0), new Answer("answer1"),
+                reviewForm.getQuestions().get(1), new Answer("answer2")));
         Review savedReview = reviewRepository.save(review);
 
         // then

@@ -37,7 +37,7 @@ public class ReviewForm {
     @Column(nullable = false)
     private String reviewTitle;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "question_id")
     private List<Question> questions;
 

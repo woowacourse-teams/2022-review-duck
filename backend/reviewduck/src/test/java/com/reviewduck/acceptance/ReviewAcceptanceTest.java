@@ -29,11 +29,14 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         assertReviewTitleFromFoundReviewForm(code, reviewTitle);
 
         // 리뷰생성
-        assertStatusCodeFromReviewCreation(code, HttpStatus.CREATED);
+        ReviewCreateRequest createRequest = new ReviewCreateRequest("제이슨",
+            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
+        post("/api/review-forms/" + code, createRequest)
+            .statusCode(HttpStatus.CREATED.value());
     }
 
     @Test
-    @DisplayName("회고 작성에 실패한다.")
+    @DisplayName("존재하지 않는 질문에 대해 답변을 작성하면 회고 작성에 실패한다.")
     void failToCreateReview() {
         // given
         String reviewTitle = "title";
@@ -45,7 +48,10 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         assertReviewTitleFromFoundReviewForm(code, reviewTitle);
 
         // 리뷰생성
-        assertStatusCodeFromReviewCreation(code, HttpStatus.BAD_REQUEST);
+        ReviewCreateRequest createRequest = new ReviewCreateRequest("제이슨",
+            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
+        post("/api/review-forms/" + code, createRequest)
+            .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     private String createReviewFormAndGetCode(String reviewTitle, List<String> questions) {
@@ -59,18 +65,11 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             .getReviewFormCode();
     }
 
-    private void assertReviewTitleFromFoundReviewForm(String code, String reviewTitle){
+    private void assertReviewTitleFromFoundReviewForm(String code, String reviewTitle) {
         ReviewFormResponse reviewFormResponse = get("/api/review-forms/" + code)
             .statusCode(HttpStatus.OK.value())
             .extract()
             .as(ReviewFormResponse.class);
         assertThat(reviewFormResponse.getReviewTitle()).isEqualTo(reviewTitle);
-    }
-
-    private void assertStatusCodeFromReviewCreation(String code, HttpStatus statusCode){
-        ReviewCreateRequest createRequest = new ReviewCreateRequest("제이슨",
-            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
-        post("/api/review-forms/" + code, createRequest)
-            .statusCode(statusCode.value());
     }
 }
