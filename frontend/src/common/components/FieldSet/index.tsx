@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { ReactNode } from 'react';
 import cn from 'classnames';
-import Icon from 'core/components/Icon';
+import Icon from 'common/components/Icon';
 import styles from './styles.module.scss';
 
 interface Props {

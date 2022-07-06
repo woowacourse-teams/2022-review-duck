@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import styles from './styles.module.scss';
-import Button from 'core/components/Button';
-import Icon from 'core/components/Icon';
+import Button from 'common/components/Button';
+import Icon from 'common/components/Icon';
 
 function CreateReviewPage() {
   return (

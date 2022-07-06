@@ -1,8 +1,8 @@
-import FieldSet from 'core/components/FieldSet';
+import FieldSet from 'common/components/FieldSet';
 import cn from 'classnames';
 import styles from './styles.module.scss';
-import Button from 'core/components/Button';
-import Icon from 'core/components/Icon';
+import Button from 'common/components/Button';
+import Icon from 'common/components/Icon';
 
 function JoinReviewPage() {
   return (
