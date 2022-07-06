@@ -1,14 +1,12 @@
-import { ReactNode } from 'react';
+import { Outlet } from 'react-router-dom';
 import styles from './styles.module.scss';
 
-interface Props {
-  children: ReactNode;
-}
-
-function ReviewLayout({ children }: Props) {
+function ReviewLayout() {
   return (
     <div className={styles.background}>
-      <div className={styles.container}>{children}</div>
+      <div className={styles.container}>
+        <Outlet />
+      </div>
     </div>
   );
 }

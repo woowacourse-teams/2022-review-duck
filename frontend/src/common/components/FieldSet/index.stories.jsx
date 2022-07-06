@@ -1,4 +1,4 @@
-import FieldSet from 'core/components/FieldSet';
+import FieldSet from 'common/components/FieldSet';
 
 export default {
   title: 'Component/Common/FieldSet',

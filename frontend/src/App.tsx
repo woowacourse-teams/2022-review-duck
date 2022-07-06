@@ -1,11 +1,8 @@
+import PageRoutes from 'PageRoutes';
 import 'styles/@app.scss';
 
 function App() {
-  return (
-    <>
-      <h1>React without CRA...</h1>
-    </>
-  );
+  return <PageRoutes />;
 }
 
 export default App;
