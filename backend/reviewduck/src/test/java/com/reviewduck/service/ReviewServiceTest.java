@@ -39,9 +39,12 @@ public class ReviewServiceTest {
 
         ReviewForm savedReviewForm = reviewFormService.save(createRequest);
 
+        Long questionId1 = savedReviewForm.getQuestions().get(0).getId();
+        Long questionId2 = savedReviewForm.getQuestions().get(1).getId();
+
         // when
         ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest("제이슨",
-            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
+            List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
         Review savedReview = reviewService.save(savedReviewForm.getCode(), reviewCreateRequest);
 
         // then
@@ -56,7 +59,6 @@ public class ReviewServiceTest {
     @Test
     @DisplayName("유효하지 않은 입장 코드로 리뷰를 저장할 수 없다.")
     void saveReviewWithInvalidCode() {
-
         // given
         ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest("제이슨",
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
@@ -65,5 +67,25 @@ public class ReviewServiceTest {
         assertThatThrownBy(() -> reviewService.save("aaaaaaaa", reviewCreateRequest))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 입장코드입니다.");
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 질문 번호로 회고를 작성할 수 없다.")
+    void saveReviewWithInvalidQuestionId() {
+        //given
+        String reviewTitle = "title";
+        List<String> questionValues = List.of("question1");
+        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questionValues);
+
+        ReviewForm savedReviewForm = reviewFormService.save(createRequest);
+
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest("제이슨",
+            List.of(new AnswerRequest(123445L, "answer1")));
+
+        // when, then
+        assertThatThrownBy(() -> reviewService.save(savedReviewForm.getCode(), reviewCreateRequest))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessageContaining("존재하지 않는 질문입니다.");
+
     }
 }

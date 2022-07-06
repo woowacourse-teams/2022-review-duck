@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,9 @@ public class ReviewTest {
     @DisplayName("제약조건에 걸리지 않으면 회고가 생성된다.")
     void createReview() {
         //when, then
-        assertDoesNotThrow(() -> Review.of("제이슨", new ReviewForm("title", List.of("question")), List.of("answer")));
+        assertDoesNotThrow(() -> Review.of("제이슨",
+            new ReviewForm("title", List.of("question")),
+            Map.of(new Question("question1"), new Answer("answer1"))));
     }
 
     @ParameterizedTest
@@ -25,17 +28,10 @@ public class ReviewTest {
     @DisplayName("닉네임이 비어있을 수 없다.")
     void notNullNickname(String nickname) {
         //when, then
-        assertThatThrownBy(() -> Review.of(nickname, new ReviewForm("title", List.of("question")), List.of("answer")))
+        assertThatThrownBy(() -> Review.of(nickname,
+            new ReviewForm("title", List.of("question1")),
+            Map.of(new Question("question1"), new Answer("answer1"))))
             .isInstanceOf(ReviewException.class)
             .hasMessageContaining("닉네임이 비어있을 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("질문과 답변의 수가 다를 수 없다.")
-    void differentSizeOfQuestionAndAnswers() {
-        assertThatThrownBy(
-            () -> Review.of("제이슨", new ReviewForm("title", List.of("question")), List.of("answer1", "answer2")))
-            .isInstanceOf(ReviewException.class)
-            .hasMessageContaining("질문과 답변의 개수는 같아야합니다.");
     }
 }

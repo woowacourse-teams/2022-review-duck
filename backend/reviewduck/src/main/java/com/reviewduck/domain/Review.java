@@ -2,8 +2,6 @@ package com.reviewduck.domain;
 
 import static lombok.AccessLevel.*;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -51,36 +49,15 @@ public class Review {
         this.answersByQuestions = answersByQuestions;
     }
 
-    public static Review of(String nickname, ReviewForm reviewForm, List<String> answers) {
-        validate(nickname, reviewForm, answers);
+    public static Review of(String nickname, ReviewForm reviewForm, Map<Question, Answer> answersByQuestions) {
+        validate(nickname);
 
-        return new Review(nickname, reviewForm, convertToAnswersByQuestions(reviewForm, answers));
+        return new Review(nickname, reviewForm, answersByQuestions);
     }
 
-    private static Map<Question, Answer> convertToAnswersByQuestions(ReviewForm reviewForm, List<String> answers) {
-        Map<Question, Answer> answersByQuestions = new HashMap<>();
-
-        int index = 0;
-        for (Question question : reviewForm.getQuestions()) {
-            answersByQuestions.put(question, new Answer(answers.get(index++)));
-        }
-        return answersByQuestions;
-    }
-
-    private static void validate(String nickname, ReviewForm reviewForm, List<String> answers) {
-        validateBlankNickname(nickname);
-        validateSameSizeOfQuestionsAndAnswers(reviewForm.getQuestions(), answers);
-    }
-
-    private static void validateBlankNickname(String nickname) {
+    private static void validate(String nickname) {
         if (Objects.isNull(nickname) || nickname.isBlank()) {
             throw new ReviewException("닉네임이 비어있을 수 없습니다.");
-        }
-    }
-
-    private static void validateSameSizeOfQuestionsAndAnswers(List<Question> questions, List<String> answers) {
-        if (questions.size() != answers.size()) {
-            throw new ReviewException("질문과 답변의 개수는 같아야합니다.");
         }
     }
 }
