@@ -1,6 +1,7 @@
 @import './resetCss.css';
-@import 'material-icons/iconfont/material-icons.css';
 @import './fontFace.scss';
+@import './@global.scss';
+@import 'material-icons/iconfont/material-icons.css';
 
 :root {
   font-size: 16px;
