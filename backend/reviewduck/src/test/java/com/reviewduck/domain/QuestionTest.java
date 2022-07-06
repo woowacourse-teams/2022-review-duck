@@ -37,5 +37,4 @@ public class QuestionTest {
             .isInstanceOf(QuestionException.class)
             .hasMessageContaining("질문은 200자를 넘을 수 없습니다.");
     }
-
 }

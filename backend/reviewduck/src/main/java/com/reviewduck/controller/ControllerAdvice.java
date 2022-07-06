@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.reviewduck.dto.ErrorResponse;
+import com.reviewduck.dto.response.ErrorResponse;
 import com.reviewduck.exception.CustomException;
+import com.reviewduck.exception.NotFoundException;
 
 @RestControllerAdvice
 public class ControllerAdvice {
@@ -31,9 +32,15 @@ public class ControllerAdvice {
         return new ErrorResponse(message.toString());
     }
 
+    @ExceptionHandler(NotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotFoundException(Exception e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleException(){
+    public ErrorResponse handleException() {
         return new ErrorResponse("예상치 못한 오류가 발생하였습니다.");
     }
 }

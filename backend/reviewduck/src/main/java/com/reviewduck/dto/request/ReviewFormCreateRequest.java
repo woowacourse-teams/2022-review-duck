@@ -1,4 +1,4 @@
-package com.reviewduck.dto;
+package com.reviewduck.dto.request;
 
 import java.util.List;
 

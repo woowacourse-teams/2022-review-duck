@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import com.reviewduck.dto.ReviewFormCreateRequest;
+import com.reviewduck.dto.request.ReviewFormCreateRequest;
 
 public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
@@ -23,5 +23,13 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         // when, then
         post("/api/review-forms", request).statusCode(HttpStatus.CREATED.value())
             .assertThat().body("reviewFormCode", notNullValue());
+    }
+
+    @Test
+    @DisplayName("회고폼 조회에 실패한다.")
+    void failToFindReviewForm() {
+        // when, then
+        get("/api/review-forms/" + "AAAAAAAA")
+            .statusCode(HttpStatus.NOT_FOUND.value());
     }
 }

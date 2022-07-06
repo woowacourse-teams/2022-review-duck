@@ -1,4 +1,4 @@
-package com.reviewduck.dto;
+package com.reviewduck.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,5 +7,5 @@ import lombok.Getter;
 @Getter
 public class ErrorResponse {
 
-    private final String message;
+    private String message;
 }

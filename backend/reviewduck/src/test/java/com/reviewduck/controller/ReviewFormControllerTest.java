@@ -11,16 +11,16 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.reviewduck.dto.ReviewFormCreateRequest;
+import com.reviewduck.dto.request.ReviewFormCreateRequest;
+import com.reviewduck.service.ReviewFormService;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@WebMvcTest(ReviewFormController.class)
 public class ReviewFormControllerTest {
 
     @Autowired
@@ -28,6 +28,9 @@ public class ReviewFormControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    private ReviewFormService reviewFormService;
 
     @ParameterizedTest
     @NullAndEmptySource
@@ -51,7 +54,7 @@ public class ReviewFormControllerTest {
         assertBadRequestFromPost("/api/review-forms", request, "회고 폼의 질문 목록 생성 중 오류가 발생했습니다.");
     }
 
-    void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {
+   private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {
         mockMvc.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))

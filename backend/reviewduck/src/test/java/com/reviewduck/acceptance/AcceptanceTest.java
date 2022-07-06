@@ -30,4 +30,11 @@ public class AcceptanceTest {
             .when().post(url)
             .then().log().all();
     }
+
+    public ValidatableResponse get(String url) {
+        return RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get(url)
+            .then().log().all();
+    }
 }
