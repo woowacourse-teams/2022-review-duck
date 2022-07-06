@@ -4,13 +4,14 @@
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
 
   border-radius: 999px;
   font-weight: bold;
 
-  border: 2px solid $LIGHT_COLOR_STATUS_PRIMARY;
-  color: $LIGHT_COLOR_STATUS_PRIMARY;
-  background-color: transparent;
+  border: none;
+  color: $LIGHT_COLOR_STATUS_INNER_PRIMARY;
+  background-color: $LIGHT_COLOR_STATUS_PRIMARY;
 
   &:disabled {
     cursor: default;
@@ -19,19 +20,19 @@
   }
 }
 
-.filled {
-  border: none;
-  color: $LIGHT_COLOR_STATUS_INNER_PRIMARY;
-  background-color: $LIGHT_COLOR_STATUS_PRIMARY;
+.outlined {
+  border: 2px solid $LIGHT_COLOR_STATUS_PRIMARY;
+  color: $LIGHT_COLOR_STATUS_PRIMARY;
+  background-color: transparent;
 
   &:hover {
-    filter: brightness(1.2);
+    color: $LIGHT_COLOR_STATUS_INNER_PRIMARY;
+    background-color: $LIGHT_COLOR_STATUS_PRIMARY;
   }
 }
 
-.button:not(.filled):hover {
-  color: $LIGHT_COLOR_STATUS_INNER_PRIMARY;
-  background-color: $LIGHT_COLOR_STATUS_PRIMARY;
+.button:not(.outlined):hover {
+  filter: brightness(1.2);
 }
 
 .button :global(.icon) {

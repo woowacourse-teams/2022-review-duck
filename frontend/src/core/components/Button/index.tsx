@@ -6,15 +6,15 @@ import cn from 'classnames';
 interface Props {
   type: 'button' | 'submit';
   size: 'small' | 'medium' | 'large';
-  filled: boolean;
+  outlined: boolean;
   disabled: boolean;
   children: ReactNode;
 }
 
-function Button({ type, size, filled, disabled, children, ...rest }: Props) {
+function Button({ type, size, outlined, disabled, children, ...rest }: Props) {
   return (
     <button
-      className={cn(styles.button, styles[size], { [styles.filled]: filled })}
+      className={cn(styles.button, styles[size], { [styles.outlined]: outlined })}
       type={type}
       disabled={disabled}
       {...rest}
@@ -27,7 +27,7 @@ function Button({ type, size, filled, disabled, children, ...rest }: Props) {
 Button.propTypes = {
   type: PropTypes.oneOf(['submit', 'button']),
   size: PropTypes.oneOf(['small', 'medium', 'large']),
-  filled: PropTypes.bool,
+  outlined: PropTypes.bool,
   disabled: PropTypes.bool,
   children: PropTypes.element.isRequired,
 };
@@ -35,7 +35,7 @@ Button.propTypes = {
 Button.defaultProps = {
   type: 'button',
   size: 'medium',
-  filled: true,
+  outlined: false,
   disabled: false,
 };
 
