@@ -1,0 +1,16 @@
+@import 'styles/@global.scss';
+
+.container {
+  width: 80%;
+  height: 0.25rem;
+  position: relative;
+  background-color: $LIGHT_COLOR_STATUS_PRIMARY_100;
+}
+
+.progress {
+  position: absolute;
+  left: 0;
+  background-color: $LIGHT_COLOR_STATUS_PRIMARY_500;
+  height: 0.25rem;
+  transition: width 0.3s ease;
+}
