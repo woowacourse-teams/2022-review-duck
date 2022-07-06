@@ -9,7 +9,8 @@
 
 html,
 body,
-button {
+button,
+input {
   font-family: 'NanumBarunGothic', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
@@ -18,15 +19,24 @@ button {
   box-sizing: border-box;
 }
 
+img {
+  max-width: 100%;
+}
+
 input[type='text'] {
   width: 100%;
   border: none;
   border-radius: 16px;
   background-color: $LIGHT_COLOR_THEME_BACKGROUND_SOFT;
   padding: 0.75rem 1.25rem;
+  font-size: 0.9rem;
 
   &:focus {
     outline: none;
+  }
+
+  &::placeholder {
+    color: $LIGHT_COLOR_THEME_TEXT_SOFT;
   }
 }
 
