@@ -20,11 +20,11 @@ function CreateReviewPage() {
         <div className={cn('button-container horizontal')}>
           <Button>
             <Icon type="outlined" code="maps_ugc" />
-            회고 생성
+            <span>회고 생성</span>
           </Button>
           <Button>
             <Icon code="login" />
-            회고 참여
+            <span>회고 참여</span>
           </Button>
         </div>
       </div>
