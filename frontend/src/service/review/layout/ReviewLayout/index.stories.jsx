@@ -1,7 +1,7 @@
 import ReviewLayout from '.';
 
 export default {
-  title: 'Component/ReviewLayout',
+  title: 'review/layout/ReviewLayout',
   component: ReviewLayout,
 };
 
