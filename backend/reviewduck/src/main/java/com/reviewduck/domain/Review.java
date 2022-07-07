@@ -2,7 +2,7 @@ package com.reviewduck.domain;
 
 import static lombok.AccessLevel.*;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.CascadeType;
@@ -11,11 +11,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 
 import com.reviewduck.exception.ReviewException;
 
@@ -36,23 +34,19 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY)
     private ReviewForm reviewForm;
 
+    @OrderColumn
     @OneToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "question_answer",
-        joinColumns = {@JoinColumn(name = "review_id", referencedColumnName = "id")},
-        inverseJoinColumns = {@JoinColumn(name = "answer_id", referencedColumnName = "id")})
-    @MapKeyJoinColumn(name = "question_id")
-    private Map<Question, Answer> answersByQuestions;
+    private List<QuestionAnswer> questionAnswers;
 
-    private Review(String nickname, ReviewForm reviewForm, Map<Question, Answer> answersByQuestions) {
+    private Review(String nickname, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers) {
         this.nickname = nickname;
         this.reviewForm = reviewForm;
-        this.answersByQuestions = answersByQuestions;
+        this.questionAnswers = questionAnswers;
     }
 
-    public static Review of(String nickname, ReviewForm reviewForm, Map<Question, Answer> answersByQuestions) {
+    public static Review of(String nickname, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers) {
         validate(nickname);
-
-        return new Review(nickname, reviewForm, answersByQuestions);
+        return new Review(nickname, reviewForm, questionAnswers);
     }
 
     private static void validate(String nickname) {

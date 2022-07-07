@@ -1,8 +1,7 @@
 package com.reviewduck.service;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.reviewduck.domain.Answer;
 import com.reviewduck.domain.Question;
+import com.reviewduck.domain.QuestionAnswer;
 import com.reviewduck.domain.Review;
 import com.reviewduck.domain.ReviewForm;
 import com.reviewduck.dto.request.AnswerRequest;
@@ -36,22 +36,21 @@ public class ReviewService {
     public Review save(String code, ReviewCreateRequest request) {
         ReviewForm reviewForm = reviewFormService.findByCode(code);
 
-        Map<Question, Answer> answersByQuestions = convertToAnswersByQuestions(request.getAnswers());
+        List<QuestionAnswer> questionAnswers = convertToQuestionAnswers(request.getAnswers());
 
-        Review review = Review.of(request.getNickname(), reviewForm, answersByQuestions);
+        Review review = Review.of(request.getNickname(), reviewForm, questionAnswers);
         return reviewRepository.save(review);
     }
 
-    private Map<Question, Answer> convertToAnswersByQuestions(List<AnswerRequest> answerRequests) {
-        Map<Question, Answer> answersByQuestions = new HashMap<>();
-
+    private List<QuestionAnswer> convertToQuestionAnswers(List<AnswerRequest> answerRequests) {
+        List<QuestionAnswer> questionAnswers = new ArrayList<>();
         for (AnswerRequest answerRequest : answerRequests) {
             Question question = questionRepository.findById(answerRequest.getQuestionId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
-            answersByQuestions.put(question, new Answer(answerRequest.getAnswerValue()));
+            questionAnswers.add(new QuestionAnswer(question, new Answer(answerRequest.getAnswerValue())));
         }
 
-        return answersByQuestions;
+        return questionAnswers;
     }
 
     public List<Review> findAllByCode(String code) {

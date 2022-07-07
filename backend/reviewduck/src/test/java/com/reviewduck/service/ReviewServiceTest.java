@@ -57,8 +57,8 @@ public class ReviewServiceTest {
         assertAll(
             () -> assertThat(savedReview.getId()).isNotNull(),
             () -> assertThat(savedReview.getNickname()).isEqualTo("제이슨"),
-            () -> assertThat(savedReview.getAnswersByQuestions()
-                .get(savedReviewForm.getQuestions().get(0)).getValue()).isEqualTo("answer1")
+            () -> assertThat(savedReview.getQuestionAnswers().get(0).getAnswer().getValue())
+                .isEqualTo("answer1")
         );
     }
 
