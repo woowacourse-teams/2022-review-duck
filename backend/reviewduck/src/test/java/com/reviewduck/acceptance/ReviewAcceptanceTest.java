@@ -19,6 +19,8 @@ import com.reviewduck.dto.response.ReviewsFindResponse;
 
 public class ReviewAcceptanceTest extends AcceptanceTest {
 
+    private final String invalidCode = "aaaaaaaa";
+
     @Test
     @DisplayName("회고를 생성한다.")
     void createReview() {
@@ -89,7 +91,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 리뷰 폼 코드에 대해 리뷰를 조회할 수 없다.")
     void findReviewsWithInvalidCode() {
         // when, then
-        get("/api/review-forms/aaaaaaaa/reviews")
+        get("/api/review-forms/" + invalidCode + "/reviews")
             .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
