@@ -23,7 +23,8 @@ img {
   max-width: 100%;
 }
 
-input[type='text'] {
+input[type='text'],
+input[type='textarea'] {
   width: 100%;
   border: none;
   border-radius: 16px;
