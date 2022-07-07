@@ -86,6 +86,32 @@ public class ReviewServiceTest {
         assertThatThrownBy(() -> reviewService.save(savedReviewForm.getCode(), reviewCreateRequest))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 질문입니다.");
+    }
 
+    @Test
+    @DisplayName("특정 회고 폼을 기반으로 작성된 회고를 모두 조회한다.")
+    void findReviewsBySpecificReviewForm() {
+        // given
+        String reviewTitle = "title";
+        List<String> questionValues = List.of("question1", "question2");
+        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questionValues);
+
+        ReviewForm savedReviewForm = reviewFormService.save(createRequest);
+
+        Long questionId1 = savedReviewForm.getQuestions().get(0).getId();
+        Long questionId2 = savedReviewForm.getQuestions().get(1).getId();
+
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest("제이슨",
+            List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
+        Review savedReview = reviewService.save(savedReviewForm.getCode(), reviewCreateRequest);
+
+        // when
+        List<Review> reviews = reviewService.findAllByCode(savedReviewForm.getCode());
+
+        // then
+        assertAll(
+            () -> assertThat(reviews).hasSize(1),
+            () -> assertThat(reviews.get(0).getNickname()).isEqualTo(savedReview.getNickname())
+        );
     }
 }

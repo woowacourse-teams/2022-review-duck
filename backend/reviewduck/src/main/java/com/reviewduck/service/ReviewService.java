@@ -53,4 +53,9 @@ public class ReviewService {
 
         return answersByQuestions;
     }
+
+    public List<Review> findAllByCode(String code) {
+        ReviewForm reviewForm = reviewFormService.findByCode(code);
+        return reviewRepository.findByReviewForm(reviewForm);
+    }
 }

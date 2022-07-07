@@ -45,4 +45,27 @@ public class ReviewRepositoryTest {
                 .get(savedReviewForm.getQuestions().get(0)).getValue()).isEqualTo("answer1")
         );
     }
+
+    @Test
+    @DisplayName("특정 회고 폼을 기반으로 작성된 회고를 모두 조회한다.")
+    void findReviewsBySpecificReviewForm() {
+        // given
+        ReviewForm reviewForm = new ReviewForm("title", List.of("question1", "question2"));
+        ReviewForm savedReviewForm = reviewFormRepository.save(reviewForm);
+        String code = savedReviewForm.getCode();
+
+        Review review = Review.of("제이슨", savedReviewForm,
+            Map.of(reviewForm.getQuestions().get(0), new Answer("answer1"),
+                reviewForm.getQuestions().get(1), new Answer("answer2")));
+        Review savedReview = reviewRepository.save(review);
+
+        // when
+        List<Review> reviews = reviewRepository.findByReviewForm(savedReviewForm);
+
+        // then
+        assertAll(
+            () -> assertThat(reviews).hasSize(1),
+            () -> assertThat(reviews.get(0).getNickname()).isEqualTo(savedReview.getNickname())
+        );
+    }
 }

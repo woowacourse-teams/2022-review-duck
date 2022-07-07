@@ -1,6 +1,7 @@
 package com.reviewduck.acceptance;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
@@ -13,6 +14,8 @@ import com.reviewduck.dto.request.ReviewCreateRequest;
 import com.reviewduck.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.dto.response.ReviewFormCreateResponse;
 import com.reviewduck.dto.response.ReviewFormResponse;
+import com.reviewduck.dto.response.ReviewResponse;
+import com.reviewduck.dto.response.ReviewsFindResponse;
 
 public class ReviewAcceptanceTest extends AcceptanceTest {
 
@@ -51,6 +54,42 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         ReviewCreateRequest createRequest = new ReviewCreateRequest("제이슨",
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
         post("/api/review-forms/" + code, createRequest)
+            .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    @DisplayName("특정 리뷰 폼에 속한 리뷰 전체를 조회한다.")
+    void findReviews() {
+        // given
+        String reviewTitle = "title";
+        List<String> questions = List.of("question1", "question2");
+        String code = createReviewFormAndGetCode(reviewTitle, questions);
+
+        ReviewCreateRequest createRequest = new ReviewCreateRequest("제이슨",
+            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
+        post("/api/review-forms/" + code, createRequest);
+
+        // when
+        ReviewsFindResponse response = get("/api/review-forms/" + code + "/reviews")
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .as(ReviewsFindResponse.class);
+
+        ReviewResponse reviewResponse = response.getReviews().get(0);
+
+        // then
+        assertAll(
+            () -> assertThat(response.getReviewFormTitle()).isEqualTo(reviewTitle),
+            () -> assertThat(reviewResponse.getNickname()).isEqualTo("제이슨"),
+            () -> assertThat(reviewResponse.getAnswers()).hasSize(2)
+        );
+    }
+
+    @Test
+    @DisplayName("존재하지 리뷰 폼 코드에 대해 리뷰를 조회할 수 없다.")
+    void findReviewsWithInvalidCode() {
+        // when, then
+        get("/api/review-forms/aaaaaaaa/reviews")
             .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
