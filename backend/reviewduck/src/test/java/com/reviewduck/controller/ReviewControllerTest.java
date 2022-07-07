@@ -25,15 +25,13 @@ import com.reviewduck.service.ReviewService;
 @WebMvcTest(ReviewController.class)
 public class ReviewControllerTest {
 
+    private final String invalidCode = "aaaaaaaa";
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
-
     @MockBean
     private ReviewService reviewService;
-
     @MockBean
     private ReviewFormService reviewFormService;
 
@@ -45,7 +43,7 @@ public class ReviewControllerTest {
         ReviewCreateRequest request = new ReviewCreateRequest(nickname, List.of());
 
         // when, then
-        assertBadRequestFromPost("/api/review-forms/aaaaaaaa", request, "닉네임은 비어있을 수 없습니다.");
+        assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "닉네임은 비어있을 수 없습니다.");
     }
 
     @ParameterizedTest
@@ -56,7 +54,7 @@ public class ReviewControllerTest {
         ReviewCreateRequest request = new ReviewCreateRequest("제이슨", List.of(new AnswerRequest(questionId, "answer")));
 
         // when, then
-        assertBadRequestFromPost("/api/review-forms/aaaaaaaa", request, "질문 번호는 비어있을 수 없습니다.");
+        assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "질문 번호는 비어있을 수 없습니다.");
     }
 
     @ParameterizedTest
@@ -67,7 +65,7 @@ public class ReviewControllerTest {
         ReviewCreateRequest request = new ReviewCreateRequest("제이슨", List.of(new AnswerRequest(1L, answer)));
 
         // when, then
-        assertBadRequestFromPost("/api/review-forms/aaaaaaaa", request, "답변은 비어있을 수 없습니다.");
+        assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "답변은 비어있을 수 없습니다.");
     }
 
     @ParameterizedTest
@@ -78,7 +76,7 @@ public class ReviewControllerTest {
         ReviewCreateRequest request = new ReviewCreateRequest("제이슨", answers);
 
         // when, then
-        assertBadRequestFromPost("/api/review-forms/aaaaaaaa", request, "회고 작성 중 오류가 발생했습니다.");
+        assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "회고 작성 중 오류가 발생했습니다.");
     }
 
     private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {

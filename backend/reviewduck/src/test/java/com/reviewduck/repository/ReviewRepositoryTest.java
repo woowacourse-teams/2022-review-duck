@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,17 +25,23 @@ public class ReviewRepositoryTest {
     @Autowired
     private ReviewFormRepository reviewFormRepository;
 
+    private ReviewForm savedReviewForm;
+    private Review review;
+
+    @BeforeEach
+    void setUp() {
+        ReviewForm reviewForm = new ReviewForm("title", List.of("question1", "question2"));
+        this.savedReviewForm = reviewFormRepository.save(reviewForm);
+
+        this.review = Review.of("제이슨", savedReviewForm,
+            Map.of(reviewForm.getQuestions().get(0), new Answer("answer1"),
+                reviewForm.getQuestions().get(1), new Answer("answer2")));
+    }
+
     @Test
     @DisplayName("리뷰를 저장한다.")
     void saveReview() {
-        // given
-        ReviewForm reviewForm = new ReviewForm("title", List.of("question1", "question2"));
-        ReviewForm savedReviewForm = reviewFormRepository.save(reviewForm);
-
         // when
-        Review review = Review.of("제이슨", savedReviewForm,
-            Map.of(reviewForm.getQuestions().get(0), new Answer("answer1"),
-                reviewForm.getQuestions().get(1), new Answer("answer2")));
         Review savedReview = reviewRepository.save(review);
 
         // then
@@ -50,13 +57,6 @@ public class ReviewRepositoryTest {
     @DisplayName("특정 회고 폼을 기반으로 작성된 회고를 모두 조회한다.")
     void findReviewsBySpecificReviewForm() {
         // given
-        ReviewForm reviewForm = new ReviewForm("title", List.of("question1", "question2"));
-        ReviewForm savedReviewForm = reviewFormRepository.save(reviewForm);
-        String code = savedReviewForm.getCode();
-
-        Review review = Review.of("제이슨", savedReviewForm,
-            Map.of(reviewForm.getQuestions().get(0), new Answer("answer1"),
-                reviewForm.getQuestions().get(1), new Answer("answer2")));
         Review savedReview = reviewRepository.save(review);
 
         // when

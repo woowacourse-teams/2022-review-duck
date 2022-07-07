@@ -22,6 +22,7 @@ import com.reviewduck.exception.NotFoundException;
 @Transactional
 public class ReviewFormServiceTest {
 
+    private final String invalidCode = "aaaaaaaa";
     @Autowired
     private ReviewFormService reviewFormService;
 
@@ -73,7 +74,7 @@ public class ReviewFormServiceTest {
     @DisplayName("존재하지 않는 코드로 조회할 수 없다.")
     void findReviewFormByInvalidCode() {
         // when, then
-        assertThatThrownBy(() -> reviewFormService.findByCode("aaaaaaaa"))
+        assertThatThrownBy(() -> reviewFormService.findByCode(invalidCode))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 입장코드입니다.");
     }
