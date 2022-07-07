@@ -5,7 +5,7 @@ import Icon from 'common/components/Icon';
 
 import imageHero from 'assets/images/demo-create.png';
 
-function CreateReviewPage() {
+function MainPage() {
   return (
     <>
       <div className={cn(styles.container)}>
@@ -32,4 +32,4 @@ function CreateReviewPage() {
   );
 }
 
-export default CreateReviewPage;
+export default MainPage;
