@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,25 +24,30 @@ import com.reviewduck.exception.NotFoundException;
 @Transactional
 public class ReviewServiceTest {
 
+    private final String invalidCode = "aaaaaaaa";
     @Autowired
     private ReviewFormService reviewFormService;
-
     @Autowired
     private ReviewService reviewService;
+    private ReviewForm savedReviewForm;
+    private Long questionId1;
+    private Long questionId2;
 
-    @Test
-    @DisplayName("리뷰를 저장한다.")
-    void saveReview() {
-        // given
+    @BeforeEach
+    void setUp() {
         String reviewTitle = "title";
         List<String> questionValues = List.of("question1", "question2");
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questionValues);
 
-        ReviewForm savedReviewForm = reviewFormService.save(createRequest);
+        this.savedReviewForm = reviewFormService.save(createRequest);
 
-        Long questionId1 = savedReviewForm.getQuestions().get(0).getId();
-        Long questionId2 = savedReviewForm.getQuestions().get(1).getId();
+        this.questionId1 = savedReviewForm.getQuestions().get(0).getId();
+        this.questionId2 = savedReviewForm.getQuestions().get(1).getId();
+    }
 
+    @Test
+    @DisplayName("리뷰를 저장한다.")
+    void saveReview() {
         // when
         ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest("제이슨",
             List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
@@ -64,7 +70,7 @@ public class ReviewServiceTest {
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
 
         // when, then
-        assertThatThrownBy(() -> reviewService.save("aaaaaaaa", reviewCreateRequest))
+        assertThatThrownBy(() -> reviewService.save(invalidCode, reviewCreateRequest))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 입장코드입니다.");
     }
@@ -73,19 +79,31 @@ public class ReviewServiceTest {
     @DisplayName("유효하지 않은 질문 번호로 회고를 작성할 수 없다.")
     void saveReviewWithInvalidQuestionId() {
         //given
-        String reviewTitle = "title";
-        List<String> questionValues = List.of("question1");
-        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questionValues);
-
-        ReviewForm savedReviewForm = reviewFormService.save(createRequest);
-
         ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest("제이슨",
-            List.of(new AnswerRequest(123445L, "answer1")));
+            List.of(new AnswerRequest(123445L, "answer1"),
+                new AnswerRequest(2L, "answer2")));
 
         // when, then
         assertThatThrownBy(() -> reviewService.save(savedReviewForm.getCode(), reviewCreateRequest))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 질문입니다.");
+    }
 
+    @Test
+    @DisplayName("특정 회고 폼을 기반으로 작성된 회고를 모두 조회한다.")
+    void findReviewsBySpecificReviewForm() {
+        // given
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest("제이슨",
+            List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
+        Review savedReview = reviewService.save(savedReviewForm.getCode(), reviewCreateRequest);
+
+        // when
+        List<Review> reviews = reviewService.findAllByCode(savedReviewForm.getCode());
+
+        // then
+        assertAll(
+            () -> assertThat(reviews).hasSize(1),
+            () -> assertThat(reviews.get(0).getNickname()).isEqualTo(savedReview.getNickname())
+        );
     }
 }

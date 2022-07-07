@@ -3,6 +3,7 @@ import ReviewLayout from 'service/review/layout/ReviewLayout';
 import CreateReviewFormPage from 'service/review/pages/CreateReviewFormPage';
 import CreateReviewPage from 'service/review/pages/CreateReviewPage';
 import JoinReviewPage from 'service/review/pages/JoinReviewPage';
+import SubmitReviewPage from 'service/review/pages/SubmitReviewPage';
 
 function PageRoutes() {
   return (
@@ -15,6 +16,7 @@ function PageRoutes() {
             <Route path="create" element={<CreateReviewPage />} />
             <Route path="join" element={<JoinReviewPage />} />
             <Route path="write" element={<CreateReviewFormPage />} />
+            <Route path="submit" element={<SubmitReviewPage />} />
           </Route>
         </Route>
       </Routes>
