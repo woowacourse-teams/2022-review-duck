@@ -4,6 +4,7 @@ import styles from './styles.module.scss';
 import cn from 'classnames';
 
 interface Props {
+  className?: string;
   type: 'button' | 'submit';
   size: 'small' | 'medium' | 'large';
   outlined: boolean;
@@ -12,7 +13,7 @@ interface Props {
   children: ReactNode;
 }
 
-function Button({ type, size, outlined, disabled, onClick, children, ...rest }: Props) {
+function Button({ className, type, size, outlined, disabled, onClick, children, ...rest }: Props) {
   const [rippleEffect, setRippleEffect] = useState({ isRippling: false, clickX: -1, clickY: -1 });
 
   const handleRippleEffect = (event: MouseEvent<HTMLElement>) => {
@@ -31,7 +32,7 @@ function Button({ type, size, outlined, disabled, onClick, children, ...rest }: 
 
   return (
     <button
-      className={cn(styles.button, styles[size], { [styles.outlined]: outlined })}
+      className={cn(className, styles.button, styles[size], { [styles.outlined]: outlined })}
       type={type}
       disabled={disabled}
       onClick={handleRippleEffect}
