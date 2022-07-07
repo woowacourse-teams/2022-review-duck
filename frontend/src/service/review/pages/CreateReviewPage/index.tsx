@@ -18,11 +18,11 @@ function CreateReviewPage() {
           간편하게 모아 볼 수 있습니다
         </p>
         <div className={cn('button-container horizontal')}>
-          <Button size="large">
+          <Button>
             <Icon type="outlined" code="maps_ugc" />
             회고 생성
           </Button>
-          <Button size="large">
+          <Button>
             <Icon code="login" />
             회고 참여
           </Button>

@@ -1,0 +1,8 @@
+@mixin animate($value) {
+  $animate-id: unique-id();
+  @keyframes #{$animate-id} {
+    @content;
+  }
+
+  animation: $value $animate-id;
+}

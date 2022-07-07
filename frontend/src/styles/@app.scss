@@ -12,6 +12,8 @@ body,
 button,
 input {
   font-family: 'NanumBarunGothic', sans-serif;
+  font-weight: 400;
+  line-height: 110%;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -28,7 +30,7 @@ input[type='textarea'] {
   width: 100%;
   border: none;
   border-radius: 16px;
-  background-color: $LIGHT_COLOR_THEME_BACKGROUND_SOFT;
+  background-color: $LIGHT_COLOR_THEME_BACKGROUND_200;
   padding: 0.75rem 1.25rem;
   font-size: 0.9rem;
 
@@ -37,7 +39,7 @@ input[type='textarea'] {
   }
 
   &::placeholder {
-    color: $LIGHT_COLOR_THEME_TEXT_SOFT;
+    color: $LIGHT_COLOR_THEME_TEXT_400;
   }
 }
 

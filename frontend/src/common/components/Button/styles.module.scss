@@ -2,12 +2,14 @@
 
 .button {
   cursor: pointer;
+
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
 
   border-radius: 999px;
-  font-weight: bold;
+  overflow: hidden;
 
   border: none;
   color: $LIGHT_COLOR_STATUS_INNER_PRIMARY_500;
@@ -24,11 +26,16 @@
   border: 2px solid $LIGHT_COLOR_STATUS_PRIMARY_500;
   color: $LIGHT_COLOR_STATUS_PRIMARY_500;
   background-color: transparent;
+  transition: background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
     color: $LIGHT_COLOR_STATUS_INNER_PRIMARY_500;
     background-color: $LIGHT_COLOR_STATUS_PRIMARY_500;
   }
+}
+
+.button:not(.outlined) {
+  transition: filter 0.3s ease-out;
 }
 
 .button:not(.outlined):hover {
@@ -56,4 +63,38 @@
 .large {
   padding: 0.875rem 1.25rem;
   font-size: 1.1rem;
+}
+
+.ripple-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 10%;
+
+  border-radius: 100%;
+  background-color: $GLOBAL_COLOR_WHITE_400;
+
+  &::after {
+    content: '';
+
+    display: block;
+    padding-bottom: 100%;
+  }
+
+  @include animate(0.5s ease-out forwards) {
+    0% {
+      transform: scale(1);
+      opacity: 0;
+    }
+
+    20% {
+      opacity: 1;
+    }
+
+    100% {
+      transform: scale(20);
+      opacity: 0;
+    }
+  }
 }

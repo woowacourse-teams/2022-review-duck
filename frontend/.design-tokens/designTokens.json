@@ -80,12 +80,20 @@
           "value": "#151515",
           "type": "color"
         },
-        "500": {
+        "150": {
+          "value": "#222",
+          "type": "color"
+        },
+        "300": {
           "value": "#555",
           "type": "color"
         },
-        "700": {
+        "500": {
           "value": "#777",
+          "type": "color"
+        },
+        "700": {
+          "value": "#aaa",
           "type": "color"
         },
         "900": {
@@ -168,7 +176,7 @@
           "500": {
             "value": "{color.deep-green.500}",
             "type": "color",
-            "description": "강조 컬러입니다."
+            "description": "기본 강조 컬러입니다."
           },
           "600": {
             "value": "{color.deep-green.600}",
@@ -198,33 +206,37 @@
       },
       "theme": {
         "background": {
-          "default": {
+          "100": {
             "value": "{color.white.900}",
             "type": "color",
             "description": "기본 배경화면 색입니다."
           },
-          "soft": {
+          "200": {
             "value": "{color.gray.900}",
             "type": "color"
           }
         },
         "text": {
-          "default": {
-            "value": "{color.black.900}",
-            "type": "color"
-          },
-          "soft": {
+          "100": {
             "value": "{color.gray.700}",
             "type": "color"
           },
-          "label": {
+          "400": {
             "value": "{color.gray.500}",
             "type": "color"
+          },
+          "600": {
+            "value": "{color.gray.300}",
+            "type": "color"
+          },
+          "800": {
+            "value": "{color.gray.150}",
+            "type": "color"
+          },
+          "900": {
+            "value": "{color.black.900}",
+            "type": "color"
           }
-        },
-        "input": {
-          "value": "{color.gray.900}",
-          "type": "color"
         }
       }
     }
