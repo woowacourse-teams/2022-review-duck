@@ -4,6 +4,8 @@ import Button from 'common/components/Button';
 import Icon from 'common/components/Icon';
 import Text from 'common/components/Text';
 
+import { Link } from 'react-router-dom';
+
 import imageHero from 'assets/images/demo-create.png';
 
 function MainPage() {
@@ -25,10 +27,12 @@ function MainPage() {
             <Icon type="outlined" code="maps_ugc" />
             회고 생성
           </Button>
-          <Button>
-            <Icon code="login" />
-            회고 참여
-          </Button>
+          <Link to={'/review-forms/join'}>
+            <Button className={cn(styles.tmpFill)}>
+              <Icon code="login" />
+              회고 참여
+            </Button>
+          </Link>
         </div>
       </div>
     </>
