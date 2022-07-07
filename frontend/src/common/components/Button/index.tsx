@@ -3,16 +3,18 @@ import React, { MouseEvent, ReactNode, useState } from 'react';
 import styles from './styles.module.scss';
 import cn from 'classnames';
 
+const themeProps = ['default', 'outlined', 'circle'] as const;
+
 interface Props {
   type: 'button' | 'submit';
   size: 'small' | 'medium' | 'large';
-  outlined: boolean;
+  theme: typeof themeProps[number];
   disabled: boolean;
   onClick?: React.MouseEventHandler;
   children: ReactNode;
 }
 
-function Button({ type, size, outlined, disabled, onClick, children, ...rest }: Props) {
+function Button({ type, size, theme, disabled, onClick, children, ...rest }: Props) {
   const [rippleEffect, setRippleEffect] = useState({ isRippling: false, clickX: -1, clickY: -1 });
 
   const handleRippleEffect = (event: MouseEvent<HTMLElement>) => {
@@ -31,7 +33,7 @@ function Button({ type, size, outlined, disabled, onClick, children, ...rest }: 
 
   return (
     <button
-      className={cn(styles.button, styles[size], { [styles.outlined]: outlined })}
+      className={cn(styles.button, styles[size], styles[`theme-${theme}`])}
       type={type}
       disabled={disabled}
       onClick={handleRippleEffect}
@@ -52,15 +54,15 @@ function Button({ type, size, outlined, disabled, onClick, children, ...rest }: 
 
 Button.propTypes = {
   type: PropTypes.oneOf(['submit', 'button']),
+  theme: PropTypes.oneOf(themeProps),
   size: PropTypes.oneOf(['small', 'medium', 'large']),
-  outlined: PropTypes.bool,
   disabled: PropTypes.bool,
 };
 
 Button.defaultProps = {
   type: 'button',
+  theme: 'default',
   size: 'medium',
-  outlined: false,
   disabled: false,
 };
 

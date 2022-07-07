@@ -8,21 +8,65 @@
   align-items: center;
   justify-content: center;
 
+  border: none;
   border-radius: 999px;
   overflow: hidden;
-
-  border: none;
-  color: $LIGHT_COLOR_STATUS_INNER_PRIMARY_500;
-  background-color: $LIGHT_COLOR_STATUS_PRIMARY_500;
 
   &:disabled {
     cursor: default;
     filter: grayscale(1) brightness(1.5);
     pointer-events: none;
   }
+
+  & :global(.icon) {
+    margin-right: 0.45em;
+  }
 }
 
-.outlined {
+.button:not(.theme-outlined) {
+  color: $LIGHT_COLOR_STATUS_INNER_PRIMARY_500;
+  background-color: $LIGHT_COLOR_STATUS_PRIMARY_500;
+  transition: filter 0.3s ease-out;
+
+  &:hover {
+    filter: brightness(1.2);
+  }
+}
+
+.theme-circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+
+  & > *:not(:global(.icon)) {
+    display: none;
+  }
+
+  & > :global(.icon) {
+    margin: 0;
+  }
+
+  &.small {
+    padding: 0;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  &.medium {
+    padding: 0;
+    width: 2rem;
+    height: 2rem;
+  }
+
+  &.large {
+    padding: 0;
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+.theme-outlined {
   border: 2px solid $LIGHT_COLOR_STATUS_PRIMARY_500;
   color: $LIGHT_COLOR_STATUS_PRIMARY_500;
   background-color: transparent;
@@ -32,18 +76,6 @@
     color: $LIGHT_COLOR_STATUS_INNER_PRIMARY_500;
     background-color: $LIGHT_COLOR_STATUS_PRIMARY_500;
   }
-}
-
-.button:not(.outlined) {
-  transition: filter 0.3s ease-out;
-}
-
-.button:not(.outlined):hover {
-  filter: brightness(1.2);
-}
-
-.button :global(.icon) {
-  margin-right: 0.45em;
 }
 
 .small {
