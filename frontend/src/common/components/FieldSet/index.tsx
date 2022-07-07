@@ -7,7 +7,7 @@ import styles from './styles.module.scss';
 interface Props {
   size: 'large' | 'medium';
   title: string;
-  description: string;
+  description?: string;
   children: ReactNode;
 }
 
@@ -18,10 +18,12 @@ function FieldSet({ title, description, children }: Props) {
 
       {children}
 
-      <div className={cn(styles.description)}>
-        <Icon code="chevron_right" />
-        <span>{description}</span>
-      </div>
+      {description && (
+        <div className={cn(styles.description)}>
+          <Icon code="chevron_right" />
+          <span>{description}</span>
+        </div>
+      )}
     </div>
   );
 }
