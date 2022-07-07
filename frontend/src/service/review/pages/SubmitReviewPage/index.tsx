@@ -4,45 +4,133 @@ import Logo from 'common/components/Logo';
 import ProgressBar from 'common/components/ProgressBar';
 import FieldSet from 'common/components/FieldSet';
 import Text from 'common/components/Text';
+import Button from 'common/components/Button';
+import Icon from 'common/components/Icon';
+
+import { useEffect, useState } from 'react';
+
+const dummyData = {
+  reviewTitle: '팀 회고덕 1차 데모데이 회고',
+  questions: [
+    {
+      questionId: 1,
+      questionValue: '오늘의 기분은 어떤가요?',
+      questionDescription: '체크인 점수를 선택해주세요.',
+      answerValue: '',
+    },
+    {
+      questionId: 2,
+      questionValue: '팀에서 어떤 역할을 했나요?',
+      answerValue: '',
+    },
+    {
+      questionId: 3,
+      questionValue: '팀에서 개선할 점은 무엇이 있을까요?',
+      answerValue: '',
+    },
+    {
+      questionId: 4,
+      questionValue: '개선점을 고치려면 어떻게 해야 할까요?',
+      answerValue: '',
+    },
+    {
+      questionId: 5,
+      questionValue: '안녕하세요?',
+      answerValue: '',
+    },
+  ],
+};
+
+interface Question {
+  questionId: number;
+  questionValue: string;
+  questionDescription?: string;
+  answerValue: string;
+}
 
 function SubmitReviewPage() {
+  const [questions, setReviewForm] = useState<Question[]>(dummyData.questions);
+  const [currentQuestion, setCurrentQuestion] = useState<Question>(dummyData.questions[0]);
+
+  const onSubmitReviewForm = (event: React.FormEvent) => {
+    event.preventDefault();
+    /* API POST call */
+  };
+
+  const onUpdateCurrentQuestion = (index: number) => {
+    setCurrentQuestion(questions[index]);
+  };
+
+  const onUpdateAnswer = (value: string, index: number) => {
+    const copiedQuestions = [...questions];
+    const newQuestion = { ...questions[index] };
+    newQuestion.answerValue = value;
+
+    copiedQuestions.splice(index, 1, newQuestion);
+    setReviewForm(copiedQuestions);
+  };
+
+  const answeredCount = questions.reduce(
+    (prev, current) => (current.answerValue ? prev + 1 : prev),
+    0,
+  );
+
+  useEffect(() => {
+    /* getReviewForm API call 후 setReviewForm 로 state 업데이트 */
+  }, []);
+
   return (
     <>
       <div className={cn(styles.container)}>
         <Logo />
-        <Text className={cn(styles.title)} size={40} weight="bold">
-          오늘의 기분은 어떤가요?
+        <Text
+          key={currentQuestion.questionValue}
+          className={cn(styles.title)}
+          size={40}
+          weight="bold"
+        >
+          {currentQuestion.questionValue}
         </Text>
-        <Text className={cn(styles.description)} size={16}>
-          체크인 점수를 선택해주세요.
+        <Text
+          key={currentQuestion.questionDescription}
+          className={cn(styles.description)}
+          size={16}
+        >
+          {currentQuestion.questionDescription}
         </Text>
-        <ProgressBar percent={6 / 1} />
+        <ProgressBar percent={(answeredCount / questions.length) * 100} />
         <Text className={cn(styles.progressText)} size={14}>
-          총 6개의 질문 중 1개 답변됨
+          {`총 ${questions.length}개의 질문 중 ${answeredCount}개 답변됨`}
         </Text>
       </div>
       <div className={cn(styles.container)}>
-        <FieldSet
-          size="large"
-          title="오늘의 기분은 어떤가요?"
-          description="체크인 점수를 선택해 주세요."
-        >
-          <input type="textarea" />
-        </FieldSet>
-        <FieldSet
-          size="large"
-          title="내일의 기분은 어떤가요?"
-          description="체크인 점수를 선택해 주세요."
-        >
-          <input type="textarea" />
-        </FieldSet>
-        <FieldSet
-          size="large"
-          title="모레의 기분은 어떤가요?"
-          description="체크인 점수를 선택해 주세요."
-        >
-          <input type="textarea" />
-        </FieldSet>
+        <form onSubmit={onSubmitReviewForm}>
+          <Text className={cn(styles.reviewTitle)} size={24} weight="bold">
+            {dummyData.reviewTitle}
+          </Text>
+          {questions.map((question, index) => (
+            <div className={cn(styles.fieldSetContainer)} key={question.questionId}>
+              <FieldSet
+                size="large"
+                title={question.questionValue}
+                description={question.questionDescription}
+              >
+                <input
+                  onFocus={() => onUpdateCurrentQuestion(index)}
+                  type="textarea"
+                  value={questions[index].answerValue}
+                  onChange={(e) => onUpdateAnswer(e.target.value, index)}
+                />
+              </FieldSet>
+            </div>
+          ))}
+          <div className={cn(styles.buttonContainer)}>
+            <Button type="submit" onClick={onSubmitReviewForm}>
+              <Icon code="send"></Icon>
+              제출하기
+            </Button>
+          </div>
+        </form>
       </div>
     </>
   );

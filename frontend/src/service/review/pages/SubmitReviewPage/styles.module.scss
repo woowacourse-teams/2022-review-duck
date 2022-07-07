@@ -13,15 +13,53 @@
   letter-spacing: 0.25rem;
   line-height: 3.5rem;
   word-break: keep-all;
+
+  @include animate(0.5s ease) {
+    from {
+      opacity: 0;
+      filter: blur(1rem);
+      transform: scale(1.2) translateX(-50%);
+    }
+
+    to {
+      opacity: 1;
+      filter: blur(0rem);
+      transform: scale(1) translateY(0%);
+    }
+  }
 }
 
 .description {
   display: block;
   color: $LIGHT_COLOR_THEME_TEXT_900;
-  margin-top: 1rem;
+  margin-bottom: 2rem;
+
+  @include animate(1.5s ease) {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0%);
+    }
+  }
 }
 
 .progress-text {
   color: $LIGHT_COLOR_THEME_TEXT_400;
   margin-top: 0.5rem;
+}
+
+.review-title {
+  margin-bottom: 2.25rem;
+}
+
+.button-container {
+  float: right;
+  margin-top: 3rem;
+}
+
+.field-set-container {
+  margin: 2rem 0;
 }
