@@ -1,7 +1,7 @@
 import QuestionCard from '.';
 
 export default {
-  title: 'Component/QuestionCard',
+  title: 'review/components/QuestionCard',
   component: QuestionCard,
 };
 

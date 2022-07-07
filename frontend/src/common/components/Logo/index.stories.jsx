@@ -1,7 +1,7 @@
-import Logo from 'common/components/Logo';
+import Logo from '.';
 
 export default {
-  title: 'Component/Common/Logo',
+  title: 'common/components/Logo',
   component: Logo,
 };
 

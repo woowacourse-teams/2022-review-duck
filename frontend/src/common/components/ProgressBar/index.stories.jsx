@@ -1,7 +1,7 @@
-import ProgressBar from 'common/components/ProgressBar';
+import ProgressBar from '.';
 
 export default {
-  title: 'Component/Common/ProgressBar',
+  title: 'common/components/ProgressBar',
   component: ProgressBar,
 };
 

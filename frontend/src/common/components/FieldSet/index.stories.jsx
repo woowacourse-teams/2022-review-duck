@@ -1,7 +1,7 @@
-import FieldSet from 'common/components/FieldSet';
+import FieldSet from '.';
 
 export default {
-  title: 'Component/Common/FieldSet',
+  title: 'common/components/FieldSet',
   component: FieldSet,
 };
 

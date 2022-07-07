@@ -18,7 +18,7 @@ function Text({ className, size, weight, children }: Props) {
   );
 }
 
-Text.PropTypes = {
+Text.propTypes = {
   size: PropTypes.oneOf(sizeProps),
 };
 
