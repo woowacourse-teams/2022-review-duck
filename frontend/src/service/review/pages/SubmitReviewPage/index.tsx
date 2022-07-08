@@ -7,6 +7,7 @@ import Text from 'common/components/Text';
 import Button from 'common/components/Button';
 import Icon from 'common/components/Icon';
 import TextBox from 'common/components/TextBox';
+import dom from 'assets/images/dom.png';
 
 import { useEffect, useState } from 'react';
 
@@ -109,6 +110,17 @@ function SubmitReviewPage() {
         <Text className={cn(styles.progressText)} size={14}>
           {`총 ${questions.length}개의 질문 중 ${answeredCount}개 답변됨`}
         </Text>
+        <div>
+          <div className={cn(styles.profileContainer)}>
+            <img className={cn(styles.profile)} src={dom} alt="creator-profile" />
+            <Text className={cn(styles.creatorName)} size={24} weight="bold">
+              돔하디
+            </Text>
+          </div>
+          <Text className={cn(styles.profileDescription)} size={14} weight="lighter">
+            이 곳에는 프로필 소개 혹은 유저 관련 정보가 표기됩니다.
+          </Text>
+        </div>
       </div>
 
       <div className={cn(styles.container)}>
@@ -133,7 +145,11 @@ function SubmitReviewPage() {
             </div>
           ))}
           <div className={cn(styles.buttonContainer)}>
-            <Button type="submit" onClick={onSubmitReviewForm}>
+            <Button
+              type="submit"
+              onClick={onSubmitReviewForm}
+              disabled={answeredCount !== questions.length}
+            >
               <Icon code="send"></Icon>
               제출하기
             </Button>

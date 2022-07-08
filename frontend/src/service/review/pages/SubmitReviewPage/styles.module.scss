@@ -63,3 +63,28 @@
 .field-set-container {
   margin: 2rem 0;
 }
+
+.profile-container {
+  display: flex;
+  flex-direction: column;
+  width: 5.9375rem;
+  align-items: center;
+}
+
+.profile {
+  width: 5.9375rem;
+  height: 8.125rem;
+  border-radius: 45%;
+  margin-top: 3.5rem;
+}
+
+.creator-name {
+  margin-top: 1rem;
+  letter-spacing: 0.25rem;
+  color: $LIGHT_COLOR_STATUS_PRIMARY_600;
+}
+
+.profile-description {
+  margin-top: 1rem;
+  color: $GLOBAL_COLOR_GRAY_500;
+}
