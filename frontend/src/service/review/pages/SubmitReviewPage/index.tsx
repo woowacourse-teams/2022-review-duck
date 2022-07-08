@@ -6,6 +6,7 @@ import FieldSet from 'common/components/FieldSet';
 import Text from 'common/components/Text';
 import Button from 'common/components/Button';
 import Icon from 'common/components/Icon';
+import TextBox from 'common/components/TextBox';
 
 import { useEffect, useState } from 'react';
 
@@ -21,21 +22,23 @@ const dummyData = {
     {
       questionId: 2,
       questionValue: '팀에서 어떤 역할을 했나요?',
+      questionDescription: '팀에서 맡은 역할을 작성해주세요.',
       answerValue: '',
     },
     {
       questionId: 3,
       questionValue: '팀에서 개선할 점은 무엇이 있을까요?',
+      questionDescription: '없다면 비워두세요.',
       answerValue: '',
     },
     {
       questionId: 4,
-      questionValue: '개선점을 고치려면 어떻게 해야 할까요?',
+      questionValue: '문제들을 해결하기 위해서는 어떻게 해야 할까요?',
       answerValue: '',
     },
     {
       questionId: 5,
-      questionValue: '안녕하세요?',
+      questionValue: '이번 회고를 통해 느낀점과 피드백을 남겨주세요.',
       answerValue: '',
     },
   ],
@@ -83,6 +86,7 @@ function SubmitReviewPage() {
     <>
       <div className={cn(styles.container)}>
         <Logo />
+
         <Text
           key={currentQuestion.questionValue}
           className={cn(styles.title)}
@@ -91,6 +95,7 @@ function SubmitReviewPage() {
         >
           {currentQuestion.questionValue}
         </Text>
+
         <Text
           key={currentQuestion.questionDescription}
           className={cn(styles.description)}
@@ -98,16 +103,20 @@ function SubmitReviewPage() {
         >
           {currentQuestion.questionDescription}
         </Text>
+
         <ProgressBar percent={(answeredCount / questions.length) * 100} />
+
         <Text className={cn(styles.progressText)} size={14}>
           {`총 ${questions.length}개의 질문 중 ${answeredCount}개 답변됨`}
         </Text>
       </div>
+
       <div className={cn(styles.container)}>
         <form onSubmit={onSubmitReviewForm}>
           <Text className={cn(styles.reviewTitle)} size={24} weight="bold">
             {dummyData.reviewTitle}
           </Text>
+
           {questions.map((question, index) => (
             <div className={cn(styles.fieldSetContainer)} key={question.questionId}>
               <FieldSet
@@ -115,10 +124,9 @@ function SubmitReviewPage() {
                 title={question.questionValue}
                 description={question.questionDescription}
               >
-                <input
-                  onFocus={() => onUpdateCurrentQuestion(index)}
-                  type="textarea"
+                <TextBox
                   value={questions[index].answerValue}
+                  onFocus={() => onUpdateCurrentQuestion(index)}
                   onChange={(e) => onUpdateAnswer(e.target.value, index)}
                 />
               </FieldSet>
