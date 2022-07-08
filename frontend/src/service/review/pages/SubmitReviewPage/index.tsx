@@ -112,7 +112,7 @@ function SubmitReviewPage() {
         </Text>
         <div>
           <div className={cn(styles.profileContainer)}>
-            <img className={cn(styles.profile)} src={dom} alt="creator-profile" />
+            <div className={cn(styles.profile)} style={{ backgroundImage: 'url(' + dom + ')' }} />
             <Text className={cn(styles.creatorName)} size={24} weight="bold">
               돔하디
             </Text>

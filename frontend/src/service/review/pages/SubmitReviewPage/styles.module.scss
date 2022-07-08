@@ -68,14 +68,17 @@
   display: flex;
   flex-direction: column;
   width: 5.9375rem;
-  align-items: center;
+  gap: 1.8rem;
 }
 
 .profile {
   width: 5.9375rem;
   height: 8.125rem;
-  border-radius: 45%;
+  border-radius: 62.4375rem;
   margin-top: 3.5rem;
+  background-size: cover;
+  background-position: center;
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .creator-name {
