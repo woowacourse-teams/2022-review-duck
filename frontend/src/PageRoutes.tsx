@@ -14,7 +14,7 @@ function PageRoutes() {
 
           <Route path="review-forms">
             <Route path="join" element={<JoinReviewPage />} />
-            <Route path="write" element={<CreateReviewFormPage />} />
+            <Route path="create" element={<CreateReviewFormPage />} />
             <Route path="submit" element={<SubmitReviewPage />} />
           </Route>
         </Route>

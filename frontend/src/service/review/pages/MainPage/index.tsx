@@ -23,10 +23,13 @@ function MainPage() {
           간편하게 모아 볼 수 있습니다
         </Text>
         <div className={cn('button-container horizontal')}>
-          <Button>
-            <Icon type="outlined" code="maps_ugc" />
-            <span>회고 생성</span>
-          </Button>
+          <Link to={'/review-forms/create'}>
+            <Button className={cn(styles.tmpFill)}>
+              <Icon type="outlined" code="maps_ugc" />
+              <span>회고 생성</span>
+            </Button>
+          </Link>
+
           <Link to={'/review-forms/join'}>
             <Button className={cn(styles.tmpFill)}>
               <Icon code="login" />
