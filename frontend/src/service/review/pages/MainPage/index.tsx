@@ -26,14 +26,14 @@ function MainPage() {
         </Text>
         <div className={cn('button-container horizontal')}>
           <Link to={'/review-forms/create'}>
-            <Button className={cn(styles.tmpFill)}>
+            <Button type="button" filled>
               <Icon type="outlined" code="maps_ugc" />
               <span>회고 생성</span>
             </Button>
           </Link>
 
           <Link to={'/review-forms/join'}>
-            <Button className={cn(styles.tmpFill)}>
+            <Button type="button" filled>
               <Icon code="login" />
               <span>회고 참여</span>
             </Button>
