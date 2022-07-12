@@ -1,7 +1,9 @@
-import PropTypes from 'prop-types';
-import cn from 'classnames';
-import styles from './styles.module.scss';
 import { ChangeEvent, FocusEvent, KeyboardEvent } from 'react';
+
+import cn from 'classnames';
+import PropTypes from 'prop-types';
+
+import styles from './styles.module.scss';
 
 const typeProps = ['default', 'underline'] as const;
 const sizeProps = ['small', 'medium', 'large'] as const;

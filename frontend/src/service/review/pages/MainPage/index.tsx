@@ -1,12 +1,14 @@
+import { Link } from 'react-router-dom';
+
 import cn from 'classnames';
-import styles from './styles.module.scss';
+
 import Button from 'common/components/Button';
 import Icon from 'common/components/Icon';
 import Text from 'common/components/Text';
 
-import { Link } from 'react-router-dom';
-
 import imageHero from 'assets/images/demo-create.png';
+
+import styles from './styles.module.scss';
 
 function MainPage() {
   return (

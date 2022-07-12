@@ -1,5 +1,6 @@
 import cn from 'classnames';
 import PropTypes from 'prop-types';
+
 import styles from './styles.module.scss';
 
 const sizeProps = [12, 14, 16, 18, 20, 24, 32, 40, 48] as const;

@@ -1,13 +1,15 @@
-import FieldSet from 'common/components/FieldSet';
-import cn from 'classnames';
-import styles from './styles.module.scss';
-import Button from 'common/components/Button';
-import Icon from 'common/components/Icon';
-
 import { Link } from 'react-router-dom';
 
-import imageHero from 'assets/images/demo-create.png';
+import cn from 'classnames';
+
+import Button from 'common/components/Button';
+import FieldSet from 'common/components/FieldSet';
+import Icon from 'common/components/Icon';
 import TextBox from 'common/components/TextBox';
+
+import imageHero from 'assets/images/demo-create.png';
+
+import styles from './styles.module.scss';
 
 function JoinReviewPage() {
   return (

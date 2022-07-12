@@ -1,7 +1,9 @@
-import PropTypes from 'prop-types';
 import React, { MouseEvent, ReactNode, useState } from 'react';
-import styles from './styles.module.scss';
+
 import cn from 'classnames';
+import PropTypes from 'prop-types';
+
+import styles from './styles.module.scss';
 
 const themeProps = ['default', 'outlined', 'circle'] as const;
 

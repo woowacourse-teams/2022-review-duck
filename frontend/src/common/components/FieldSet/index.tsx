@@ -1,7 +1,10 @@
-import PropTypes from 'prop-types';
 import { ReactNode } from 'react';
+
 import cn from 'classnames';
+import PropTypes from 'prop-types';
+
 import Icon from 'common/components/Icon';
+
 import styles from './styles.module.scss';
 
 const sizeProps = ['medium', 'large'] as const;
