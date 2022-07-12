@@ -1,16 +1,18 @@
-import React, { MouseEvent, ReactNode, useState } from 'react';
+import React, { ButtonHTMLAttributes, MouseEvent, ReactNode, useState } from 'react';
 
 import cn from 'classnames';
 import PropTypes from 'prop-types';
 
 import styles from './styles.module.scss';
 
+const type = ['submit', 'button', 'reset'] as const;
+const size = ['small', 'medium', 'large'] as const;
 const themeProps = ['default', 'outlined', 'circle'] as const;
 
 interface Props {
   className?: string;
-  type: 'button' | 'submit';
-  size: 'small' | 'medium' | 'large';
+  type: typeof type[number];
+  size: typeof size[number];
   theme: typeof themeProps[number];
   disabled: boolean;
   onClick?: React.MouseEventHandler;
