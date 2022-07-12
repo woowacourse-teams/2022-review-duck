@@ -1,18 +1,20 @@
-import cn from 'classnames';
-import TextBox from 'common/components/TextBox';
+import { ChangeEvent, KeyboardEvent, MouseEvent } from 'react';
 
-import styles from './styles.module.scss';
+import cn from 'classnames';
+
 import Button from 'common/components/Button';
 import Icon from 'common/components/Icon';
 import Text from 'common/components/Text';
-import { AnimationEvent, ChangeEvent, KeyboardEvent } from 'react';
+import TextBox from 'common/components/TextBox';
+
+import styles from './styles.module.scss';
 
 interface Props {
   numbering: number;
   value?: string;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-  onAddQuestion?: () => void;
-  onDeleteQuestion?: (event: any) => void;
+  onAddQuestion?: (event: MouseEvent | KeyboardEvent) => void;
+  onDeleteQuestion?: (event: MouseEvent | KeyboardEvent) => void;
 }
 
 function QuestionEditor({ numbering, value, onChange, onAddQuestion, onDeleteQuestion }: Props) {
@@ -21,7 +23,7 @@ function QuestionEditor({ numbering, value, onChange, onAddQuestion, onDeleteQue
 
     switch (event.key) {
       case 'Enter':
-        onAddQuestion && onAddQuestion();
+        onAddQuestion && onAddQuestion(event);
         break;
 
       case 'Backspace':
@@ -30,12 +32,8 @@ function QuestionEditor({ numbering, value, onChange, onAddQuestion, onDeleteQue
     }
   };
 
-  const onAnimationEnd = (event: AnimationEvent) => {
-    event.currentTarget.querySelector('input')?.focus();
-  };
-
   return (
-    <div className={cn(styles.container, 'flex-container row')} onAnimationStart={onAnimationEnd}>
+    <div className={cn(styles.container, 'flex-container row')}>
       <Text className={styles.numbering} size={18} weight="bold">
         {`Q${numbering}`}
       </Text>

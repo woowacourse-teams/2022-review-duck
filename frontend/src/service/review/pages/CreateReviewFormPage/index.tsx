@@ -1,51 +1,53 @@
-import cn from 'classnames';
-import styles from './styles.module.scss';
-import Button from 'common/components/Button';
-import Icon from 'common/components/Icon';
-import QuestionCard from 'service/review/components/QuestionCard';
-import Logo from 'common/components/Logo';
-import TextBox from 'common/components/TextBox';
-import QuestionEditor from 'service/review/components/QuestionEditor';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, MouseEvent, KeyboardEvent } from 'react';
+import { flushSync } from 'react-dom';
 
-interface Question {
-  questionValue: string;
-}
+import cn from 'classnames';
+
+import useQuestions from 'service/review/hooks/useQuestions';
+
+import { setFormFocus } from 'common/utils';
+
+import { Button, Icon, Logo, TextBox } from 'common/components';
+
+import QuestionCard from 'service/review/components/QuestionCard';
+import QuestionEditor from 'service/review/components/QuestionEditor';
+
+import styles from './styles.module.scss';
 
 function CreateReviewFormPage() {
-  const [reviewTitle, setReviewTitle] = useState('');
-  const [questions, setQuestions] = useState<Question[]>([{ questionValue: '' }]);
+  // react query로 데이터 로드
+
+  const { questions, addQuestion, removeQuestion, editQuestion } = useQuestions([
+    { listKey: 'list-0', questionValue: '' },
+  ]);
 
   const handleUpdateQuestion = (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
-    const copiedQuestions = [...questions];
     const updatedQuestion = { ...questions[index], questionValue: event.target.value };
 
-    copiedQuestions.splice(index, 1, updatedQuestion);
-    setQuestions(copiedQuestions);
+    editQuestion(index, updatedQuestion);
   };
 
-  const handleAddQuestion = () => {
-    const copiedQuestions = [...questions];
+  const handleAddQuestion = ({ currentTarget: $inputTarget }: MouseEvent | KeyboardEvent) => {
+    let questionIndex = null;
 
-    copiedQuestions.push({ questionValue: '' });
-    setQuestions(copiedQuestions);
+    flushSync(() => {
+      questionIndex = addQuestion({ questionValue: '' });
+    });
+
+    if (questionIndex === null) return;
+
+    setFormFocus($inputTarget as HTMLInputElement, questionIndex);
   };
 
   const handleDeleteQuestion =
     (index: number) =>
-    ({ currentTarget }: any) => {
-      if (questions.length <= 1) {
-        return;
-      }
+    ({ currentTarget: $inputTarget }: MouseEvent | KeyboardEvent) => {
+      if (questions.length <= 1) return;
 
-      const copiedQuestions = [...questions];
+      const previousInputIndex = index - 1;
 
-      copiedQuestions.splice(index, 1);
-      setQuestions(copiedQuestions);
-
-      const $beforeTextBox = currentTarget.form.querySelectorAll('input.question')[index - 1];
-
-      $beforeTextBox && $beforeTextBox.focus();
+      removeQuestion(index);
+      setFormFocus($inputTarget as HTMLInputElement, previousInputIndex);
     };
 
   return (
@@ -55,10 +57,10 @@ function CreateReviewFormPage() {
 
         <div className={cn(styles.previewContainer, 'flex-container column')}>
           {questions.map(
-            ({ questionValue }, index) =>
+            ({ questionValue, questionId, listKey }, index) =>
               questionValue && (
                 <QuestionCard
-                  key={index}
+                  key={questionId || listKey}
                   numbering={index + 1}
                   type="text"
                   title={questionValue}
@@ -74,9 +76,9 @@ function CreateReviewFormPage() {
           <TextBox theme="underline" size="large" placeholder="회고의 제목을 입력해주세요." />
 
           <div className={cn(styles.itemContainer, 'flex-container column')}>
-            {questions.map(({ questionValue }, index) => (
+            {questions.map(({ questionId, listKey, questionValue }, index) => (
               <QuestionEditor
-                key={index}
+                key={questionId || listKey}
                 numbering={index + 1}
                 value={questionValue}
                 onChange={handleUpdateQuestion(index)}
