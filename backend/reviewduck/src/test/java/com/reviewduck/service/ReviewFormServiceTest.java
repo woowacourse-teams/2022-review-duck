@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.reviewduck.domain.Question;
 import com.reviewduck.domain.ReviewForm;
+import com.reviewduck.dto.request.QuestionRequest;
 import com.reviewduck.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.exception.NotFoundException;
 
@@ -31,11 +32,14 @@ public class ReviewFormServiceTest {
     void createReviewForm() {
         // given
         String reviewTitle = "title";
-        List<String> questionValues = List.of("question1", "question2");
-        List<Question> questions = questionValues.stream()
-            .map(Question::new)
-            .collect(Collectors.toUnmodifiableList());
-        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questionValues);
+        List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
+
+        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
+
+        List<Question> expected = questions.stream()
+            .map(questionRequest -> new Question(questionRequest.getQuestionValue()))
+            .collect(Collectors.toList());
 
         // when
         ReviewForm reviewForm = reviewFormService.save(createRequest);
@@ -49,7 +53,7 @@ public class ReviewFormServiceTest {
             () -> assertThat(reviewForm.getQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(questions)
+                .isEqualTo(expected)
         );
     }
 
@@ -58,8 +62,9 @@ public class ReviewFormServiceTest {
     void findReviewForm() {
         // given
         String reviewTitle = "title";
-        List<String> questionValues = List.of("question1", "question2");
-        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questionValues);
+        List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
+        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
 
         ReviewForm expected = reviewFormService.save(createRequest);
 

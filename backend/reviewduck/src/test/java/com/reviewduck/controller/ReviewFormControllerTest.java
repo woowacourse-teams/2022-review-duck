@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.reviewduck.dto.request.QuestionRequest;
 import com.reviewduck.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.service.ReviewFormService;
 
@@ -46,7 +47,7 @@ public class ReviewFormControllerTest {
     @ParameterizedTest
     @NullSource
     @DisplayName("회고 질문 목록에 null 값이 들어갈 경우 예외가 발생한다.")
-    void nullQuestionList(List<String> questions) throws Exception {
+    void nullQuestionList(List<QuestionRequest> questions) throws Exception {
         // given
         ReviewFormCreateRequest request = new ReviewFormCreateRequest("title", questions);
 

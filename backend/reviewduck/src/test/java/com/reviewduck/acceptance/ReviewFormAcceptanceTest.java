@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import com.reviewduck.dto.request.QuestionRequest;
 import com.reviewduck.dto.request.ReviewFormCreateRequest;
 
 public class ReviewFormAcceptanceTest extends AcceptanceTest {
@@ -17,7 +18,8 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     void createReviewForm() {
         // given
         String reviewTitle = "title";
-        List<String> questions = List.of("question1", "question2");
+        List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
         ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
 
         // when, then

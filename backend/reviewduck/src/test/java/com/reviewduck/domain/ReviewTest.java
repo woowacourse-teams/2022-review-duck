@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,8 +18,8 @@ public class ReviewTest {
     void createReview() {
         //when, then
         assertDoesNotThrow(() -> Review.of("제이슨",
-            new ReviewForm("title", List.of("question")),
-            Map.of(new Question("question1"), new Answer("answer1"))));
+            new ReviewForm("title", List.of("question1")),
+            List.of(new QuestionAnswer(new Question("question1"), new Answer("answer1")))));
     }
 
     @ParameterizedTest
@@ -30,7 +29,7 @@ public class ReviewTest {
         //when, then
         assertThatThrownBy(() -> Review.of(nickname,
             new ReviewForm("title", List.of("question1")),
-            Map.of(new Question("question1"), new Answer("answer1"))))
+            List.of(new QuestionAnswer(new Question("question1"), new Answer("answer1")))))
             .isInstanceOf(ReviewException.class)
             .hasMessageContaining("닉네임이 비어있을 수 없습니다.");
     }

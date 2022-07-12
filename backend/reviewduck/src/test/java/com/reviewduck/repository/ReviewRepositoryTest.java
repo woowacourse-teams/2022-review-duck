@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.reviewduck.domain.Answer;
+import com.reviewduck.domain.QuestionAnswer;
 import com.reviewduck.domain.Review;
 import com.reviewduck.domain.ReviewForm;
 
@@ -32,10 +32,12 @@ public class ReviewRepositoryTest {
     void setUp() {
         ReviewForm reviewForm = new ReviewForm("title", List.of("question1", "question2"));
         this.savedReviewForm = reviewFormRepository.save(reviewForm);
-
         this.review = Review.of("제이슨", savedReviewForm,
-            Map.of(reviewForm.getQuestions().get(0), new Answer("answer1"),
-                reviewForm.getQuestions().get(1), new Answer("answer2")));
+            List.of(
+                new QuestionAnswer(savedReviewForm.getQuestions().get(0), new Answer("answer1")),
+                new QuestionAnswer(savedReviewForm.getQuestions().get(1), new Answer("answer2"))
+            )
+        );
     }
 
     @Test
@@ -48,8 +50,8 @@ public class ReviewRepositoryTest {
         assertAll(
             () -> assertThat(savedReview.getId()).isNotNull(),
             () -> assertThat(savedReview.getNickname()).isEqualTo("제이슨"),
-            () -> assertThat(savedReview.getAnswersByQuestions()
-                .get(savedReviewForm.getQuestions().get(0)).getValue()).isEqualTo("answer1")
+            () -> assertThat(savedReview.getQuestionAnswers().get(0).getAnswer().getValue())
+                .isEqualTo("answer1")
         );
     }
 

@@ -17,8 +17,8 @@ public class ReviewResponse {
     private List<AnswerResponse> answers;
 
     public static ReviewResponse from(Review review) {
-        List<AnswerResponse> answerResponses = review.getAnswersByQuestions().entrySet().stream()
-            .map(entry -> AnswerResponse.of(entry.getKey(), entry.getValue()))
+        List<AnswerResponse> answerResponses = review.getQuestionAnswers().stream()
+            .map(questionAnswer -> AnswerResponse.of(questionAnswer.getQuestion(), questionAnswer.getAnswer()))
             .collect(Collectors.toUnmodifiableList());
 
         return new ReviewResponse(review.getId(), review.getNickname(), answerResponses);
