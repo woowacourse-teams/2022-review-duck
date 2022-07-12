@@ -1,18 +1,20 @@
+import { ChangeEvent, useState } from 'react';
+
 import cn from 'classnames';
-import styles from './styles.module.scss';
-import Logo from 'common/components/Logo';
-import ProgressBar from 'common/components/ProgressBar';
-import FieldSet from 'common/components/FieldSet';
-import Text from 'common/components/Text';
-import Button from 'common/components/Button';
-import Icon from 'common/components/Icon';
-import TextBox from 'common/components/TextBox';
+
+import { Question } from 'service/review/types';
+
+import useQuestions from 'service/review/hooks/useQuestions';
+
+import { Logo, ProgressBar, FieldSet, Text, Button, Icon, TextBox } from 'common/components';
+
 import dom from 'assets/images/dom.png';
 
-import { useEffect, useState } from 'react';
+import styles from './styles.module.scss';
 
 const dummyData = {
   reviewTitle: '팀 회고덕 1차 데모데이 회고',
+  profile: { image: '프로필 URL', nickname: '닉네임', description: '프로필 소개' },
   questions: [
     {
       questionId: 1,
@@ -45,43 +47,31 @@ const dummyData = {
   ],
 };
 
-interface Question {
-  questionId: number;
-  questionValue: string;
-  questionDescription?: string;
-  answerValue: string;
-}
+type SubmitQuestion = Partial<Question>;
 
 function SubmitReviewPage() {
-  const [questions, setReviewForm] = useState<Question[]>(dummyData.questions);
-  const [currentQuestion, setCurrentQuestion] = useState<Question>(dummyData.questions[0]);
+  const { questions, editQuestion } = useQuestions(dummyData.questions);
+  const [currentQuestion, setCurrentQuestion] = useState<SubmitQuestion>(dummyData.questions[0]);
 
   const onSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
     /* API POST call */
   };
 
-  const onUpdateCurrentQuestion = (index: number) => {
+  const onUpdateCurrentQuestion = (index: number) => () => {
     setCurrentQuestion(questions[index]);
   };
 
-  const onUpdateAnswer = (value: string, index: number) => {
-    const copiedQuestions = [...questions];
-    const newQuestion = { ...questions[index] };
-    newQuestion.answerValue = value;
+  const onUpdateAnswer = (index: number) => (event: ChangeEvent) => {
+    const $inputTarget = event.target as HTMLInputElement;
 
-    copiedQuestions.splice(index, 1, newQuestion);
-    setReviewForm(copiedQuestions);
+    editQuestion(index, { answerValue: $inputTarget.value });
   };
 
   const answeredCount = questions.reduce(
     (prev, current) => (current.answerValue ? prev + 1 : prev),
     0,
   );
-
-  useEffect(() => {
-    /* getReviewForm API call 후 setReviewForm 로 state 업데이트 */
-  }, []);
 
   return (
     <>
@@ -133,13 +123,13 @@ function SubmitReviewPage() {
             <div className={cn(styles.fieldSetContainer)} key={question.questionId}>
               <FieldSet
                 size="large"
-                title={question.questionValue}
+                title={question.questionValue || ''}
                 description={question.questionDescription}
               >
                 <TextBox
                   value={questions[index].answerValue}
-                  onFocus={() => onUpdateCurrentQuestion(index)}
-                  onChange={(e) => onUpdateAnswer(e.target.value, index)}
+                  onFocus={onUpdateCurrentQuestion(index)}
+                  onChange={onUpdateAnswer(index)}
                 />
               </FieldSet>
             </div>
