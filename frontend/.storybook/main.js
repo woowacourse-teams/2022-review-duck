@@ -1,7 +1,7 @@
 const path = require('path');
 const common = require('../.webpack/webpack.common.js');
 
-const webpackRules = common.module.rules;
+const webpackRules = common({}, { mode: 'development' }).module.rules;
 
 module.exports = {
   stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
