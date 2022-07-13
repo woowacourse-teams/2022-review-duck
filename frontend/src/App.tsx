@@ -5,7 +5,9 @@ import PageRoutes from 'PageRoutes';
 
 import 'styles/@app.scss';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { refetchOnWindowFocus: false, refetchOnReconnect: false } },
+});
 
 function ContextWrapper({ children }: { children: ReactNode }) {
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
