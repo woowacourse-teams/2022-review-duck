@@ -7,7 +7,8 @@
     "start": "webpack-dev-server --config ./.webpack/webpack.dev.js --open --hot",
     "build": "webpack --config ./.webpack/webpack.prod.js",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "pretty": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\""
   },
   "dependencies": {
     "classnames": "^2.3.1",
@@ -29,6 +30,7 @@
     "@storybook/manager-webpack5": "^6.5.9",
     "@storybook/react": "^6.5.9",
     "@storybook/testing-library": "^0.0.13",
+    "@trivago/prettier-plugin-sort-imports": "^3.2.0",
     "@types/react": "^18.0.14",
     "@types/react-dom": "^18.0.5",
     "@typescript-eslint/eslint-plugin": "^5.30.0",

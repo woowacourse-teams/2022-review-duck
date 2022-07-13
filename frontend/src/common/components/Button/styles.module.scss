@@ -8,21 +8,65 @@
   align-items: center;
   justify-content: center;
 
+  border: none;
   border-radius: 999px;
   overflow: hidden;
-
-  border: none;
-  color: $LIGHT_COLOR_STATUS_INNER_PRIMARY_500;
-  background-color: $LIGHT_COLOR_STATUS_PRIMARY_500;
 
   &:disabled {
     cursor: default;
     filter: grayscale(1) brightness(1.5);
     pointer-events: none;
   }
+
+  & :global(.icon) {
+    margin-right: 0.45em;
+  }
 }
 
-.outlined {
+.button:not(.theme-outlined) {
+  color: $LIGHT_COLOR_STATUS_INNER_PRIMARY_500;
+  background-color: $LIGHT_COLOR_STATUS_PRIMARY_500;
+  transition: filter 0.3s ease-out;
+
+  &:hover {
+    filter: brightness(1.2);
+  }
+}
+
+.theme-circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+
+  & > *:not(:global(.icon)) {
+    display: none;
+  }
+
+  & > :global(.icon) {
+    margin: 0;
+  }
+
+  &.small {
+    padding: 0;
+    width: 2rem;
+    height: 2rem;
+  }
+
+  &.medium {
+    padding: 0;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  &.large {
+    padding: 0;
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+}
+
+.theme-outlined {
   border: 2px solid $LIGHT_COLOR_STATUS_PRIMARY_500;
   color: $LIGHT_COLOR_STATUS_PRIMARY_500;
   background-color: transparent;
@@ -34,16 +78,8 @@
   }
 }
 
-.button:not(.outlined) {
-  transition: filter 0.3s ease-out;
-}
-
-.button:not(.outlined):hover {
-  filter: brightness(1.2);
-}
-
-.button :global(.icon) {
-  margin-right: 0.45em;
+.filled {
+  width: 100%;
 }
 
 .small {
@@ -56,12 +92,12 @@
 }
 
 .medium {
-  padding: 0.5rem 0.75rem;
+  padding: 0.625rem 1rem;
   font-size: 1rem;
 }
 
 .large {
-  padding: 0.875rem 1.25rem;
+  padding: 0.825rem 1.25rem;
   font-size: 1.1rem;
 }
 

@@ -5,5 +5,21 @@
   "tabWidth": 2,
   "trailingComma": "all",
   "printWidth": 100,
-  "endOfLine": "lf"
+  "endOfLine": "lf",
+  "importOrder": [
+    "^(react)",
+    "^((?!/).)*$",
+    "^((.*)/types)(.*|$)",
+    "^((.*)/hooks)(.*|$)",
+    "^((.*)/utils)(.*|$)",
+    "^(common/components)*$",
+    "^(common/components)(.*|$)",
+    "^(service/(.*)/components)(.*|$)",
+    "^(pages)(.*|$)",
+    "^((assets|constants))(.*|$)",
+    "^(./styles.module)(.*|$)",
+    "^(.)(.*|$)",
+    "^(..)(.*|$)"
+  ],
+  "importOrderSeparation": true
 }

@@ -1,6 +1,8 @@
 import cn from 'classnames';
 import PropTypes from 'prop-types';
+
 import Text from 'common/components/Text';
+
 import styles from './styles.module.scss';
 
 interface Props {

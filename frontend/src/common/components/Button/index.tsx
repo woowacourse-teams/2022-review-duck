@@ -1,18 +1,36 @@
-import PropTypes from 'prop-types';
 import React, { MouseEvent, ReactNode, useState } from 'react';
-import styles from './styles.module.scss';
+
 import cn from 'classnames';
+import PropTypes from 'prop-types';
+
+import styles from './styles.module.scss';
+
+const type = ['submit', 'button', 'reset'] as const;
+const size = ['small', 'medium', 'large'] as const;
+const themeProps = ['default', 'outlined', 'circle'] as const;
 
 interface Props {
-  type: 'button' | 'submit';
-  size: 'small' | 'medium' | 'large';
-  outlined: boolean;
+  className?: string;
+  type: typeof type[number];
+  size: typeof size[number];
+  theme: typeof themeProps[number];
+  filled: boolean;
   disabled: boolean;
   onClick?: React.MouseEventHandler;
   children: ReactNode;
 }
 
-function Button({ type, size, outlined, disabled, onClick, children, ...rest }: Props) {
+function Button({
+  className,
+  type,
+  size,
+  theme,
+  filled,
+  disabled,
+  onClick,
+  children,
+  ...rest
+}: Props) {
   const [rippleEffect, setRippleEffect] = useState({ isRippling: false, clickX: -1, clickY: -1 });
 
   const handleRippleEffect = (event: MouseEvent<HTMLElement>) => {
@@ -31,7 +49,9 @@ function Button({ type, size, outlined, disabled, onClick, children, ...rest }: 
 
   return (
     <button
-      className={cn(styles.button, styles[size], { [styles.outlined]: outlined })}
+      className={cn(className, styles.button, styles[size], styles[`theme-${theme}`], {
+        [styles.filled]: filled,
+      })}
       type={type}
       disabled={disabled}
       onClick={handleRippleEffect}
@@ -52,15 +72,17 @@ function Button({ type, size, outlined, disabled, onClick, children, ...rest }: 
 
 Button.propTypes = {
   type: PropTypes.oneOf(['submit', 'button']),
+  theme: PropTypes.oneOf(themeProps),
   size: PropTypes.oneOf(['small', 'medium', 'large']),
-  outlined: PropTypes.bool,
+  filled: PropTypes.bool,
   disabled: PropTypes.bool,
 };
 
 Button.defaultProps = {
   type: 'button',
+  theme: 'default',
   size: 'medium',
-  outlined: false,
+  filled: false,
   disabled: false,
 };
 

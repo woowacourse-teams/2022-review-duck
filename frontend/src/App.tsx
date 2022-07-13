@@ -1,4 +1,5 @@
 import PageRoutes from 'PageRoutes';
+
 import 'styles/@app.scss';
 
 function App() {

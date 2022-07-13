@@ -1,10 +1,15 @@
-import FieldSet from 'common/components/FieldSet';
+import { Link } from 'react-router-dom';
+
 import cn from 'classnames';
-import styles from './styles.module.scss';
+
 import Button from 'common/components/Button';
+import FieldSet from 'common/components/FieldSet';
 import Icon from 'common/components/Icon';
+import TextBox from 'common/components/TextBox';
 
 import imageHero from 'assets/images/demo-create.png';
+
+import styles from './styles.module.scss';
 
 function JoinReviewPage() {
   return (
@@ -14,18 +19,20 @@ function JoinReviewPage() {
       </div>
       <div className={cn(styles.container, 'flex-container column')}>
         <FieldSet title="참여 코드" description="회고 참여를 위한 코드를 입력해주세요.">
-          <input type="text" placeholder="영문과 숫자로 이루어진 코드 8자리를 입력해주세요." />
+          <TextBox placeholder="영문과 숫자로 이루어진 코드 8자리를 입력해주세요." />
         </FieldSet>
 
         <div className={cn('button-container horizontal')}>
-          <Button size="medium" outlined>
-            <Icon code="cancel"></Icon>
-            취소하기
+          <Button size="medium" theme="outlined">
+            <Icon code="cancel" />
+            <span>취소하기</span>
           </Button>
-          <Button type="submit" size="medium">
-            <Icon code="ads_click"></Icon>
-            참여하기
-          </Button>
+          <Link to={'/review-forms/submit'}>
+            <Button type="submit" size="medium" filled>
+              <Icon code="ads_click" />
+              <span>참여하기</span>
+            </Button>
+          </Link>
         </div>
       </div>
     </>

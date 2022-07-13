@@ -1,4 +1,5 @@
 import cn from 'classnames';
+
 import styles from './styles.module.scss';
 
 function Logo({}) {
