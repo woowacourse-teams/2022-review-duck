@@ -17,8 +17,11 @@ import com.reviewduck.dto.response.ReviewFormCreateResponse;
 import com.reviewduck.dto.response.ReviewFormResponse;
 import com.reviewduck.service.ReviewFormService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("/api/review-forms")
+@Slf4j
 public class ReviewFormController {
 
     private final ReviewFormService reviewFormService;
@@ -30,6 +33,10 @@ public class ReviewFormController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ReviewFormCreateResponse create(@RequestBody @Valid ReviewFormCreateRequest request) {
+
+        log.info("uri={}, method = {}, request = {}",
+            "/api/review-forms", "POST", request.toString());
+
         ReviewForm reviewForm = reviewFormService.save(request);
         return ReviewFormCreateResponse.from(reviewForm);
     }
@@ -37,6 +44,10 @@ public class ReviewFormController {
     @GetMapping("/{reviewFormCode}")
     @ResponseStatus(HttpStatus.OK)
     public ReviewFormResponse find(@PathVariable String reviewFormCode) {
+
+        log.info("uri={}, method = {}, request = {}",
+            "/api/review-forms/" + reviewFormCode, "GET", "");
+
         ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
         return ReviewFormResponse.from(reviewForm);
     }
