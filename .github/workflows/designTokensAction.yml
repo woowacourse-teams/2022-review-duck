@@ -1,0 +1,43 @@
+# Front-End
+# Figma를 통해 디자인 토큰이 업데이트 될 시
+# design-tokens-converter를 통해 Design Tokens를 Sass 변수로 자동으로 변환하여주는 액션입니다.
+
+name: Design Tokens JSON To Sass Converter
+
+on:
+  push:
+    branches: ["figma"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      SETTING_JSON_PATH: ./frontend/.design-tokens/designTokens.json
+      SETTING_OUTPUT_PATH: ./frontend/src/styles/designTokens.scss
+      SETTING_UPDATE_BRANCHES: figma
+
+    strategy:
+      matrix:
+        node-version: [17.x]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: JSON_PATH=$SETTING_JSON_PATH OUTPUT_PATH=$SETTING_OUTPUT_PATH node ./frontend/.design-tokens/designTokensConverter.js
+
+      - name: Add & Commit
+        uses: EndBug/add-and-commit@v4.4.0
+        with:
+          add: "${{ env.SETTING_OUTPUT_PATH }}"
+          message: "[FE] design : Github Action 디자인 토큰 자동 생성"
+          ref: "${{ env.SETTING_UPDATE_BRANCHES }}"
+
+      - name: Push commit
+        uses: ad-m/github-push-action@master
+        with:
+          branch: "${{ env.SETTING_UPDATE_BRANCHES }}"
