@@ -17,6 +17,7 @@ import com.reviewduck.dto.response.ReviewFormCreateResponse;
 import com.reviewduck.dto.response.ReviewFormResponse;
 import com.reviewduck.service.ReviewFormService;
 
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -30,6 +31,7 @@ public class ReviewFormController {
         this.reviewFormService = reviewFormService;
     }
 
+    @Operation(summary = "회고 폼을 생성한다.")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ReviewFormCreateResponse create(@RequestBody @Valid ReviewFormCreateRequest request) {
@@ -41,6 +43,7 @@ public class ReviewFormController {
         return ReviewFormCreateResponse.from(reviewForm);
     }
 
+    @Operation(summary = "회고 폼의 질문들을 모두 조회한다.")
     @GetMapping("/{reviewFormCode}")
     @ResponseStatus(HttpStatus.OK)
     public ReviewFormResponse find(@PathVariable String reviewFormCode) {
