@@ -7,15 +7,15 @@ import 'styles/@app.scss';
 
 const queryClient = new QueryClient();
 
-function ContextRapper({ children }: { children: ReactNode }) {
+function ContextWrapper({ children }: { children: ReactNode }) {
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
 
 function App() {
   return (
-    <ContextRapper>
+    <ContextWrapper>
       <PageRoutes />
-    </ContextRapper>
+    </ContextWrapper>
   );
 }
 
