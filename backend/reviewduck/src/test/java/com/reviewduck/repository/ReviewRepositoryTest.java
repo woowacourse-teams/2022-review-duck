@@ -70,4 +70,17 @@ public class ReviewRepositoryTest {
             () -> assertThat(reviews.get(0).getNickname()).isEqualTo(savedReview.getNickname())
         );
     }
+
+    @Test
+    @DisplayName("리뷰를 삭제한다.")
+    void deleteReview() {
+        // given
+        Review savedReview = reviewRepository.save(review);
+
+        // when
+        reviewRepository.deleteById(savedReview.getId());
+
+        // then
+        assertThat(reviewRepository.findById(savedReview.getId()).isEmpty()).isTrue();
+    }
 }

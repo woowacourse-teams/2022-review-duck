@@ -65,4 +65,8 @@ public class ReviewService {
         review.update(convertToQuestionAnswers(request.getAnswers()));
         return review;
     }
+
+    public void delete(Long id) {
+        reviewRepository.deleteById(id);
+    }
 }

@@ -130,4 +130,19 @@ public class ReviewServiceTest {
                 .isEqualTo("editedAnswer1")
         );
     }
+
+    @Test
+    @DisplayName("리뷰를 삭제한다.")
+    void deleteReview() {
+        // given
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest("제이슨",
+            List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
+        Review savedReview = reviewService.save(savedReviewForm.getCode(), reviewCreateRequest);
+
+        // when
+        reviewService.delete(savedReview.getId());
+
+        // then
+        assertThat(reviewService.findAllByCode(savedReviewForm.getCode())).hasSize(0);
+    }
 }
