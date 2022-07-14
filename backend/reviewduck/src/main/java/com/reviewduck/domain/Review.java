@@ -54,4 +54,8 @@ public class Review {
             throw new ReviewException("닉네임이 비어있을 수 없습니다.");
         }
     }
+
+    public void update(List<QuestionAnswer> questionAnswers) {
+        this.questionAnswers = questionAnswers;
+    }
 }
