@@ -61,7 +61,7 @@ public class ReviewController {
 
     @Operation(summary = "회고 답변을 수정한다.")
     @PutMapping("/reviews/{reviewId}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void edit(@PathVariable Long reviewId, @RequestBody @Valid ReviewRequest request) {
 
         log.info("uri={}, method = {}, request = {}",
@@ -72,7 +72,7 @@ public class ReviewController {
 
     @Operation(summary = "회고 답변을 삭제한다.")
     @DeleteMapping("/reviews/{reviewId}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long reviewId) {
 
         log.info("uri={}, method = {}, request = {}",

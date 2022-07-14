@@ -77,7 +77,7 @@ public class ReviewControllerTest {
         ReviewRequest request = new ReviewRequest("제이슨", answers);
 
         // when, then
-        assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "답변 목록은 비어있을 수 없습니다.");
+        assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "회고 답변 관련 오류가 발생했습니다.");
     }
 
     @ParameterizedTest
@@ -121,7 +121,7 @@ public class ReviewControllerTest {
         ReviewRequest request = new ReviewRequest("제이슨", answers);
 
         // when, then
-        assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "답변 목록은 비어있을 수 없습니다.");
+        assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "회고 답변 관련 오류가 발생했습니다.");
     }
 
     private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {
