@@ -17,8 +17,8 @@ import com.reviewduck.domain.Review;
 import com.reviewduck.domain.ReviewForm;
 import com.reviewduck.dto.request.AnswerRequest;
 import com.reviewduck.dto.request.QuestionRequest;
-import com.reviewduck.dto.request.ReviewCreateRequest;
 import com.reviewduck.dto.request.ReviewFormCreateRequest;
+import com.reviewduck.dto.request.ReviewRequest;
 import com.reviewduck.exception.NotFoundException;
 
 @SpringBootTest
@@ -51,7 +51,7 @@ public class ReviewServiceTest {
     @DisplayName("리뷰를 저장한다.")
     void saveReview() {
         // when
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest("제이슨",
+        ReviewRequest reviewCreateRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
         Review savedReview = reviewService.save(savedReviewForm.getCode(), reviewCreateRequest);
 
@@ -68,7 +68,7 @@ public class ReviewServiceTest {
     @DisplayName("유효하지 않은 입장 코드로 리뷰를 저장할 수 없다.")
     void saveReviewWithInvalidCode() {
         // given
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest("제이슨",
+        ReviewRequest reviewCreateRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
 
         // when, then
@@ -81,7 +81,7 @@ public class ReviewServiceTest {
     @DisplayName("유효하지 않은 질문 번호로 회고를 작성할 수 없다.")
     void saveReviewWithInvalidQuestionId() {
         //given
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest("제이슨",
+        ReviewRequest reviewCreateRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(123445L, "answer1"),
                 new AnswerRequest(2L, "answer2")));
 
@@ -95,7 +95,7 @@ public class ReviewServiceTest {
     @DisplayName("특정 회고 폼을 기반으로 작성된 회고를 모두 조회한다.")
     void findReviewsBySpecificReviewForm() {
         // given
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest("제이슨",
+        ReviewRequest reviewCreateRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
         Review savedReview = reviewService.save(savedReviewForm.getCode(), reviewCreateRequest);
 
@@ -113,12 +113,12 @@ public class ReviewServiceTest {
     @DisplayName("리뷰를 수정한다.")
     void editReview() {
         // given
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest("제이슨",
+        ReviewRequest reviewCreateRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
         Review savedReview = reviewService.save(savedReviewForm.getCode(), reviewCreateRequest);
 
         // when
-        ReviewCreateRequest editRequest = new ReviewCreateRequest("제이슨",
+        ReviewRequest editRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(questionId1, "editedAnswer1"), new AnswerRequest(questionId2, "editedAnswer2")));
         Review updatedReview = reviewService.update(savedReview.getId(), editRequest);
 
@@ -129,5 +129,20 @@ public class ReviewServiceTest {
             () -> assertThat(updatedReview.getQuestionAnswers().get(0).getAnswer().getValue())
                 .isEqualTo("editedAnswer1")
         );
+    }
+
+    @Test
+    @DisplayName("리뷰를 삭제한다.")
+    void deleteReview() {
+        // given
+        ReviewRequest reviewCreateRequest = new ReviewRequest("제이슨",
+            List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
+        Review savedReview = reviewService.save(savedReviewForm.getCode(), reviewCreateRequest);
+
+        // when
+        reviewService.delete(savedReview.getId());
+
+        // then
+        assertThat(reviewService.findAllByCode(savedReviewForm.getCode())).hasSize(0);
     }
 }

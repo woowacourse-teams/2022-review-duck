@@ -11,8 +11,8 @@ import org.springframework.http.HttpStatus;
 
 import com.reviewduck.dto.request.AnswerRequest;
 import com.reviewduck.dto.request.QuestionRequest;
-import com.reviewduck.dto.request.ReviewCreateRequest;
 import com.reviewduck.dto.request.ReviewFormCreateRequest;
+import com.reviewduck.dto.request.ReviewRequest;
 import com.reviewduck.dto.response.ReviewFormCreateResponse;
 import com.reviewduck.dto.response.ReviewFormResponse;
 import com.reviewduck.dto.response.ReviewResponse;
@@ -21,6 +21,7 @@ import com.reviewduck.dto.response.ReviewsFindResponse;
 public class ReviewAcceptanceTest extends AcceptanceTest {
 
     private final String invalidCode = "aaaaaaaa";
+    private final Long invalidReviewId = 99L;
 
     @Test
     @DisplayName("회고를 생성한다.")
@@ -36,7 +37,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         assertReviewTitleFromFoundReviewForm(code, reviewTitle);
 
         // 리뷰생성
-        ReviewCreateRequest createRequest = new ReviewCreateRequest("제이슨",
+        ReviewRequest createRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
         post("/api/review-forms/" + code, createRequest)
             .statusCode(HttpStatus.CREATED.value());
@@ -55,14 +56,14 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         assertReviewTitleFromFoundReviewForm(code, reviewTitle);
 
         // 리뷰생성
-        ReviewCreateRequest createRequest = new ReviewCreateRequest("제이슨",
+        ReviewRequest createRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
         post("/api/review-forms/" + code, createRequest)
             .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
-    @DisplayName("특정 리뷰 폼에 속한 리뷰 전체를 조회한다.")
+    @DisplayName("특정 회고 폼에 속한 회고 전체를 조회한다.")
     void findReviews() {
         // given
         String reviewTitle = "title";
@@ -70,7 +71,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             new QuestionRequest("question2"));
         String code = createReviewFormAndGetCode(reviewTitle, questions);
 
-        ReviewCreateRequest createRequest = new ReviewCreateRequest("제이슨",
+        ReviewRequest createRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
         post("/api/review-forms/" + code, createRequest);
 
@@ -91,7 +92,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("존재하지 리뷰 폼 코드에 대해 리뷰를 조회할 수 없다.")
+    @DisplayName("존재하지 회고 폼 코드에 대해 회고를 조회할 수 없다.")
     void findReviewsWithInvalidCode() {
         // when, then
         get("/api/review-forms/" + invalidCode + "/reviews")
@@ -101,12 +102,35 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("회고를 수정한다.")
     void editReview() {
+        Long reviewId = saveReviewAndGetId();
+
+        //when, then
+        ReviewRequest editRequest = new ReviewRequest("제이슨",
+            List.of(new AnswerRequest(1L, "editedAnswer1"), new AnswerRequest(2L, "editedAnswer2")));
+
+        put("/api/reviews/" + reviewId, editRequest)
+            .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 회고를 수정할 수 없다.")
+    void failToEditReview() {
+        // when, then
+        ReviewRequest createRequest = new ReviewRequest("제이슨",
+            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
+        put("/api/reviews/" + invalidReviewId, createRequest)
+            .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    @DisplayName("회고를 삭제한다.")
+    void deleteReview() {
         // given
         String reviewTitle = "title";
         List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
             new QuestionRequest("question2"));
         String code = createReviewFormAndGetCode(reviewTitle, questions);
-        ReviewCreateRequest createRequest = new ReviewCreateRequest("제이슨",
+        ReviewRequest createRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
         post("/api/review-forms/" + code, createRequest);
 
@@ -114,14 +138,19 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             .extract()
             .as(ReviewsFindResponse.class);
 
-        Long reviewId = response.getReviews().get(0).getReviewId();
+        Long reviewId = saveReviewAndGetId();
 
         //when, then
-        ReviewCreateRequest editRequest = new ReviewCreateRequest("제이슨",
-            List.of(new AnswerRequest(1L, "editedAnswer1"), new AnswerRequest(2L, "editedAnswer2")));
-
-        put("/api/reviews/" + reviewId, editRequest)
+        delete("/api/reviews/" + reviewId)
             .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 회고를 삭제할 수 없다.")
+    void failToDeleteReview() {
+        // when, then
+        delete("/api/reviews/" + invalidReviewId)
+            .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     private String createReviewFormAndGetCode(String reviewTitle, List<QuestionRequest> questions) {
@@ -141,5 +170,21 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             .extract()
             .as(ReviewFormResponse.class);
         assertThat(reviewFormResponse.getReviewTitle()).isEqualTo(reviewTitle);
+    }
+
+    private Long saveReviewAndGetId() {
+        String reviewTitle = "title";
+        List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
+        String code = createReviewFormAndGetCode(reviewTitle, questions);
+        ReviewRequest createRequest = new ReviewRequest("제이슨",
+            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
+        post("/api/review-forms/" + code, createRequest);
+
+        return get("/api/review-forms/" + code + "/reviews")
+            .extract()
+            .as(ReviewsFindResponse.class).getReviews()
+            .get(0)
+            .getReviewId();
     }
 }

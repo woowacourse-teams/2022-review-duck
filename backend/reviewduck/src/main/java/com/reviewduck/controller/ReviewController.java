@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reviewduck.domain.Review;
-import com.reviewduck.dto.request.ReviewCreateRequest;
+import com.reviewduck.dto.request.ReviewRequest;
 import com.reviewduck.dto.response.ReviewsFindResponse;
 import com.reviewduck.service.ReviewFormService;
 import com.reviewduck.service.ReviewService;
@@ -36,7 +37,7 @@ public class ReviewController {
     @Operation(summary = "회고 답변을 생성한다.")
     @PostMapping("/review-forms/{reviewFormCode}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@PathVariable String reviewFormCode, @RequestBody @Valid ReviewCreateRequest request) {
+    public void create(@PathVariable String reviewFormCode, @RequestBody @Valid ReviewRequest request) {
 
         log.info("uri={}, method = {}, request = {}",
             "/api/review-forms/" + reviewFormCode, "POST", request.toString());
@@ -60,12 +61,23 @@ public class ReviewController {
 
     @Operation(summary = "회고 답변을 수정한다.")
     @PutMapping("/reviews/{reviewId}")
-    @ResponseStatus(HttpStatus.OK)
-    public void edit(@PathVariable Long reviewId, @RequestBody @Valid ReviewCreateRequest request) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void edit(@PathVariable Long reviewId, @RequestBody @Valid ReviewRequest request) {
 
         log.info("uri={}, method = {}, request = {}",
             "/api/reviews/" + reviewId, "PUT", request.toString());
 
         reviewService.update(reviewId, request);
+    }
+
+    @Operation(summary = "회고 답변을 삭제한다.")
+    @DeleteMapping("/reviews/{reviewId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long reviewId) {
+
+        log.info("uri={}, method = {}, request = {}",
+            "/api/reviews/" + reviewId, "DELETE", "");
+
+        reviewService.delete(reviewId);
     }
 }
