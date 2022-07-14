@@ -63,7 +63,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("특정 리뷰 폼에 속한 리뷰 전체를 조회한다.")
+    @DisplayName("특정 회고 폼에 속한 회고 전체를 조회한다.")
     void findReviews() {
         // given
         String reviewTitle = "title";
@@ -92,7 +92,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("존재하지 리뷰 폼 코드에 대해 리뷰를 조회할 수 없다.")
+    @DisplayName("존재하지 회고 폼 코드에 대해 회고를 조회할 수 없다.")
     void findReviewsWithInvalidCode() {
         // when, then
         get("/api/review-forms/" + invalidCode + "/reviews")
@@ -113,7 +113,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 리뷰를 수정할 수 없다.")
+    @DisplayName("존재하지 않는 회고를 수정할 수 없다.")
     void failToEditReview() {
         // when, then
         ReviewRequest createRequest = new ReviewRequest("제이슨",
@@ -146,7 +146,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 리뷰를 삭제할 수 없다.")
+    @DisplayName("존재하지 않는 회고를 삭제할 수 없다.")
     void failToDeleteReview() {
         // when, then
         delete("/api/reviews/" + invalidReviewId)
