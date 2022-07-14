@@ -37,7 +37,7 @@ public class ReviewForm {
     @Column(nullable = false)
     private String reviewTitle;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "question_id")
     private List<Question> questions;
 
@@ -48,6 +48,13 @@ public class ReviewForm {
             .map(Question::new)
             .collect(Collectors.toUnmodifiableList());
         this.code = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
+    }
+
+    public void update(String reviewTitle, List<Question> questions) {
+        validateTitleLength(reviewTitle);
+        validateBlankTitle(reviewTitle);
+        this.reviewTitle = reviewTitle;
+        this.questions = questions;
     }
 
     private void validate(String reviewTitle, List<String> questions) {

@@ -11,11 +11,13 @@ import javax.persistence.Id;
 import com.reviewduck.exception.QuestionException;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Getter
 public class Question {
 
@@ -29,6 +31,10 @@ public class Question {
 
     public Question(String value) {
         validate(value);
+        this.value = value;
+    }
+
+    public void updateValue(String value) {
         this.value = value;
     }
 
