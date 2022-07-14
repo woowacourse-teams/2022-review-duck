@@ -62,7 +62,6 @@ public class ReviewFormControllerTest {
     @DisplayName("회고 수정시 회고 제목에 빈 값이 들어갈 경우 예외가 발생한다.")
     void updateWithEmptyReviewTitle(String title) throws Exception {
         // given
-
         ReviewFormUpdateRequest request = new ReviewFormUpdateRequest(title, List.of());
 
         // when, then
@@ -74,7 +73,6 @@ public class ReviewFormControllerTest {
     @DisplayName("회고 수정시 질문 목록에 null 값이 들어갈 경우 예외가 발생한다.")
     void updateWithNullQuestions(List<QuestionUpdateRequest> questions) throws Exception {
         // given
-
         ReviewFormUpdateRequest request = new ReviewFormUpdateRequest("new title", questions);
 
         // when, then
@@ -86,7 +84,6 @@ public class ReviewFormControllerTest {
     @DisplayName("회고 수정시 회고 질문에 null 값이 들어갈 경우 예외가 발생한다.")
     void updateWithEmptyQuestionValue(String questionValue) throws Exception {
         // given
-
         ReviewFormUpdateRequest request = new ReviewFormUpdateRequest("new title",
             List.of(new QuestionUpdateRequest(1L, questionValue)));
 
