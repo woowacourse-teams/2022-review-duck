@@ -108,4 +108,26 @@ public class ReviewServiceTest {
             () -> assertThat(reviews.get(0).getNickname()).isEqualTo(savedReview.getNickname())
         );
     }
+
+    @Test
+    @DisplayName("리뷰를 수정한다.")
+    void editReview() {
+        // given
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest("제이슨",
+            List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
+        Review savedReview = reviewService.save(savedReviewForm.getCode(), reviewCreateRequest);
+
+        // when
+        ReviewCreateRequest editRequest = new ReviewCreateRequest("제이슨",
+            List.of(new AnswerRequest(questionId1, "editedAnswer1"), new AnswerRequest(questionId2, "editedAnswer2")));
+        Review updatedReview = reviewService.update(savedReview.getId(), editRequest);
+
+        // then
+        assertAll(
+            () -> assertThat(updatedReview.getId()).isNotNull(),
+            () -> assertThat(updatedReview.getNickname()).isEqualTo("제이슨"),
+            () -> assertThat(updatedReview.getQuestionAnswers().get(0).getAnswer().getValue())
+                .isEqualTo("editedAnswer1")
+        );
+    }
 }
