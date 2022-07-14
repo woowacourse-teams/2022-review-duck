@@ -74,7 +74,7 @@ public class ReviewServiceTest {
         // when, then
         assertThatThrownBy(() -> reviewService.save(invalidCode, reviewCreateRequest))
             .isInstanceOf(NotFoundException.class)
-            .hasMessageContaining("존재하지 않는 입장코드입니다.");
+            .hasMessageContaining("존재하지 않는 회고 폼입니다.");
     }
 
     @Test
