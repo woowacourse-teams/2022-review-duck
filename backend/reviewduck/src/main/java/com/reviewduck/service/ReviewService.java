@@ -57,4 +57,12 @@ public class ReviewService {
         ReviewForm reviewForm = reviewFormService.findByCode(code);
         return reviewRepository.findByReviewForm(reviewForm);
     }
+
+    public Review update(Long id, ReviewCreateRequest request) {
+        Review review = reviewRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
+
+        review.update(convertToQuestionAnswers(request.getAnswers()));
+        return review;
+    }
 }

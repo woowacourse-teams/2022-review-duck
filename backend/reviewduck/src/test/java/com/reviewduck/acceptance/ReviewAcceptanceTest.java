@@ -98,6 +98,32 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
+    @Test
+    @DisplayName("회고를 수정한다.")
+    void editReview() {
+        // given
+        String reviewTitle = "title";
+        List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
+        String code = createReviewFormAndGetCode(reviewTitle, questions);
+        ReviewCreateRequest createRequest = new ReviewCreateRequest("제이슨",
+            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
+        post("/api/review-forms/" + code, createRequest);
+
+        ReviewsFindResponse response = get("/api/review-forms/" + code + "/reviews")
+            .extract()
+            .as(ReviewsFindResponse.class);
+
+        Long reviewId = response.getReviews().get(0).getReviewId();
+
+        //when, then
+        ReviewCreateRequest editRequest = new ReviewCreateRequest("제이슨",
+            List.of(new AnswerRequest(1L, "editedAnswer1"), new AnswerRequest(2L, "editedAnswer2")));
+
+        put("/api/reviews/" + reviewId, editRequest)
+            .statusCode(HttpStatus.OK.value());
+    }
+
     private String createReviewFormAndGetCode(String reviewTitle, List<QuestionRequest> questions) {
         // given
         ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
