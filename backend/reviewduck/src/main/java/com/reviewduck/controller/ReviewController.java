@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reviewduck.domain.Review;
-import com.reviewduck.dto.request.ReviewCreateRequest;
+import com.reviewduck.dto.request.ReviewRequest;
 import com.reviewduck.dto.response.ReviewsFindResponse;
 import com.reviewduck.service.ReviewFormService;
 import com.reviewduck.service.ReviewService;
@@ -37,7 +37,7 @@ public class ReviewController {
     @Operation(summary = "회고 답변을 생성한다.")
     @PostMapping("/review-forms/{reviewFormCode}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@PathVariable String reviewFormCode, @RequestBody @Valid ReviewCreateRequest request) {
+    public void create(@PathVariable String reviewFormCode, @RequestBody @Valid ReviewRequest request) {
 
         log.info("uri={}, method = {}, request = {}",
             "/api/review-forms/" + reviewFormCode, "POST", request.toString());
@@ -62,7 +62,7 @@ public class ReviewController {
     @Operation(summary = "회고 답변을 수정한다.")
     @PutMapping("/reviews/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
-    public void edit(@PathVariable Long reviewId, @RequestBody @Valid ReviewCreateRequest request) {
+    public void edit(@PathVariable Long reviewId, @RequestBody @Valid ReviewRequest request) {
 
         log.info("uri={}, method = {}, request = {}",
             "/api/reviews/" + reviewId, "PUT", request.toString());
