@@ -61,7 +61,7 @@ public class ReviewController {
     @Operation(summary = "회고 답변을 수정한다.")
     @PutMapping("/reviews/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
-    public void create(@PathVariable Long reviewId, @RequestBody @Valid ReviewCreateRequest request) {
+    public void edit(@PathVariable Long reviewId, @RequestBody @Valid ReviewCreateRequest request) {
 
         log.info("uri={}, method = {}, request = {}",
             "/api/reviews/" + reviewId, "PUT", request.toString());
