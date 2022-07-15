@@ -41,30 +41,44 @@ public class ReviewForm {
     @JoinColumn(name = "question_id")
     private List<Question> questions;
 
-    public ReviewForm(String reviewTitle, List<String> questions) {
-        validate(reviewTitle, questions);
+    public ReviewForm(String reviewTitle, List<String> questionValues) {
+        validate(reviewTitle, questionValues);
         this.reviewTitle = reviewTitle;
-        this.questions = questions.stream()
+        this.questions = setQuestions(questionValues);
+        this.code = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
+    }
+
+    private List<Question> setQuestions(List<String> questionValues) {
+        List<Question> questions = questionValues.stream()
             .map(Question::new)
             .collect(Collectors.toUnmodifiableList());
-        this.code = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
+        orderQuestions(questions);
+        return questions;
+    }
+
+    private void orderQuestions(List<Question> questions) {
+        int index = 0;
+        for (Question question : questions) {
+            question.setPosition(index++);
+        }
     }
 
     public void update(String reviewTitle, List<Question> questions) {
         validateTitleLength(reviewTitle);
         validateBlankTitle(reviewTitle);
         this.reviewTitle = reviewTitle;
+        orderQuestions(questions);
         this.questions = questions;
     }
 
-    private void validate(String reviewTitle, List<String> questions) {
+    private void validate(String reviewTitle, List<String> questionValues) {
         validateBlankTitle(reviewTitle);
         validateTitleLength(reviewTitle);
-        validateNullQuestions(questions);
+        validateNullQuestions(questionValues);
     }
 
-    private void validateNullQuestions(List<String> questions) {
-        if (Objects.isNull(questions)) {
+    private void validateNullQuestions(List<String> questionValues) {
+        if (Objects.isNull(questionValues)) {
             throw new ReviewFormException("회고 폼의 질문 목록 생성 중 오류가 발생했습니다.");
         }
     }

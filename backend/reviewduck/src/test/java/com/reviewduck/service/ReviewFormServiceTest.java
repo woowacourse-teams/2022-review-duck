@@ -44,6 +44,11 @@ public class ReviewFormServiceTest {
             .map(questionRequest -> new Question(questionRequest.getQuestionValue()))
             .collect(Collectors.toList());
 
+        int index = 0;
+        for (Question question : expected) {
+            question.setPosition(index++);
+        }
+
         // when
         ReviewForm reviewForm = reviewFormService.save(createRequest);
 
@@ -102,9 +107,28 @@ public class ReviewFormServiceTest {
 
         ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateRequests);
 
-        ReviewForm reviewForm = reviewFormService.update(code, updateRequest);
+        List<Question> expected = updateRequests.stream()
+            .map(questionRequest -> new Question(questionRequest.getQuestionValue()))
+            .collect(Collectors.toList());
 
-        assertThat(reviewFormService.findByCode(code)).isSameAs(reviewForm);
+        int index = 0;
+        for (Question question : expected) {
+            question.setPosition(index++);
+        }
+
+        reviewFormService.update(code, updateRequest);
+        ReviewForm foundReviewForm = reviewFormService.findByCode(code);
+
+        assertAll(
+            () -> assertThat(foundReviewForm).isNotNull(),
+            () -> assertThat(foundReviewForm.getId()).isNotNull(),
+            () -> assertThat(foundReviewForm.getCode().length()).isEqualTo(8),
+            () -> assertThat(foundReviewForm.getReviewTitle()).isEqualTo(reviewTitle),
+            () -> assertThat(foundReviewForm.getQuestions())
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(expected)
+        );
     }
 
     @Test
