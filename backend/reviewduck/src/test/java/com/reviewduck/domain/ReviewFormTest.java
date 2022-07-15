@@ -12,7 +12,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 
-import com.fasterxml.jackson.databind.deser.std.StdDelegatingDeserializer;
 import com.reviewduck.exception.ReviewFormException;
 
 class ReviewFormTest {
@@ -83,14 +82,15 @@ class ReviewFormTest {
 
     @Test
     @DisplayName("질문의 순서값은 0부터 순서대로 부여된다.")
-    void setPositionInOrder(){
+    void setPositionInOrder() {
         //given
         ReviewForm reviewForm = new ReviewForm("리뷰폼 제목", List.of("질문1", "질문2", "질문3"));
         List<Integer> actual = reviewForm.getQuestions().stream()
             .map(Question::getPosition)
             .collect(Collectors.toUnmodifiableList());
-        List<Integer> expected = List.of(0,1,2);
+        List<Integer> expected = List.of(0, 1, 2);
 
+        //when, then
         assertThat(actual).isEqualTo(expected);
     }
 }

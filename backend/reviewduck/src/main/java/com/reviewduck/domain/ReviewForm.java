@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -39,6 +40,7 @@ public class ReviewForm {
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "question_id")
+    @OrderBy("position asc")
     private List<Question> questions;
 
     public ReviewForm(String reviewTitle, List<String> questionValues) {
