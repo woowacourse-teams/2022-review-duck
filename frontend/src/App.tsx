@@ -3,10 +3,14 @@ import { QueryClientProvider, QueryClient } from 'react-query';
 
 import PageRoutes from 'PageRoutes';
 
+import { ErrorBoundary } from 'common/components';
+
 import 'styles/@app.scss';
 
 const queryClient = new QueryClient({
-  defaultOptions: { queries: { refetchOnWindowFocus: false, refetchOnReconnect: false } },
+  defaultOptions: {
+    queries: { refetchOnWindowFocus: false, refetchOnReconnect: false },
+  },
 });
 
 function ContextWrapper({ children }: { children: ReactNode }) {
@@ -16,7 +20,9 @@ function ContextWrapper({ children }: { children: ReactNode }) {
 function App() {
   return (
     <ContextWrapper>
-      <PageRoutes />
+      <ErrorBoundary>
+        <PageRoutes />
+      </ErrorBoundary>
     </ContextWrapper>
   );
 }
