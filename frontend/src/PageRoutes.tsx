@@ -15,7 +15,9 @@ function PageRoutes() {
 
           <Route path="review-forms">
             <Route path="join" element={<JoinReviewPage />} />
-            <Route path="create" element={<CreateReviewFormPage />} />
+            <Route path="create" element={<CreateReviewFormPage />}>
+              <Route path=":reviewFormCode" element={<CreateReviewFormPage />} />
+            </Route>
             <Route path="submit" element={<SubmitReviewPage />} />
           </Route>
         </Route>

@@ -1,5 +1,7 @@
-import { ChangeEvent, MouseEvent, KeyboardEvent } from 'react';
+import { useState, ChangeEvent, MouseEvent, KeyboardEvent, FormEvent } from 'react';
 import { flushSync } from 'react-dom';
+import { useMutation, UseMutationOptions, useQuery } from 'react-query';
+import { useParams } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -14,17 +16,49 @@ import QuestionEditor from 'service/review/components/QuestionEditor';
 
 import styles from './styles.module.scss';
 
-function CreateReviewFormPage() {
-  // react query로 데이터 로드
+import reviewAPI from 'service/review/api';
 
-  const { questions, addQuestion, removeQuestion, editQuestion } = useQuestions([
-    { listKey: 'list-0', questionValue: '' },
+function CreateReviewFormPage() {
+  const { reviewFormCode = '' } = useParams();
+
+  const [reviewTitle, setReviewTitle] = useState('');
+  const { questions, setQuestions, addQuestion, removeQuestion, updateQuestion } = useQuestions([
+    { listKey: 'list-0', questionId: null, questionValue: '' },
   ]);
 
-  const handleUpdateQuestion = (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
-    const updatedQuestion = { ...questions[index], questionValue: event.target.value };
+  const { isSuccess, refetch } = useQuery(
+    ['getReviewFromData', reviewFormCode],
+    () => reviewAPI.getFormData(reviewFormCode),
+    {
+      enabled: false,
+      onSuccess: (data) => {
+        setReviewTitle(data.reviewTitle);
+        setQuestions(data.questions);
+      },
+    },
+  );
 
-    editQuestion(index, updatedQuestion);
+  if (isSuccess === false && reviewFormCode) {
+    refetch();
+  }
+
+  const mutateOptions: UseMutationOptions<any, any, any> = {
+    onSuccess: ({ reviewFormCode }: any) => {
+      alert('업데이트 코드: ' + reviewFormCode);
+    },
+    onError: ({ response: { data } }: any) => {
+      alert(data.message);
+    },
+  };
+
+  const createMutation = useMutation(reviewAPI.createForm, mutateOptions);
+
+  const updateMutation = useMutation(reviewAPI.updateForm, mutateOptions);
+
+  const handleUpdateQuestion = (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
+    const updatedQuestion = { questionValue: event.target.value };
+
+    updateQuestion(index, updatedQuestion);
   };
 
   const handleAddQuestion = ({ currentTarget: $inputTarget }: MouseEvent | KeyboardEvent) => {
@@ -50,6 +84,38 @@ function CreateReviewFormPage() {
       setFormFocus($inputTarget as HTMLInputElement, previousInputIndex);
     };
 
+  const onChangeReviewTitle = ({ target }: ChangeEvent<HTMLInputElement>) => {
+    setReviewTitle(target.value);
+  };
+
+  const onClickCreateForm = (event: FormEvent) => {
+    event.preventDefault();
+
+    if (!reviewTitle) {
+      alert('회고의 제목을 입력해주세요.');
+      return;
+    }
+
+    const validQuestions = questions.filter((question) => !!question.questionValue?.trim());
+
+    if (validQuestions.length <= 0) {
+      alert('질문은 최소 1개 이상 입력해주세요.');
+      return;
+    }
+
+    if (reviewFormCode) {
+      updateMutation.mutate({
+        reviewFormCode,
+        reviewTitle,
+        questions: validQuestions,
+      });
+
+      return;
+    }
+
+    createMutation.mutate({ reviewTitle, questions: validQuestions });
+  };
+
   return (
     <>
       <div className={cn(styles.container, 'flex-container column')}>
@@ -73,7 +139,13 @@ function CreateReviewFormPage() {
 
       <div>
         <form className={cn(styles.container, styles.sticky, 'flex-container column')}>
-          <TextBox theme="underline" size="large" placeholder="회고의 제목을 입력해주세요." />
+          <TextBox
+            theme="underline"
+            size="large"
+            placeholder="회고의 제목을 입력해주세요."
+            value={reviewTitle}
+            onChange={onChangeReviewTitle}
+          />
 
           <div className={cn(styles.itemContainer, 'flex-container column')}>
             {questions.map(({ questionId, listKey, questionValue }, index) => (
@@ -94,7 +166,7 @@ function CreateReviewFormPage() {
               <span>취소하기</span>
             </Button>
 
-            <Button type="button">
+            <Button type="button" onClick={onClickCreateForm}>
               <Icon code="drive_file_rename_outline" />
               <span>생성하기</span>
             </Button>
