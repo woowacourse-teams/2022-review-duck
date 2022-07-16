@@ -6,14 +6,18 @@ interface QuestionWithKey extends Partial<Question> {
   listKey?: string;
 }
 
-function useQuestions(initState: QuestionWithKey[]) {
-  const [questions, setQuestions] = useState(initState);
+function useQuestions(initState?: QuestionWithKey[]) {
+  const [questions, setQuestions] = useState<QuestionWithKey[]>(initState || []);
   const listKey = useRef(1);
 
   const addQuestion = (insertValue: QuestionWithKey): number => {
     const copiedQuestions = [...questions];
     const newQuestionIndex =
-      copiedQuestions.push({ ...insertValue, listKey: `list-${listKey.current}` }) - 1;
+      copiedQuestions.push({
+        ...insertValue,
+        questionId: null,
+        listKey: `list-${listKey.current}`,
+      }) - 1;
 
     listKey.current += 1;
 
@@ -28,7 +32,7 @@ function useQuestions(initState: QuestionWithKey[]) {
     setQuestions(copiedQuestions);
   };
 
-  const editQuestion = (index: number, updateValue: QuestionWithKey) => {
+  const updateQuestion = (index: number, updateValue: QuestionWithKey) => {
     const copiedQuestions = [...questions];
     const newQuestion = { ...questions[index], ...updateValue };
 
@@ -36,7 +40,7 @@ function useQuestions(initState: QuestionWithKey[]) {
     setQuestions(copiedQuestions);
   };
 
-  return { addQuestion, removeQuestion, editQuestion, questions };
+  return { setQuestions, addQuestion, removeQuestion, updateQuestion, questions };
 }
 
 export default useQuestions;

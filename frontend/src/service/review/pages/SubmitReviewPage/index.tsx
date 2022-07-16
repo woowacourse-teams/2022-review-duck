@@ -50,7 +50,7 @@ const dummyData = {
 type SubmitQuestion = Partial<Question>;
 
 function SubmitReviewPage() {
-  const { questions, editQuestion } = useQuestions(dummyData.questions);
+  const { questions, updateQuestion } = useQuestions(dummyData.questions);
   const [currentQuestion, setCurrentQuestion] = useState<SubmitQuestion>(dummyData.questions[0]);
 
   const onSubmitReviewForm = (event: React.FormEvent) => {
@@ -65,7 +65,7 @@ function SubmitReviewPage() {
   const onUpdateAnswer = (index: number) => (event: ChangeEvent) => {
     const $inputTarget = event.target as HTMLInputElement;
 
-    editQuestion(index, { answerValue: $inputTarget.value });
+    updateQuestion(index, { answerValue: $inputTarget.value });
   };
 
   const answeredCount = questions.reduce(
