@@ -18,7 +18,7 @@ function PageRoutes() {
             <Route path="create" element={<CreateReviewFormPage />}>
               <Route path=":reviewFormCode" element={<CreateReviewFormPage />} />
             </Route>
-            <Route path="submit" element={<SubmitReviewPage />} />
+            <Route path="submit/:reviewFormCode" element={<SubmitReviewPage />} />
           </Route>
         </Route>
       </Routes>
