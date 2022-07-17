@@ -1,10 +1,15 @@
-import React, { useState, ChangeEvent, MouseEvent, KeyboardEvent, FormEvent } from 'react';
+import React, {
+  useState,
+  ChangeEvent,
+  MouseEvent,
+  KeyboardEvent,
+  FormEvent,
+  useEffect,
+} from 'react';
 import { flushSync } from 'react-dom';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import cn from 'classnames';
-
-import { ReviewFormRequest } from 'service/review/types';
 
 import useQuestions from 'service/review/hooks/useQuestions';
 
@@ -21,12 +26,22 @@ import useReviewFormQueries from './useReviewForm';
 
 function CreateReviewFormPage() {
   const { reviewFormCode } = useParams();
-  const { reviewFormMutation, initReviewFormData } = useReviewFormQueries(reviewFormCode);
+  const navigate = useNavigate();
+
+  const { reviewFormMutation, getReviewFormQuery, initReviewFormData } =
+    useReviewFormQueries(reviewFormCode);
 
   const [reviewTitle, setReviewTitle] = useState(initReviewFormData.reviewTitle);
   const { questions, addQuestion, removeQuestion, updateQuestion } = useQuestions(
     initReviewFormData.questions,
   );
+
+  useEffect(() => {
+    if (getReviewFormQuery.isError) {
+      alert('존재하지 않는 회고 폼입니다.');
+      navigate('/');
+    }
+  }, []);
 
   const handleUpdateQuestion = (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
     const updatedQuestion = { questionValue: event.target.value };
@@ -72,7 +87,9 @@ function CreateReviewFormPage() {
 
     const validQuestions = questions.filter((question) => !!question.questionValue?.trim());
     const removeListKey = validQuestions.map((question) => {
-      delete question.listKey;
+      const newQuestion = { ...question };
+
+      delete newQuestion.listKey;
       return question;
     });
 
