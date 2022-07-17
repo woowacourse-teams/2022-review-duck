@@ -12,6 +12,7 @@ function useReviewFormQueries(reviewFormCode?: string | null) {
     AxiosError<ErrorResponse>,
     ReviewFormRequest
   >(reviewAPI.createForm);
+
   const updateMutation = useMutation<
     ReviewFormResponse,
     AxiosError<ErrorResponse>,
@@ -20,7 +21,7 @@ function useReviewFormQueries(reviewFormCode?: string | null) {
 
   const reviewFormMutation = reviewFormCode ? updateMutation : createMutation;
 
-  const reviewFormQuery = useQuery(
+  const getReviewFormData = useQuery(
     'getReviewFormData',
     () => reviewAPI.getFormData(reviewFormCode as string),
     {
@@ -29,7 +30,12 @@ function useReviewFormQueries(reviewFormCode?: string | null) {
     },
   );
 
-  return { reviewFormMutation, reviewFormQuery };
+  const initReviewFormData = getReviewFormData.data || {
+    reviewTitle: '',
+    questions: [],
+  };
+
+  return { reviewFormMutation, initReviewFormData };
 }
 
 export default useReviewFormQueries;

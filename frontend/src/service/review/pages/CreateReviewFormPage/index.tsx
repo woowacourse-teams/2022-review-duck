@@ -19,20 +19,13 @@ import styles from './styles.module.scss';
 
 import useReviewFormQueries from './useReviewForm';
 
-const initReviewFormData: ReviewFormRequest = {
-  reviewTitle: '',
-  questions: [],
-};
-
 function CreateReviewFormPage() {
   const { reviewFormCode } = useParams();
-  const { reviewFormMutation, reviewFormQuery } = useReviewFormQueries(reviewFormCode);
+  const { reviewFormMutation, initReviewFormData } = useReviewFormQueries(reviewFormCode);
 
-  const reviewFormData = reviewFormQuery.data || initReviewFormData;
-
-  const [reviewTitle, setReviewTitle] = useState(reviewFormData.reviewTitle);
+  const [reviewTitle, setReviewTitle] = useState(initReviewFormData.reviewTitle);
   const { questions, addQuestion, removeQuestion, updateQuestion } = useQuestions(
-    reviewFormData.questions,
+    initReviewFormData.questions,
   );
 
   const handleUpdateQuestion = (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
