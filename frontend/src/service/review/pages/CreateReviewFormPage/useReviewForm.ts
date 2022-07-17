@@ -21,21 +21,27 @@ function useReviewFormQueries(reviewFormCode?: string | null) {
 
   const reviewFormMutation = reviewFormCode ? updateMutation : createMutation;
 
-  const getReviewFormData = useQuery(
+  const getReviewFormQuery = useQuery(
     'getReviewFormData',
     () => reviewAPI.getFormData(reviewFormCode as string),
     {
       enabled: !!reviewFormCode,
       suspense: true,
+      useErrorBoundary: false,
     },
   );
 
-  const initReviewFormData = getReviewFormData.data || {
+  const initReviewFormData: ReviewFormRequest = getReviewFormQuery.data || {
     reviewTitle: '',
-    questions: [],
+    questions: [
+      {
+        questionValue: '',
+        listKey: 'list-0',
+      },
+    ],
   };
 
-  return { reviewFormMutation, initReviewFormData };
+  return { reviewFormMutation, getReviewFormQuery, initReviewFormData };
 }
 
 export default useReviewFormQueries;
