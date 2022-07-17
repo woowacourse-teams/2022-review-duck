@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-import { useQuery } from 'react-query';
+import { useMutation, UseMutationOptions, useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 
 import cn from 'classnames';
@@ -42,9 +42,29 @@ function SubmitReviewPage() {
     refetch();
   }
 
+  const mutateOptions: UseMutationOptions<any, any, any> = {
+    onSuccess: () => {
+      alert('회고 답변을 성공적으로 제출했습니다.');
+    },
+    onError: (error) => {
+      alert(error.message);
+    },
+  };
+
+  const submitMutation = useMutation(reviewAPI.submitAnswer, mutateOptions);
+
   const onSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
-    /* API POST call */
+
+    const answers = questions.map((question) => {
+      return {
+        answerValue: question.answerValue || '',
+        questionId: question.questionId,
+      };
+    });
+    const nickname = '돔하디';
+
+    submitMutation.mutate({ reviewFormCode, answers, nickname });
   };
 
   const onUpdateCurrentQuestion = (index: number) => () => {
