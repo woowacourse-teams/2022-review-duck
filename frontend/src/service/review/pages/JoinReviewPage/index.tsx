@@ -27,7 +27,7 @@ function JoinReviewPage() {
             <Icon code="cancel" />
             <span>취소하기</span>
           </Button>
-          <Link to={'/review-forms/submit'}>
+          <Link to={'/review'}>
             <Button type="submit" size="medium" filled>
               <Icon code="ads_click" />
               <span>참여하기</span>
