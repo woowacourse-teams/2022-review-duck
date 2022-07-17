@@ -20,10 +20,14 @@ const createForm = async (query: CreateFormData) =>
 const updateForm = async ({ reviewFormCode, reviewTitle, questions }: UpdateFormData) =>
   (await request.put(`/api/review-forms/${reviewFormCode}`, { reviewTitle, questions })).data;
 
+const getQuestions = async (reviewFormCode: string) =>
+  (await request.get(`/api/review-forms/${reviewFormCode}`)).data;
+
 const reviewAPI = {
   getFormData,
   createForm,
   updateForm,
+  getQuestions,
 };
 
 export default reviewAPI;

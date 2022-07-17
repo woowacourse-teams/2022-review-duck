@@ -1,4 +1,6 @@
 import { ChangeEvent, useState } from 'react';
+import { useQuery } from 'react-query';
+import { useParams } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -12,46 +14,33 @@ import dom from 'assets/images/dom.png';
 
 import styles from './styles.module.scss';
 
-const dummyData = {
-  reviewTitle: '팀 회고덕 1차 데모데이 회고',
-  profile: { image: '프로필 URL', nickname: '닉네임', description: '프로필 소개' },
-  questions: [
-    {
-      questionId: 1,
-      questionValue: '오늘의 기분은 어떤가요?',
-      questionDescription: '체크인 점수를 선택해주세요.',
-      answerValue: '',
-    },
-    {
-      questionId: 2,
-      questionValue: '팀에서 어떤 역할을 했나요?',
-      questionDescription: '팀에서 맡은 역할을 작성해주세요.',
-      answerValue: '',
-    },
-    {
-      questionId: 3,
-      questionValue: '팀에서 개선할 점은 무엇이 있을까요?',
-      questionDescription: '없다면 비워두세요.',
-      answerValue: '',
-    },
-    {
-      questionId: 4,
-      questionValue: '문제들을 해결하기 위해서는 어떻게 해야 할까요?',
-      answerValue: '',
-    },
-    {
-      questionId: 5,
-      questionValue: '이번 회고를 통해 느낀점과 피드백을 남겨주세요.',
-      answerValue: '',
-    },
-  ],
-};
+import reviewAPI from 'service/review/api';
 
 type SubmitQuestion = Partial<Question>;
 
 function SubmitReviewPage() {
-  const { questions, updateQuestion } = useQuestions(dummyData.questions);
-  const [currentQuestion, setCurrentQuestion] = useState<SubmitQuestion>(dummyData.questions[0]);
+  const { questions, updateQuestion, setQuestions } = useQuestions();
+  const [currentQuestion, setCurrentQuestion] = useState<SubmitQuestion>({});
+  const [reviewTitle, setReviewTitle] = useState<string>('');
+
+  const { reviewFormCode = '' } = useParams();
+
+  const { isSuccess, refetch } = useQuery(
+    ['questions', reviewFormCode],
+    () => reviewAPI.getQuestions(reviewFormCode),
+    {
+      enabled: false,
+      onSuccess: (data) => {
+        setCurrentQuestion(data.questions[0]);
+        setQuestions(data.questions);
+        setReviewTitle(data.reviewTitle);
+      },
+    },
+  );
+
+  if (isSuccess === false && reviewFormCode) {
+    refetch();
+  }
 
   const onSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
@@ -116,7 +105,7 @@ function SubmitReviewPage() {
       <div className={cn(styles.container)}>
         <form onSubmit={onSubmitReviewForm}>
           <Text className={cn(styles.reviewTitle)} size={24} weight="bold">
-            {dummyData.reviewTitle}
+            {reviewTitle}
           </Text>
 
           {questions.map((question, index) => (
@@ -127,7 +116,7 @@ function SubmitReviewPage() {
                 description={question.questionDescription}
               >
                 <TextBox
-                  value={questions[index].answerValue}
+                  value={questions[index].answerValue || ''}
                   onFocus={onUpdateCurrentQuestion(index)}
                   onChange={onUpdateAnswer(index)}
                 />
