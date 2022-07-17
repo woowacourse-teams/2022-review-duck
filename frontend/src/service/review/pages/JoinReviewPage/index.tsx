@@ -25,7 +25,7 @@ function JoinReviewPage() {
     /* Q: 알파벳과 숫자로만 이루어져야 하는 등 검사도 해야 할까? */
   };
 
-  const submitReviewFormCode = (event: FormEvent) => {
+  const onSubmitReviewFormCode = (event: FormEvent) => {
     event.preventDefault();
     try {
       checkValidation(reviewFormCode);
@@ -41,7 +41,7 @@ function JoinReviewPage() {
         <img className="" src={imageHero} alt="웰컴 메시지" />
       </div>
       <div className={cn(styles.container, 'flex-container column')}>
-        <form onSubmit={submitReviewFormCode}>
+        <form onSubmit={onSubmitReviewFormCode}>
           <FieldSet title="참여 코드" description="회고 참여를 위한 코드를 입력해주세요.">
             <TextBox
               placeholder="영문과 숫자로 이루어진 코드 8자리를 입력해주세요."
@@ -55,7 +55,7 @@ function JoinReviewPage() {
               <Icon code="cancel" />
               <span>취소하기</span>
             </Button>
-            <Button type="submit" size="medium" filled onClick={submitReviewFormCode}>
+            <Button type="submit" size="medium" filled onClick={onSubmitReviewFormCode}>
               <Icon code="ads_click" />
               <span>참여하기</span>
             </Button>
