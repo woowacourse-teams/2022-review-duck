@@ -38,8 +38,8 @@ public class ReviewForm {
     @Column(nullable = false)
     private String reviewTitle;
 
+    @JoinColumn(name = "review_form_id")
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "question_id")
     @OrderBy("position asc")
     private List<Question> questions;
 
