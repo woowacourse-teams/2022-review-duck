@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
@@ -36,6 +37,7 @@ public class Review {
 
     @OrderColumn
     @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "review_id")
     private List<QuestionAnswer> questionAnswers;
 
     private Review(String nickname, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers) {

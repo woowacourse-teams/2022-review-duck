@@ -38,7 +38,7 @@ public class ReviewForm {
     private String reviewTitle;
 
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinColumn(name = "question_id")
+    @JoinColumn(name = "review_form_id")
     private List<Question> questions;
 
     public ReviewForm(String reviewTitle, List<String> questions) {
