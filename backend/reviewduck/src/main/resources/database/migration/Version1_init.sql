@@ -23,8 +23,8 @@ create table question_answer
     question_answers_order integer,
     primary key (id),
     foreign key (answer_id) references answer,
-    foreign key (question_id) references question
-        foreign key (review_id) references review
+    foreign key (question_id) references question,
+    foreign key (review_id) references review
 );
 
 create table review
