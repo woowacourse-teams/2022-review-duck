@@ -27,6 +27,9 @@ public class Question {
     @Column(name = "question_value", nullable = false)
     private String value;
 
+    @Column(nullable = false)
+    private int position = -1;
+
     public Question(String value) {
         validate(value);
         this.value = value;
@@ -51,5 +54,9 @@ public class Question {
         if (Objects.isNull(value) || value.isBlank()) {
             throw new QuestionException("질문 내용은 비어있을 수 없습니다.");
         }
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }

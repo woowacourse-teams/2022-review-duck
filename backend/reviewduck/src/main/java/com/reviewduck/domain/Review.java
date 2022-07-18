@@ -13,7 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderColumn;
+import javax.persistence.OrderBy;
 
 import com.reviewduck.exception.ReviewException;
 
@@ -34,11 +34,12 @@ public class Review {
     @ManyToOne(fetch = FetchType.LAZY)
     private ReviewForm reviewForm;
 
-    @OrderColumn
     @OneToMany(cascade = CascadeType.ALL)
+    @OrderBy("position asc")
     private List<QuestionAnswer> questionAnswers;
 
     private Review(String nickname, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers) {
+        sortQuestionAnswers(questionAnswers);
         this.nickname = nickname;
         this.reviewForm = reviewForm;
         this.questionAnswers = questionAnswers;
@@ -47,6 +48,13 @@ public class Review {
     public static Review of(String nickname, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers) {
         validate(nickname);
         return new Review(nickname, reviewForm, questionAnswers);
+    }
+
+    private void sortQuestionAnswers(List<QuestionAnswer> questionAnswers) {
+        int index = 0;
+        for (QuestionAnswer questionAnswer : questionAnswers) {
+            questionAnswer.setPosition(index++);
+        }
     }
 
     private static void validate(String nickname) {
