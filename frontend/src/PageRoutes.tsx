@@ -14,10 +14,13 @@ function PageRoutes() {
           <Route index element={<MainPage />} />
 
           <Route path="review-forms">
+            <Route index element={<CreateReviewFormPage />} />
+            <Route path=":reviewFormCode" element={<CreateReviewFormPage />} />
+          </Route>
+
+          <Route path="review">
+            <Route index element={<SubmitReviewPage />} />
             <Route path="join" element={<JoinReviewPage />} />
-            <Route path="create" element={<CreateReviewFormPage />}>
-              <Route path=":reviewFormCode" element={<CreateReviewFormPage />} />
-            </Route>
             <Route path="submit/:reviewFormCode" element={<SubmitReviewPage />} />
           </Route>
         </Route>

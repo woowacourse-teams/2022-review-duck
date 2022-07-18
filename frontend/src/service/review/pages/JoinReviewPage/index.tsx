@@ -29,7 +29,7 @@ function JoinReviewPage() {
     event.preventDefault();
     try {
       checkValidation(reviewFormCode);
-      navigate(`/review-forms/submit/${reviewFormCode}`);
+      navigate(`/review/submit/${reviewFormCode}`);
     } catch (error: any) {
       alert(error.message);
     }

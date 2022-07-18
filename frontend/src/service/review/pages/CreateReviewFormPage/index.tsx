@@ -1,7 +1,13 @@
-import { useState, ChangeEvent, MouseEvent, KeyboardEvent, FormEvent } from 'react';
+import React, {
+  useState,
+  ChangeEvent,
+  MouseEvent,
+  KeyboardEvent,
+  FormEvent,
+  useEffect,
+} from 'react';
 import { flushSync } from 'react-dom';
-import { useMutation, UseMutationOptions, useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -16,44 +22,26 @@ import QuestionEditor from 'service/review/components/QuestionEditor';
 
 import styles from './styles.module.scss';
 
-import reviewAPI from 'service/review/api';
+import useReviewFormQueries from './useReviewForm';
 
 function CreateReviewFormPage() {
-  const { reviewFormCode = '' } = useParams();
+  const { reviewFormCode } = useParams();
+  const navigate = useNavigate();
 
-  const [reviewTitle, setReviewTitle] = useState('');
-  const { questions, setQuestions, addQuestion, removeQuestion, updateQuestion } = useQuestions([
-    { listKey: 'list-0', questionId: null, questionValue: '' },
-  ]);
+  const { reviewFormMutation, getReviewFormQuery, initReviewFormData } =
+    useReviewFormQueries(reviewFormCode);
 
-  const { isSuccess, refetch } = useQuery(
-    ['getReviewFromData', reviewFormCode],
-    () => reviewAPI.getFormData(reviewFormCode),
-    {
-      enabled: false,
-      onSuccess: (data) => {
-        setReviewTitle(data.reviewTitle);
-        setQuestions(data.questions);
-      },
-    },
+  const [reviewTitle, setReviewTitle] = useState(initReviewFormData.reviewTitle);
+  const { questions, addQuestion, removeQuestion, updateQuestion } = useQuestions(
+    initReviewFormData.questions,
   );
 
-  if (isSuccess === false && reviewFormCode) {
-    refetch();
-  }
-
-  const mutateOptions: UseMutationOptions<any, any, any> = {
-    onSuccess: ({ reviewFormCode }: any) => {
-      alert('업데이트 코드: ' + reviewFormCode);
-    },
-    onError: ({ response: { data } }: any) => {
-      alert(data.message);
-    },
-  };
-
-  const createMutation = useMutation(reviewAPI.createForm, mutateOptions);
-
-  const updateMutation = useMutation(reviewAPI.updateForm, mutateOptions);
+  useEffect(() => {
+    if (getReviewFormQuery.isError) {
+      alert('존재하지 않는 회고 폼입니다.');
+      navigate('/');
+    }
+  }, []);
 
   const handleUpdateQuestion = (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
     const updatedQuestion = { questionValue: event.target.value };
@@ -91,29 +79,38 @@ function CreateReviewFormPage() {
   const onClickCreateForm = (event: FormEvent) => {
     event.preventDefault();
 
+    // TODO: 유효성 검증 작성 컨벤션 협의 후 부분 분리
     if (!reviewTitle) {
       alert('회고의 제목을 입력해주세요.');
       return;
     }
 
     const validQuestions = questions.filter((question) => !!question.questionValue?.trim());
+    const removeListKey = validQuestions.map((question) => {
+      const newQuestion = { ...question };
+
+      delete newQuestion.listKey;
+      return question;
+    });
 
     if (validQuestions.length <= 0) {
       alert('질문은 최소 1개 이상 입력해주세요.');
       return;
     }
 
-    if (reviewFormCode) {
-      updateMutation.mutate({
-        reviewFormCode,
-        reviewTitle,
-        questions: validQuestions,
-      });
-
-      return;
-    }
-
-    createMutation.mutate({ reviewTitle, questions: validQuestions });
+    reviewFormMutation.mutate(
+      { reviewTitle, reviewFormCode, questions: removeListKey },
+      {
+        onSuccess: ({ reviewFormCode }) => {
+          alert(`추가/수정에 성공하였습니다. 코드 : ${reviewFormCode}`);
+        },
+        onError: ({ response }) => {
+          // TODO: 오류 메시지 파싱 함수 필요
+          const errorMessage = response && response.data.message;
+          alert(errorMessage);
+        },
+      },
+    );
   };
 
   return (
