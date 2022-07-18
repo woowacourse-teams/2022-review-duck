@@ -54,11 +54,11 @@ public class ReviewForm {
         List<Question> questions = questionValues.stream()
             .map(Question::new)
             .collect(Collectors.toUnmodifiableList());
-        orderQuestions(questions);
+        sortQuestions(questions);
         return questions;
     }
 
-    private void orderQuestions(List<Question> questions) {
+    private void sortQuestions(List<Question> questions) {
         int index = 0;
         for (Question question : questions) {
             question.setPosition(index++);
@@ -69,7 +69,7 @@ public class ReviewForm {
         validateTitleLength(reviewTitle);
         validateBlankTitle(reviewTitle);
         this.reviewTitle = reviewTitle;
-        orderQuestions(questions);
+        sortQuestions(questions);
         this.questions = questions;
     }
 

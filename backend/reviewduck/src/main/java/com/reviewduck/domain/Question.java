@@ -27,12 +27,12 @@ public class Question {
     @Column(name = "question_value", nullable = false)
     private String value;
 
-    private int position;
+    @Column(nullable = false)
+    private int position = -1;
 
     public Question(String value) {
         validate(value);
         this.value = value;
-        this.position = -1;
     }
 
     public void updateValue(String value) {
