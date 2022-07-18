@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -37,27 +38,49 @@ public class ReviewForm {
     @Column(nullable = false)
     private String reviewTitle;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "review_form_id")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OrderBy("position asc")
     private List<Question> questions;
 
-    public ReviewForm(String reviewTitle, List<String> questions) {
-        validate(reviewTitle, questions);
+    public ReviewForm(String reviewTitle, List<String> questionValues) {
+        validate(reviewTitle, questionValues);
         this.reviewTitle = reviewTitle;
-        this.questions = questions.stream()
-            .map(Question::new)
-            .collect(Collectors.toUnmodifiableList());
+        this.questions = setQuestions(questionValues);
         this.code = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
     }
 
-    private void validate(String reviewTitle, List<String> questions) {
-        validateBlankTitle(reviewTitle);
-        validateTitleLength(reviewTitle);
-        validateNullQuestions(questions);
+    private List<Question> setQuestions(List<String> questionValues) {
+        List<Question> questions = questionValues.stream()
+            .map(Question::new)
+            .collect(Collectors.toUnmodifiableList());
+        sortQuestions(questions);
+        return questions;
     }
 
-    private void validateNullQuestions(List<String> questions) {
-        if (Objects.isNull(questions)) {
+    private void sortQuestions(List<Question> questions) {
+        int index = 0;
+        for (Question question : questions) {
+            question.setPosition(index++);
+        }
+    }
+
+    public void update(String reviewTitle, List<Question> questions) {
+        validateTitleLength(reviewTitle);
+        validateBlankTitle(reviewTitle);
+        this.reviewTitle = reviewTitle;
+        sortQuestions(questions);
+        this.questions = questions;
+    }
+
+    private void validate(String reviewTitle, List<String> questionValues) {
+        validateBlankTitle(reviewTitle);
+        validateTitleLength(reviewTitle);
+        validateNullQuestions(questionValues);
+    }
+
+    private void validateNullQuestions(List<String> questionValues) {
+        if (Objects.isNull(questionValues)) {
             throw new ReviewFormException("회고 폼의 질문 목록 생성 중 오류가 발생했습니다.");
         }
     }

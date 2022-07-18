@@ -13,7 +13,7 @@ import com.reviewduck.dto.request.AnswerRequest;
 import com.reviewduck.dto.request.QuestionRequest;
 import com.reviewduck.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.dto.request.ReviewRequest;
-import com.reviewduck.dto.response.ReviewFormCreateResponse;
+import com.reviewduck.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.dto.response.ReviewFormResponse;
 import com.reviewduck.dto.response.ReviewResponse;
 import com.reviewduck.dto.response.ReviewsFindResponse;
@@ -109,7 +109,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             List.of(new AnswerRequest(1L, "editedAnswer1"), new AnswerRequest(2L, "editedAnswer2")));
 
         put("/api/reviews/" + reviewId, editRequest)
-            .statusCode(HttpStatus.OK.value());
+            .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -142,7 +142,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         //when, then
         delete("/api/reviews/" + reviewId)
-            .statusCode(HttpStatus.OK.value());
+            .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -160,7 +160,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         // when, then
         return post("/api/review-forms", request)
             .extract()
-            .as(ReviewFormCreateResponse.class)
+            .as(ReviewFormCodeResponse.class)
             .getReviewFormCode();
     }
 

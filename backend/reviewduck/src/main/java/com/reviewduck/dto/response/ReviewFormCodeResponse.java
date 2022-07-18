@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class ReviewFormCreateResponse {
+public class ReviewFormCodeResponse {
 
     private String reviewFormCode;
 
-    public static ReviewFormCreateResponse from(ReviewForm reviewForm) {
-        return new ReviewFormCreateResponse(reviewForm.getCode());
+    public static ReviewFormCodeResponse from(ReviewForm reviewForm) {
+        return new ReviewFormCodeResponse(reviewForm.getCode());
     }
 }

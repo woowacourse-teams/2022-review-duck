@@ -60,7 +60,9 @@ public class ReviewServiceTest {
             () -> assertThat(savedReview.getId()).isNotNull(),
             () -> assertThat(savedReview.getNickname()).isEqualTo("제이슨"),
             () -> assertThat(savedReview.getQuestionAnswers().get(0).getAnswer().getValue())
-                .isEqualTo("answer1")
+                .isEqualTo("answer1"),
+            () -> assertThat(savedReview.getQuestionAnswers().get(0).getPosition())
+                .isEqualTo(0)
         );
     }
 
@@ -74,7 +76,7 @@ public class ReviewServiceTest {
         // when, then
         assertThatThrownBy(() -> reviewService.save(invalidCode, reviewCreateRequest))
             .isInstanceOf(NotFoundException.class)
-            .hasMessageContaining("존재하지 않는 입장코드입니다.");
+            .hasMessageContaining("존재하지 않는 회고 폼입니다.");
     }
 
     @Test
