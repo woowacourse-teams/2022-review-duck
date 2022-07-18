@@ -12,10 +12,13 @@ import org.springframework.http.HttpStatus;
 
 import com.reviewduck.dto.request.QuestionRequest;
 import com.reviewduck.dto.request.QuestionUpdateRequest;
+import com.reviewduck.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.dto.request.ReviewFormUpdateRequest;
+import com.reviewduck.dto.request.TemplateCreateRequest;
 import com.reviewduck.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.dto.response.ReviewFormResponse;
+import com.reviewduck.dto.response.TemplateCodeResponse;
 
 public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
@@ -99,6 +102,26 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
         put("/api/review-forms/aaaaaaaa", updateRequest)
             .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    @DisplayName("템플릿을 기반으로 회고 폼을 생성한다.")
+    void createReviewFormFromTemplate() {
+        // given
+        String templateTitle = "title";
+        String description = "test description";
+        List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
+        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, description, questions);
+
+        String templateCode = post("/api/templates", templateCreateRequest).extract()
+            .as(TemplateCodeResponse.class)
+            .getTemplateCode();
+
+        // when
+        ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest("reviewFormTitle");
+        post("/api/templates/" + templateCode + "/review-forms", request).statusCode(HttpStatus.CREATED.value())
+            .assertThat().body("reviewFormCode", notNullValue());
     }
 
     private String createReviewFormAndGetCode(String reviewTitle, List<QuestionRequest> questions) {

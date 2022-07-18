@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.reviewduck.domain.Template;
 import com.reviewduck.dto.request.QuestionRequest;
 import com.reviewduck.dto.request.TemplateCreateRequest;
+import com.reviewduck.exception.NotFoundException;
 import com.reviewduck.repository.TemplateRepository;
 
 @Service
@@ -31,4 +32,8 @@ public class TemplateService {
         return templateRepository.save(template);
     }
 
+    public Template findByCode(String code) {
+        return templateRepository.findByCode(code)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
+    }
 }

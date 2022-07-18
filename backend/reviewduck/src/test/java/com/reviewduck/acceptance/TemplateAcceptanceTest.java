@@ -15,13 +15,13 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("템플릿을 생성한다.")
-    void createReviewForm() {
+    void createTemplate() {
         // given
         String templateTitle = "title";
-        String description = "test description";
+        String templateDescription = "test description";
         List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
             new QuestionRequest("question2"));
-        TemplateCreateRequest request = new TemplateCreateRequest(templateTitle, description, questions);
+        TemplateCreateRequest request = new TemplateCreateRequest(templateTitle, templateDescription, questions);
 
         // when, then
         post("/api/templates", request).statusCode(HttpStatus.CREATED.value())

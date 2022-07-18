@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.domain.Question;
 import com.reviewduck.domain.ReviewForm;
+import com.reviewduck.domain.Template;
 import com.reviewduck.dto.request.QuestionRequest;
+import com.reviewduck.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.exception.NotFoundException;
@@ -22,10 +24,13 @@ public class ReviewFormService {
 
     private final ReviewFormRepository reviewFormRepository;
     private final QuestionRepository questionRepository;
+    private final TemplateService templateService;
 
-    public ReviewFormService(ReviewFormRepository reviewFormRepository, QuestionRepository questionRepository) {
+    public ReviewFormService(ReviewFormRepository reviewFormRepository,
+        QuestionRepository questionRepository, TemplateService templateService) {
         this.reviewFormRepository = reviewFormRepository;
         this.questionRepository = questionRepository;
+        this.templateService = templateService;
     }
 
     public ReviewForm save(ReviewFormCreateRequest createRequest) {
@@ -66,5 +71,17 @@ public class ReviewFormService {
         question.updateValue(questionValue);
 
         return question;
+    }
+
+    public ReviewForm saveFromTemplate(String templateCode, ReviewFormCreateFromTemplateRequest request) {
+        Template template = templateService.findByCode(templateCode);
+
+        List<String> questionValues = template.getQuestions().stream()
+            .map(Question::getValue)
+            .collect(Collectors.toUnmodifiableList());
+
+        ReviewForm reviewForm = new ReviewForm(request.getReviewFormTitle(), questionValues);
+        return reviewFormRepository.save(reviewForm);
+
     }
 }
