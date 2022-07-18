@@ -1,0 +1,42 @@
+package com.reviewduck.controller;
+
+import javax.validation.Valid;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.reviewduck.domain.Template;
+import com.reviewduck.dto.request.TemplateCreateRequest;
+import com.reviewduck.dto.response.TemplateCodeResponse;
+import com.reviewduck.service.TemplateService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import lombok.extern.slf4j.Slf4j;
+
+@RestController
+@RequestMapping("/api/templates")
+@Slf4j
+public class TemplateController {
+
+    private final TemplateService templateService;
+
+    public TemplateController(TemplateService TemplateService) {
+        this.templateService = TemplateService;
+    }
+
+    @Operation(summary = "템플릿을 생성한다.")
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public TemplateCodeResponse create(@RequestBody @Valid TemplateCreateRequest request) {
+
+        log.info("uri={}, method = {}, request = {}",
+            "/api/templates", "POST", request.toString());
+
+        Template template = templateService.save(request);
+        return TemplateCodeResponse.from(template);
+    }
+}
