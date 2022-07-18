@@ -13,7 +13,7 @@ import com.reviewduck.domain.QuestionAnswer;
 import com.reviewduck.domain.Review;
 import com.reviewduck.domain.ReviewForm;
 import com.reviewduck.dto.request.AnswerRequest;
-import com.reviewduck.dto.request.ReviewCreateRequest;
+import com.reviewduck.dto.request.ReviewRequest;
 import com.reviewduck.exception.NotFoundException;
 import com.reviewduck.repository.QuestionRepository;
 import com.reviewduck.repository.ReviewRepository;
@@ -33,7 +33,7 @@ public class ReviewService {
         this.questionRepository = questionRepository;
     }
 
-    public Review save(String code, ReviewCreateRequest request) {
+    public Review save(String code, ReviewRequest request) {
         ReviewForm reviewForm = reviewFormService.findByCode(code);
 
         List<QuestionAnswer> questionAnswers = convertToQuestionAnswers(request.getAnswers());
@@ -56,5 +56,20 @@ public class ReviewService {
     public List<Review> findAllByCode(String code) {
         ReviewForm reviewForm = reviewFormService.findByCode(code);
         return reviewRepository.findByReviewForm(reviewForm);
+    }
+
+    public Review update(Long id, ReviewRequest request) {
+        Review review = reviewRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
+
+        review.update(convertToQuestionAnswers(request.getAnswers()));
+        return review;
+    }
+
+    public void delete(Long id) {
+        if (!reviewRepository.existsById(id)) {
+            throw new NotFoundException("존재하지 않는 회고입니다.");
+        }
+        reviewRepository.deleteById(id);
     }
 }

@@ -28,6 +28,12 @@ public class ReviewFormRepositoryTest {
         List<Question> questions = questionValues.stream()
             .map(Question::new)
             .collect(Collectors.toUnmodifiableList());
+
+        int index = 0;
+        for (Question question : questions) {
+            question.setPosition(index++);
+        }
+
         ReviewForm reviewForm = new ReviewForm("title", questionValues);
 
         // when

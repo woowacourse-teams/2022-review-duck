@@ -37,4 +37,19 @@ public class AcceptanceTest {
             .when().get(url)
             .then().log().all();
     }
+
+    public ValidatableResponse put(String url, Object request) {
+        return RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(request)
+            .when().put(url)
+            .then().log().all();
+    }
+
+    public ValidatableResponse delete(String url) {
+        return RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().delete(url)
+            .then().log().all();
+    }
 }

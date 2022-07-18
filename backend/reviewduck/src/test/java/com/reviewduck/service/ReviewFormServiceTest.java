@@ -16,7 +16,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.reviewduck.domain.Question;
 import com.reviewduck.domain.ReviewForm;
 import com.reviewduck.dto.request.QuestionRequest;
+import com.reviewduck.dto.request.QuestionUpdateRequest;
 import com.reviewduck.dto.request.ReviewFormCreateRequest;
+import com.reviewduck.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.exception.NotFoundException;
 
 @SpringBootTest
@@ -24,6 +26,7 @@ import com.reviewduck.exception.NotFoundException;
 public class ReviewFormServiceTest {
 
     private final String invalidCode = "aaaaaaaa";
+
     @Autowired
     private ReviewFormService reviewFormService;
 
@@ -40,6 +43,11 @@ public class ReviewFormServiceTest {
         List<Question> expected = questions.stream()
             .map(questionRequest -> new Question(questionRequest.getQuestionValue()))
             .collect(Collectors.toList());
+
+        int index = 0;
+        for (Question question : expected) {
+            question.setPosition(index++);
+        }
 
         // when
         ReviewForm reviewForm = reviewFormService.save(createRequest);
@@ -81,6 +89,84 @@ public class ReviewFormServiceTest {
         // when, then
         assertThatThrownBy(() -> reviewFormService.findByCode(invalidCode))
             .isInstanceOf(NotFoundException.class)
-            .hasMessageContaining("존재하지 않는 입장코드입니다.");
+            .hasMessageContaining("존재하지 않는 회고 폼입니다.");
+    }
+
+    @Test
+    @DisplayName("회고 폼을 수정한다.")
+    void updateReviewForm() {
+        // given
+        ReviewForm savedReviewForm = saveReviewForm();
+        String code = savedReviewForm.getCode();
+        Long questionId = savedReviewForm.getQuestions().get(0).getId();
+
+        // when
+        String reviewTitle = "new title";
+        List<QuestionUpdateRequest> updateRequests = List.of(new QuestionUpdateRequest(questionId, "new question1"),
+            new QuestionUpdateRequest(null, "new question3"));
+
+        ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateRequests);
+
+        List<Question> expected = updateRequests.stream()
+            .map(questionRequest -> new Question(questionRequest.getQuestionValue()))
+            .collect(Collectors.toList());
+
+        int index = 0;
+        for (Question question : expected) {
+            question.setPosition(index++);
+        }
+
+        reviewFormService.update(code, updateRequest);
+        ReviewForm foundReviewForm = reviewFormService.findByCode(code);
+
+        assertAll(
+            () -> assertThat(foundReviewForm).isNotNull(),
+            () -> assertThat(foundReviewForm.getId()).isNotNull(),
+            () -> assertThat(foundReviewForm.getCode().length()).isEqualTo(8),
+            () -> assertThat(foundReviewForm.getReviewTitle()).isEqualTo(reviewTitle),
+            () -> assertThat(foundReviewForm.getQuestions())
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(expected)
+        );
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 회고폼을 수정할 수 없다.")
+    void updateReviewFormByInvalidCode() {
+        // when
+        List<QuestionUpdateRequest> updateRequests = List.of(new QuestionUpdateRequest(1L, "new question1"),
+            new QuestionUpdateRequest(null, "new question3"),
+            new QuestionUpdateRequest(2L, "new question2"));
+
+        assertThatThrownBy(
+            () -> reviewFormService.update(invalidCode,
+                new ReviewFormUpdateRequest("new title", updateRequests)))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessageContaining("존재하지 않는 회고 폼입니다.");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 질문을 수정할 수 없다.")
+    void updateReviewFormByInvalidQuestionId() {
+        // given
+        String code = saveReviewForm().getCode();
+
+        // when, then
+        List<QuestionUpdateRequest> updateRequests = List.of(new QuestionUpdateRequest(9999999L, "new question"));
+
+        assertThatThrownBy(
+            () -> reviewFormService.update(code, new ReviewFormUpdateRequest("new title", updateRequests)))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessageContaining("존재하지 않는 질문입니다.");
+
+    }
+
+    private ReviewForm saveReviewForm() {
+        List<QuestionRequest> createRequests = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
+        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest("title", createRequests);
+
+        return reviewFormService.save(createRequest);
     }
 }

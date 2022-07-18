@@ -29,8 +29,15 @@ public class QuestionAnswer {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Answer answer;
 
+    @Column(nullable = false)
+    private int position = -1;
+
     public QuestionAnswer(Question question, Answer answer) {
         this.question = question;
         this.answer = answer;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }
