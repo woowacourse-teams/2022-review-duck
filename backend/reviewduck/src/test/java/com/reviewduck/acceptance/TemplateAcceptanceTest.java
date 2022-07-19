@@ -40,9 +40,9 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         String description = "test description";
         List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
             new QuestionRequest("question2"));
-        TemplateCreateRequest TemplateCreateRequest = new TemplateCreateRequest(templateTitle, description, questions);
+        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, description, questions);
 
-        Long templateId = post("/api/templates", TemplateCreateRequest).extract()
+        Long templateId = post("/api/templates", templateCreateRequest).extract()
             .as(TemplateCreateResponse.class)
             .getTemplateId();
 
@@ -124,7 +124,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("템플릿을 삭제한다.")
     void deleteTemplate() {
-        //given
+        // given
         String templateTitle = "title";
         String templateDescription = "test description";
         List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
