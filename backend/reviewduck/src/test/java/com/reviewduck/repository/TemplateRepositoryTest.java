@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.reviewduck.domain.Question;
 import com.reviewduck.domain.Template;
+import com.reviewduck.exception.NotFoundException;
 
 @DataJpaTest
 public class TemplateRepositoryTest {
@@ -25,14 +26,7 @@ public class TemplateRepositoryTest {
     void saveTemplate() {
         // given
         List<String> questionValues = List.of("question1", "question2");
-        List<Question> questions = questionValues.stream()
-            .map(Question::new)
-            .collect(Collectors.toUnmodifiableList());
-
-        int index = 0;
-        for (Question question : questions) {
-            question.setPosition(index++);
-        }
+        List<Question> questions = convertValuesToQuestions(questionValues);
 
         Template template = new Template("title", "description", questionValues);
 
@@ -47,5 +41,59 @@ public class TemplateRepositoryTest {
                 .ignoringFields("id")
                 .isEqualTo(questions)
         );
+    }
+
+    private List<Question> convertValuesToQuestions(List<String> questionValues) {
+        List<Question> questions = questionValues.stream()
+            .map(Question::new)
+            .collect(Collectors.toUnmodifiableList());
+
+        int index = 0;
+        for (Question question : questions) {
+            question.setPosition(index++);
+        }
+        return questions;
+    }
+
+    @Test
+    @DisplayName("템플릿을 조회한다.")
+    void findTemplate() {
+        // given
+        List<String> questionValues = List.of("question1", "question2");
+        List<Question> questions = convertValuesToQuestions(questionValues);
+
+        Template template = new Template("title", "description", questionValues);
+        Template savedTemplate = templateRepository.save(template);
+
+        // when
+        Template foundTemplate = templateRepository.findById(savedTemplate.getId())
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
+
+        // then
+        assertAll(
+            () -> assertThat(foundTemplate.getId()).isNotNull(),
+            () -> assertThat(foundTemplate.getQuestions())
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(questions)
+        );
+    }
+
+    @Test
+    @DisplayName("템플릿을 모두 조회한다.")
+    void findAllTemplates() {
+        // given
+        List<String> questionValues1 = List.of("question1", "question2");
+        Template template1 = new Template("title1", "description1", questionValues1);
+        templateRepository.save(template1);
+        List<String> questionValues2 = List.of("question3", "question4");
+        Template template2 = new Template("title2", "description2", questionValues2);
+        templateRepository.save(template2);
+
+        // when
+        List<Template> templates = templateRepository.findAll();
+
+        // then
+        assertThat(templates).hasSize(2);
     }
 }

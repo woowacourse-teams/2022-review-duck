@@ -8,7 +8,7 @@ create table review_form
 
 create table answer
 (
-    id           bigint not null auto_increment,
+    id           bigint       not null auto_increment,
     answer_value varchar(255) not null,
     primary key (id)
 );
