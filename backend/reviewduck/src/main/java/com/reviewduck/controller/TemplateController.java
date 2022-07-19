@@ -78,7 +78,7 @@ public class TemplateController {
     }
 
     @Operation(summary = "템플릿을 모두 조회한다.")
-    @GetMapping()
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public TemplatesFindResponse findAll() {
 
