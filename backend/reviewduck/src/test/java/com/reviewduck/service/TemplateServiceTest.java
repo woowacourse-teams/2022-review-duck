@@ -12,14 +12,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.domain.Question;
 import com.reviewduck.domain.Template;
 import com.reviewduck.dto.request.QuestionRequest;
+import com.reviewduck.dto.request.QuestionUpdateRequest;
 import com.reviewduck.dto.request.TemplateCreateRequest;
+import com.reviewduck.dto.request.TemplateUpdateRequest;
 import com.reviewduck.exception.NotFoundException;
 
 @SpringBootTest
+@Sql("classpath:truncate.sql")
 @Transactional
 public class TemplateServiceTest {
 
@@ -109,6 +113,92 @@ public class TemplateServiceTest {
 
         // then
         assertThat(templates).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("없는 템플릿을 삭제하면 실패한다.")
+    void deleteTemplateWithInvalidId() {
+        // when, then
+        assertThatThrownBy(() -> templateService.deleteById(9999L))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessageContaining("존재하지 않는 템플릿입니다.");
+    }
+
+    @Test
+    @DisplayName("템플릿을 삭제한다.")
+    void deleteTemplate() {
+        // given
+        // 템플릿 생성
+        String templateTitle = "title";
+        String templateDescription = "description";
+        List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
+
+        Template template = saveTemplate(templateTitle, templateDescription, questions);
+
+        // when
+        templateService.deleteById(template.getId());
+
+        // then
+        assertThatThrownBy(() -> templateService.findById(template.getId()))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessageContaining("존재하지 않는 템플릿입니다.");
+    }
+
+    @Test
+    @DisplayName("없는 템플릿을 수정하면 실패한다.")
+    void updateTemplateWithInvalidId() {
+        // given
+        TemplateUpdateRequest request = new TemplateUpdateRequest("title", "description", List.of());
+        // when, then
+        assertThatThrownBy(() -> templateService.update(9999L, request))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessageContaining("존재하지 않는 템플릿입니다.");
+    }
+
+    @Test
+    @DisplayName("템플릿을 수정한다.")
+    void updateTemplate() {
+        // given
+        // 템플릿 생성
+        String templateTitle = "title";
+        String templateDescription = "description";
+        List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
+
+        Template template = saveTemplate(templateTitle, templateDescription, questions);
+
+        // when
+        List<QuestionUpdateRequest> newQuestions = List.of(
+            new QuestionUpdateRequest(1L, "new question1"),
+            new QuestionUpdateRequest(2L, "question2"),
+            new QuestionUpdateRequest(null, "question3"));
+
+        templateService.update(template.getId(),
+            new TemplateUpdateRequest("new title", "new description", newQuestions));
+
+        List<Question> expectedQuestions = newQuestions.stream()
+            .map(questionUpdateRequest -> new Question(questionUpdateRequest.getQuestionValue()))
+            .collect(Collectors.toList());
+
+        int index = 0;
+        for (Question question : expectedQuestions) {
+            question.setPosition(index++);
+        }
+
+        Template updatedTemplate = templateService.findById(template.getId());
+
+        // then
+        assertAll(
+            () -> assertThat(updatedTemplate).isNotNull(),
+            () -> assertThat(updatedTemplate.getId()).isNotNull(),
+            () -> assertThat(updatedTemplate.getTemplateTitle()).isEqualTo("new title"),
+            () -> assertThat(updatedTemplate.getTemplateDescription()).isEqualTo("new description"),
+            () -> assertThat(updatedTemplate.getQuestions())
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(expectedQuestions)
+        );
     }
 
     private List<Question> convertRequestToQuestions(List<QuestionRequest> questions) {

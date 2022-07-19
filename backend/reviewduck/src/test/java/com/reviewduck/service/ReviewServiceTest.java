@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.domain.Review;
 import com.reviewduck.domain.ReviewForm;
@@ -22,6 +23,7 @@ import com.reviewduck.dto.request.ReviewRequest;
 import com.reviewduck.exception.NotFoundException;
 
 @SpringBootTest
+@Sql("classpath:truncate.sql")
 @Transactional
 public class ReviewServiceTest {
 

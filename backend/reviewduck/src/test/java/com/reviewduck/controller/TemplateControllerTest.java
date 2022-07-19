@@ -18,8 +18,10 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reviewduck.dto.request.QuestionRequest;
+import com.reviewduck.dto.request.QuestionUpdateRequest;
 import com.reviewduck.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.dto.request.TemplateCreateRequest;
+import com.reviewduck.dto.request.TemplateUpdateRequest;
 import com.reviewduck.service.ReviewFormService;
 import com.reviewduck.service.TemplateService;
 
@@ -71,6 +73,39 @@ public class TemplateControllerTest {
         assertBadRequestFromPost("/api/templates/9999/review-forms", request, "회고 폼의 제목은 비어있을 수 없습니다.");
     }
 
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("템플릿 수정시 템플릿 제목에 빈 값이 들어갈 경우 예외가 발생한다.")
+    void updateWithEmptyTemplateTitle(String title) throws Exception {
+        // given
+        TemplateUpdateRequest request = new TemplateUpdateRequest(title, "description", List.of());
+
+        // when, then
+        assertBadRequestFromPut("/api/templates/" + 1L, request, "템플릿의 제목은 비어있을 수 없습니다.");
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("템플릿 수정시 템플릿 설명에 null 값이 들어갈 경우 예외가 발생한다.")
+    void updateWithEmptyTemplateDescription(String description) throws Exception {
+        // given
+        TemplateUpdateRequest request = new TemplateUpdateRequest("title", description, List.of());
+
+        // when, then
+        assertBadRequestFromPut("/api/templates/" + 1L, request, "템플릿의 설명 작성 중 오류가 발생했습니다.");
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("템플릿 수정시 템플릿 질문 목록에 null 값이 들어갈 경우 예외가 발생한다.")
+    void updateWithNullQuestionList(List<QuestionUpdateRequest> questions) throws Exception {
+        // given
+        TemplateUpdateRequest request = new TemplateUpdateRequest("title", "description", questions);
+
+        // when, then
+        assertBadRequestFromPut("/api/templates/" + 1L, request, "템플릿의 질문 목록 수정 중 오류가 발생했습니다.");
+    }
+
     private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {
         mockMvc.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -78,4 +113,13 @@ public class TemplateControllerTest {
             ).andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message", containsString(errorMessage)));
     }
+
+    private void assertBadRequestFromPut(String uri, Object request, String errorMessage) throws Exception {
+        mockMvc.perform(put(uri)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+            ).andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message", containsString(errorMessage)));
+    }
+
 }

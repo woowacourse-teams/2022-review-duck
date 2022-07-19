@@ -43,18 +43,6 @@ public class TemplateRepositoryTest {
         );
     }
 
-    private List<Question> convertValuesToQuestions(List<String> questionValues) {
-        List<Question> questions = questionValues.stream()
-            .map(Question::new)
-            .collect(Collectors.toUnmodifiableList());
-
-        int index = 0;
-        for (Question question : questions) {
-            question.setPosition(index++);
-        }
-        return questions;
-    }
-
     @Test
     @DisplayName("템플릿을 조회한다.")
     void findTemplate() {
@@ -95,5 +83,33 @@ public class TemplateRepositoryTest {
 
         // then
         assertThat(templates).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("템플릿을 삭제한다.")
+    void deleteTemplate() {
+        // given
+        List<String> questionValues = List.of("question1", "question2");
+        Template template = new Template("title", "description", questionValues);
+        Template savedTemplate = templateRepository.save(template);
+
+        // when
+        Long templateId = savedTemplate.getId();
+        templateRepository.deleteById(templateId);
+
+        // then
+        assertThat(templateRepository.findById(templateId)).isEmpty();
+    }
+
+    private List<Question> convertValuesToQuestions(List<String> questionValues) {
+        List<Question> questions = questionValues.stream()
+            .map(Question::new)
+            .collect(Collectors.toUnmodifiableList());
+
+        int index = 0;
+        for (Question question : questions) {
+            question.setPosition(index++);
+        }
+        return questions;
     }
 }

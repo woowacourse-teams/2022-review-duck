@@ -69,6 +69,7 @@ public class Template {
         validateNullDescription(templateDescription);
 
         this.templateTitle = templateTitle;
+        this.templateDescription = templateDescription;
         sortQuestions(questions);
         this.questions = questions;
     }

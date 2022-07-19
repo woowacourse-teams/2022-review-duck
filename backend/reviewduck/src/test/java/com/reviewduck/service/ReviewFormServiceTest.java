@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.domain.Question;
 import com.reviewduck.domain.ReviewForm;
@@ -25,6 +26,7 @@ import com.reviewduck.dto.request.TemplateCreateRequest;
 import com.reviewduck.exception.NotFoundException;
 
 @SpringBootTest
+@Sql("classpath:truncate.sql")
 @Transactional
 public class ReviewFormServiceTest {
 
@@ -178,9 +180,9 @@ public class ReviewFormServiceTest {
         List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
             new QuestionRequest("question2"));
 
-        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
+        TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
             questions);
-        Template savedTemplate = templateService.save(templateCreateRequest);
+        Template savedTemplate = templateService.save(templateRequest);
 
         // 템플릿 기반 회고 폼 생성
         String reviewFormTitle = "reviewFormTitle";
