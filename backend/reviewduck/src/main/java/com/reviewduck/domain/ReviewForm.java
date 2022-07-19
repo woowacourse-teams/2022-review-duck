@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class ReviewForm {
+public class ReviewForm extends BaseDate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
