@@ -37,4 +37,8 @@ public class TemplateService {
         return templateRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
     }
+
+    public List<Template> findAll() {
+        return templateRepository.findAll();
+    }
 }

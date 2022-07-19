@@ -92,6 +92,25 @@ public class TemplateServiceTest {
         );
     }
 
+    @Test
+    @DisplayName("템플릿을 모두 조회한다.")
+    void findAllTemplates() {
+        // given
+        // 템플릿 생성
+        List<QuestionRequest> questions1 = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
+        List<QuestionRequest> questions2 = List.of(new QuestionRequest("question3"),
+            new QuestionRequest("question4"));
+        saveTemplate("title1", "description1", questions1);
+        saveTemplate("title2", "description2", questions2);
+
+        // when
+        List<Template> templates = templateService.findAll();
+
+        // then
+        assertThat(templates).hasSize(2);
+    }
+
     private List<Question> convertRequestToQuestions(List<QuestionRequest> questions) {
         List<Question> expected = questions.stream()
             .map(questionRequest -> new Question(questionRequest.getQuestionValue()))

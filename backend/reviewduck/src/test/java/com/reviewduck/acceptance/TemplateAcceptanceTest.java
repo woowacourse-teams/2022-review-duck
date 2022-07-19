@@ -62,6 +62,21 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("전체 템플릿을 조회한다.")
     void findAllTemplates() {
+        // given
+        List<QuestionRequest> questions1 = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
+        List<QuestionRequest> questions2 = List.of(new QuestionRequest("question3"),
+            new QuestionRequest("question4"));
+        TemplateCreateRequest request1 = new TemplateCreateRequest("title1", "test description1",
+            questions1);
+        TemplateCreateRequest request2 = new TemplateCreateRequest("title2", "test description2",
+            questions2);
+        post("/api/templates", request1);
+        post("/api/templates", request2);
+
+        // when, then
+        get("/api/templates").statusCode(HttpStatus.OK.value())
+            .assertThat().body("templates", hasSize(2));
 
     }
 

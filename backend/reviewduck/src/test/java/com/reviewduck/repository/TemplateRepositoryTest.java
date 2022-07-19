@@ -78,4 +78,22 @@ public class TemplateRepositoryTest {
                 .isEqualTo(questions)
         );
     }
+
+    @Test
+    @DisplayName("템플릿을 모두 조회한다.")
+    void findAllTemplates() {
+        // given
+        List<String> questionValues1 = List.of("question1", "question2");
+        Template template1 = new Template("title1", "description1", questionValues1);
+        templateRepository.save(template1);
+        List<String> questionValues2 = List.of("question3", "question4");
+        Template template2 = new Template("title2", "description2", questionValues2);
+        templateRepository.save(template2);
+
+        // when
+        List<Template> templates = templateRepository.findAll();
+
+        // then
+        assertThat(templates).hasSize(2);
+    }
 }

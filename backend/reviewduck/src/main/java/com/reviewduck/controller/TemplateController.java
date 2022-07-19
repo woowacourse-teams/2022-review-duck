@@ -1,5 +1,7 @@
 package com.reviewduck.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import com.reviewduck.dto.request.TemplateCreateRequest;
 import com.reviewduck.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.dto.response.TemplateCreateResponse;
 import com.reviewduck.dto.response.TemplateResponse;
+import com.reviewduck.dto.response.TemplatesFindResponse;
 import com.reviewduck.service.ReviewFormService;
 import com.reviewduck.service.TemplateService;
 
@@ -72,5 +75,17 @@ public class TemplateController {
 
         Template template = templateService.findById(templateId);
         return TemplateResponse.from(template);
+    }
+
+    @Operation(summary = "템플릿을 모두 조회한다.")
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    public TemplatesFindResponse findAll() {
+
+        log.info("uri={}, method = {}, request = {}",
+            "/api/templates", "GET", "");
+
+        List<Template> templates = templateService.findAll();
+        return TemplatesFindResponse.from(templates);
     }
 }
