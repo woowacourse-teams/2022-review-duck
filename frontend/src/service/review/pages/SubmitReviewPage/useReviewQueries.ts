@@ -4,9 +4,14 @@ import { ReviewForm } from 'service/review/types';
 
 import reviewAPI from 'service/review/api';
 
-function useReview(reviewFormCode: string) {
-  const getQuestionsQuery = useQuery<any, any, ReviewForm>(['questions', reviewFormCode], () =>
-    reviewAPI.getQuestions(reviewFormCode),
+function useReviewQueries(reviewFormCode: string) {
+  const getQuestionsQuery = useQuery<any, any, ReviewForm>(
+    ['questions', reviewFormCode],
+    () => reviewAPI.getQuestions(reviewFormCode),
+    {
+      suspense: true,
+      useErrorBoundary: false,
+    },
   );
 
   const createMutation = useMutation(reviewAPI.submitAnswer);
@@ -18,4 +23,4 @@ function useReview(reviewFormCode: string) {
   return { reviewForm, getQuestionsQuery, reviewMutation };
 }
 
-export default useReview;
+export default useReviewQueries;

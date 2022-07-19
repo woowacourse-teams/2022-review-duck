@@ -21,7 +21,7 @@ function useReviewFormQueries(reviewFormCode?: string | null) {
 
   const reviewFormMutation = reviewFormCode ? updateMutation : createMutation;
 
-  const getReviewFormQuery = useQuery(
+  const getReviewFormQuery = useQuery<any, any, ReviewFormRequest>(
     'getReviewFormData',
     () => reviewAPI.getFormData(reviewFormCode as string),
     {

@@ -22,7 +22,7 @@ import QuestionEditor from 'service/review/components/QuestionEditor';
 
 import styles from './styles.module.scss';
 
-import useReviewFormQueries from './useReviewForm';
+import useReviewFormQueries from './useReviewFormQueries';
 
 function CreateReviewFormPage() {
   const { reviewFormCode } = useParams();
