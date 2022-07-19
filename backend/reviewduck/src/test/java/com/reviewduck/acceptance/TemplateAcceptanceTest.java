@@ -110,4 +110,30 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             .body("templateTitle", equalTo(templateTitle))
             .body("questions", hasSize(questions.size()));
     }
+
+    @Test
+    @DisplayName("존재하지 않는 템플릿을 삭제할 수 없다.")
+    void deleteTemplateWithInvalidId() {
+
+        // when, then
+        delete("/api/templates/" + 9999L).statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    @DisplayName("템플릿을 삭제한다.")
+    void deleteTemplate() {
+        //given
+        String templateTitle = "title";
+        String templateDescription = "test description";
+        List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
+        TemplateCreateRequest request = new TemplateCreateRequest(templateTitle, templateDescription, questions);
+
+        Long templateId = post("/api/templates", request).extract()
+            .as(TemplateCreateResponse.class)
+            .getTemplateId();
+
+        // when, then
+        delete("/api/templates/" + templateId).statusCode(HttpStatus.NO_CONTENT.value());
+    }
 }

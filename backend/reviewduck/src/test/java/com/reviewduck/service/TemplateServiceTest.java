@@ -111,6 +111,36 @@ public class TemplateServiceTest {
         assertThat(templates).hasSize(2);
     }
 
+    @Test
+    @DisplayName("없는 템플릿을 삭제하면 실패한다.")
+    void deleteTemplateWithInvalidId() {
+        // when, then
+        assertThatThrownBy(() -> templateService.deleteById(9999L))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessageContaining("존재하지 않는 템플릿입니다.");
+    }
+
+    @Test
+    @DisplayName("템플릿을 삭제한다.")
+    void deleteTemplate() {
+        // given
+        // 템플릿 생성
+        String templateTitle = "title";
+        String templateDescription = "description";
+        List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
+
+        Template template = saveTemplate(templateTitle, templateDescription, questions);
+
+        // when
+        templateService.deleteById(template.getId());
+
+        // then
+        assertThatThrownBy(() -> templateService.findById(template.getId()))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessageContaining("존재하지 않는 템플릿입니다.");
+    }
+
     private List<Question> convertRequestToQuestions(List<QuestionRequest> questions) {
         List<Question> expected = questions.stream()
             .map(questionRequest -> new Question(questionRequest.getQuestionValue()))

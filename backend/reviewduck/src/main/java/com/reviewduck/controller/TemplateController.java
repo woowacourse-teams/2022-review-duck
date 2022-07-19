@@ -5,6 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -87,5 +88,16 @@ public class TemplateController {
 
         List<Template> templates = templateService.findAll();
         return TemplatesFindResponse.from(templates);
+    }
+
+    @Operation(summary = "템플릿을 삭제한다.")
+    @DeleteMapping("/{templateId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long templateId) {
+
+        log.info("uri={}, method = {}, request = {}",
+            "/api/templates/" + templateId, "DELETE", "");
+
+        templateService.deleteById(templateId);
     }
 }

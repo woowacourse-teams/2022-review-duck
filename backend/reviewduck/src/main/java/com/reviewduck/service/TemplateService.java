@@ -41,4 +41,9 @@ public class TemplateService {
     public List<Template> findAll() {
         return templateRepository.findAll();
     }
+
+    public void deleteById(Long id) {
+        Template template = findById(id);
+        templateRepository.delete(template);
+    }
 }
