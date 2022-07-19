@@ -10,4 +10,4 @@ alter table question
     add column template_id bigint;
 
 alter table question
-    add foreign key (template_id) references template(id);
+    add foreign key (template_id) references template (id);

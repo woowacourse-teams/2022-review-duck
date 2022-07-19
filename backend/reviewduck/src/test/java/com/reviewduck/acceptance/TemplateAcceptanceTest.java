@@ -58,4 +58,41 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest("reviewFormTitle");
         post("/api/templates/9999/review-forms", request).statusCode(HttpStatus.NOT_FOUND.value());
     }
+
+    @Test
+    @DisplayName("전체 템플릿을 조회한다.")
+    void findAllTemplates() {
+
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 템플릿을 조회할 수 없다.")
+    void findTemplateWithInvalidId() {
+
+        // when, then
+        get("/api/templates/" + 9999L).statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    @DisplayName("템플릿을 조회한다.")
+    void findTemplate() {
+
+        //given
+        String templateTitle = "title";
+        String templateDescription = "test description";
+        List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
+        TemplateCreateRequest request = new TemplateCreateRequest(templateTitle, templateDescription, questions);
+
+        Long templateId = post("/api/templates", request).extract()
+            .as(TemplateCreateResponse.class)
+            .getTemplateId();
+
+        // when, then
+        get("/api/templates/" + templateId).statusCode(HttpStatus.OK.value())
+            .assertThat()
+            .body("templateId", notNullValue())
+            .body("templateTitle", equalTo(templateTitle))
+            .body("questions", hasSize(questions.size()));
+    }
 }
