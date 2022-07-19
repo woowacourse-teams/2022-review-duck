@@ -44,9 +44,18 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             .as(TemplateCreateResponse.class)
             .getTemplateId();
 
-        // when
+        // when, then
         ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest("reviewFormTitle");
         post("/api/templates/" + templateId + "/review-forms", request).statusCode(HttpStatus.CREATED.value())
             .assertThat().body("reviewFormCode", notNullValue());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 템플릿을 기반으로 회고 폼을 생성할 수 없다.")
+    void createReviewFormFromTemplateWithInvalidId() {
+
+        // when, then
+        ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest("reviewFormTitle");
+        post("/api/templates/9999/review-forms", request).statusCode(HttpStatus.NOT_FOUND.value());
     }
 }
