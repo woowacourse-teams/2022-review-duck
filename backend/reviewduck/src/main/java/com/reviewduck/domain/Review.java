@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
-public class Review {
+public class Review extends BaseDate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,16 +52,16 @@ public class Review {
         return new Review(nickname, reviewForm, questionAnswers);
     }
 
+    private static void validate(String nickname) {
+        if (Objects.isNull(nickname) || nickname.isBlank()) {
+            throw new ReviewException("닉네임이 비어있을 수 없습니다.");
+        }
+    }
+
     private void sortQuestionAnswers(List<QuestionAnswer> questionAnswers) {
         int index = 0;
         for (QuestionAnswer questionAnswer : questionAnswers) {
             questionAnswer.setPosition(index++);
-        }
-    }
-
-    private static void validate(String nickname) {
-        if (Objects.isNull(nickname) || nickname.isBlank()) {
-            throw new ReviewException("닉네임이 비어있을 수 없습니다.");
         }
     }
 
