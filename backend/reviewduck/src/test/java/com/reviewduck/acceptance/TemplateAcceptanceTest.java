@@ -9,8 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import com.reviewduck.dto.request.QuestionRequest;
+import com.reviewduck.dto.request.QuestionUpdateRequest;
 import com.reviewduck.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.dto.request.TemplateCreateRequest;
+import com.reviewduck.dto.request.TemplateUpdateRequest;
 import com.reviewduck.dto.response.TemplateCreateResponse;
 
 public class TemplateAcceptanceTest extends AcceptanceTest {
@@ -38,9 +40,9 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         String description = "test description";
         List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
             new QuestionRequest("question2"));
-        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, description, questions);
+        TemplateCreateRequest TemplateCreateRequest = new TemplateCreateRequest(templateTitle, description, questions);
 
-        Long templateId = post("/api/templates", templateCreateRequest).extract()
+        Long templateId = post("/api/templates", TemplateCreateRequest).extract()
             .as(TemplateCreateResponse.class)
             .getTemplateId();
 
@@ -135,5 +137,41 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
         // when, then
         delete("/api/templates/" + templateId).statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    @DisplayName("템플릿을 수정한다.")
+    void updateTemplate() {
+        // given
+        String templateTitle = "title";
+        String templateDescription = "test description";
+        List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
+        TemplateCreateRequest createRequest = new TemplateCreateRequest(templateTitle, templateDescription, questions);
+
+        Long templateId = post("/api/templates", createRequest).extract()
+            .as(TemplateCreateResponse.class)
+            .getTemplateId();
+
+        // when, then
+        String newTemplateTitle = "new title";
+        String newTemplateDescription = "new test description";
+        List<QuestionUpdateRequest> newQuestions = List.of(
+            new QuestionUpdateRequest(1L, "new question1"),
+            new QuestionUpdateRequest(2L, "question2"),
+            new QuestionUpdateRequest(null, "question3")
+        );
+        TemplateUpdateRequest updateRequest = new TemplateUpdateRequest(newTemplateTitle, newTemplateDescription,
+            newQuestions);
+
+        put("/api/templates/" + templateId, updateRequest).statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 템플릿을 수정할 수 없다.")
+    void updateTemplateWithInvalidId() {
+        // when, then
+        put("/api/templates/" + 9999L, new TemplateUpdateRequest("title", "description", List.of()))
+            .statusCode(HttpStatus.NOT_FOUND.value());
     }
 }

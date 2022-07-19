@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -18,6 +19,7 @@ import com.reviewduck.domain.ReviewForm;
 import com.reviewduck.domain.Template;
 import com.reviewduck.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.dto.request.TemplateCreateRequest;
+import com.reviewduck.dto.request.TemplateUpdateRequest;
 import com.reviewduck.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.dto.response.TemplateCreateResponse;
 import com.reviewduck.dto.response.TemplateResponse;
@@ -99,5 +101,16 @@ public class TemplateController {
             "/api/templates/" + templateId, "DELETE", "");
 
         templateService.deleteById(templateId);
+    }
+
+    @Operation(summary = "템플릿을 수정한다.")
+    @PutMapping("/{templateId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void update(@PathVariable Long templateId, @RequestBody @Valid TemplateUpdateRequest request) {
+
+        log.info("uri={}, method = {}, request = {}",
+            "/api/templates/" + templateId, "PUT", "");
+
+        templateService.update(templateId, request);
     }
 }
