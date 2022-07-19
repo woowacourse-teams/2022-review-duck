@@ -6,10 +6,13 @@ export interface Question {
   listKey?: string | undefined;
 }
 
-export interface ReviewFormRequest {
+export interface ReviewForm {
   reviewTitle: string;
-  reviewFormCode?: string | null;
   questions: Question[];
+}
+
+export interface ReviewFormRequest extends ReviewForm {
+  reviewFormCode?: string | null;
 }
 
 export interface ReviewFormResponse {
