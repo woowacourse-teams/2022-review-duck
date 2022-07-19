@@ -22,8 +22,6 @@ import com.reviewduck.dto.request.TemplateCreateRequest;
 @Transactional
 public class TemplateServiceTest {
 
-    private final String invalidCode = "aaaaaaaa";
-
     @Autowired
     private TemplateService templateService;
 
@@ -55,7 +53,6 @@ public class TemplateServiceTest {
         assertAll(
             () -> assertThat(template).isNotNull(),
             () -> assertThat(template.getId()).isNotNull(),
-            () -> assertThat(template.getCode().length()).isEqualTo(8),
             () -> assertThat(template.getTemplateTitle()).isEqualTo(templateTitle),
             () -> assertThat(template.getTemplateDescription()).isEqualTo(templateDescription),
             () -> assertThat(template.getQuestions())

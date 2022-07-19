@@ -9,7 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import com.reviewduck.dto.request.QuestionRequest;
+import com.reviewduck.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.dto.request.TemplateCreateRequest;
+import com.reviewduck.dto.response.TemplateCreateResponse;
 
 public class TemplateAcceptanceTest extends AcceptanceTest {
 
@@ -25,6 +27,26 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
         // when, then
         post("/api/templates", request).statusCode(HttpStatus.CREATED.value())
-            .assertThat().body("templateCode", notNullValue());
+            .assertThat().body("templateId", notNullValue());
+    }
+
+    @Test
+    @DisplayName("템플릿을 기반으로 회고 폼을 생성한다.")
+    void createReviewFormFromTemplate() {
+        // given
+        String templateTitle = "title";
+        String description = "test description";
+        List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
+        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, description, questions);
+
+        Long templateId = post("/api/templates", templateCreateRequest).extract()
+            .as(TemplateCreateResponse.class)
+            .getTemplateId();
+
+        // when
+        ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest("reviewFormTitle");
+        post("/api/templates/" + templateId + "/review-forms", request).statusCode(HttpStatus.CREATED.value())
+            .assertThat().body("reviewFormCode", notNullValue());
     }
 }

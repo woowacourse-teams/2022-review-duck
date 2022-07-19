@@ -33,8 +33,8 @@ public class TemplateService {
     }
 
     @Transactional(readOnly = true)
-    public Template findByCode(String code) {
-        return templateRepository.findByCode(code)
+    public Template findById(Long id) {
+        return templateRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
     }
 }

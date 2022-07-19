@@ -15,7 +15,7 @@ import com.reviewduck.domain.Template;
 import com.reviewduck.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.dto.request.TemplateCreateRequest;
 import com.reviewduck.dto.response.ReviewFormCodeResponse;
-import com.reviewduck.dto.response.TemplateCodeResponse;
+import com.reviewduck.dto.response.TemplateCreateResponse;
 import com.reviewduck.service.ReviewFormService;
 import com.reviewduck.service.TemplateService;
 
@@ -38,25 +38,25 @@ public class TemplateController {
     @Operation(summary = "템플릿을 생성한다.")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TemplateCodeResponse create(@RequestBody @Valid TemplateCreateRequest request) {
+    public TemplateCreateResponse create(@RequestBody @Valid TemplateCreateRequest request) {
 
         log.info("uri={}, method = {}, request = {}",
             "/api/templates", "POST", request.toString());
 
         Template template = templateService.save(request);
-        return TemplateCodeResponse.from(template);
+        return TemplateCreateResponse.from(template);
     }
 
     @Operation(summary = "템플릿을 기반으로 회고 폼을 생성한다.")
-    @PostMapping("/{templateCode}/review-forms")
+    @PostMapping("/{templateId}/review-forms")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReviewFormCodeResponse createReviewFormFromTemplate(@PathVariable String templateCode,
+    public ReviewFormCodeResponse createReviewFormFromTemplate(@PathVariable Long templateId,
         @RequestBody @Valid ReviewFormCreateFromTemplateRequest request) {
 
         log.info("uri={}, method = {}, request = {}",
-            "/api/templates/" + templateCode + "/review-forms", "POST", request.toString());
+            "/api/templates/" + templateId + "/review-forms", "POST", request.toString());
 
-        ReviewForm reviewForm = reviewFormService.saveFromTemplate(templateCode, request);
+        ReviewForm reviewForm = reviewFormService.saveFromTemplate(templateId, request);
         return ReviewFormCodeResponse.from(reviewForm);
     }
 

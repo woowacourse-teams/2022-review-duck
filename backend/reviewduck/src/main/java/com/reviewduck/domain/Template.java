@@ -14,8 +14,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
-import org.apache.commons.lang3.RandomStringUtils;
-
 import com.reviewduck.exception.TemplateException;
 
 import lombok.AccessLevel;
@@ -31,9 +29,6 @@ public class Template {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
-
-    @Column(name = "code", nullable = false, updatable = false)
-    private String code;
 
     @Column(nullable = false)
     private String templateTitle;
@@ -51,7 +46,6 @@ public class Template {
         this.templateTitle = templateTitle;
         this.templateDescription = templateDescription;
         this.questions = setQuestions(questionValues);
-        this.code = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
     }
 
     private List<Question> setQuestions(List<String> questionValues) {

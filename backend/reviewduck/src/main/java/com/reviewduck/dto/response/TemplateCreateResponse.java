@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class TemplateCodeResponse {
+public class TemplateCreateResponse {
 
-    private String templateCode;
+    private Long templateId;
 
-    public static TemplateCodeResponse from(Template template) {
-        return new TemplateCodeResponse(template.getCode());
+    public static TemplateCreateResponse from(Template template) {
+        return new TemplateCreateResponse(template.getId());
     }
 }

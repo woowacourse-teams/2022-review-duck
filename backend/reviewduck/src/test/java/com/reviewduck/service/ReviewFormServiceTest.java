@@ -185,7 +185,7 @@ public class ReviewFormServiceTest {
         // 템플릿 기반 회고 폼 생성
         String reviewFormTitle = "reviewFormTitle";
         ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest(reviewFormTitle);
-        ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(savedTemplate.getCode(), request);
+        ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(savedTemplate.getId(), request);
 
         List<Question> expected = questions.stream()
             .map(questionRequest -> new Question(questionRequest.getQuestionValue()))

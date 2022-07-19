@@ -73,8 +73,8 @@ public class ReviewFormService {
         return question;
     }
 
-    public ReviewForm saveFromTemplate(String templateCode, ReviewFormCreateFromTemplateRequest request) {
-        Template template = templateService.findByCode(templateCode);
+    public ReviewForm saveFromTemplate(Long templateId, ReviewFormCreateFromTemplateRequest request) {
+        Template template = templateService.findById(templateId);
 
         List<String> questionValues = template.getQuestions().stream()
             .map(Question::getValue)

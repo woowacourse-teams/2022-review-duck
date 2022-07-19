@@ -42,7 +42,6 @@ public class TemplateRepositoryTest {
         // then
         assertAll(
             () -> assertThat(savedTemplate.getId()).isNotNull(),
-            () -> assertThat(savedTemplate.getCode().length()).isEqualTo(8),
             () -> assertThat(savedTemplate.getQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")

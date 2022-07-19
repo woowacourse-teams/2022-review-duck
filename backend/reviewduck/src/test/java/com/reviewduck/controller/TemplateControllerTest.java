@@ -68,7 +68,7 @@ public class TemplateControllerTest {
         ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest(title);
 
         // when, then
-        assertBadRequestFromPost("/api/templates/aaaaaaaa/review-forms", request, "회고 폼의 제목은 비어있을 수 없습니다.");
+        assertBadRequestFromPost("/api/templates/9999/review-forms", request, "회고 폼의 제목은 비어있을 수 없습니다.");
     }
 
     private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {

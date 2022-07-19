@@ -3,9 +3,8 @@ package com.reviewduck.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.domain.Answer;
 import com.reviewduck.domain.Question;
