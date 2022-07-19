@@ -172,6 +172,7 @@ public class ReviewFormServiceTest {
     @DisplayName("템플릿을 기반으로 회고 폼을 생성한다.")
     void saveReviewFormFromTemplate() {
         // when
+        // 템플릿 생성
         String templateTitle = "title";
         String templateDescription = "description";
         List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
@@ -181,9 +182,9 @@ public class ReviewFormServiceTest {
             questions);
         Template savedTemplate = templateService.save(templateCreateRequest);
 
+        // 템플릿 기반 회고 폼 생성
         String reviewFormTitle = "reviewFormTitle";
         ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest(reviewFormTitle);
-
         ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(savedTemplate.getCode(), request);
 
         List<Question> expected = questions.stream()

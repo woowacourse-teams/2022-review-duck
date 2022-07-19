@@ -71,14 +71,6 @@ public class TemplateControllerTest {
         assertBadRequestFromPost("/api/templates/aaaaaaaa/review-forms", request, "회고 폼의 제목은 비어있을 수 없습니다.");
     }
 
-    private void assertBadRequestFromPut(String uri, Object request, String errorMessage) throws Exception {
-        mockMvc.perform(put(uri)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request))
-            ).andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message", containsString(errorMessage)));
-    }
-
     private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {
         mockMvc.perform(post(uri)
                 .contentType(MediaType.APPLICATION_JSON)

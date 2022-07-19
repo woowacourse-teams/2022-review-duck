@@ -31,6 +31,7 @@ public class TemplateServiceTest {
     @DisplayName("회고 폼을 생성한다.")
     void createReviewForm() {
         // given
+        // 템플릿 생성
         String templateTitle = "title";
         String templateDescription = "description";
         List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
