@@ -3,9 +3,8 @@ package com.reviewduck.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.domain.Answer;
 import com.reviewduck.domain.Question;
@@ -53,6 +52,7 @@ public class ReviewService {
         return questionAnswers;
     }
 
+    @Transactional(readOnly = true)
     public List<Review> findAllByCode(String code) {
         ReviewForm reviewForm = reviewFormService.findByCode(code);
         return reviewRepository.findByReviewForm(reviewForm);

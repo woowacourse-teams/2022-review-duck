@@ -24,7 +24,7 @@ class ReviewFormTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("회고 생성 시 타이틀이 비어있을 수 없다.")
+    @DisplayName("회고 폼 생성 시 타이틀이 비어있을 수 없다.")
     void notNullTitle(String reviewTitle) {
         //when, then
         assertThatThrownBy(() -> new ReviewForm(reviewTitle, List.of()))
@@ -33,14 +33,14 @@ class ReviewFormTest {
     }
 
     @Test
-    @DisplayName("회고 생성 시 타이틀의 길이는 100자 이하이어야 한다.")
+    @DisplayName("회고 폼 생성 시 타이틀의 길이는 100자 이하이어야 한다.")
     void titleProperLength() {
         //when, then
         assertDoesNotThrow(() -> new ReviewForm("a".repeat(100), List.of()));
     }
 
     @Test
-    @DisplayName("회고 생성 시 타이틀의 길이는 100자를 넘을 수 없다.")
+    @DisplayName("회고 폼 생성 시 타이틀의 길이는 100자를 넘을 수 없다.")
     void titleOverLength() {
         //when, then
         assertThatThrownBy(() -> new ReviewForm("a".repeat(101), List.of()))
@@ -50,8 +50,8 @@ class ReviewFormTest {
 
     @ParameterizedTest
     @NullSource
-    @DisplayName("회고 생성 시 질문 목록은 비어있을 수 없다.")
-    void notNullTitle(List<String> questions) {
+    @DisplayName("회고 폼 생성 시 질문 목록은 비어있을 수 없다.")
+    void notNullQuestions(List<String> questions) {
         //when, then
         assertThatThrownBy(() -> new ReviewForm("질문목록", questions))
             .isInstanceOf(ReviewFormException.class)
@@ -59,7 +59,7 @@ class ReviewFormTest {
     }
 
     @Test
-    @DisplayName("회고 수정 시 타이틀의 길이는 100자 이하이어야 한다.")
+    @DisplayName("회고 폼 수정 시 타이틀의 길이는 100자 이하이어야 한다.")
     void updateTitleProperLength() {
         // given
         ReviewForm reviewForm = new ReviewForm("리뷰폼 제목", List.of("질문1", "질문2"));
@@ -69,7 +69,7 @@ class ReviewFormTest {
     }
 
     @Test
-    @DisplayName("회고 수정 시 타이틀의 길이는 100자를 넘을 수 없다.")
+    @DisplayName("회고 폼 수정 시 타이틀의 길이는 100자를 넘을 수 없다.")
     void updateTitleOverLength() {
         // given
         ReviewForm reviewForm = new ReviewForm("리뷰폼 제목", List.of("질문1", "질문2"));

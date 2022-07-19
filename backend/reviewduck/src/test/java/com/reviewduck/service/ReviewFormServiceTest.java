@@ -15,10 +15,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.reviewduck.domain.Question;
 import com.reviewduck.domain.ReviewForm;
+import com.reviewduck.domain.Template;
 import com.reviewduck.dto.request.QuestionRequest;
 import com.reviewduck.dto.request.QuestionUpdateRequest;
+import com.reviewduck.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.dto.request.ReviewFormUpdateRequest;
+import com.reviewduck.dto.request.TemplateCreateRequest;
 import com.reviewduck.exception.NotFoundException;
 
 @SpringBootTest
@@ -29,6 +32,9 @@ public class ReviewFormServiceTest {
 
     @Autowired
     private ReviewFormService reviewFormService;
+
+    @Autowired
+    private TemplateService templateService;
 
     @Test
     @DisplayName("회고 폼을 생성한다.")
@@ -160,6 +166,47 @@ public class ReviewFormServiceTest {
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 질문입니다.");
 
+    }
+
+    @Test
+    @DisplayName("템플릿을 기반으로 회고 폼을 생성한다.")
+    void saveReviewFormFromTemplate() {
+        // when
+        // 템플릿 생성
+        String templateTitle = "title";
+        String templateDescription = "description";
+        List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
+
+        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
+            questions);
+        Template savedTemplate = templateService.save(templateCreateRequest);
+
+        // 템플릿 기반 회고 폼 생성
+        String reviewFormTitle = "reviewFormTitle";
+        ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest(reviewFormTitle);
+        ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(savedTemplate.getId(), request);
+
+        List<Question> expected = questions.stream()
+            .map(questionRequest -> new Question(questionRequest.getQuestionValue()))
+            .collect(Collectors.toList());
+
+        int index = 0;
+        for (Question question : expected) {
+            question.setPosition(index++);
+        }
+
+        // then
+        assertAll(
+            () -> assertThat(savedReviewForm).isNotNull(),
+            () -> assertThat(savedReviewForm.getId()).isNotNull(),
+            () -> assertThat(savedReviewForm.getCode().length()).isEqualTo(8),
+            () -> assertThat(savedReviewForm.getReviewTitle()).isEqualTo(reviewFormTitle),
+            () -> assertThat(savedReviewForm.getQuestions())
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(expected)
+        );
     }
 
     private ReviewForm saveReviewForm() {
