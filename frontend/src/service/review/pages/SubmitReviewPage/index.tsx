@@ -1,6 +1,5 @@
-import { ChangeEvent, useState } from 'react';
-import { useMutation, UseMutationOptions, useQuery } from 'react-query';
-import { useParams } from 'react-router-dom';
+import { ChangeEvent, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -14,44 +13,29 @@ import dom from 'assets/images/dom.png';
 
 import styles from './styles.module.scss';
 
-import reviewAPI from 'service/review/api';
-
-type SubmitQuestion = Partial<Question>;
+import useReview from './useReview';
 
 function SubmitReviewPage() {
-  const { questions, updateQuestion, setQuestions } = useQuestions();
-  const [currentQuestion, setCurrentQuestion] = useState<SubmitQuestion>({});
-  const [reviewTitle, setReviewTitle] = useState<string>('');
-
+  const navigate = useNavigate();
   const { reviewFormCode = '' } = useParams();
 
-  const { isSuccess, refetch } = useQuery(
-    ['questions', reviewFormCode],
-    () => reviewAPI.getQuestions(reviewFormCode),
-    {
-      enabled: false,
-      onSuccess: (data) => {
-        setCurrentQuestion(data.questions[0]);
-        setQuestions(data.questions);
-        setReviewTitle(data.reviewTitle);
-      },
-    },
+  const { getQuestionsQuery, reviewForm, reviewMutation } = useReview(reviewFormCode);
+  const { questions, updateQuestion } = useQuestions(reviewForm.questions);
+
+  const [currentQuestion, setCurrentQuestion] = useState<Question>(reviewForm.questions[0] || {});
+  const [reviewTitle, setReviewTitle] = useState<string>(reviewForm.reviewTitle);
+
+  useEffect(() => {
+    if (getQuestionsQuery.isError) {
+      alert('존재하지 않는 참여 코드입니다.');
+      navigate('/');
+    }
+  }, [getQuestionsQuery.isError]);
+
+  const answeredCount = questions.reduce(
+    (prev, current) => (current.answerValue ? prev + 1 : prev),
+    0,
   );
-
-  if (isSuccess === false && reviewFormCode) {
-    refetch();
-  }
-
-  const mutateOptions: UseMutationOptions<any, any, any> = {
-    onSuccess: () => {
-      alert('회고 답변을 성공적으로 제출했습니다.');
-    },
-    onError: (error) => {
-      alert(error.message);
-    },
-  };
-
-  const submitMutation = useMutation(reviewAPI.submitAnswer, mutateOptions);
 
   const onSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
@@ -64,7 +48,17 @@ function SubmitReviewPage() {
     });
     const nickname = '돔하디';
 
-    submitMutation.mutate({ reviewFormCode, answers, nickname });
+    reviewMutation.mutate(
+      { reviewFormCode, answers, nickname },
+      {
+        onSuccess: () => {
+          alert('회고 답변을 성공적으로 제출했습니다.');
+        },
+        onError: (error: any) => {
+          alert(error.message);
+        },
+      },
+    );
   };
 
   const onUpdateCurrentQuestion = (index: number) => () => {
@@ -76,11 +70,6 @@ function SubmitReviewPage() {
 
     updateQuestion(index, { answerValue: $inputTarget.value });
   };
-
-  const answeredCount = questions.reduce(
-    (prev, current) => (current.answerValue ? prev + 1 : prev),
-    0,
-  );
 
   return (
     <>

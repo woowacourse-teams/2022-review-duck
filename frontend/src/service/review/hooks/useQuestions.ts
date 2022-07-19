@@ -36,7 +36,7 @@ function useQuestions(initState?: Question[]) {
     setQuestions(copiedQuestions);
   };
 
-  return { addQuestion, removeQuestion, updateQuestion, questions, setQuestions };
+  return { addQuestion, removeQuestion, updateQuestion, questions };
 }
 
 export default useQuestions;
