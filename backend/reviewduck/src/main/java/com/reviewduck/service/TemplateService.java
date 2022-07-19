@@ -32,6 +32,7 @@ public class TemplateService {
         return templateRepository.save(template);
     }
 
+    @Transactional(readOnly = true)
     public Template findByCode(String code) {
         return templateRepository.findByCode(code)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
