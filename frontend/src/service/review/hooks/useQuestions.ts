@@ -2,18 +2,18 @@ import { useRef, useState } from 'react';
 
 import { Question } from '../types';
 
-interface QuestionWithKey extends Partial<Question> {
-  listKey?: string;
-}
-
-function useQuestions(initState: QuestionWithKey[]) {
-  const [questions, setQuestions] = useState(initState);
+function useQuestions(initState?: Question[]) {
+  const [questions, setQuestions] = useState<Question[]>(initState || []);
   const listKey = useRef(1);
 
-  const addQuestion = (insertValue: QuestionWithKey): number => {
+  const addQuestion = (insertValue: Question): number => {
     const copiedQuestions = [...questions];
     const newQuestionIndex =
-      copiedQuestions.push({ ...insertValue, listKey: `list-${listKey.current}` }) - 1;
+      copiedQuestions.push({
+        ...insertValue,
+        questionId: null,
+        listKey: `list-${listKey.current}`,
+      }) - 1;
 
     listKey.current += 1;
 
@@ -28,7 +28,7 @@ function useQuestions(initState: QuestionWithKey[]) {
     setQuestions(copiedQuestions);
   };
 
-  const editQuestion = (index: number, updateValue: QuestionWithKey) => {
+  const updateQuestion = (index: number, updateValue: Partial<Question>) => {
     const copiedQuestions = [...questions];
     const newQuestion = { ...questions[index], ...updateValue };
 
@@ -36,7 +36,7 @@ function useQuestions(initState: QuestionWithKey[]) {
     setQuestions(copiedQuestions);
   };
 
-  return { addQuestion, removeQuestion, editQuestion, questions };
+  return { addQuestion, removeQuestion, updateQuestion, questions };
 }
 
 export default useQuestions;

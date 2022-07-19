@@ -1,5 +1,13 @@
-import { ChangeEvent, MouseEvent, KeyboardEvent } from 'react';
+import React, {
+  useState,
+  ChangeEvent,
+  MouseEvent,
+  KeyboardEvent,
+  FormEvent,
+  useEffect,
+} from 'react';
 import { flushSync } from 'react-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -14,17 +22,31 @@ import QuestionEditor from 'service/review/components/QuestionEditor';
 
 import styles from './styles.module.scss';
 
-function CreateReviewFormPage() {
-  // react query로 데이터 로드
+import useReviewFormQueries from './useReviewForm';
 
-  const { questions, addQuestion, removeQuestion, editQuestion } = useQuestions([
-    { listKey: 'list-0', questionValue: '' },
-  ]);
+function CreateReviewFormPage() {
+  const { reviewFormCode } = useParams();
+  const navigate = useNavigate();
+
+  const { reviewFormMutation, getReviewFormQuery, initReviewFormData } =
+    useReviewFormQueries(reviewFormCode);
+
+  const [reviewTitle, setReviewTitle] = useState(initReviewFormData.reviewTitle);
+  const { questions, addQuestion, removeQuestion, updateQuestion } = useQuestions(
+    initReviewFormData.questions,
+  );
+
+  useEffect(() => {
+    if (getReviewFormQuery.isError) {
+      alert('존재하지 않는 회고 폼입니다.');
+      navigate('/');
+    }
+  }, []);
 
   const handleUpdateQuestion = (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
-    const updatedQuestion = { ...questions[index], questionValue: event.target.value };
+    const updatedQuestion = { questionValue: event.target.value };
 
-    editQuestion(index, updatedQuestion);
+    updateQuestion(index, updatedQuestion);
   };
 
   const handleAddQuestion = ({ currentTarget: $inputTarget }: MouseEvent | KeyboardEvent) => {
@@ -50,6 +72,47 @@ function CreateReviewFormPage() {
       setFormFocus($inputTarget as HTMLInputElement, previousInputIndex);
     };
 
+  const onChangeReviewTitle = ({ target }: ChangeEvent<HTMLInputElement>) => {
+    setReviewTitle(target.value);
+  };
+
+  const onClickCreateForm = (event: FormEvent) => {
+    event.preventDefault();
+
+    // TODO: 유효성 검증 작성 컨벤션 협의 후 부분 분리
+    if (!reviewTitle) {
+      alert('회고의 제목을 입력해주세요.');
+      return;
+    }
+
+    const validQuestions = questions.filter((question) => !!question.questionValue?.trim());
+    const removeListKey = validQuestions.map((question) => {
+      const newQuestion = { ...question };
+
+      delete newQuestion.listKey;
+      return question;
+    });
+
+    if (validQuestions.length <= 0) {
+      alert('질문은 최소 1개 이상 입력해주세요.');
+      return;
+    }
+
+    reviewFormMutation.mutate(
+      { reviewTitle, reviewFormCode, questions: removeListKey },
+      {
+        onSuccess: ({ reviewFormCode }) => {
+          alert(`추가/수정에 성공하였습니다. 코드 : ${reviewFormCode}`);
+        },
+        onError: ({ response }) => {
+          // TODO: 오류 메시지 파싱 함수 필요
+          const errorMessage = response && response.data.message;
+          alert(errorMessage);
+        },
+      },
+    );
+  };
+
   return (
     <>
       <div className={cn(styles.container, 'flex-container column')}>
@@ -73,7 +136,13 @@ function CreateReviewFormPage() {
 
       <div>
         <form className={cn(styles.container, styles.sticky, 'flex-container column')}>
-          <TextBox theme="underline" size="large" placeholder="회고의 제목을 입력해주세요." />
+          <TextBox
+            theme="underline"
+            size="large"
+            placeholder="회고의 제목을 입력해주세요."
+            value={reviewTitle}
+            onChange={onChangeReviewTitle}
+          />
 
           <div className={cn(styles.itemContainer, 'flex-container column')}>
             {questions.map(({ questionId, listKey, questionValue }, index) => (
@@ -94,7 +163,7 @@ function CreateReviewFormPage() {
               <span>취소하기</span>
             </Button>
 
-            <Button type="button">
+            <Button type="button" onClick={onClickCreateForm}>
               <Icon code="drive_file_rename_outline" />
               <span>생성하기</span>
             </Button>
