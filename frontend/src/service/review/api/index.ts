@@ -19,11 +19,15 @@ const submitAnswer = async (query: SubmitAnswerRequest) =>
     })
   ).data;
 
+const getReviews = async (reviewFormCode = '') =>
+  (await axiosInstance.get(`api/review-forms/${reviewFormCode}/reviews`)).data;
+
 const reviewAPI = {
   getForm,
   createForm,
   updateForm,
   submitAnswer,
+  getReviews,
 };
 
 export default reviewAPI;

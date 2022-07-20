@@ -4,6 +4,7 @@ import ReviewLayout from 'service/review/layout/ReviewLayout';
 import CreateReviewFormPage from 'service/review/pages/CreateReviewFormPage';
 import JoinReviewPage from 'service/review/pages/JoinReviewPage';
 import MainPage from 'service/review/pages/MainPage';
+import ReviewListPage from 'service/review/pages/ReviewListPage';
 import SubmitReviewPage from 'service/review/pages/SubmitReviewPage';
 
 function PageRoutes() {
@@ -24,6 +25,8 @@ function PageRoutes() {
             <Route path="submit/:reviewFormCode" element={<SubmitReviewPage />} />
           </Route>
         </Route>
+
+        <Route path="overview/:reviewFormCode" element={<ReviewListPage />} />
       </Routes>
     </BrowserRouter>
   );
