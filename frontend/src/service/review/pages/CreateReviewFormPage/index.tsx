@@ -167,7 +167,11 @@ function CreateReviewFormPage() {
               <span>취소하기</span>
             </Button>
 
-            <Button type="button" onClick={onClickCreateForm}>
+            <Button
+              type="button"
+              onClick={onClickCreateForm}
+              disabled={reviewFormMutation.isLoading}
+            >
               <Icon code="drive_file_rename_outline" />
               <span>생성하기</span>
             </Button>

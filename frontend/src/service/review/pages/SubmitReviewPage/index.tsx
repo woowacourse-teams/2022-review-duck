@@ -146,7 +146,7 @@ function SubmitReviewPage() {
             <Button
               type="submit"
               onClick={onSubmitReviewForm}
-              disabled={answeredCount !== questions.length}
+              disabled={answeredCount !== questions.length || reviewMutation.isLoading}
             >
               <Icon code="send" />
               <span>제출하기</span>
