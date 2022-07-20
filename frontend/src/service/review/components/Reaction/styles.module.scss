@@ -1,0 +1,18 @@
+@import 'styles/@global.scss';
+
+.article-footer {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+
+  .article-reaction {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+
+    & > :global(.icon) {
+      color: $LIGHT_COLOR_THEME_TEXT_100;
+    }
+  }
+}
