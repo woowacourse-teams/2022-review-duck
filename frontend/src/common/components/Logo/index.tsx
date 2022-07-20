@@ -1,10 +1,17 @@
 import cn from 'classnames';
+import propTypes from 'prop-types';
 
 import styles from './styles.module.scss';
 
-function Logo({ ...rest }: React.HTMLAttributes<HTMLDivElement>) {
+const sizeProps = ['small', 'medium', 'large'] as const;
+
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
+  size: typeof sizeProps[number];
+}
+
+function Logo({ size, ...rest }: Props) {
   return (
-    <div {...rest}>
+    <div className={cn(styles[size])} {...rest}>
       <svg
         className={cn(styles.logo)}
         id="uuid-f0e7633e-14c7-43bf-afc6-297c7ec01ec1"
@@ -19,5 +26,13 @@ function Logo({ ...rest }: React.HTMLAttributes<HTMLDivElement>) {
     </div>
   );
 }
+
+Logo.propTypes = {
+  size: propTypes.oneOf(sizeProps),
+};
+
+Logo.defaultProps = {
+  size: 'medium',
+};
 
 export default Logo;
