@@ -1,7 +1,7 @@
 import QuestionEditor from '.';
 
 export default {
-  title: 'Review/Component/QuestionEditor',
+  title: 'Review/components/QuestionEditor',
   component: QuestionEditor,
 };
 

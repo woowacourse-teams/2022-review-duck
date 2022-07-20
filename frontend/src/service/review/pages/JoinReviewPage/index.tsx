@@ -1,5 +1,5 @@
 import { FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -51,10 +51,12 @@ function JoinReviewPage() {
           </FieldSet>
 
           <div className={cn('button-container horizontal')}>
-            <Button size="medium" theme="outlined">
-              <Icon code="cancel" />
-              <span>취소하기</span>
-            </Button>
+            <Link to={'/'}>
+              <Button size="medium" theme="outlined">
+                <Icon code="cancel" />
+                <span>취소하기</span>
+              </Button>
+            </Link>
             <Button type="submit" size="medium" filled onClick={onSubmitReviewFormCode}>
               <Icon code="ads_click" />
               <span>참여하기</span>

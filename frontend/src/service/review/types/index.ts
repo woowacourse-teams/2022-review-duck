@@ -27,7 +27,7 @@ export type RequiredPartialType<Type, P extends keyof Type> = Type & {
   [key in P]-?: Type[key];
 };
 
-export interface SubmitAnswer {
+export interface SubmitAnswerRequest {
   reviewFormCode: string;
   answers: {
     answerValue: string;

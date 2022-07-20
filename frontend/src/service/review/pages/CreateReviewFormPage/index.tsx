@@ -13,7 +13,7 @@ import cn from 'classnames';
 
 import useQuestions from 'service/review/hooks/useQuestions';
 
-import { setFormFocus } from 'common/utils';
+import { setFormFocus } from 'service/@shared/utils';
 
 import { Button, Icon, Logo, TextBox } from 'common/components';
 
@@ -22,7 +22,7 @@ import QuestionEditor from 'service/review/components/QuestionEditor';
 
 import styles from './styles.module.scss';
 
-import useReviewFormQueries from './useReviewForm';
+import useReviewFormQueries from './useReviewFormQueries';
 
 function CreateReviewFormPage() {
   const { reviewFormCode } = useParams();
@@ -102,15 +102,19 @@ function CreateReviewFormPage() {
       { reviewTitle, reviewFormCode, questions: removeListKey },
       {
         onSuccess: ({ reviewFormCode }) => {
-          alert(`추가/수정에 성공하였습니다. 코드 : ${reviewFormCode}`);
+          navigate(`/overview/${reviewFormCode}`, { replace: true });
         },
-        onError: ({ response }) => {
-          // TODO: 오류 메시지 파싱 함수 필요
-          const errorMessage = response && response.data.message;
-          alert(errorMessage);
+        onError: ({ message }) => {
+          alert(message);
         },
       },
     );
+  };
+
+  const onClickCancel = () => {
+    if (!confirm('회고 생성을 정말 취소하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
+
+    navigate('/');
   };
 
   return (
@@ -158,7 +162,7 @@ function CreateReviewFormPage() {
           </div>
 
           <div className={cn('button-container horizontal')}>
-            <Button theme="outlined">
+            <Button theme="outlined" onClick={onClickCancel}>
               <Icon code="cancel" />
               <span>취소하기</span>
             </Button>

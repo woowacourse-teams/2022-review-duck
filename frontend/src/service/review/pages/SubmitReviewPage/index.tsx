@@ -1,5 +1,5 @@
-import { ChangeEvent, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { ChangeEvent, useState } from 'react';
+import { Navigate, useParams, useNavigate } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -13,24 +13,17 @@ import dom from 'assets/images/dom.png';
 
 import styles from './styles.module.scss';
 
-import useReview from './useReview';
+import useReviewQueries from './useReviewQueries';
 
 function SubmitReviewPage() {
-  const navigate = useNavigate();
   const { reviewFormCode = '' } = useParams();
+  const navigate = useNavigate();
 
-  const { getQuestionsQuery, reviewForm, reviewMutation } = useReview(reviewFormCode);
+  const { getQuestionsQuery, reviewForm, reviewMutation } = useReviewQueries(reviewFormCode);
   const { questions, updateQuestion } = useQuestions(reviewForm.questions);
 
   const [currentQuestion, setCurrentQuestion] = useState<Question>(reviewForm.questions[0] || {});
-  const [reviewTitle, setReviewTitle] = useState<string>(reviewForm.reviewTitle);
-
-  useEffect(() => {
-    if (getQuestionsQuery.isError) {
-      alert('존재하지 않는 참여 코드입니다.');
-      navigate('/');
-    }
-  }, [getQuestionsQuery.isError]);
+  const [reviewTitle] = useState<string>(reviewForm.reviewTitle);
 
   const answeredCount = questions.reduce(
     (prev, current) => (current.answerValue ? prev + 1 : prev),
@@ -46,16 +39,23 @@ function SubmitReviewPage() {
         questionId: question.questionId,
       };
     });
-    const nickname = '돔하디';
+
+    // TODO: 모달로 교체 및 첫 접속 시 비로그인일 때 닉네임 물어보기.
+    const nickname = prompt('닉네임을 입력해주세요.');
+
+    if (!nickname) {
+      return;
+    }
 
     reviewMutation.mutate(
       { reviewFormCode, answers, nickname },
       {
         onSuccess: () => {
           alert('회고 답변을 성공적으로 제출했습니다.');
+          navigate(`/overview/${reviewFormCode}`, { replace: true });
         },
-        onError: (error: any) => {
-          alert(error.message);
+        onError: ({ message }) => {
+          alert(message);
         },
       },
     );
@@ -70,6 +70,11 @@ function SubmitReviewPage() {
 
     updateQuestion(index, { answerValue: $inputTarget.value });
   };
+
+  if (getQuestionsQuery.isError) {
+    alert('찾을 수 없는 참여 코드입니다.');
+    return <Navigate to={'/'} replace={true} />;
+  }
 
   return (
     <>
@@ -132,14 +137,19 @@ function SubmitReviewPage() {
               </FieldSet>
             </div>
           ))}
-          <div className={cn(styles.buttonContainer)}>
+          <div className={cn('button-container horizontal')}>
+            <Button theme="outlined">
+              <Icon code="cancel" />
+              <span>취소하기</span>
+            </Button>
+
             <Button
               type="submit"
               onClick={onSubmitReviewForm}
               disabled={answeredCount !== questions.length}
             >
-              <Icon code="send"></Icon>
-              제출하기
+              <Icon code="send" />
+              <span>제출하기</span>
             </Button>
           </div>
         </form>

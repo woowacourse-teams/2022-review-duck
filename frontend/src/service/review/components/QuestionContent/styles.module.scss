@@ -1,0 +1,26 @@
+@import 'styles/@global.scss';
+
+.answer-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+
+  & > .answer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid $LIGHT_COLOR_THEME_BACKGROUND_200;
+
+    &:last-child {
+      border: none;
+      padding-bottom: 0;
+    }
+
+    & > .answer-content {
+      font-size: 1rem;
+      color: $LIGHT_COLOR_THEME_TEXT_800;
+      line-height: 140%;
+    }
+  }
+}

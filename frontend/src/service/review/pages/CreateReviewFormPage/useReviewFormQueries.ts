@@ -2,11 +2,16 @@ import { useMutation, useQuery } from 'react-query';
 
 import { AxiosError } from 'axios';
 
-import { ReviewFormRequest, ReviewFormResponse, ErrorResponse } from 'service/review/types';
+import {
+  ReviewFormRequest,
+  ReviewFormResponse,
+  ErrorResponse,
+  ReviewForm,
+} from 'service/review/types';
 
 import reviewAPI from 'service/review/api';
 
-function useReviewFormQueries(reviewFormCode?: string | null) {
+function useReviewFormQueries(reviewFormCode = '') {
   const createMutation = useMutation<
     ReviewFormResponse,
     AxiosError<ErrorResponse>,
@@ -21,9 +26,9 @@ function useReviewFormQueries(reviewFormCode?: string | null) {
 
   const reviewFormMutation = reviewFormCode ? updateMutation : createMutation;
 
-  const getReviewFormQuery = useQuery(
-    'getReviewFormData',
-    () => reviewAPI.getFormData(reviewFormCode as string),
+  const getReviewFormQuery = useQuery<ReviewForm, AxiosError<ErrorResponse>, ReviewForm>(
+    ['getReviewFormData', { reviewFormCode }],
+    () => reviewAPI.getForm(reviewFormCode),
     {
       enabled: !!reviewFormCode,
       suspense: true,
