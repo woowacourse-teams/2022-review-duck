@@ -80,10 +80,10 @@ function CreateReviewFormPage() {
     event.preventDefault();
 
     // TODO: 유효성 검증 작성 컨벤션 협의 후 부분 분리
-    /*     if (!reviewTitle) {
+    if (!reviewTitle) {
       alert('회고의 제목을 입력해주세요.');
       return;
-    } */
+    }
 
     const validQuestions = questions.filter((question) => !!question.questionValue?.trim());
     const removeListKey = validQuestions.map((question) => {
@@ -102,13 +102,19 @@ function CreateReviewFormPage() {
       { reviewTitle, reviewFormCode, questions: removeListKey },
       {
         onSuccess: ({ reviewFormCode }) => {
-          alert(`추가/수정에 성공하였습니다. 코드 : ${reviewFormCode}`);
+          navigate(`/overview/${reviewFormCode}`, { replace: true });
         },
         onError: ({ message }) => {
           alert(message);
         },
       },
     );
+  };
+
+  const onClickCancel = () => {
+    if (!confirm('회고 생성을 정말 취소하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
+
+    navigate('/');
   };
 
   return (
@@ -156,7 +162,7 @@ function CreateReviewFormPage() {
           </div>
 
           <div className={cn('button-container horizontal')}>
-            <Button theme="outlined">
+            <Button theme="outlined" onClick={onClickCancel}>
               <Icon code="cancel" />
               <span>취소하기</span>
             </Button>

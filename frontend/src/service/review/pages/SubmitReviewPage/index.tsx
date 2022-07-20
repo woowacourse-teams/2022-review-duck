@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-import { Navigate, useParams } from 'react-router-dom';
+import { Navigate, useParams, useNavigate } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -17,6 +17,7 @@ import useReviewQueries from './useReviewQueries';
 
 function SubmitReviewPage() {
   const { reviewFormCode = '' } = useParams();
+  const navigate = useNavigate();
 
   const { getQuestionsQuery, reviewForm, reviewMutation } = useReviewQueries(reviewFormCode);
   const { questions, updateQuestion } = useQuestions(reviewForm.questions);
@@ -38,13 +39,20 @@ function SubmitReviewPage() {
         questionId: question.questionId,
       };
     });
-    const nickname = '돔하디';
+
+    // TODO: 모달로 교체 및 첫 접속 시 비로그인일 때 닉네임 물어보기.
+    const nickname = prompt('닉네임을 입력해주세요.');
+
+    if (!nickname) {
+      return;
+    }
 
     reviewMutation.mutate(
       { reviewFormCode, answers, nickname },
       {
         onSuccess: () => {
           alert('회고 답변을 성공적으로 제출했습니다.');
+          navigate(`/overview/${reviewFormCode}`, { replace: true });
         },
         onError: ({ message }) => {
           alert(message);
@@ -129,14 +137,19 @@ function SubmitReviewPage() {
               </FieldSet>
             </div>
           ))}
-          <div className={cn(styles.buttonContainer)}>
+          <div className={cn('button-container horizontal')}>
+            <Button theme="outlined">
+              <Icon code="cancel" />
+              <span>취소하기</span>
+            </Button>
+
             <Button
               type="submit"
               onClick={onSubmitReviewForm}
               disabled={answeredCount !== questions.length}
             >
-              <Icon code="send"></Icon>
-              제출하기
+              <Icon code="send" />
+              <span>제출하기</span>
             </Button>
           </div>
         </form>
