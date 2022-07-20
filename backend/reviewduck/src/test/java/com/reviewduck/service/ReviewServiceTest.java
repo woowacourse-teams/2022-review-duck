@@ -21,6 +21,7 @@ import com.reviewduck.dto.request.QuestionRequest;
 import com.reviewduck.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.dto.request.ReviewRequest;
 import com.reviewduck.exception.NotFoundException;
+import com.reviewduck.exception.ReviewException;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")
@@ -82,8 +83,8 @@ public class ReviewServiceTest {
     }
 
     @Test
-    @DisplayName("유효하지 않은 질문 번호로 회고를 작성할 수 없다.")
-    void saveReviewWithInvalidQuestionId() {
+    @DisplayName("존재하지 않는 질문 번호로 회고를 작성할 수 없다.")
+    void saveReviewWithNotExistQuestionId() {
         //given
         ReviewRequest reviewCreateRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(123445L, "answer1"),
@@ -93,6 +94,25 @@ public class ReviewServiceTest {
         assertThatThrownBy(() -> reviewService.save(savedReviewForm.getCode(), reviewCreateRequest))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 질문입니다.");
+    }
+
+    @Test
+    @DisplayName("회고 폼에 포함되지 않는 질문 번호로 회고를 작성할 수 없다.")
+    void saveReviewWithNotIncludedQuestionId() {
+        //given
+        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest("dummy title",
+            List.of(new QuestionRequest("dummy question")));
+
+        Long questionIdNotInReviewForm = reviewFormService.save(createRequest).getQuestions().get(0).getId();
+
+        ReviewRequest reviewCreateRequest = new ReviewRequest("제이슨",
+            List.of(new AnswerRequest(questionId1, "answer1"),
+                new AnswerRequest(questionIdNotInReviewForm, "dummy answer")));
+
+        // when, then
+        assertThatThrownBy(() -> reviewService.save(savedReviewForm.getCode(), reviewCreateRequest))
+            .isInstanceOf(ReviewException.class)
+            .hasMessageContaining("회고 폼에 포함되지 않은 질문이 존재합니다.");
     }
 
     @Test

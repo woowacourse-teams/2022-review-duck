@@ -96,4 +96,8 @@ public class ReviewForm extends BaseDate {
             throw new ReviewFormException("회고 폼의 제목은 비어있을 수 없습니다.");
         }
     }
+
+    public boolean contains(Question question) {
+        return questions.contains(question);
+    }
 }
