@@ -1,11 +1,11 @@
 alter table review
-    add column createdAt DATETIME;
+    add column created_at DATETIME;
     
 alter table review
-    add column updatedAt DATETIME;
+    add column updated_at DATETIME;
     
 alter table review_form
-    add column createdAt DATETIME;
+    add column created_at DATETIME;
     
 alter table review_form
-    add column updatedAt DATETIME;
+    add column updated_at DATETIME;
