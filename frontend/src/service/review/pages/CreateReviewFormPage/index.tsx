@@ -13,7 +13,7 @@ import cn from 'classnames';
 
 import useQuestions from 'service/review/hooks/useQuestions';
 
-import { setFormFocus } from 'common/utils';
+import { setFormFocus } from 'service/@shared/utils';
 
 import { Button, Icon, Logo, TextBox } from 'common/components';
 
@@ -80,10 +80,10 @@ function CreateReviewFormPage() {
     event.preventDefault();
 
     // TODO: 유효성 검증 작성 컨벤션 협의 후 부분 분리
-    if (!reviewTitle) {
+    /*     if (!reviewTitle) {
       alert('회고의 제목을 입력해주세요.');
       return;
-    }
+    } */
 
     const validQuestions = questions.filter((question) => !!question.questionValue?.trim());
     const removeListKey = validQuestions.map((question) => {
@@ -104,10 +104,8 @@ function CreateReviewFormPage() {
         onSuccess: ({ reviewFormCode }) => {
           alert(`추가/수정에 성공하였습니다. 코드 : ${reviewFormCode}`);
         },
-        onError: ({ response }) => {
-          // TODO: 오류 메시지 파싱 함수 필요
-          const errorMessage = response && response.data.message;
-          alert(errorMessage);
+        onError: ({ message }) => {
+          alert(message);
         },
       },
     );

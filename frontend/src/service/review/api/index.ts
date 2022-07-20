@@ -1,32 +1,28 @@
-import { ReviewFormRequest, SubmitAnswer } from '../types';
+import { ReviewFormRequest, SubmitAnswerRequest } from '../types';
 
-import { request } from 'common/utils';
+import { axiosInstance } from 'service/@shared/utils';
 
-const getFormData = async (reviewFormCode: string) =>
-  (await request.get(`/api/review-forms/${reviewFormCode}`)).data;
+const getForm = async (reviewFormCode: string) =>
+  (await axiosInstance.get(`/api/review-forms/${reviewFormCode}`)).data;
 
 const createForm = async (query: ReviewFormRequest) =>
-  (await request.post('/api/review-forms', query)).data;
+  (await axiosInstance.post('/api/review-forms', query)).data;
 
 const updateForm = async ({ reviewFormCode, reviewTitle, questions }: ReviewFormRequest) =>
-  (await request.put(`/api/review-forms/${reviewFormCode}`, { reviewTitle, questions })).data;
+  (await axiosInstance.put(`/api/review-forms/${reviewFormCode}`, { reviewTitle, questions })).data;
 
-const getQuestions = async (reviewFormCode: string) =>
-  (await request.get(`/api/review-forms/${reviewFormCode}`)).data;
-
-const submitAnswer = async (query: SubmitAnswer) =>
+const submitAnswer = async (query: SubmitAnswerRequest) =>
   (
-    await request.post(`/api/review-forms/${query.reviewFormCode}`, {
+    await axiosInstance.post(`/api/review-forms/${query.reviewFormCode}`, {
       answers: query.answers,
       nickname: query.nickname,
     })
   ).data;
 
 const reviewAPI = {
-  getFormData,
+  getForm,
   createForm,
   updateForm,
-  getQuestions,
   submitAnswer,
 };
 
