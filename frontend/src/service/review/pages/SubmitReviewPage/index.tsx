@@ -46,8 +46,8 @@ function SubmitReviewPage() {
         onSuccess: () => {
           alert('회고 답변을 성공적으로 제출했습니다.');
         },
-        onError: (error: any) => {
-          alert(error.message);
+        onError: ({ message }) => {
+          alert(message);
         },
       },
     );
