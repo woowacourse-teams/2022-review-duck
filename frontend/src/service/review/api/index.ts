@@ -2,7 +2,7 @@ import { ReviewFormRequest, SubmitAnswerRequest } from '../types';
 
 import { axiosInstance } from 'service/@shared/utils';
 
-const getForm = async (reviewFormCode: string) =>
+const getForm = async (reviewFormCode = '') =>
   (await axiosInstance.get(`/api/review-forms/${reviewFormCode}`)).data;
 
 const createForm = async (query: ReviewFormRequest) =>
