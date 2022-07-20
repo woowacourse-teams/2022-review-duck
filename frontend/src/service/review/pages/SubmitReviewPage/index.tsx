@@ -1,5 +1,5 @@
-import { ChangeEvent, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { ChangeEvent, useState } from 'react';
+import { Navigate, useParams } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -13,24 +13,16 @@ import dom from 'assets/images/dom.png';
 
 import styles from './styles.module.scss';
 
-import useReview from './useReview';
+import useReviewQueries from './useReviewQueries';
 
 function SubmitReviewPage() {
-  const navigate = useNavigate();
   const { reviewFormCode = '' } = useParams();
 
-  const { getQuestionsQuery, reviewForm, reviewMutation } = useReview(reviewFormCode);
+  const { getQuestionsQuery, reviewForm, reviewMutation } = useReviewQueries(reviewFormCode);
   const { questions, updateQuestion } = useQuestions(reviewForm.questions);
 
   const [currentQuestion, setCurrentQuestion] = useState<Question>(reviewForm.questions[0] || {});
-  const [reviewTitle, setReviewTitle] = useState<string>(reviewForm.reviewTitle);
-
-  useEffect(() => {
-    if (getQuestionsQuery.isError) {
-      alert('존재하지 않는 참여 코드입니다.');
-      navigate('/');
-    }
-  }, [getQuestionsQuery.isError]);
+  const [reviewTitle] = useState<string>(reviewForm.reviewTitle);
 
   const answeredCount = questions.reduce(
     (prev, current) => (current.answerValue ? prev + 1 : prev),
@@ -70,6 +62,11 @@ function SubmitReviewPage() {
 
     updateQuestion(index, { answerValue: $inputTarget.value });
   };
+
+  if (getQuestionsQuery.isError) {
+    alert('찾을 수 없는 참여 코드입니다.');
+    return <Navigate to={'/'} replace={true} />;
+  }
 
   return (
     <>
