@@ -9,8 +9,13 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     const newError = error;
+    const { response = '' } = newError;
 
-    newError.message = error.response.data.message || newError.message;
+    const responseErrorMessage = response.data?.message;
+
+    newError.message =
+      responseErrorMessage || `서버 통신 중 오류가 발생하였습니다.\n(원인 : ${newError.message})`;
+
     return Promise.reject(newError);
   },
 );
