@@ -10,7 +10,9 @@ import com.reviewduck.dto.request.AnswerRequest;
 import com.reviewduck.dto.request.QuestionRequest;
 import com.reviewduck.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.dto.request.ReviewRequest;
+import com.reviewduck.dto.response.QuestionResponse;
 import com.reviewduck.dto.response.ReviewFormCodeResponse;
+import com.reviewduck.dto.response.ReviewFormResponse;
 import com.reviewduck.dto.response.ReviewsFindResponse;
 
 public class ReviewAcceptanceTest extends AcceptanceTest {
@@ -71,6 +73,28 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
+    private Long saveReviewAndGetId() {
+        String reviewTitle = "title";
+        List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
+            new QuestionRequest("question2"));
+
+        String code = createReviewFormAndGetCode(reviewTitle, questions);
+        List<QuestionResponse> questionsInReviewForm = get("/api/review-forms/" + code)
+            .extract()
+            .as(ReviewFormResponse.class).getQuestions();
+
+        ReviewRequest createRequest = new ReviewRequest("제이슨",
+            List.of(new AnswerRequest(questionsInReviewForm.get(0).getQuestionId(), "answer1"),
+                new AnswerRequest(questionsInReviewForm.get(1).getQuestionId(), "answer2")));
+        post("/api/review-forms/" + code, createRequest);
+
+        return get("/api/review-forms/" + code + "/reviews")
+            .extract()
+            .as(ReviewsFindResponse.class).getReviews()
+            .get(0)
+            .getReviewId();
+    }
+
     private String createReviewFormAndGetCode(String reviewTitle, List<QuestionRequest> questions) {
         // given
         ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
@@ -80,21 +104,5 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             .extract()
             .as(ReviewFormCodeResponse.class)
             .getReviewFormCode();
-    }
-
-    private Long saveReviewAndGetId() {
-        String reviewTitle = "title";
-        List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
-            new QuestionRequest("question2"));
-        String code = createReviewFormAndGetCode(reviewTitle, questions);
-        ReviewRequest createRequest = new ReviewRequest("제이슨",
-            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
-        post("/api/review-forms/" + code, createRequest);
-
-        return get("/api/review-forms/" + code + "/reviews")
-            .extract()
-            .as(ReviewsFindResponse.class).getReviews()
-            .get(0)
-            .getReviewId();
     }
 }

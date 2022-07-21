@@ -59,4 +59,19 @@ public class Question {
     public void setPosition(int position) {
         this.position = position;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Question question = (Question)o;
+        return Objects.equals(id, question.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

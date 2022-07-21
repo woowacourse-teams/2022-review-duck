@@ -137,7 +137,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("존재하지 않는 질문에 대해 답변을 작성하면 회고 작성에 실패한다.")
-    void failToCreateReview() {
+    void createReviewWithNotExistQuestion() {
         // given
         String reviewTitle = "title";
         List<QuestionRequest> questions = List.of(new QuestionRequest("question1"));
@@ -152,6 +152,31 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
         post("/api/review-forms/" + code, createRequest)
             .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    @DisplayName("회고 폼에 없는 질문에 대해 답변을 작성하면 회고 작성에 실패한다.")
+    void createReviewWithQuestionNotInReviewForm() {
+        // given
+        String reviewTitle = "title";
+        List<QuestionRequest> questions = List.of(new QuestionRequest("question1"));
+        String code = createReviewFormAndGetCode(reviewTitle, questions);
+
+        List<QuestionRequest> dummyQuestions = List.of(new QuestionRequest("dummy question"));
+        createReviewFormAndGetCode("dummy title", dummyQuestions);
+
+        // when, then
+        // 질문조회
+        assertReviewTitleFromFoundReviewForm(code, reviewTitle);
+
+        // 리뷰생성
+        Long questionIdInReviewForm = 1L;
+        Long questionIdNotInReviewForm = 2L;
+        ReviewRequest createRequest = new ReviewRequest("제이슨",
+            List.of(new AnswerRequest(questionIdInReviewForm, "answer1"),
+                new AnswerRequest(questionIdNotInReviewForm, "answer2")));
+        post("/api/review-forms/" + code, createRequest)
+            .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
