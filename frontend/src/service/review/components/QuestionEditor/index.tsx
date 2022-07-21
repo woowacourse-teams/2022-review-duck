@@ -19,17 +19,18 @@ interface Props {
 
 function QuestionEditor({ numbering, value, onChange, onAddQuestion, onDeleteQuestion }: Props) {
   const handleKeyUpTextBox = (event: KeyboardEvent<HTMLInputElement>) => {
+    // TODO: 키보드 입력 버그 고치기 - 한글 입력 후 엔터가 두번 발생되는 문제
+
+    if (event.key !== 'Enter') return;
+
+    onAddQuestion && onAddQuestion(event);
+  };
+
+  const handleKeyDownTextBox = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.target.value || event.key !== 'Backspace') return;
+
     event.preventDefault();
-
-    switch (event.key) {
-      case 'Enter':
-        onAddQuestion && onAddQuestion(event);
-        break;
-
-      case 'Backspace':
-        onDeleteQuestion && !value && onDeleteQuestion(event);
-        break;
-    }
+    onDeleteQuestion && !event.target.value && onDeleteQuestion(event);
   };
 
   return (
@@ -43,6 +44,7 @@ function QuestionEditor({ numbering, value, onChange, onAddQuestion, onDeleteQue
         placeholder="질문 타이틀을 입력해주세요."
         value={value}
         onChange={onChange}
+        onKeyDown={handleKeyDownTextBox}
         onKeyUp={handleKeyUpTextBox}
       />
 
