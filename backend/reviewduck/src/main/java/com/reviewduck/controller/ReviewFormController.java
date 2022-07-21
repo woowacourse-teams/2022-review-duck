@@ -97,9 +97,9 @@ public class ReviewFormController {
         log.info("uri={}, method = {}, request = {}",
             "/api/review-forms/" + reviewFormCode + "/reviews", "GET", "");
 
-        String reviewTitle = reviewFormService.findByCode(reviewFormCode).getReviewTitle();
+        ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
         List<Review> reviews = reviewService.findAllByCode(reviewFormCode);
 
-        return ReviewsFindResponse.of(reviewTitle, reviews);
+        return ReviewsFindResponse.of(reviewForm, reviews);
     }
 }
