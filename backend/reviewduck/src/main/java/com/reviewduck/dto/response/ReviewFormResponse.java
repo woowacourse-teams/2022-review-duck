@@ -19,7 +19,7 @@ public class ReviewFormResponse {
     private List<QuestionResponse> questions;
 
     public static ReviewFormResponse from(ReviewForm reviewForm) {
-        List<QuestionResponse> questionResponses = reviewForm.getQuestions().stream()
+        List<QuestionResponse> questionResponses = reviewForm.getReviewFormQuestions().stream()
             .map(QuestionResponse::from)
             .collect(Collectors.toUnmodifiableList());
 

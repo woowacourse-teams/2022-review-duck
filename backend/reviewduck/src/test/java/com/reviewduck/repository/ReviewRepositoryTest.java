@@ -34,8 +34,8 @@ public class ReviewRepositoryTest {
         this.savedReviewForm = reviewFormRepository.save(reviewForm);
         this.review = Review.of("제이슨", savedReviewForm,
             List.of(
-                new QuestionAnswer(savedReviewForm.getQuestions().get(0), new Answer("answer1")),
-                new QuestionAnswer(savedReviewForm.getQuestions().get(1), new Answer("answer2"))
+                new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(0), new Answer("answer1")),
+                new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(1), new Answer("answer2"))
             )
         );
     }

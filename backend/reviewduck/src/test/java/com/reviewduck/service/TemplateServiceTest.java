@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.reviewduck.domain.Question;
+import com.reviewduck.domain.ReviewFormQuestion;
 import com.reviewduck.domain.Template;
 import com.reviewduck.dto.request.QuestionRequest;
 import com.reviewduck.dto.request.QuestionUpdateRequest;
@@ -40,7 +40,7 @@ public class TemplateServiceTest {
         List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
             new QuestionRequest("question2"));
 
-        List<Question> expected = convertRequestToQuestions(questions);
+        List<ReviewFormQuestion> expected = convertRequestToQuestions(questions);
 
         // when
         Template template = saveTemplate(templateTitle, templateDescription, questions);
@@ -77,7 +77,7 @@ public class TemplateServiceTest {
         List<QuestionRequest> questions = List.of(new QuestionRequest("question1"),
             new QuestionRequest("question2"));
 
-        List<Question> expected = convertRequestToQuestions(questions);
+        List<ReviewFormQuestion> expected = convertRequestToQuestions(questions);
         Template template = saveTemplate(templateTitle, templateDescription, questions);
 
         // when
@@ -177,13 +177,13 @@ public class TemplateServiceTest {
         templateService.update(template.getId(),
             new TemplateUpdateRequest("new title", "new description", newQuestions));
 
-        List<Question> expectedQuestions = newQuestions.stream()
-            .map(questionUpdateRequest -> new Question(questionUpdateRequest.getQuestionValue()))
+        List<ReviewFormQuestion> expectedReviewFormQuestions = newQuestions.stream()
+            .map(questionUpdateRequest -> new ReviewFormQuestion(questionUpdateRequest.getQuestionValue()))
             .collect(Collectors.toList());
 
         int index = 0;
-        for (Question question : expectedQuestions) {
-            question.setPosition(index++);
+        for (ReviewFormQuestion reviewFormQuestion : expectedReviewFormQuestions) {
+            reviewFormQuestion.setPosition(index++);
         }
 
         Template updatedTemplate = templateService.findById(template.getId());
@@ -197,18 +197,18 @@ public class TemplateServiceTest {
             () -> assertThat(updatedTemplate.getQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(expectedQuestions)
+                .isEqualTo(expectedReviewFormQuestions)
         );
     }
 
-    private List<Question> convertRequestToQuestions(List<QuestionRequest> questions) {
-        List<Question> expected = questions.stream()
-            .map(questionRequest -> new Question(questionRequest.getQuestionValue()))
+    private List<ReviewFormQuestion> convertRequestToQuestions(List<QuestionRequest> questions) {
+        List<ReviewFormQuestion> expected = questions.stream()
+            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
             .collect(Collectors.toList());
 
         int index = 0;
-        for (Question question : expected) {
-            question.setPosition(index++);
+        for (ReviewFormQuestion reviewFormQuestion : expected) {
+            reviewFormQuestion.setPosition(index++);
         }
         return expected;
     }

@@ -2,7 +2,7 @@ package com.reviewduck.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.reviewduck.domain.Question;
+import com.reviewduck.domain.ReviewFormQuestion;
 
-public interface QuestionRepository extends JpaRepository<Question, Long> {
+public interface QuestionRepository extends JpaRepository<ReviewFormQuestion, Long> {
 }

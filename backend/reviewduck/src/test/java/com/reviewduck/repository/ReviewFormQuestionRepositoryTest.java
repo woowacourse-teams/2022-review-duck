@@ -8,10 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import com.reviewduck.domain.Question;
+import com.reviewduck.domain.ReviewFormQuestion;
 
 @DataJpaTest
-public class QuestionRepositoryTest {
+public class ReviewFormQuestionRepositoryTest {
 
     @Autowired
     private QuestionRepository questionRepository;
@@ -20,15 +20,15 @@ public class QuestionRepositoryTest {
     @DisplayName("질문을 저장한다.")
     void saveQuestion() {
         // given
-        Question question = new Question("new question");
+        ReviewFormQuestion reviewFormQuestion = new ReviewFormQuestion("new question");
 
         // when
-        Question savedQuestion = questionRepository.save(question);
+        ReviewFormQuestion savedReviewFormQuestion = questionRepository.save(reviewFormQuestion);
 
         // then
         assertAll(
-            () -> assertThat(savedQuestion.getValue()).isEqualTo(question.getValue()),
-            () -> assertThat(savedQuestion.getId()).isNotNull()
+            () -> assertThat(savedReviewFormQuestion.getValue()).isEqualTo(reviewFormQuestion.getValue()),
+            () -> assertThat(savedReviewFormQuestion.getId()).isNotNull()
         );
     }
 }

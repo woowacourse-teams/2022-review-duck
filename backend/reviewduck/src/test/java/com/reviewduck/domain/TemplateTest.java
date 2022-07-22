@@ -74,7 +74,7 @@ class TemplateTest {
         //given
         Template template = new Template("템플릿 제목", "템플릿 설명", List.of("질문1", "질문2", "질문3"));
         List<Integer> actual = template.getQuestions().stream()
-            .map(Question::getPosition)
+            .map(TemplateQuestion::getPosition)
             .collect(Collectors.toUnmodifiableList());
         List<Integer> expected = List.of(0, 1, 2);
 

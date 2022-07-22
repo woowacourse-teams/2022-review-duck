@@ -7,10 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.domain.Answer;
-import com.reviewduck.domain.Question;
 import com.reviewduck.domain.QuestionAnswer;
 import com.reviewduck.domain.Review;
 import com.reviewduck.domain.ReviewForm;
+import com.reviewduck.domain.ReviewFormQuestion;
 import com.reviewduck.dto.request.AnswerRequest;
 import com.reviewduck.dto.request.ReviewRequest;
 import com.reviewduck.exception.NotFoundException;
@@ -44,9 +44,9 @@ public class ReviewService {
     private List<QuestionAnswer> convertToQuestionAnswers(List<AnswerRequest> answerRequests) {
         List<QuestionAnswer> questionAnswers = new ArrayList<>();
         for (AnswerRequest answerRequest : answerRequests) {
-            Question question = questionRepository.findById(answerRequest.getQuestionId())
+            ReviewFormQuestion reviewFormQuestion = questionRepository.findById(answerRequest.getQuestionId())
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
-            questionAnswers.add(new QuestionAnswer(question, new Answer(answerRequest.getAnswerValue())));
+            questionAnswers.add(new QuestionAnswer(reviewFormQuestion, new Answer(answerRequest.getAnswerValue())));
         }
 
         return questionAnswers;

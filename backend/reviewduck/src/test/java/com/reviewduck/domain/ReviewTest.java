@@ -20,7 +20,7 @@ public class ReviewTest {
         //when, then
         assertDoesNotThrow(() -> Review.of("제이슨",
             new ReviewForm("title", List.of("question1")),
-            List.of(new QuestionAnswer(new Question("question1"), new Answer("answer1")))));
+            List.of(new QuestionAnswer(new ReviewFormQuestion("question1"), new Answer("answer1")))));
     }
 
     @ParameterizedTest
@@ -30,7 +30,7 @@ public class ReviewTest {
         //when, then
         assertThatThrownBy(() -> Review.of(nickname,
             new ReviewForm("title", List.of("question1")),
-            List.of(new QuestionAnswer(new Question("question1"), new Answer("answer1")))))
+            List.of(new QuestionAnswer(new ReviewFormQuestion("question1"), new Answer("answer1")))))
             .isInstanceOf(ReviewException.class)
             .hasMessageContaining("닉네임이 비어있을 수 없습니다.");
     }
@@ -42,9 +42,9 @@ public class ReviewTest {
         ReviewForm reviewForm = new ReviewForm("리뷰폼 제목", List.of("질문1", "질문2", "질문3"));
         Review review = Review.of("제이슨", reviewForm,
             List.of(
-                new QuestionAnswer(new Question("질문1"), new Answer("answer1")),
-                new QuestionAnswer(new Question("질문2"), new Answer("answer2")),
-                new QuestionAnswer(new Question("질문3"), new Answer("answer3"))
+                new QuestionAnswer(new ReviewFormQuestion("질문1"), new Answer("answer1")),
+                new QuestionAnswer(new ReviewFormQuestion("질문2"), new Answer("answer2")),
+                new QuestionAnswer(new ReviewFormQuestion("질문3"), new Answer("answer3"))
             ));
 
         List<Integer> actual = review.getQuestionAnswers().stream()

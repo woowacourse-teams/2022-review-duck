@@ -7,13 +7,13 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.reviewduck.domain.Question;
 import com.reviewduck.domain.Template;
+import com.reviewduck.domain.TemplateQuestion;
 import com.reviewduck.dto.request.QuestionRequest;
 import com.reviewduck.dto.request.TemplateCreateRequest;
 import com.reviewduck.dto.request.TemplateUpdateRequest;
 import com.reviewduck.exception.NotFoundException;
-import com.reviewduck.repository.QuestionRepository;
+import com.reviewduck.repository.TemplateQuestionRepository;
 import com.reviewduck.repository.TemplateRepository;
 
 @Service
@@ -21,10 +21,10 @@ import com.reviewduck.repository.TemplateRepository;
 public class TemplateService {
 
     private final TemplateRepository templateRepository;
-    private final QuestionRepository questionRepository;
+    private final TemplateQuestionRepository questionRepository;
 
     public TemplateService(TemplateRepository templateRepository,
-        QuestionRepository questionRepository) {
+        TemplateQuestionRepository questionRepository) {
         this.templateRepository = templateRepository;
         this.questionRepository = questionRepository;
     }
@@ -57,7 +57,7 @@ public class TemplateService {
     public Template update(Long id, TemplateUpdateRequest templateUpdateRequest) {
         Template template = findById(id);
 
-        List<Question> questions = templateUpdateRequest.getQuestions().stream()
+        List<TemplateQuestion> questions = templateUpdateRequest.getQuestions().stream()
             .map(request -> saveOrUpdateQuestion(request.getQuestionId(), request.getQuestionValue()))
             .collect(Collectors.toUnmodifiableList());
 
@@ -67,12 +67,12 @@ public class TemplateService {
         return template;
     }
 
-    private Question saveOrUpdateQuestion(Long questionId, String questionValue) {
+    private TemplateQuestion saveOrUpdateQuestion(Long questionId, String questionValue) {
         if (Objects.isNull(questionId)) {
-            return questionRepository.save(new Question(questionValue));
+            return questionRepository.save(new TemplateQuestion(questionValue));
         }
 
-        Question question = questionRepository.findById(questionId)
+        TemplateQuestion question = questionRepository.findById(questionId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
 
         question.updateValue(questionValue);

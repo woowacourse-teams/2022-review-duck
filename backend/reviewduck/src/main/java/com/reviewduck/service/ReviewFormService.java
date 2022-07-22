@@ -7,9 +7,10 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.reviewduck.domain.Question;
 import com.reviewduck.domain.ReviewForm;
+import com.reviewduck.domain.ReviewFormQuestion;
 import com.reviewduck.domain.Template;
+import com.reviewduck.domain.TemplateQuestion;
 import com.reviewduck.dto.request.QuestionRequest;
 import com.reviewduck.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.dto.request.ReviewFormCreateRequest;
@@ -51,33 +52,33 @@ public class ReviewFormService {
     public ReviewForm update(String code, ReviewFormUpdateRequest updateRequest) {
         ReviewForm reviewForm = findByCode(code);
 
-        List<Question> questions = updateRequest.getQuestions().stream()
+        List<ReviewFormQuestion> reviewFormQuestions = updateRequest.getQuestions().stream()
             .map(request -> saveOrUpdateQuestion(request.getQuestionId(), request.getQuestionValue()))
             .collect(Collectors.toUnmodifiableList());
 
-        reviewForm.update(updateRequest.getReviewTitle(), questions);
+        reviewForm.update(updateRequest.getReviewTitle(), reviewFormQuestions);
 
         return reviewForm;
     }
 
-    private Question saveOrUpdateQuestion(Long questionId, String questionValue) {
+    private ReviewFormQuestion saveOrUpdateQuestion(Long questionId, String questionValue) {
         if (Objects.isNull(questionId)) {
-            return questionRepository.save(new Question(questionValue));
+            return questionRepository.save(new ReviewFormQuestion(questionValue));
         }
 
-        Question question = questionRepository.findById(questionId)
+        ReviewFormQuestion reviewFormQuestion = questionRepository.findById(questionId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
 
-        question.updateValue(questionValue);
+        reviewFormQuestion.updateValue(questionValue);
 
-        return question;
+        return reviewFormQuestion;
     }
 
     public ReviewForm saveFromTemplate(Long templateId, ReviewFormCreateFromTemplateRequest request) {
         Template template = templateService.findById(templateId);
 
         List<String> questionValues = template.getQuestions().stream()
-            .map(Question::getValue)
+            .map(TemplateQuestion::getValue)
             .collect(Collectors.toUnmodifiableList());
 
         ReviewForm reviewForm = new ReviewForm(request.getReviewFormTitle(), questionValues);

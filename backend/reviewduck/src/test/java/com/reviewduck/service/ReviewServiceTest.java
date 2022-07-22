@@ -45,8 +45,8 @@ public class ReviewServiceTest {
 
         this.savedReviewForm = reviewFormService.save(createRequest);
 
-        this.questionId1 = savedReviewForm.getQuestions().get(0).getId();
-        this.questionId2 = savedReviewForm.getQuestions().get(1).getId();
+        this.questionId1 = savedReviewForm.getReviewFormQuestions().get(0).getId();
+        this.questionId2 = savedReviewForm.getReviewFormQuestions().get(1).getId();
     }
 
     @Test
