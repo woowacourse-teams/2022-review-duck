@@ -26,14 +26,15 @@ function useReviewFormQueries(reviewFormCode = '') {
     ReviewFormRequest
   >(reviewAPI.updateForm, {
     onSuccess: () => {
-      queryClient.invalidateQueries(['getReviewFormData', { reviewFormCode }]);
+      queryClient.invalidateQueries(['getReviewForm', { reviewFormCode }]);
+      queryClient.invalidateQueries(['getReviews', { reviewFormCode }]);
     },
   });
 
   const reviewFormMutation = reviewFormCode ? updateMutation : createMutation;
 
   const getReviewFormQuery = useQuery<ReviewForm, AxiosError<ErrorResponse>, ReviewForm>(
-    ['getReviewFormData', { reviewFormCode }],
+    ['getReviewForm', { reviewFormCode }],
     () => reviewAPI.getForm(reviewFormCode),
     {
       enabled: !!reviewFormCode,
