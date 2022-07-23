@@ -1,6 +1,6 @@
 import cn from 'classnames';
 
-import { Text } from 'common/components';
+import { Icon, Text } from 'common/components';
 
 import styles from './styles.module.scss';
 
@@ -14,7 +14,9 @@ interface Props extends React.HTMLAttributes<HTMLDivElement> {
 function Profile({ type, image, title, description, ...rest }: Props) {
   return (
     <div className={cn(styles.container, styles[type])} {...rest}>
-      <div className={styles.image} style={{ backgroundImage: 'url(' + image + ')' }} />
+      <div className={styles.image} style={{ backgroundImage: 'url(' + image + ')' }}>
+        <Icon code="add_reaction" />
+      </div>
 
       {type === 'square' && (
         <div className={styles.text}>
