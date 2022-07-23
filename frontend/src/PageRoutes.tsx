@@ -1,9 +1,11 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
+import { PAGE_LIST } from 'service/@shared/constants';
 import ReviewLayout from 'service/review/layout/ReviewLayout';
 import CreateReviewFormPage from 'service/review/pages/CreateReviewFormPage';
 import JoinReviewPage from 'service/review/pages/JoinReviewPage';
 import MainPage from 'service/review/pages/MainPage';
+import Playground from 'service/review/pages/Playground';
 import ReviewListPage from 'service/review/pages/ReviewListPage';
 import SubmitReviewPage from 'service/review/pages/SubmitReviewPage';
 
@@ -14,19 +16,25 @@ function PageRoutes() {
         <Route element={<ReviewLayout />}>
           <Route index element={<MainPage />} />
 
-          <Route path="review-forms">
-            <Route index element={<CreateReviewFormPage />} />
-            <Route path=":reviewFormCode" element={<CreateReviewFormPage />} />
+          <Route>
+            <Route path={PAGE_LIST.REVIEW_FORM} element={<CreateReviewFormPage />}>
+              <Route path={':reviewFormCode'} />
+            </Route>
           </Route>
 
-          <Route path="review">
-            <Route index element={<SubmitReviewPage />} />
-            <Route path="join" element={<JoinReviewPage />} />
-            <Route path="submit/:reviewFormCode" element={<SubmitReviewPage />} />
+          <Route>
+            <Route path={PAGE_LIST.REVIEW_JOIN} element={<JoinReviewPage />} />
+            <Route path={PAGE_LIST.REVIEW} element={<SubmitReviewPage />}>
+              <Route path=":reviewFormCode" />
+            </Route>
           </Route>
         </Route>
 
-        <Route path="overview/:reviewFormCode" element={<ReviewListPage />} />
+        <Route path={PAGE_LIST.REVIEW_ANSWER_LIST} element={<ReviewListPage />}>
+          <Route path=":reviewFormCode" />
+        </Route>
+
+        <Route path="playground" element={<Playground />} />
       </Routes>
     </BrowserRouter>
   );

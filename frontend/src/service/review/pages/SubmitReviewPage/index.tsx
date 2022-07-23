@@ -14,6 +14,7 @@ import dom from 'assets/images/dom.png';
 import styles from './styles.module.scss';
 
 import useReviewQueries from './useReviewQueries';
+import { PAGE_LIST } from 'service/@shared/constants';
 
 function SubmitReviewPage() {
   const { reviewFormCode = '' } = useParams();
@@ -52,7 +53,7 @@ function SubmitReviewPage() {
       {
         onSuccess: () => {
           alert('회고 답변을 성공적으로 제출했습니다.');
-          navigate(`/overview/${reviewFormCode}`, { replace: true });
+          navigate(`${PAGE_LIST.REVIEW_ANSWER_LIST}/${reviewFormCode}`, { replace: true });
         },
         onError: ({ message }) => {
           alert(message);

@@ -12,6 +12,8 @@ import imageHero from 'assets/images/demo-create.png';
 
 import styles from './styles.module.scss';
 
+import { PAGE_LIST } from 'service/@shared/constants';
+
 function JoinReviewPage() {
   const [reviewFormCode, setReviewFormCode] = useState<string>('');
   const navigate = useNavigate();
@@ -29,7 +31,7 @@ function JoinReviewPage() {
     event.preventDefault();
     try {
       checkValidation(reviewFormCode);
-      navigate(`/review/submit/${reviewFormCode}`);
+      navigate(`${PAGE_LIST.REVIEW}/${reviewFormCode}`);
     } catch (error: any) {
       alert(error.message);
     }
@@ -52,7 +54,7 @@ function JoinReviewPage() {
           </FieldSet>
 
           <div className={cn('button-container horizontal')}>
-            <Link to={'/'}>
+            <Link to={PAGE_LIST.HOME}>
               <Button size="medium" theme="outlined">
                 <Icon code="cancel" />
                 <span>취소하기</span>

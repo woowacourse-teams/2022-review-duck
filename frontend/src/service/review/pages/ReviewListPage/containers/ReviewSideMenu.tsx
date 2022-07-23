@@ -8,6 +8,7 @@ import { useGetReviewsQuery } from 'service/review/hooks/queries';
 import { Button, Icon, Text, TextBox } from 'common/components';
 
 import styles from '../styles.module.scss';
+import { PAGE_LIST } from 'service/@shared/constants';
 
 function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
   const { data } = useGetReviewsQuery(reviewFormCode);
@@ -64,7 +65,7 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
           </div>
         </div>
 
-        <Link to={`/review/submit/${reviewFormCode}`}>
+        <Link to={`${PAGE_LIST.REVIEW}/${reviewFormCode}`}>
           <Button className={styles.joinButton} theme="outlined">
             <Icon code="group_add"></Icon>이 회고에 참여하기
           </Button>
@@ -92,7 +93,7 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
           </Text>
 
           <div className={styles.buttonContainer}>
-            <Link to={`/review-forms/${reviewFormCode}`}>
+            <Link to={`${PAGE_LIST.REVIEW_FORM}/${reviewFormCode}`}>
               <Button size="small">
                 <Icon code="edit_note"></Icon>
                 질문 수정

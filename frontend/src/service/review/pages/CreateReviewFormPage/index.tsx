@@ -23,6 +23,7 @@ import QuestionEditor from 'service/review/components/QuestionEditor';
 import styles from './styles.module.scss';
 
 import useReviewFormQueries from './useReviewFormQueries';
+import { PAGE_LIST } from 'service/@shared/constants';
 
 function CreateReviewFormPage() {
   const { reviewFormCode } = useParams();
@@ -39,7 +40,7 @@ function CreateReviewFormPage() {
   useEffect(() => {
     if (getReviewFormQuery.isError) {
       alert('존재하지 않는 회고 폼입니다.');
-      navigate('/');
+      navigate(PAGE_LIST.HOME);
     }
   }, []);
 
@@ -102,7 +103,7 @@ function CreateReviewFormPage() {
       { reviewTitle, reviewFormCode, questions: removeListKey },
       {
         onSuccess: ({ reviewFormCode }) => {
-          navigate(`/overview/${reviewFormCode}`, { replace: true });
+          navigate(`${PAGE_LIST.REVIEW_ANSWER_LIST}/${reviewFormCode}`, { replace: true });
         },
         onError: ({ message }) => {
           alert(message);
@@ -120,7 +121,7 @@ function CreateReviewFormPage() {
   return (
     <>
       <div className={cn(styles.container, 'flex-container column')}>
-        <Link to="/">
+        <Link to={PAGE_LIST.HOME}>
           <Logo />
         </Link>
 

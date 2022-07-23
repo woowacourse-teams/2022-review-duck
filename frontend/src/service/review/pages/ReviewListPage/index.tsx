@@ -15,6 +15,7 @@ import ReviewHeader from './containers/ReviewHeader';
 import ReviewListMain from './containers/ReviewListMain';
 import ReviewSheetView from './containers/ReviewSheetView';
 import ReviewSideMenu from './containers/ReviewSideMenu';
+import { PAGE_LIST } from 'service/@shared/constants';
 
 function ReviewListPage() {
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ function ReviewListPage() {
       <header className={cn(styles.header)}>
         <div className={cn(styles.container, styles.menuBar)}>
           <div className={styles.leftContainer}>
-            <Link to="/">
+            <Link to={PAGE_LIST.HOME}>
               <Logo size="small" />
             </Link>
 

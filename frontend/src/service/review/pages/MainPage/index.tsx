@@ -8,6 +8,8 @@ import imageHero from 'assets/images/demo-create.png';
 
 import styles from './styles.module.scss';
 
+import { PAGE_LIST } from 'service/@shared/constants';
+
 function MainPage() {
   return (
     <>
@@ -23,14 +25,14 @@ function MainPage() {
           간편하게 모아 볼 수 있습니다
         </Text>
         <div className="button-container horizontal">
-          <Link to={'/review-forms'}>
+          <Link to={PAGE_LIST.REVIEW_FORM}>
             <Button type="button" filled>
               <Icon type="outlined" code="maps_ugc" />
               <span>회고 생성</span>
             </Button>
           </Link>
 
-          <Link to={'/review/join'}>
+          <Link to={PAGE_LIST.REVIEW_JOIN}>
             <Button type="button" filled>
               <Icon code="login" />
               <span>회고 참여</span>
