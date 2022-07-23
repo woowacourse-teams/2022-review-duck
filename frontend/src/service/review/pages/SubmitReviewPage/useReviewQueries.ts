@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 
 import { AxiosError } from 'axios';
 
@@ -8,8 +8,10 @@ import { SubmitAnswerRequest, ErrorResponse } from 'service/review/types';
 import reviewAPI from 'service/review/api';
 
 function useReviewQueries(reviewFormCode: string) {
+  const queryClient = useQueryClient();
+
   const getQuestionsQuery = useQuery<ReviewForm, AxiosError<ErrorResponse>, ReviewForm>(
-    ['getReviewFormData', { reviewFormCode }],
+    ['getReviewForm', { reviewFormCode }],
     () => reviewAPI.getForm(reviewFormCode),
     {
       suspense: true,
@@ -19,6 +21,11 @@ function useReviewQueries(reviewFormCode: string) {
 
   const createMutation = useMutation<unknown, AxiosError<ErrorResponse>, SubmitAnswerRequest>(
     reviewAPI.submitAnswer,
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(['getReviews', { reviewFormCode }]);
+      },
+    },
   );
 
   const reviewForm = getQuestionsQuery.data || { reviewTitle: '', questions: [] };
