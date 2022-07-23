@@ -7,7 +7,7 @@ import React, {
   useEffect,
 } from 'react';
 import { flushSync } from 'react-dom';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -111,7 +111,7 @@ function CreateReviewFormPage() {
     );
   };
 
-  const onClickCancel = () => {
+  const onCancel = () => {
     if (!confirm('회고 생성을 정말 취소하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
 
     navigate(-1);
@@ -120,7 +120,9 @@ function CreateReviewFormPage() {
   return (
     <>
       <div className={cn(styles.container, 'flex-container column')}>
-        <Logo />
+        <Link to="/">
+          <Logo />
+        </Link>
 
         <div className={cn(styles.previewContainer, 'flex-container column')}>
           {questions.map(
@@ -162,7 +164,7 @@ function CreateReviewFormPage() {
           </div>
 
           <div className={cn('button-container horizontal')}>
-            <Button theme="outlined" onClick={onClickCancel}>
+            <Button theme="outlined" onClick={onCancel}>
               <Icon code="cancel" />
               <span>취소하기</span>
             </Button>
@@ -173,7 +175,7 @@ function CreateReviewFormPage() {
               disabled={reviewFormMutation.isLoading}
             >
               <Icon code="drive_file_rename_outline" />
-              <span>생성하기</span>
+              <span>{reviewFormCode ? '수정하기' : '생성하기'}</span>
             </Button>
           </div>
         </form>

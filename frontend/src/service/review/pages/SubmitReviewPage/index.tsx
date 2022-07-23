@@ -71,6 +71,12 @@ function SubmitReviewPage() {
     updateQuestion(index, { answerValue: $inputTarget.value });
   };
 
+  const onCancel = () => {
+    if (!confirm('회고 작성을 정말 취소하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
+
+    navigate(-1);
+  };
+
   if (getQuestionsQuery.isError) {
     alert('찾을 수 없는 참여 코드입니다.');
     return <Navigate to={'/'} replace={true} />;
@@ -138,7 +144,7 @@ function SubmitReviewPage() {
             </div>
           ))}
           <div className={cn('button-container horizontal')}>
-            <Button theme="outlined">
+            <Button theme="outlined" onClick={onCancel}>
               <Icon code="cancel" />
               <span>취소하기</span>
             </Button>
