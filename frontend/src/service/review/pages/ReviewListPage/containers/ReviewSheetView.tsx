@@ -1,25 +1,24 @@
 import React from 'react';
 
-import useGetReviewFormQuery from 'service/review/hooks/queries/useGetReviewFormQuery';
-import useGetReviewsQuery from 'service/review/hooks/queries/useGetReviewsQuery';
+import { Question } from 'service/review/types';
+
+import { useGetReviewForm, useGetReviews } from 'service/review/hooks/queries';
 
 import styles from '../styles.module.scss';
 
 function ReviewSheetView({ reviewFormCode }: Record<'reviewFormCode', string>) {
-  const {
-    data: { reviews },
-  } = useGetReviewsQuery(reviewFormCode);
+  const { data: reviewFormData } = useGetReviewForm(reviewFormCode);
+  const { questions = [] } = reviewFormData || {};
 
-  const {
-    data: { questions },
-  } = useGetReviewFormQuery(reviewFormCode);
+  const { data: reviewsData } = useGetReviews(reviewFormCode);
+  const { reviews = [] } = reviewsData || {};
 
   return (
     <table className={styles.table}>
       <thead>
         <tr>
           <th></th>
-          {questions.map((question: any, index: number) => (
+          {questions.map((question: Question, index: number) => (
             <th key={index}>{question.questionValue}</th>
           ))}
         </tr>

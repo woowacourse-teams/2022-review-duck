@@ -1,12 +1,12 @@
-import { useGetReviewsQuery } from 'service/review/hooks/queries';
+import { useGetReviews } from 'service/review/hooks/queries';
 
 import { Text } from 'common/components';
 
 import styles from '../styles.module.scss';
 
 function ReviewHeader({ reviewFormCode }: Record<'reviewFormCode', string>) {
-  const { data } = useGetReviewsQuery(reviewFormCode);
-  const { reviewFormTitle } = data;
+  const { data } = useGetReviews(reviewFormCode);
+  const { reviewFormTitle } = data || {};
 
   return (
     <div className={styles.reviewFormInfo}>

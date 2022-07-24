@@ -1,6 +1,6 @@
 import cn from 'classnames';
 
-import { useGetReviewsQuery } from 'service/review/hooks/queries';
+import { useGetReviews } from 'service/review/hooks/queries';
 
 import Profile from 'service/review/components/Profile';
 import QuestionContent from 'service/review/components/QuestionContent';
@@ -17,9 +17,9 @@ import imageSoju from 'assets/images/soju.png';
 import styles from '../styles.module.scss';
 
 function ReviewListMain({ reviewFormCode }: Record<'reviewFormCode', string>) {
-  const { data } = useGetReviewsQuery(reviewFormCode);
+  const { data } = useGetReviews(reviewFormCode);
 
-  const { reviews } = data;
+  const { reviews = [] } = data || {};
 
   return (
     <div className={styles.participantContainer}>

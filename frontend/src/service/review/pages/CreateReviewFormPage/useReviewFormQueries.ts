@@ -1,49 +1,23 @@
-import { useMutation, useQuery, useQueryClient } from 'react-query';
-
-import { AxiosError } from 'axios';
+import { ReviewForm as GetReviewFormResponse } from 'service/review/types';
 
 import {
-  ReviewFormRequest,
-  ReviewFormResponse,
-  ErrorResponse,
-  ReviewForm,
-} from 'service/review/types';
-
-import reviewAPI from 'service/review/api';
+  useCreateReviewForm,
+  useGetReviewForm,
+  useUpdateReviewForm,
+} from 'service/review/hooks/queries';
 
 function useReviewFormQueries(reviewFormCode = '') {
-  const queryClient = useQueryClient();
+  const createMutation = useCreateReviewForm();
 
-  const createMutation = useMutation<
-    ReviewFormResponse,
-    AxiosError<ErrorResponse>,
-    ReviewFormRequest
-  >(reviewAPI.createForm);
-
-  const updateMutation = useMutation<
-    ReviewFormResponse,
-    AxiosError<ErrorResponse>,
-    ReviewFormRequest
-  >(reviewAPI.updateForm, {
-    onSuccess: () => {
-      queryClient.invalidateQueries(['getReviewForm', { reviewFormCode }]);
-      queryClient.invalidateQueries(['getReviews', { reviewFormCode }]);
-    },
-  });
+  const updateMutation = useUpdateReviewForm(reviewFormCode);
 
   const reviewFormMutation = reviewFormCode ? updateMutation : createMutation;
 
-  const getReviewFormQuery = useQuery<ReviewForm, AxiosError<ErrorResponse>, ReviewForm>(
-    ['getReviewForm', { reviewFormCode }],
-    () => reviewAPI.getForm(reviewFormCode),
-    {
-      enabled: !!reviewFormCode,
-      suspense: true,
-      useErrorBoundary: false,
-    },
-  );
+  const getReviewFormQuery = useGetReviewForm(reviewFormCode, {
+    enabled: !!reviewFormCode,
+  });
 
-  const initReviewFormData: ReviewFormRequest = getReviewFormQuery.data || {
+  const initReviewFormData: GetReviewFormResponse = getReviewFormQuery.data || {
     reviewTitle: '',
     questions: [
       {

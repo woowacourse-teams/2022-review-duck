@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
 
-import { useGetReviewsQuery } from 'service/review/hooks/queries';
+import { useGetReviews } from 'service/review/hooks/queries';
 
 import { Button, Icon, Text, TextBox } from 'common/components';
 
@@ -11,10 +11,10 @@ import styles from '../styles.module.scss';
 import { PAGE_LIST } from 'service/@shared/constants';
 
 function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
-  const { data } = useGetReviewsQuery(reviewFormCode);
-  const linkValue = useRef<HTMLInputElement>();
+  const { data: reviewsData } = useGetReviews(reviewFormCode);
+  const { reviews = [] } = reviewsData || {};
 
-  const { reviews } = data;
+  const linkValue = useRef<HTMLInputElement>();
 
   const onClickCopyLink = async () => {
     const $copyLink = linkValue.current;

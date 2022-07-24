@@ -1,26 +1,53 @@
-import { ReviewFormRequest, SubmitAnswerRequest } from '../types';
+import {
+  UpdateReviewFormRequest,
+  SubmitAnswerRequest,
+  CreateReviewAnswer,
+  GetReviewsResponse,
+  GetReviewFormResponse,
+  UpdateReviewFormResponse,
+} from '../types';
 
 import { axiosInstance } from 'service/@shared/utils';
 
-const getForm = async (reviewFormCode = '') =>
-  (await axiosInstance.get(`/api/review-forms/${reviewFormCode}`)).data;
+const getForm = async (reviewFormCode = ''): Promise<GetReviewFormResponse> => {
+  const { data } = await axiosInstance.get(`/api/review-forms/${reviewFormCode}`);
 
-const createForm = async (query: ReviewFormRequest) =>
-  (await axiosInstance.post('/api/review-forms', query)).data;
+  return data;
+};
 
-const updateForm = async ({ reviewFormCode, reviewTitle, questions }: ReviewFormRequest) =>
-  (await axiosInstance.put(`/api/review-forms/${reviewFormCode}`, { reviewTitle, questions })).data;
+const createForm = async (query: UpdateReviewFormRequest): Promise<UpdateReviewFormResponse> => {
+  const { data } = await axiosInstance.post('/api/review-forms', query);
 
-const submitAnswer = async (query: SubmitAnswerRequest) =>
-  (
-    await axiosInstance.post(`/api/review-forms/${query.reviewFormCode}`, {
-      answers: query.answers,
-      nickname: query.nickname,
-    })
-  ).data;
+  return data;
+};
 
-const getReviews = async (reviewFormCode = '') =>
-  (await axiosInstance.get(`api/review-forms/${reviewFormCode}/reviews`)).data;
+const updateForm = async ({
+  reviewFormCode,
+  reviewTitle,
+  questions,
+}: UpdateReviewFormRequest): Promise<UpdateReviewFormResponse> => {
+  const { data } = await axiosInstance.put(`/api/review-forms/${reviewFormCode}`, {
+    reviewTitle,
+    questions,
+  });
+
+  return data;
+};
+
+const submitAnswer = async (query: SubmitAnswerRequest): Promise<CreateReviewAnswer> => {
+  const { data } = await axiosInstance.post(`/api/review-forms/${query.reviewFormCode}`, {
+    answers: query.answers,
+    nickname: query.nickname,
+  });
+
+  return data;
+};
+
+const getReviews = async (reviewFormCode = ''): Promise<GetReviewsResponse> => {
+  const { data } = await axiosInstance.get(`api/review-forms/${reviewFormCode}/reviews`);
+
+  return data;
+};
 
 const reviewAPI = {
   getForm,

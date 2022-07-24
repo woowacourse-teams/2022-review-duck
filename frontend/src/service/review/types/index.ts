@@ -1,3 +1,9 @@
+import { UseMutationOptions } from 'react-query';
+
+import { AxiosError } from 'axios';
+
+export type ErrorResponse = AxiosError<{ message: string }>;
+
 export interface Question {
   questionId?: number | null;
   questionValue: string;
@@ -6,22 +12,35 @@ export interface Question {
   listKey?: string | undefined;
 }
 
+export interface Review {
+  answers: Question[];
+  nickname: string;
+  reviewId: number;
+  updatedAt: number;
+}
+
 export interface ReviewForm {
   reviewTitle: string;
   questions: Question[];
 }
 
-export interface ReviewFormRequest extends ReviewForm {
+export type GetReviewFormResponse = ReviewForm;
+
+export interface UpdateReviewFormRequest extends ReviewForm {
   reviewFormCode?: string | null;
 }
 
-export interface ReviewFormResponse {
+export interface UpdateReviewFormResponse {
   reviewFormCode: string;
 }
 
-export interface ErrorResponse {
-  message: string;
+export interface GetReviewsResponse {
+  reviewFormTitle: string;
+  reviews: Review[];
+  updatedAt: number;
 }
+
+export type CreateReviewAnswer = Omit<Review, 'reviewId' | 'updatedAt'>;
 
 export type RequiredPartialType<Type, P extends keyof Type> = Type & {
   [key in P]-?: Type[key];
@@ -35,3 +54,5 @@ export interface SubmitAnswerRequest {
   }[];
   nickname: string;
 }
+
+export type UseCustomMutationOptions = UseMutationOptions<unknown, ErrorResponse, unknown>;

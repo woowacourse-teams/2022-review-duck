@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import cn from 'classnames';
 
-import { useGetReviewsQuery } from 'service/review/hooks/queries';
+import { useGetReviews } from 'service/review/hooks/queries';
 
 import { Button, Icon, Logo } from 'common/components';
 
@@ -21,7 +21,7 @@ function ReviewListPage() {
   const navigate = useNavigate();
   const { reviewFormCode = '' } = useParams();
 
-  const { isError, error }: any = useGetReviewsQuery(reviewFormCode, {
+  const { isError, error } = useGetReviews(reviewFormCode, {
     suspense: false,
   });
 
@@ -39,18 +39,6 @@ function ReviewListPage() {
 
     setSheetEnabled(isEnabled);
   };
-
-  /*
-  const templateData = useQuery(
-    ['questions', { reviewFormCode }],
-    () => reviewAPI.getForm(reviewFormCode),
-    {
-      suspense: true,
-      useErrorBoundary: false,
-    },
-  );
-
-  const { questions } = templateData.data; */
 
   return (
     <div className={cn(styles.layout)}>
