@@ -35,6 +35,7 @@ jobs:
         uses: EndBug/add-and-commit@v4.4.0
         with:
           add: "${{ env.SETTING_OUTPUT_PATH }}"
+          add: "${{ env.SETTING_THEME_OUTPUT_PATH }}"
           message: "[FE] design : Github Action 디자인 토큰 자동 생성"
           ref: "${{ env.SETTING_UPDATE_BRANCHES }}"
 
