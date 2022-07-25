@@ -66,6 +66,10 @@
           "value": "rgba(0,0,0,0.6)",
           "type": "color"
         },
+        "700": {
+          "value": "rgba(0,0,0,0.7)",
+          "type": "color"
+        },
         "800": {
           "value": "rgba(0,0,0,0.8)",
           "type": "color"
@@ -94,6 +98,10 @@
         },
         "700": {
           "value": "#aaa",
+          "type": "color"
+        },
+        "800": {
+          "value": "#ccc",
           "type": "color"
         },
         "900": {
@@ -150,6 +158,158 @@
           "value": "#111617",
           "type": "color"
         }
+      },
+      "blue": {
+        "300": {
+          "value": "#71a4f1",
+          "type": "color"
+        },
+        "400": {
+          "value": "#4185ec",
+          "type": "color"
+        },
+        "500": {
+          "value": "#1267E7",
+          "type": "color"
+        }
+      }
+    },
+    "fontSize": {
+      "12": {
+        "value": "0.75rem",
+        "type": "fontSizes"
+      },
+      "14": {
+        "value": "0.875rem",
+        "type": "fontSizes"
+      },
+      "16": {
+        "value": "1rem",
+        "type": "fontSizes"
+      },
+      "18": {
+        "value": "1.125rem",
+        "type": "fontSizes"
+      },
+      "20": {
+        "value": "1.25rem",
+        "type": "fontSizes"
+      },
+      "24": {
+        "value": "1.5rem",
+        "type": "fontSizes"
+      },
+      "32": {
+        "value": "2rem",
+        "type": "fontSizes"
+      },
+      "40": {
+        "value": "2.5rem",
+        "type": "fontSizes"
+      },
+      "48": {
+        "value": "3rem",
+        "type": "fontSizes"
+      },
+      "body": {
+        "value": "16",
+        "type": "fontSizes"
+      },
+      "h6": {
+        "value": "{fontSize.body} * 1",
+        "type": "fontSizes"
+      },
+      "h5": {
+        "value": "{fontSize.body} * 1.25",
+        "type": "fontSizes"
+      },
+      "h4": {
+        "value": "{fontSize.body} * 1.5",
+        "type": "fontSizes"
+      },
+      "h3": {
+        "value": "{fontSize.body} * 1.75",
+        "type": "fontSizes"
+      },
+      "h2": {
+        "value": "{fontSize.body} * 2",
+        "type": "fontSizes"
+      },
+      "h1": {
+        "value": "{fontSize.body} * 2.25",
+        "type": "fontSizes"
+      }
+    },
+    "font": {
+      "design": {
+        "value": "Gilbeot",
+        "type": "fontFamilies"
+      },
+      "body": {
+        "value": "NanumBarunGothic",
+        "type": "fontFamilies"
+      }
+    },
+    "borderRadius": {
+      "small": {
+        "value": "4",
+        "type": "borderRadius"
+      },
+      "medium": {
+        "value": "8",
+        "type": "borderRadius"
+      },
+      "large": {
+        "value": "16",
+        "type": "borderRadius"
+      },
+      "max": {
+        "value": "999",
+        "type": "borderRadius"
+      },
+      "xlarge": {
+        "value": "32",
+        "type": "borderRadius"
+      }
+    },
+    "borderWidth": {
+      "none": {
+        "value": "0",
+        "type": "borderWidth"
+      },
+      "small": {
+        "value": "2",
+        "type": "borderWidth"
+      },
+      "medium": {
+        "value": "4",
+        "type": "borderWidth"
+      },
+      "large": {
+        "value": "8",
+        "type": "borderWidth"
+      },
+      "min": {
+        "value": "1",
+        "type": "borderWidth"
+      },
+      "max": {
+        "value": "12",
+        "type": "borderWidth"
+      }
+    },
+    "letterSpacing": {
+      "default": {
+        "value": "0",
+        "type": "spacing"
+      },
+      "decreased": {
+        "value": "-10%",
+        "type": "spacing"
+      },
+      "increased": {
+        "value": "150%",
+        "type": "spacing"
       }
     }
   },
@@ -217,6 +377,10 @@
           }
         },
         "text": {
+          "50": {
+            "value": "{color.gray.800}",
+            "type": "color"
+          },
           "100": {
             "value": "{color.gray.700}",
             "type": "color"
