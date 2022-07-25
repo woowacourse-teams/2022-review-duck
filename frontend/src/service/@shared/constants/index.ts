@@ -3,7 +3,7 @@ const PAGE_LIST = {
   REVIEW_FORM: '/review-form',
   REVIEW: '/review',
   REVIEW_JOIN: '/review/join',
-  REVIEW_ANSWER_LIST: '/overview',
+  REVIEW_OVERVIEW: '/overview',
 };
 
 const QUERY_KEY = {
