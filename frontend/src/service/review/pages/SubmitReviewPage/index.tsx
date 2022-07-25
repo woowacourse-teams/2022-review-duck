@@ -53,7 +53,7 @@ function SubmitReviewPage() {
       {
         onSuccess: () => {
           alert('회고 답변을 성공적으로 제출했습니다.');
-          navigate(`${PAGE_LIST.REVIEW_ANSWER_LIST}/${reviewFormCode}`, { replace: true });
+          navigate(`${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`, { replace: true });
         },
         onError: ({ message }) => {
           alert(message);

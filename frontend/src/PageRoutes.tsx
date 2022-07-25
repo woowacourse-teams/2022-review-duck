@@ -30,7 +30,7 @@ function PageRoutes() {
           </Route>
         </Route>
 
-        <Route path={PAGE_LIST.REVIEW_ANSWER_LIST} element={<ReviewListPage />}>
+        <Route path={PAGE_LIST.REVIEW_OVERVIEW} element={<ReviewListPage />}>
           <Route path=":reviewFormCode" />
         </Route>
 

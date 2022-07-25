@@ -103,7 +103,7 @@ function CreateReviewFormPage() {
       { reviewTitle, reviewFormCode, questions: removeListKey },
       {
         onSuccess: ({ reviewFormCode }) => {
-          navigate(`${PAGE_LIST.REVIEW_ANSWER_LIST}/${reviewFormCode}`, { replace: true });
+          navigate(`${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`, { replace: true });
         },
         onError: ({ message }) => {
           alert(message);
