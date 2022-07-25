@@ -1,3 +1,6 @@
+SET
+FOREIGN_KEY_CHECKS = 0;
+
 drop table *;
 create table review_form
 (
@@ -69,3 +72,5 @@ create table template
     primary key (id)
 );
 
+SET
+FOREIGN_KEY_CHECKS = 1;
