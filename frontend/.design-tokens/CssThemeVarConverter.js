@@ -68,7 +68,9 @@ class CssThemeVarConverter {
 
   #getConvertResult() {
     const cssThemeVariable = Object.entries(this.#cssThemeContent)
-      .map(([themeKey, variable]) => `:root[data-theme="${themeKey}"] {\n${variable.join('\n')}\n}`)
+      .map(
+        ([themeKey, variable]) => `:root[data-theme="${themeKey}"] {\n${variable.join('\n')}\n}\n`,
+      )
       .join('');
 
     return { cssThemeVariable, sassThemeVariable: this.#sassContent };
