@@ -1,8 +1,29 @@
+import { ReactNode } from 'react';
+import { QueryClientProvider, QueryClient } from 'react-query';
+
+import PageRoutes from 'PageRoutes';
+
+import { ErrorBoundary } from 'common/components';
+
+import 'styles/@app.scss';
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: { refetchOnWindowFocus: false, refetchOnReconnect: false, retry: false },
+  },
+});
+
+function ContextWrapper({ children }: { children: ReactNode }) {
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+}
+
 function App() {
   return (
-    <>
-      <h1>React without CRA...</h1>
-    </>
+    <ContextWrapper>
+      <ErrorBoundary>
+        <PageRoutes />
+      </ErrorBoundary>
+    </ContextWrapper>
   );
 }
 

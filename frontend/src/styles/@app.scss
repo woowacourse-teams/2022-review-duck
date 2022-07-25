@@ -1,0 +1,64 @@
+@import './resetCss.css';
+@import './fontFace.scss';
+@import './@global.scss';
+@import 'material-icons/iconfont/material-icons.css';
+
+:root {
+  font-size: 16px;
+}
+
+html,
+body,
+button,
+input {
+  font-family: 'NanumBarunGothic', sans-serif;
+  font-weight: 400;
+  line-height: 110%;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+.button-container {
+  display: grid;
+
+  & > button {
+  }
+
+  &.horizontal {
+    grid-template-columns: repeat(auto-fit, minmax(20%, auto));
+    gap: 1.375rem;
+    margin-top: 3rem;
+    text-align: center;
+  }
+
+  &.vertical {
+  }
+}
+
+.flex-container {
+  display: flex;
+
+  &.column {
+    flex-direction: column;
+  }
+
+  &.row {
+    flex-direction: row;
+  }
+
+  &.centered {
+    justify-content: center;
+    align-items: center;
+  }
+}

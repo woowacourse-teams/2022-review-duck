@@ -1,0 +1,35 @@
+@import 'styles/@global.scss';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.title {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: normal;
+  color: $LIGHT_COLOR_THEME_TEXT_600;
+}
+
+.description {
+  display: flex;
+  align-items: center;
+  font-weight: lighter;
+  font-size: 0.8rem;
+  color: $LIGHT_COLOR_THEME_TEXT_400;
+}
+
+.size-medium {
+  & > .title {
+    font-size: 0.875rem;
+  }
+}
+
+.size-large {
+  & > .title {
+    font-size: 1rem;
+    font-weight: lighter;
+  }
+}
