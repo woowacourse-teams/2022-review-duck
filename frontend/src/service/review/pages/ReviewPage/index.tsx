@@ -1,5 +1,5 @@
 import { ChangeEvent, useState } from 'react';
-import { Navigate, useParams, useNavigate } from 'react-router-dom';
+import { Navigate, useParams, useNavigate, Link } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -86,7 +86,9 @@ function SubmitReviewPage() {
   return (
     <>
       <div className={cn(styles.container)}>
-        <Logo />
+        <Link to={PAGE_LIST.HOME}>
+          <Logo />
+        </Link>
 
         <Text
           key={currentQuestion.questionValue}
