@@ -1,0 +1,19 @@
+@import 'styles/@global.scss';
+
+.event-capture {
+  display: contents;
+}
+
+.container {
+  display: inline;
+
+  @include animate(1.5s ease) {
+    from {
+      transform: translateY(100%);
+    }
+
+    to {
+      transform: translateY(0%);
+    }
+  }
+}
