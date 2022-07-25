@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import com.reviewduck.domain.Question;
 import com.reviewduck.domain.ReviewForm;
+import com.reviewduck.domain.ReviewFormQuestion;
 
 @DataJpaTest
 public class ReviewFormRepositoryTest {
@@ -25,13 +25,13 @@ public class ReviewFormRepositoryTest {
     void saveReviewForm() {
         // given
         List<String> questionValues = List.of("question1", "question2");
-        List<Question> questions = questionValues.stream()
-            .map(Question::new)
+        List<ReviewFormQuestion> reviewFormQuestions = questionValues.stream()
+            .map(ReviewFormQuestion::new)
             .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
-        for (Question question : questions) {
-            question.setPosition(index++);
+        for (ReviewFormQuestion reviewFormQuestion : reviewFormQuestions) {
+            reviewFormQuestion.setPosition(index++);
         }
 
         ReviewForm reviewForm = new ReviewForm("title", questionValues);
@@ -43,10 +43,10 @@ public class ReviewFormRepositoryTest {
         assertAll(
             () -> assertThat(savedReviewForm.getId()).isNotNull(),
             () -> assertThat(savedReviewForm.getCode().length()).isEqualTo(8),
-            () -> assertThat(savedReviewForm.getQuestions())
+            () -> assertThat(savedReviewForm.getReviewFormQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(questions)
+                .isEqualTo(reviewFormQuestions)
         );
     }
 }

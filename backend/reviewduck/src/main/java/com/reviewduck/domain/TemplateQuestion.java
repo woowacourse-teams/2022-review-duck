@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import com.reviewduck.exception.QuestionException;
 
@@ -17,7 +18,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Question {
+@Table(name = "template_question")
+public class TemplateQuestion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +32,7 @@ public class Question {
     @Column(nullable = false)
     private int position = -1;
 
-    public Question(String value) {
+    public TemplateQuestion(String value) {
         validate(value);
         this.value = value;
     }

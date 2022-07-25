@@ -41,36 +41,36 @@ public class ReviewForm extends BaseDate {
     @JoinColumn(name = "review_form_id")
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @OrderBy("position asc")
-    private List<Question> questions;
+    private List<ReviewFormQuestion> reviewFormQuestions;
 
     public ReviewForm(String reviewTitle, List<String> questionValues) {
         validate(reviewTitle, questionValues);
         this.reviewTitle = reviewTitle;
-        this.questions = setQuestions(questionValues);
+        this.reviewFormQuestions = setReviewFormQuestions(questionValues);
         this.code = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
     }
 
-    private List<Question> setQuestions(List<String> questionValues) {
-        List<Question> questions = questionValues.stream()
-            .map(Question::new)
+    private List<ReviewFormQuestion> setReviewFormQuestions(List<String> questionValues) {
+        List<ReviewFormQuestion> reviewFormQuestions = questionValues.stream()
+            .map(ReviewFormQuestion::new)
             .collect(Collectors.toUnmodifiableList());
-        sortQuestions(questions);
-        return questions;
+        sortQuestions(reviewFormQuestions);
+        return reviewFormQuestions;
     }
 
-    private void sortQuestions(List<Question> questions) {
+    private void sortQuestions(List<ReviewFormQuestion> reviewFormQuestions) {
         int index = 0;
-        for (Question question : questions) {
-            question.setPosition(index++);
+        for (ReviewFormQuestion reviewFormQuestion : reviewFormQuestions) {
+            reviewFormQuestion.setPosition(index++);
         }
     }
 
-    public void update(String reviewTitle, List<Question> questions) {
+    public void update(String reviewTitle, List<ReviewFormQuestion> reviewFormQuestions) {
         validateTitleLength(reviewTitle);
         validateBlankTitle(reviewTitle);
         this.reviewTitle = reviewTitle;
-        sortQuestions(questions);
-        this.questions = questions;
+        sortQuestions(reviewFormQuestions);
+        this.reviewFormQuestions = reviewFormQuestions;
     }
 
     private void validate(String reviewTitle, List<String> questionValues) {

@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.reviewduck.domain.Question;
 import com.reviewduck.domain.ReviewForm;
+import com.reviewduck.domain.ReviewFormQuestion;
 import com.reviewduck.domain.Template;
 import com.reviewduck.dto.request.QuestionRequest;
 import com.reviewduck.dto.request.QuestionUpdateRequest;
@@ -48,13 +48,13 @@ public class ReviewFormServiceTest {
 
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
 
-        List<Question> expected = questions.stream()
-            .map(questionRequest -> new Question(questionRequest.getQuestionValue()))
+        List<ReviewFormQuestion> expected = questions.stream()
+            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
             .collect(Collectors.toList());
 
         int index = 0;
-        for (Question question : expected) {
-            question.setPosition(index++);
+        for (ReviewFormQuestion reviewFormQuestion : expected) {
+            reviewFormQuestion.setPosition(index++);
         }
 
         // when
@@ -66,7 +66,7 @@ public class ReviewFormServiceTest {
             () -> assertThat(reviewForm.getId()).isNotNull(),
             () -> assertThat(reviewForm.getCode().length()).isEqualTo(8),
             () -> assertThat(reviewForm.getReviewTitle()).isEqualTo(reviewTitle),
-            () -> assertThat(reviewForm.getQuestions())
+            () -> assertThat(reviewForm.getReviewFormQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")
                 .isEqualTo(expected)
@@ -106,7 +106,7 @@ public class ReviewFormServiceTest {
         // given
         ReviewForm savedReviewForm = saveReviewForm();
         String code = savedReviewForm.getCode();
-        Long questionId = savedReviewForm.getQuestions().get(0).getId();
+        Long questionId = savedReviewForm.getReviewFormQuestions().get(0).getId();
 
         // when
         String reviewTitle = "new title";
@@ -115,13 +115,13 @@ public class ReviewFormServiceTest {
 
         ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateRequests);
 
-        List<Question> expected = updateRequests.stream()
-            .map(questionRequest -> new Question(questionRequest.getQuestionValue()))
+        List<ReviewFormQuestion> expected = updateRequests.stream()
+            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
             .collect(Collectors.toList());
 
         int index = 0;
-        for (Question question : expected) {
-            question.setPosition(index++);
+        for (ReviewFormQuestion reviewFormQuestion : expected) {
+            reviewFormQuestion.setPosition(index++);
         }
 
         reviewFormService.update(code, updateRequest);
@@ -132,7 +132,7 @@ public class ReviewFormServiceTest {
             () -> assertThat(foundReviewForm.getId()).isNotNull(),
             () -> assertThat(foundReviewForm.getCode().length()).isEqualTo(8),
             () -> assertThat(foundReviewForm.getReviewTitle()).isEqualTo(reviewTitle),
-            () -> assertThat(foundReviewForm.getQuestions())
+            () -> assertThat(foundReviewForm.getReviewFormQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")
                 .isEqualTo(expected)
@@ -189,13 +189,13 @@ public class ReviewFormServiceTest {
         ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest(reviewFormTitle);
         ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(savedTemplate.getId(), request);
 
-        List<Question> expected = questions.stream()
-            .map(questionRequest -> new Question(questionRequest.getQuestionValue()))
+        List<ReviewFormQuestion> expected = questions.stream()
+            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
             .collect(Collectors.toList());
 
         int index = 0;
-        for (Question question : expected) {
-            question.setPosition(index++);
+        for (ReviewFormQuestion reviewFormQuestion : expected) {
+            reviewFormQuestion.setPosition(index++);
         }
 
         // then
@@ -204,7 +204,7 @@ public class ReviewFormServiceTest {
             () -> assertThat(savedReviewForm.getId()).isNotNull(),
             () -> assertThat(savedReviewForm.getCode().length()).isEqualTo(8),
             () -> assertThat(savedReviewForm.getReviewTitle()).isEqualTo(reviewFormTitle),
-            () -> assertThat(savedReviewForm.getQuestions())
+            () -> assertThat(savedReviewForm.getReviewFormQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")
                 .isEqualTo(expected)

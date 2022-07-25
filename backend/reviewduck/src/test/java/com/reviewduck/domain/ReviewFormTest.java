@@ -65,7 +65,7 @@ class ReviewFormTest {
         ReviewForm reviewForm = new ReviewForm("리뷰폼 제목", List.of("질문1", "질문2"));
 
         //when, then
-        assertDoesNotThrow(() -> reviewForm.update("a".repeat(100), List.of(new Question("새로운질문1"))));
+        assertDoesNotThrow(() -> reviewForm.update("a".repeat(100), List.of(new ReviewFormQuestion("새로운질문1"))));
     }
 
     @Test
@@ -75,7 +75,7 @@ class ReviewFormTest {
         ReviewForm reviewForm = new ReviewForm("리뷰폼 제목", List.of("질문1", "질문2"));
 
         //when, then
-        assertThatThrownBy(() -> reviewForm.update("a".repeat(101), List.of(new Question("새로운질문1"))))
+        assertThatThrownBy(() -> reviewForm.update("a".repeat(101), List.of(new ReviewFormQuestion("새로운질문1"))))
             .isInstanceOf(ReviewFormException.class)
             .hasMessageContaining("회고 폼의 제목은 100자를 넘을 수 없습니다.");
     }
@@ -85,8 +85,8 @@ class ReviewFormTest {
     void setPositionInOrder() {
         //given
         ReviewForm reviewForm = new ReviewForm("리뷰폼 제목", List.of("질문1", "질문2", "질문3"));
-        List<Integer> actual = reviewForm.getQuestions().stream()
-            .map(Question::getPosition)
+        List<Integer> actual = reviewForm.getReviewFormQuestions().stream()
+            .map(ReviewFormQuestion::getPosition)
             .collect(Collectors.toUnmodifiableList());
         List<Integer> expected = List.of(0, 1, 2);
 

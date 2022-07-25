@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import com.reviewduck.domain.Question;
+import com.reviewduck.domain.ReviewFormQuestion;
 import com.reviewduck.domain.Template;
 import com.reviewduck.exception.NotFoundException;
 
@@ -26,7 +26,7 @@ public class TemplateRepositoryTest {
     void saveTemplate() {
         // given
         List<String> questionValues = List.of("question1", "question2");
-        List<Question> questions = convertValuesToQuestions(questionValues);
+        List<ReviewFormQuestion> reviewFormQuestions = convertValuesToQuestions(questionValues);
 
         Template template = new Template("title", "description", questionValues);
 
@@ -39,7 +39,7 @@ public class TemplateRepositoryTest {
             () -> assertThat(savedTemplate.getQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(questions)
+                .isEqualTo(reviewFormQuestions)
         );
     }
 
@@ -48,7 +48,7 @@ public class TemplateRepositoryTest {
     void findTemplate() {
         // given
         List<String> questionValues = List.of("question1", "question2");
-        List<Question> questions = convertValuesToQuestions(questionValues);
+        List<ReviewFormQuestion> reviewFormQuestions = convertValuesToQuestions(questionValues);
 
         Template template = new Template("title", "description", questionValues);
         Template savedTemplate = templateRepository.save(template);
@@ -63,7 +63,7 @@ public class TemplateRepositoryTest {
             () -> assertThat(foundTemplate.getQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(questions)
+                .isEqualTo(reviewFormQuestions)
         );
     }
 
@@ -101,15 +101,15 @@ public class TemplateRepositoryTest {
         assertThat(templateRepository.findById(templateId)).isEmpty();
     }
 
-    private List<Question> convertValuesToQuestions(List<String> questionValues) {
-        List<Question> questions = questionValues.stream()
-            .map(Question::new)
+    private List<ReviewFormQuestion> convertValuesToQuestions(List<String> questionValues) {
+        List<ReviewFormQuestion> reviewFormQuestions = questionValues.stream()
+            .map(ReviewFormQuestion::new)
             .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
-        for (Question question : questions) {
-            question.setPosition(index++);
+        for (ReviewFormQuestion reviewFormQuestion : reviewFormQuestions) {
+            reviewFormQuestion.setPosition(index++);
         }
-        return questions;
+        return reviewFormQuestions;
     }
 }

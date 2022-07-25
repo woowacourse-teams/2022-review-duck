@@ -24,7 +24,7 @@ public class QuestionAnswer {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    private Question question;
+    private ReviewFormQuestion reviewFormQuestion;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Answer answer;
@@ -32,8 +32,8 @@ public class QuestionAnswer {
     @Column(nullable = false)
     private int position = -1;
 
-    public QuestionAnswer(Question question, Answer answer) {
-        this.question = question;
+    public QuestionAnswer(ReviewFormQuestion reviewFormQuestion, Answer answer) {
+        this.reviewFormQuestion = reviewFormQuestion;
         this.answer = answer;
     }
 

@@ -39,7 +39,7 @@ public class Template {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "template_id")
     @OrderBy("position asc")
-    private List<Question> questions;
+    private List<TemplateQuestion> questions;
 
     public Template(String templateTitle, String templateDescription, List<String> questionValues) {
         validate(templateTitle, templateDescription, questionValues);
@@ -48,22 +48,22 @@ public class Template {
         this.questions = setQuestions(questionValues);
     }
 
-    private List<Question> setQuestions(List<String> questionValues) {
-        List<Question> questions = questionValues.stream()
-            .map(Question::new)
+    private List<TemplateQuestion> setQuestions(List<String> questionValues) {
+        List<TemplateQuestion> questions = questionValues.stream()
+            .map(TemplateQuestion::new)
             .collect(Collectors.toUnmodifiableList());
         sortQuestions(questions);
         return questions;
     }
 
-    private void sortQuestions(List<Question> questions) {
+    private void sortQuestions(List<TemplateQuestion> questions) {
         int index = 0;
-        for (Question question : questions) {
+        for (TemplateQuestion question : questions) {
             question.setPosition(index++);
         }
     }
 
-    public void update(String templateTitle, String templateDescription, List<Question> questions) {
+    public void update(String templateTitle, String templateDescription, List<TemplateQuestion> questions) {
         validateTitleLength(templateTitle);
         validateBlankTitle(templateTitle);
         validateNullDescription(templateDescription);

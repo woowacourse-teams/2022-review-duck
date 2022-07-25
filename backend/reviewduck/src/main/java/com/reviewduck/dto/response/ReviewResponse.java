@@ -20,7 +20,8 @@ public class ReviewResponse {
 
     public static ReviewResponse from(Review review) {
         List<AnswerResponse> answerResponses = review.getQuestionAnswers().stream()
-            .map(questionAnswer -> AnswerResponse.of(questionAnswer.getQuestion(), questionAnswer.getAnswer()))
+            .map(
+                questionAnswer -> AnswerResponse.of(questionAnswer.getReviewFormQuestion(), questionAnswer.getAnswer()))
             .collect(Collectors.toUnmodifiableList());
 
         return new ReviewResponse(review.getId(), review.getNickname(), answerResponses,
