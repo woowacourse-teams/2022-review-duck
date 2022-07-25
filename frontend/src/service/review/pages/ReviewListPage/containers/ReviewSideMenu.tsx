@@ -14,10 +14,10 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
   const { data: reviewsData } = useGetReviews(reviewFormCode);
   const { reviews = [] } = reviewsData || {};
 
-  const linkValue = useRef<HTMLInputElement>();
+  const linkInputBox = useRef<HTMLInputElement>(null);
 
   const onClickCopyLink = async () => {
-    const $copyLink = linkValue.current;
+    const $copyLink = linkInputBox.current;
 
     if (!$copyLink) return;
 
@@ -75,7 +75,7 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
 
         <div className={styles.linkWrapper}>
           <TextBox
-            ref={linkValue}
+            ref={linkInputBox}
             className={styles.input}
             size="small"
             value={`${location.origin}/overview/${reviewFormCode}`}

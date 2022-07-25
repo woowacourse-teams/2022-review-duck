@@ -13,7 +13,10 @@ interface Props extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'
   size?: typeof sizeProps[number];
 }
 
-function TextBox({ theme = 'default', className, size = 'medium', ...rest }: Props, ref?: any) {
+function TextBox(
+  { theme = 'default', className, size = 'medium', ...rest }: Props,
+  ref?: React.ForwardedRef<HTMLInputElement>,
+) {
   return (
     <input
       type="text"
@@ -24,4 +27,4 @@ function TextBox({ theme = 'default', className, size = 'medium', ...rest }: Pro
   );
 }
 
-export default React.forwardRef(TextBox);
+export default React.forwardRef<HTMLInputElement, Props>(TextBox);
