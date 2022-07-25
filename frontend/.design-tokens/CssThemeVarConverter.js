@@ -61,7 +61,7 @@ class CssThemeVarConverter {
     const variableKey = `$${nameStack.join('_')}`;
     const themeVariableKey = `$THEME_${[...nameStack].splice(1).join('_')}`;
 
-    targetTheme.push(`\t--THEME-${themeKey}: ${variableKey};`);
+    targetTheme.push(`\t--THEME-${themeKey}: #{${variableKey}};`);
 
     this.#cssThemeContent[themeType] = targetTheme;
     this.#sassContent += `${themeVariableKey}: var(--THEME-${themeKey});\n`;
