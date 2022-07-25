@@ -2,7 +2,7 @@
 
 .layout {
   min-height: 100vh;
-  background-color: $LIGHT_COLOR_THEME_BACKGROUND_200;
+  background-color: $THEME_COLOR_THEME_BACKGROUND_200;
 }
 
 .header {
@@ -11,7 +11,7 @@
   width: 100%;
   background-color: rgba(243, 243, 243, 0.5); // TODO: 상수 처리
   backdrop-filter: blur(0.6rem); // TODO: 상수 처리
-  border-top: 5px solid $LIGHT_COLOR_STATUS_PRIMARY_500; // TODO: 스크롤에 따라 Progress 처리
+  border-top: 5px solid $THEME_COLOR_STATUS_PRIMARY_500; // TODO: 스크롤에 따라 Progress 처리
 
   z-index: 5;
 
@@ -19,7 +19,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    border-bottom: 1px solid $LIGHT_COLOR_STATUS_PRIMARY_100;
+    border-bottom: 1px solid $THEME_COLOR_STATUS_PRIMARY_100;
     padding: 1.5rem 0;
 
     .left-container {
@@ -34,12 +34,12 @@
         gap: 0.5rem;
 
         .title {
-          color: $LIGHT_COLOR_STATUS_PRIMARY_700;
+          color: $THEME_COLOR_STATUS_PRIMARY_700;
         }
 
         .creator {
-          color: $LIGHT_COLOR_THEME_TEXT_400;
-          text-shadow: 0 0 1rem $LIGHT_COLOR_THEME_BACKGROUND_100;
+          color: $THEME_COLOR_THEME_TEXT_400;
+          text-shadow: 0 0 1rem $THEME_COLOR_THEME_BACKGROUND_100;
         }
       }
     }
@@ -75,7 +75,7 @@
     width: 100%;
     padding: 2rem;
 
-    background-color: $LIGHT_COLOR_THEME_BACKGROUND_100;
+    background-color: $THEME_COLOR_THEME_BACKGROUND_100;
     border-radius: 2rem;
 
     & > .title {
@@ -97,7 +97,7 @@
 .post-container {
   & > hr {
     border: none;
-    border: 1px solid $LIGHT_COLOR_THEME_BACKGROUND_200;
+    border: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
     margin: 1.5rem 0;
   }
 
@@ -143,11 +143,11 @@
       justify-content: space-between;
 
       & > .text {
-        color: $LIGHT_COLOR_THEME_TEXT_400;
+        color: $THEME_COLOR_THEME_TEXT_400;
       }
 
       & > .label {
-        color: $LIGHT_COLOR_THEME_TEXT_600;
+        color: $THEME_COLOR_THEME_TEXT_600;
       }
     }
   }
@@ -191,7 +191,7 @@
       background-image: linear-gradient(
         90deg,
         transparent 0%,
-        $LIGHT_COLOR_THEME_BACKGROUND_200 40%
+        $THEME_COLOR_THEME_BACKGROUND_200 40%
       );
 
       &:hover {
@@ -213,7 +213,7 @@
   text-align: left;
   border-collapse: separate;
   width: 100%;
-  background-color: $LIGHT_COLOR_THEME_BACKGROUND_100;
+  background-color: $THEME_COLOR_THEME_BACKGROUND_100;
   min-width: 100%;
   overflow-x: scroll;
 
@@ -237,19 +237,19 @@
   th,
   td:first-child {
     font-weight: bold;
-    color: $LIGHT_COLOR_STATUS_PRIMARY_600;
+    color: $THEME_COLOR_STATUS_PRIMARY_600;
   }
 
   th,
   td {
-    border-color: $LIGHT_COLOR_STATUS_PRIMARY_100;
+    border-color: $THEME_COLOR_STATUS_PRIMARY_100;
     padding: 0.75rem;
     min-width: 10vw;
     line-height: 160%;
   }
 
   & tbody tr:hover {
-    background-color: $LIGHT_COLOR_THEME_BACKGROUND_200;
+    background-color: $THEME_COLOR_THEME_BACKGROUND_200;
   }
 
   th:first-child,

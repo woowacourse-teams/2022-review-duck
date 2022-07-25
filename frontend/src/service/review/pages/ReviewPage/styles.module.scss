@@ -31,7 +31,7 @@
 
 .description {
   display: block;
-  color: $LIGHT_COLOR_THEME_TEXT_900;
+  color: $THEME_COLOR_THEME_TEXT_900;
   margin-bottom: 2rem;
 
   @include animate(1.5s ease) {
@@ -47,7 +47,7 @@
 }
 
 .progress-text {
-  color: $LIGHT_COLOR_THEME_TEXT_400;
+  color: $THEME_COLOR_THEME_TEXT_400;
   margin-top: 0.5rem;
 }
 
@@ -84,7 +84,7 @@
 .creator-name {
   margin-top: 1rem;
   letter-spacing: 0.25rem;
-  color: $LIGHT_COLOR_STATUS_PRIMARY_600;
+  color: $THEME_COLOR_STATUS_PRIMARY_600;
 }
 
 .profile-description {

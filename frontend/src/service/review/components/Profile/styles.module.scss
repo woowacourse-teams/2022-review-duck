@@ -18,7 +18,7 @@
 
     padding: 0.4rem 0;
 
-    background-color: $LIGHT_COLOR_THEME_BACKGROUND_200;
+    background-color: $THEME_COLOR_THEME_BACKGROUND_200;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -26,7 +26,7 @@
     overflow: hidden;
     transform: scale(1);
     transition: transform 0.2s ease, filter 0.2s ease;
-    color: $LIGHT_COLOR_THEME_BACKGROUND_100;
+    color: $THEME_COLOR_THEME_BACKGROUND_100;
 
     & > :global(.icon) {
       cursor: pointer;
@@ -71,7 +71,7 @@
     gap: 0.5rem;
 
     & > .description {
-      color: $LIGHT_COLOR_THEME_TEXT_400;
+      color: $THEME_COLOR_THEME_TEXT_400;
     }
   }
 }
