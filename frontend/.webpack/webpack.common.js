@@ -1,6 +1,9 @@
 const webpack = require('webpack');
+
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
 const path = require('path');
 const dotenv = require('dotenv');
 
@@ -34,17 +37,17 @@ module.exports = (env = {}, options = {}) => {
         {
           test: /\.css$/i,
           exclude: /\.module\.css$/i,
-          use: ['style-loader', 'css-loader'],
+          use: [MiniCssExtractPlugin.loader, 'css-loader'],
         },
         {
           test: /\.s[ac]ss$/i,
           exclude: /\.module\.s[ac]ss$/i,
-          use: ['style-loader', 'css-loader', 'sass-loader'],
+          use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
         },
         {
           test: /\.module\.s[ac]ss$/i,
           use: [
-            'style-loader',
+            MiniCssExtractPlugin.loader,
             {
               loader: 'css-loader',
               options: {
@@ -65,6 +68,7 @@ module.exports = (env = {}, options = {}) => {
       }),
       new CleanWebpackPlugin(),
       new webpack.EnvironmentPlugin(process.env),
+      new MiniCssExtractPlugin({ linkType: false, filename: 'css/[name].[contenthash].css' }),
     ],
   };
 };
