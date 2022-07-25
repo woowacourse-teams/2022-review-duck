@@ -9,7 +9,12 @@ import 'styles/@app.scss';
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { refetchOnWindowFocus: false, refetchOnReconnect: false, retry: false },
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      retry: false,
+      staleTime: 60000,
+    },
   },
 });
 

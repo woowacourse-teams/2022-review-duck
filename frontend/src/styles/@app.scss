@@ -5,6 +5,12 @@
 
 :root {
   font-size: 16px;
+  line-height: 100%;
+}
+
+html,
+body {
+  min-width: 1124px;
 }
 
 html,
@@ -13,7 +19,6 @@ button,
 input {
   font-family: 'NanumBarunGothic', sans-serif;
   font-weight: 400;
-  line-height: 110%;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -26,6 +31,7 @@ img {
 }
 
 a {
+  display: contents;
   text-decoration: none;
 }
 
@@ -61,4 +67,37 @@ a {
     justify-content: center;
     align-items: center;
   }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 36px;
+}
+
+h2 {
+  font-size: 32px;
+}
+
+h3 {
+  font-size: 28px;
+}
+
+h4 {
+  font-size: 24px;
+}
+
+h5 {
+  font-size: 20px;
+}
+
+h6 {
+  font-size: 16px;
 }

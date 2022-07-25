@@ -1,5 +1,5 @@
 import { FormEvent, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -11,6 +11,8 @@ import TextBox from 'common/components/TextBox';
 import imageHero from 'assets/images/demo-create.png';
 
 import styles from './styles.module.scss';
+
+import { PAGE_LIST } from 'service/@shared/constants';
 
 function JoinReviewPage() {
   const [reviewFormCode, setReviewFormCode] = useState<string>('');
@@ -29,7 +31,7 @@ function JoinReviewPage() {
     event.preventDefault();
     try {
       checkValidation(reviewFormCode);
-      navigate(`/review/submit/${reviewFormCode}`);
+      navigate(`${PAGE_LIST.REVIEW}/${reviewFormCode}`);
     } catch (error: any) {
       alert(error.message);
     }
@@ -44,6 +46,7 @@ function JoinReviewPage() {
         <form onSubmit={onSubmitReviewFormCode}>
           <FieldSet title="참여 코드" description="회고 참여를 위한 코드를 입력해주세요.">
             <TextBox
+              maxLength={8}
               placeholder="영문과 숫자로 이루어진 코드 8자리를 입력해주세요."
               value={reviewFormCode}
               onChange={(event) => setReviewFormCode(event.target.value)}
@@ -51,10 +54,12 @@ function JoinReviewPage() {
           </FieldSet>
 
           <div className={cn('button-container horizontal')}>
-            <Button size="medium" theme="outlined">
-              <Icon code="cancel" />
-              <span>취소하기</span>
-            </Button>
+            <Link to={PAGE_LIST.HOME}>
+              <Button size="medium" theme="outlined">
+                <Icon code="cancel" />
+                <span>취소하기</span>
+              </Button>
+            </Link>
             <Button type="submit" size="medium" filled onClick={onSubmitReviewFormCode}>
               <Icon code="ads_click" />
               <span>참여하기</span>

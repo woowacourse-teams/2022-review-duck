@@ -1,39 +1,25 @@
-import React, { MouseEvent, ReactNode, useState } from 'react';
+import { useState } from 'react';
 
 import cn from 'classnames';
 import PropTypes from 'prop-types';
 
 import styles from './styles.module.scss';
 
-const type = ['submit', 'button', 'reset'] as const;
 const size = ['small', 'medium', 'large'] as const;
 const themeProps = ['default', 'outlined', 'circle'] as const;
 
-interface Props {
+interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
-  type: typeof type[number];
   size: typeof size[number];
   theme: typeof themeProps[number];
   filled: boolean;
-  disabled: boolean;
-  onClick?: React.MouseEventHandler;
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
-function Button({
-  className,
-  type,
-  size,
-  theme,
-  filled,
-  disabled,
-  onClick,
-  children,
-  ...rest
-}: Props) {
+function Button({ className, size, theme, filled, onClick, children, ...rest }: Props) {
   const [rippleEffect, setRippleEffect] = useState({ isRippling: false, clickX: -1, clickY: -1 });
 
-  const handleRippleEffect = (event: MouseEvent<HTMLElement>) => {
+  const handleRippleEffect = (event: React.MouseEvent<HTMLButtonElement>) => {
     const target = event.currentTarget;
 
     const { clientX, clientY } = event;
@@ -52,8 +38,6 @@ function Button({
       className={cn(className, styles.button, styles[size], styles[`theme-${theme}`], {
         [styles.filled]: filled,
       })}
-      type={type}
-      disabled={disabled}
       onClick={handleRippleEffect}
       {...rest}
     >

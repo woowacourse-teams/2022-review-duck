@@ -7,13 +7,13 @@ import React, {
   useEffect,
 } from 'react';
 import { flushSync } from 'react-dom';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 
 import cn from 'classnames';
 
 import useQuestions from 'service/review/hooks/useQuestions';
 
-import { setFormFocus } from 'common/utils';
+import { setFormFocus } from 'service/@shared/utils';
 
 import { Button, Icon, Logo, TextBox } from 'common/components';
 
@@ -22,7 +22,8 @@ import QuestionEditor from 'service/review/components/QuestionEditor';
 
 import styles from './styles.module.scss';
 
-import useReviewFormQueries from './useReviewForm';
+import useReviewFormQueries from './useReviewFormQueries';
+import { PAGE_LIST } from 'service/@shared/constants';
 
 function CreateReviewFormPage() {
   const { reviewFormCode } = useParams();
@@ -39,7 +40,7 @@ function CreateReviewFormPage() {
   useEffect(() => {
     if (getReviewFormQuery.isError) {
       alert('존재하지 않는 회고 폼입니다.');
-      navigate('/');
+      navigate(PAGE_LIST.HOME);
     }
   }, []);
 
@@ -102,21 +103,27 @@ function CreateReviewFormPage() {
       { reviewTitle, reviewFormCode, questions: removeListKey },
       {
         onSuccess: ({ reviewFormCode }) => {
-          alert(`추가/수정에 성공하였습니다. 코드 : ${reviewFormCode}`);
+          navigate(`${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`, { replace: true });
         },
-        onError: ({ response }) => {
-          // TODO: 오류 메시지 파싱 함수 필요
-          const errorMessage = response && response.data.message;
-          alert(errorMessage);
+        onError: ({ message }) => {
+          alert(message);
         },
       },
     );
   };
 
+  const onCancel = () => {
+    if (!confirm('회고 생성을 정말 취소하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
+
+    navigate(-1);
+  };
+
   return (
     <>
       <div className={cn(styles.container, 'flex-container column')}>
-        <Logo />
+        <Link to={PAGE_LIST.HOME}>
+          <Logo />
+        </Link>
 
         <div className={cn(styles.previewContainer, 'flex-container column')}>
           {questions.map(
@@ -158,14 +165,18 @@ function CreateReviewFormPage() {
           </div>
 
           <div className={cn('button-container horizontal')}>
-            <Button theme="outlined">
+            <Button theme="outlined" onClick={onCancel}>
               <Icon code="cancel" />
               <span>취소하기</span>
             </Button>
 
-            <Button type="button" onClick={onClickCreateForm}>
+            <Button
+              type="button"
+              onClick={onClickCreateForm}
+              disabled={reviewFormMutation.isLoading}
+            >
               <Icon code="drive_file_rename_outline" />
-              <span>생성하기</span>
+              <span>{reviewFormCode ? '수정하기' : '생성하기'}</span>
             </Button>
           </div>
         </form>
