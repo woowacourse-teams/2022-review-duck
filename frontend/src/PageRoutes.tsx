@@ -17,6 +17,7 @@ function PageRoutes() {
           <Route index element={<MainPage />} />
 
           <Route path={PAGE_LIST.REVIEW_FORM}>
+            <Route index element={<ReviewFormPage />} />
             <Route path={':reviewFormCode'} element={<ReviewFormPage />} />
           </Route>
 
