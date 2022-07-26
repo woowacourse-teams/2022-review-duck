@@ -15,17 +15,17 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TemplateResponse {
 
-	private Long templateId;
-	private String templateTitle;
-	private String templateDescription;
-	private List<TemplateQuestionResponse> questions;
+    private Long templateId;
+    private String templateTitle;
+    private String templateDescription;
+    private List<TemplateQuestionResponse> questions;
 
-	public static TemplateResponse from(Template template) {
-		List<TemplateQuestionResponse> questionResponses = template.getQuestions().stream()
-			.map(TemplateQuestionResponse::from)
-			.collect(Collectors.toUnmodifiableList());
+    public static TemplateResponse from(Template template) {
+        List<TemplateQuestionResponse> questionResponses = template.getQuestions().stream()
+            .map(TemplateQuestionResponse::from)
+            .collect(Collectors.toUnmodifiableList());
 
-		return new TemplateResponse(template.getId(), template.getTemplateTitle(), template.getTemplateDescription(),
-			questionResponses);
-	}
+        return new TemplateResponse(template.getId(), template.getTemplateTitle(), template.getTemplateDescription(),
+            questionResponses);
+    }
 }

@@ -12,10 +12,10 @@ import org.springframework.http.HttpStatus;
 
 import com.reviewduck.acceptance.AcceptanceTest;
 import com.reviewduck.review.dto.request.AnswerRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
-import com.reviewduck.review.dto.request.ReviewQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
+import com.reviewduck.review.dto.request.ReviewQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
@@ -79,7 +79,8 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
         // when, then
         String newReviewTitle = "new title";
-        List<ReviewQuestionUpdateRequest> updateQuestions = List.of(new ReviewQuestionUpdateRequest(1L, "new question1"));
+        List<ReviewQuestionUpdateRequest> updateQuestions = List.of(
+            new ReviewQuestionUpdateRequest(1L, "new question1"));
         ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
         put("/api/review-forms/" + createReviewFormCode, updateRequest)
             .statusCode(HttpStatus.OK.value())
@@ -100,7 +101,8 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 회고폼을 수정할 수 없다.")
     void updateInvalidReviewForm() {
         // when, then
-        List<ReviewQuestionUpdateRequest> updateQuestions = List.of(new ReviewQuestionUpdateRequest(1L, "new question1"));
+        List<ReviewQuestionUpdateRequest> updateQuestions = List.of(
+            new ReviewQuestionUpdateRequest(1L, "new question1"));
         ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest("newTitle", updateQuestions);
 
         put("/api/review-forms/aaaaaaaa", updateRequest)

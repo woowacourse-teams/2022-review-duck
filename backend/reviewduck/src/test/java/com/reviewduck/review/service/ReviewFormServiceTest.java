@@ -14,18 +14,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.reviewduck.template.dto.request.TemplateQuestionRequest;
+import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
-import com.reviewduck.template.domain.Template;
-import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
-import com.reviewduck.review.dto.request.ReviewQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
+import com.reviewduck.review.dto.request.ReviewQuestionUpdateRequest;
+import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
-import com.reviewduck.common.exception.NotFoundException;
-import com.reviewduck.review.service.ReviewFormService;
+import com.reviewduck.template.dto.request.TemplateQuestionRequest;
 import com.reviewduck.template.service.TemplateService;
 
 @SpringBootTest
@@ -113,7 +112,8 @@ public class ReviewFormServiceTest {
 
         // when
         String reviewTitle = "new title";
-        List<ReviewQuestionUpdateRequest> updateRequests = List.of(new ReviewQuestionUpdateRequest(questionId, "new question1"),
+        List<ReviewQuestionUpdateRequest> updateRequests = List.of(
+            new ReviewQuestionUpdateRequest(questionId, "new question1"),
             new ReviewQuestionUpdateRequest(null, "new question3"));
 
         ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateRequests);
@@ -164,7 +164,8 @@ public class ReviewFormServiceTest {
         String code = saveReviewForm().getCode();
 
         // when, then
-        List<ReviewQuestionUpdateRequest> updateRequests = List.of(new ReviewQuestionUpdateRequest(9999999L, "new question"));
+        List<ReviewQuestionUpdateRequest> updateRequests = List.of(
+            new ReviewQuestionUpdateRequest(9999999L, "new question"));
 
         assertThatThrownBy(
             () -> reviewFormService.update(code, new ReviewFormUpdateRequest("new title", updateRequests)))

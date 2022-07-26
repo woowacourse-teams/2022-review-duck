@@ -13,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
-import com.reviewduck.review.repository.ReviewFormRepository;
 
 @DataJpaTest
 public class ReviewFormRepositoryTest {

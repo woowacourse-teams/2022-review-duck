@@ -10,5 +10,5 @@ import com.reviewduck.review.domain.ReviewForm;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-	List<Review> findByReviewForm(ReviewForm reviewForm);
+    List<Review> findByReviewForm(ReviewForm reviewForm);
 }

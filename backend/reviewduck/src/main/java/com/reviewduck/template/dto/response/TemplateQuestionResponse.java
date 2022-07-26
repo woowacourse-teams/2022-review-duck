@@ -11,14 +11,14 @@ import lombok.Getter;
 @Getter
 public class TemplateQuestionResponse {
 
-	private Long questionId;
-	private String questionValue;
+    private Long questionId;
+    private String questionValue;
 
-	public static TemplateQuestionResponse from(ReviewFormQuestion reviewFormQuestion) {
-		return new TemplateQuestionResponse(reviewFormQuestion.getId(), reviewFormQuestion.getValue());
-	}
+    public static TemplateQuestionResponse from(ReviewFormQuestion reviewFormQuestion) {
+        return new TemplateQuestionResponse(reviewFormQuestion.getId(), reviewFormQuestion.getValue());
+    }
 
-	public static TemplateQuestionResponse from(TemplateQuestion question) {
-		return new TemplateQuestionResponse(question.getId(), question.getValue());
-	}
+    public static TemplateQuestionResponse from(TemplateQuestion question) {
+        return new TemplateQuestionResponse(question.getId(), question.getValue());
+    }
 }

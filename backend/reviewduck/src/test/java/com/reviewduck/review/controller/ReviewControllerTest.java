@@ -19,7 +19,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reviewduck.review.dto.request.AnswerRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
-import com.reviewduck.review.controller.ReviewController;
 import com.reviewduck.review.service.ReviewService;
 
 @WebMvcTest(ReviewController.class)

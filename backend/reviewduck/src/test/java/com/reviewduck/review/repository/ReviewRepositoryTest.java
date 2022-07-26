@@ -15,8 +15,6 @@ import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.domain.QuestionAnswer;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.repository.ReviewFormRepository;
-import com.reviewduck.review.repository.ReviewRepository;
 
 @DataJpaTest
 public class ReviewRepositoryTest {

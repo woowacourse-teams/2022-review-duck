@@ -14,15 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.request.AnswerRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
-import com.reviewduck.common.exception.NotFoundException;
-import com.reviewduck.review.service.ReviewFormService;
-import com.reviewduck.review.service.ReviewService;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")

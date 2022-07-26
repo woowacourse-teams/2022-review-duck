@@ -14,6 +14,6 @@ import lombok.ToString;
 @ToString
 public class ReviewFormQuestionRequest {
 
-	@NotNull(message = "회고 폼의 질문 목록 생성 중 오류가 발생했습니다.")
-	private String questionValue;
+    @NotNull(message = "회고 폼의 질문 목록 생성 중 오류가 발생했습니다.")
+    private String questionValue;
 }

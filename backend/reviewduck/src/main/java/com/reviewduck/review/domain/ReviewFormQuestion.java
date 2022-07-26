@@ -19,44 +19,44 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ReviewFormQuestion {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(nullable = false)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
+    private Long id;
 
-	@Column(name = "question_value", nullable = false)
-	private String value;
+    @Column(name = "question_value", nullable = false)
+    private String value;
 
-	@Column(nullable = false)
-	private int position = -1;
+    @Column(nullable = false)
+    private int position = -1;
 
-	public ReviewFormQuestion(String value) {
-		validate(value);
-		this.value = value;
-	}
+    public ReviewFormQuestion(String value) {
+        validate(value);
+        this.value = value;
+    }
 
-	public void updateValue(String value) {
-		this.value = value;
-	}
+    public void updateValue(String value) {
+        this.value = value;
+    }
 
-	private void validate(String value) {
-		validateNull(value);
-		validateLength(value);
-	}
+    private void validate(String value) {
+        validateNull(value);
+        validateLength(value);
+    }
 
-	private void validateLength(String value) {
-		if (value.length() > 200) {
-			throw new ReviewFormQuestionException("질문은 200자를 넘을 수 없습니다.");
-		}
-	}
+    private void validateLength(String value) {
+        if (value.length() > 200) {
+            throw new ReviewFormQuestionException("질문은 200자를 넘을 수 없습니다.");
+        }
+    }
 
-	private void validateNull(String value) {
-		if (Objects.isNull(value) || value.isBlank()) {
-			throw new ReviewFormQuestionException("질문 내용은 비어있을 수 없습니다.");
-		}
-	}
+    private void validateNull(String value) {
+        if (Objects.isNull(value) || value.isBlank()) {
+            throw new ReviewFormQuestionException("질문 내용은 비어있을 수 없습니다.");
+        }
+    }
 
-	public void setPosition(int position) {
-		this.position = position;
-	}
+    public void setPosition(int position) {
+        this.position = position;
+    }
 }

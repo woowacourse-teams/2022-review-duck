@@ -13,8 +13,6 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 
 import com.reviewduck.review.exception.ReviewFormException;
-import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.domain.ReviewFormQuestion;
 
 class ReviewFormTest {
     @Test

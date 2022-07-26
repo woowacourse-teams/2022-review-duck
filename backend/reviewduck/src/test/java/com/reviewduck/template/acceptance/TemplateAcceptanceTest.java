@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import com.reviewduck.acceptance.AcceptanceTest;
-import com.reviewduck.template.dto.request.TemplateQuestionRequest;
-import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
+import com.reviewduck.template.dto.request.TemplateQuestionRequest;
+import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
 import com.reviewduck.template.dto.response.TemplateCreateResponse;
 

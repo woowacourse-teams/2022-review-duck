@@ -24,27 +24,27 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ReviewController {
 
-	private final ReviewService reviewService;
+    private final ReviewService reviewService;
 
-	@Operation(summary = "회고 답변을 수정한다.")
-	@PutMapping("/{reviewId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void update(@PathVariable Long reviewId, @RequestBody @Valid ReviewRequest request) {
+    @Operation(summary = "회고 답변을 수정한다.")
+    @PutMapping("/{reviewId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void update(@PathVariable Long reviewId, @RequestBody @Valid ReviewRequest request) {
 
-		log.info("uri={}, method = {}, request = {}",
-			"/api/reviews/" + reviewId, "PUT", request.toString());
+        log.info("uri={}, method = {}, request = {}",
+            "/api/reviews/" + reviewId, "PUT", request.toString());
 
-		reviewService.update(reviewId, request);
-	}
+        reviewService.update(reviewId, request);
+    }
 
-	@Operation(summary = "회고 답변을 삭제한다.")
-	@DeleteMapping("/{reviewId}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void delete(@PathVariable Long reviewId) {
+    @Operation(summary = "회고 답변을 삭제한다.")
+    @DeleteMapping("/{reviewId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long reviewId) {
 
-		log.info("uri={}, method = {}, request = {}",
-			"/api/reviews/" + reviewId, "DELETE", "");
+        log.info("uri={}, method = {}, request = {}",
+            "/api/reviews/" + reviewId, "DELETE", "");
 
-		reviewService.delete(reviewId);
-	}
+        reviewService.delete(reviewId);
+    }
 }

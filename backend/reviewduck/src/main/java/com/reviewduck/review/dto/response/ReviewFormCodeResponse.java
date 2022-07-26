@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ReviewFormCodeResponse {
 
-	private String reviewFormCode;
+    private String reviewFormCode;
 
-	public static ReviewFormCodeResponse from(ReviewForm reviewForm) {
-		return new ReviewFormCodeResponse(reviewForm.getCode());
-	}
+    public static ReviewFormCodeResponse from(ReviewForm reviewForm) {
+        return new ReviewFormCodeResponse(reviewForm.getCode());
+    }
 }

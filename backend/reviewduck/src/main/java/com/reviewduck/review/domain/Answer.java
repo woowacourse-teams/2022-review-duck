@@ -19,22 +19,22 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Answer {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(nullable = false)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
+    private Long id;
 
-	@Column(name = "answer_value")
-	private String value;
+    @Column(name = "answer_value")
+    private String value;
 
-	public Answer(String value) {
-		validate(value);
-		this.value = value;
-	}
+    public Answer(String value) {
+        validate(value);
+        this.value = value;
+    }
 
-	private void validate(String value) {
-		if (Objects.isNull(value)) {
-			throw new AnswerException("답변 작성 중 오류가 발생했습니다.");
-		}
-	}
+    private void validate(String value) {
+        if (Objects.isNull(value)) {
+            throw new AnswerException("답변 작성 중 오류가 발생했습니다.");
+        }
+    }
 }
