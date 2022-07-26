@@ -16,22 +16,22 @@ function PageRoutes() {
         <Route element={<ReviewLayout />}>
           <Route index element={<MainPage />} />
 
-          <Route>
-            <Route path={PAGE_LIST.REVIEW_FORM} element={<ReviewFormPage />}>
-              <Route path={':reviewFormCode'} />
-            </Route>
+          <Route path={PAGE_LIST.REVIEW_FORM}>
+            <Route path={':reviewFormCode'} element={<ReviewFormPage />} />
           </Route>
 
           <Route>
             <Route path={PAGE_LIST.REVIEW_JOIN} element={<ReviewJoinPage />} />
-            <Route path={PAGE_LIST.REVIEW} element={<ReviewPage />}>
-              <Route path=":reviewFormCode" />
+            <Route path={PAGE_LIST.REVIEW}>
+              <Route index element={<ReviewPage />} />
+              <Route path=":reviewFormCode" element={<ReviewPage />} />
             </Route>
           </Route>
         </Route>
 
-        <Route path={PAGE_LIST.REVIEW_OVERVIEW} element={<ReviewOverviewPage />}>
-          <Route path=":reviewFormCode" />
+        <Route path={PAGE_LIST.REVIEW_OVERVIEW}>
+          <Route index element={<ReviewOverviewPage />} />
+          <Route path=":reviewFormCode" element={<ReviewOverviewPage />} />
         </Route>
 
         <Route path="playground" element={<Playground />} />
