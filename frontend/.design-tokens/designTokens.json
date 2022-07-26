@@ -24,6 +24,10 @@
           "value": "rgba(255,255,255,0.2)",
           "type": "color"
         },
+        "300": {
+          "value": "rgba(255,255,255,0.3)",
+          "type": "color"
+        },
         "400": {
           "value": "rgba(255,255,255,0.4)",
           "type": "color"
@@ -56,6 +60,10 @@
         },
         "200": {
           "value": "rgba(0,0,0,0.2)",
+          "type": "color"
+        },
+        "300": {
+          "value": "rgba(0,0,0,.3)",
           "type": "color"
         },
         "400": {
@@ -212,7 +220,7 @@
         "type": "fontSizes"
       },
       "body": {
-        "value": "16",
+        "value": "16px",
         "type": "fontSizes"
       },
       "h6": {
@@ -252,15 +260,15 @@
     },
     "borderRadius": {
       "small": {
-        "value": "4",
+        "value": "0.25rem",
         "type": "borderRadius"
       },
       "medium": {
-        "value": "8",
+        "value": "0.5rem",
         "type": "borderRadius"
       },
       "large": {
-        "value": "16",
+        "value": "1rem",
         "type": "borderRadius"
       },
       "max": {
@@ -268,7 +276,7 @@
         "type": "borderRadius"
       },
       "xlarge": {
-        "value": "32",
+        "value": "2rem",
         "type": "borderRadius"
       }
     },
@@ -278,23 +286,23 @@
         "type": "borderWidth"
       },
       "small": {
-        "value": "2",
+        "value": "2px",
         "type": "borderWidth"
       },
       "medium": {
-        "value": "4",
+        "value": "4px",
         "type": "borderWidth"
       },
       "large": {
-        "value": "8",
+        "value": "8px",
         "type": "borderWidth"
       },
       "min": {
-        "value": "1",
+        "value": "1px",
         "type": "borderWidth"
       },
       "max": {
-        "value": "12",
+        "value": "12px",
         "type": "borderWidth"
       }
     },
@@ -373,6 +381,10 @@
           },
           "200": {
             "value": "{color.gray.900}",
+            "type": "color"
+          },
+          "blur": {
+            "value": "{color.white.300}",
             "type": "color"
           }
         },
