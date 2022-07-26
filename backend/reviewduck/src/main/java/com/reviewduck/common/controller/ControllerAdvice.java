@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.reviewduck.template.dto.response.ErrorResponse;
+import com.reviewduck.common.dto.ErrorResponse;
 import com.reviewduck.common.exception.CustomException;
 import com.reviewduck.common.exception.NotFoundException;
 
