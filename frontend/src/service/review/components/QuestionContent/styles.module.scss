@@ -10,7 +10,7 @@
     flex-direction: column;
     gap: 1rem;
     padding-bottom: 1.5rem;
-    border-bottom: 1px solid $LIGHT_COLOR_THEME_BACKGROUND_200;
+    border-bottom: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
 
     &:last-child {
       border: none;
@@ -19,7 +19,7 @@
 
     & > .answer-content {
       font-size: 1rem;
-      color: $LIGHT_COLOR_THEME_TEXT_800;
+      color: $THEME_COLOR_THEME_TEXT_800;
       line-height: 140%;
     }
   }

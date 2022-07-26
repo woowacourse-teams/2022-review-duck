@@ -24,8 +24,8 @@
   }
 
   &:not(.theme-outlined) {
-    color: $LIGHT_COLOR_STATUS_INNER_PRIMARY_500;
-    background-color: $LIGHT_COLOR_STATUS_PRIMARY_500;
+    color: $THEME_COLOR_STATUS_INNER_PRIMARY_500;
+    background-color: $THEME_COLOR_STATUS_PRIMARY_500;
     transition: filter 0.3s ease-out;
 
     &:hover {
@@ -69,13 +69,13 @@
 
 .theme-outlined {
   position: relative;
-  color: $LIGHT_COLOR_STATUS_PRIMARY_500;
+  color: $THEME_COLOR_STATUS_PRIMARY_500;
   background-color: transparent;
   transition: background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
-    color: $LIGHT_COLOR_STATUS_INNER_PRIMARY_500;
-    background-color: $LIGHT_COLOR_STATUS_PRIMARY_500;
+    color: $THEME_COLOR_STATUS_INNER_PRIMARY_500;
+    background-color: $THEME_COLOR_STATUS_PRIMARY_500;
   }
 
   &:before {
@@ -85,7 +85,7 @@
 
     width: 100%;
     height: 100%;
-    border: 2px solid $LIGHT_COLOR_STATUS_PRIMARY_500;
+    border: 2px solid $THEME_COLOR_STATUS_PRIMARY_500;
     box-sizing: border-box;
     border-radius: 999px;
   }

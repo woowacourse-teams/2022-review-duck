@@ -4,14 +4,14 @@
   width: 80%;
   height: 0.3125rem;
   position: relative;
-  background-color: $LIGHT_COLOR_STATUS_PRIMARY_100;
+  background-color: $THEME_COLOR_STATUS_PRIMARY_100;
   border-radius: 0.1875rem;
 }
 
 .progress {
   position: absolute;
   left: 0;
-  background-color: $LIGHT_COLOR_STATUS_PRIMARY_500;
+  background-color: $THEME_COLOR_STATUS_PRIMARY_500;
   height: 0.3125rem;
   transition: width 0.5s ease;
   border-radius: 0.1875rem;
