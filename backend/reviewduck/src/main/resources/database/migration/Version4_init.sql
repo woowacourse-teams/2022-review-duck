@@ -1,7 +1,10 @@
+# database 삭제는 V4에서만 적용
+drop database review_duck;
+create database review_duck default CHARACTER SET UTF8;
+
 SET
 FOREIGN_KEY_CHECKS = 0;
 
-drop table *;
 create table review_form
 (
     id           bigint       not null auto_increment,
@@ -55,7 +58,7 @@ create table question_answer
 (
     id          bigint  not null auto_increment,
     answer_id   bigint,
-    question_id bigint,
+    review_form_question_id bigint,
     review_id   bigint,
     position    integer not null,
     primary key (id),
