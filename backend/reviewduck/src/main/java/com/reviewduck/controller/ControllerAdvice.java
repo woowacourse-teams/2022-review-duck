@@ -11,18 +11,27 @@ import com.reviewduck.dto.response.ErrorResponse;
 import com.reviewduck.exception.CustomException;
 import com.reviewduck.exception.NotFoundException;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestControllerAdvice
+@Slf4j
 public class ControllerAdvice {
 
     @ExceptionHandler(CustomException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleCustomException(Exception e) {
+
+        log.error(e.getMessage());
+
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleParameter(MethodArgumentNotValidException e) {
+
+        log.error(e.getMessage());
+
         StringBuilder message = new StringBuilder();
 
         for (FieldError error : e.getFieldErrors()) {
@@ -35,12 +44,18 @@ public class ControllerAdvice {
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(Exception e) {
+
+        log.error(e.getMessage());
+
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleException() {
+    public ErrorResponse handleException(Exception e) {
+
+        log.error(e.getMessage());
+
         return new ErrorResponse("예상치 못한 오류가 발생하였습니다.");
     }
 }

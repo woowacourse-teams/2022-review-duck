@@ -7,7 +7,7 @@
   .numbering {
     display: flex;
     align-items: center;
-    color: $LIGHT_COLOR_THEME_TEXT_400;
+    color: $THEME_COLOR_THEME_TEXT_400;
   }
 
   .question {
@@ -19,7 +19,7 @@
   }
 
   .button {
-    background-color: $LIGHT_COLOR_STATUS_PRIMARY_500;
+    background-color: $THEME_COLOR_STATUS_PRIMARY_500;
   }
 
   @include animate(0.2s ease) {

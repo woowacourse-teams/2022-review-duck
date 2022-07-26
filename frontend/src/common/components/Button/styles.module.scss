@@ -7,6 +7,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
 
   border: none;
   border-radius: 999px;
@@ -19,17 +20,17 @@
   }
 
   & :global(.icon) {
-    margin-right: 0.45em;
+    line-height: 70%;
   }
-}
 
-.button:not(.theme-outlined) {
-  color: $LIGHT_COLOR_STATUS_INNER_PRIMARY_500;
-  background-color: $LIGHT_COLOR_STATUS_PRIMARY_500;
-  transition: filter 0.3s ease-out;
+  &:not(.theme-outlined) {
+    color: $THEME_COLOR_STATUS_INNER_PRIMARY_500;
+    background-color: $THEME_COLOR_STATUS_PRIMARY_500;
+    transition: filter 0.3s ease-out;
 
-  &:hover {
-    filter: brightness(1.2);
+    &:hover {
+      filter: brightness(1.2);
+    }
   }
 }
 
@@ -67,14 +68,26 @@
 }
 
 .theme-outlined {
-  border: 2px solid $LIGHT_COLOR_STATUS_PRIMARY_500;
-  color: $LIGHT_COLOR_STATUS_PRIMARY_500;
+  position: relative;
+  color: $THEME_COLOR_STATUS_PRIMARY_500;
   background-color: transparent;
   transition: background-color 0.3s ease, color 0.3s ease;
 
   &:hover {
-    color: $LIGHT_COLOR_STATUS_INNER_PRIMARY_500;
-    background-color: $LIGHT_COLOR_STATUS_PRIMARY_500;
+    color: $THEME_COLOR_STATUS_INNER_PRIMARY_500;
+    background-color: $THEME_COLOR_STATUS_PRIMARY_500;
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    display: block;
+
+    width: 100%;
+    height: 100%;
+    border: 2px solid $THEME_COLOR_STATUS_PRIMARY_500;
+    box-sizing: border-box;
+    border-radius: 999px;
   }
 }
 
@@ -85,10 +98,6 @@
 .small {
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
-}
-
-.small:not(.filled) {
-  border-width: 1px;
 }
 
 .medium {

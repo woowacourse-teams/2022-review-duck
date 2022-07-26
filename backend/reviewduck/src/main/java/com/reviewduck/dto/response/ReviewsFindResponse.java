@@ -1,9 +1,11 @@
 package com.reviewduck.dto.response;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.reviewduck.domain.Review;
+import com.reviewduck.domain.ReviewForm;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,13 +15,16 @@ import lombok.Getter;
 public class ReviewsFindResponse {
 
     private String reviewFormTitle;
+    private long updatedAt;
     private List<ReviewResponse> reviews;
 
-    public static ReviewsFindResponse of(String reviewTitle, List<Review> reviews) {
+    public static ReviewsFindResponse of(ReviewForm reviewForm, List<Review> reviews) {
         List<ReviewResponse> reviewResponses = reviews.stream()
             .map(ReviewResponse::from)
             .collect(Collectors.toUnmodifiableList());
 
-        return new ReviewsFindResponse(reviewTitle, reviewResponses);
+        return new ReviewsFindResponse(reviewForm.getReviewTitle(),
+            Timestamp.valueOf(reviewForm.getUpdatedAt()).getTime(),
+            reviewResponses);
     }
 }

@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
@@ -24,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class ReviewForm {
+public class ReviewForm extends BaseDate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,27 +38,49 @@ public class ReviewForm {
     @Column(nullable = false)
     private String reviewTitle;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
-    @JoinColumn(name = "question_id")
-    private List<Question> questions;
+    @JoinColumn(name = "review_form_id")
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @OrderBy("position asc")
+    private List<ReviewFormQuestion> reviewFormQuestions;
 
-    public ReviewForm(String reviewTitle, List<String> questions) {
-        validate(reviewTitle, questions);
+    public ReviewForm(String reviewTitle, List<String> questionValues) {
+        validate(reviewTitle, questionValues);
         this.reviewTitle = reviewTitle;
-        this.questions = questions.stream()
-            .map(Question::new)
-            .collect(Collectors.toUnmodifiableList());
+        this.reviewFormQuestions = setReviewFormQuestions(questionValues);
         this.code = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
     }
 
-    private void validate(String reviewTitle, List<String> questions) {
-        validateBlankTitle(reviewTitle);
-        validateTitleLength(reviewTitle);
-        validateNullQuestions(questions);
+    private List<ReviewFormQuestion> setReviewFormQuestions(List<String> questionValues) {
+        List<ReviewFormQuestion> reviewFormQuestions = questionValues.stream()
+            .map(ReviewFormQuestion::new)
+            .collect(Collectors.toUnmodifiableList());
+        sortQuestions(reviewFormQuestions);
+        return reviewFormQuestions;
     }
 
-    private void validateNullQuestions(List<String> questions) {
-        if (Objects.isNull(questions)) {
+    private void sortQuestions(List<ReviewFormQuestion> reviewFormQuestions) {
+        int index = 0;
+        for (ReviewFormQuestion reviewFormQuestion : reviewFormQuestions) {
+            reviewFormQuestion.setPosition(index++);
+        }
+    }
+
+    public void update(String reviewTitle, List<ReviewFormQuestion> reviewFormQuestions) {
+        validateTitleLength(reviewTitle);
+        validateBlankTitle(reviewTitle);
+        this.reviewTitle = reviewTitle;
+        sortQuestions(reviewFormQuestions);
+        this.reviewFormQuestions = reviewFormQuestions;
+    }
+
+    private void validate(String reviewTitle, List<String> questionValues) {
+        validateBlankTitle(reviewTitle);
+        validateTitleLength(reviewTitle);
+        validateNullQuestions(questionValues);
+    }
+
+    private void validateNullQuestions(List<String> questionValues) {
+        if (Objects.isNull(questionValues)) {
             throw new ReviewFormException("회고 폼의 질문 목록 생성 중 오류가 발생했습니다.");
         }
     }

@@ -34,8 +34,8 @@ public class ReviewRepositoryTest {
         this.savedReviewForm = reviewFormRepository.save(reviewForm);
         this.review = Review.of("제이슨", savedReviewForm,
             List.of(
-                new QuestionAnswer(savedReviewForm.getQuestions().get(0), new Answer("answer1")),
-                new QuestionAnswer(savedReviewForm.getQuestions().get(1), new Answer("answer2"))
+                new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(0), new Answer("answer1")),
+                new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(1), new Answer("answer2"))
             )
         );
     }
@@ -69,5 +69,18 @@ public class ReviewRepositoryTest {
             () -> assertThat(reviews).hasSize(1),
             () -> assertThat(reviews.get(0).getNickname()).isEqualTo(savedReview.getNickname())
         );
+    }
+
+    @Test
+    @DisplayName("리뷰를 삭제한다.")
+    void deleteReview() {
+        // given
+        Review savedReview = reviewRepository.save(review);
+
+        // when
+        reviewRepository.deleteById(savedReview.getId());
+
+        // then
+        assertThat(reviewRepository.findById(savedReview.getId()).isEmpty()).isTrue();
     }
 }

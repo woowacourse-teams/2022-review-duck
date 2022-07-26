@@ -17,9 +17,9 @@ interface Props {
   children: ReactNode;
 }
 
-function FieldSet({ size, title, description, children }: Props) {
+function FieldSet({ className, size, title, description, children }: Props) {
   return (
-    <div className={cn(styles.container, styles[`size-${size}`])}>
+    <div className={cn(className, styles.container, styles[`size-${size}`])}>
       <label className={cn(styles.title)}>{title}</label>
 
       {children}

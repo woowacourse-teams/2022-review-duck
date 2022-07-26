@@ -1,7 +1,7 @@
 package com.reviewduck.dto.response;
 
 import com.reviewduck.domain.Answer;
-import com.reviewduck.domain.Question;
+import com.reviewduck.domain.ReviewFormQuestion;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +13,7 @@ public class AnswerResponse {
     private String questionValue;
     private String answerValue;
 
-    public static AnswerResponse of(Question question, Answer answer) {
-        return new AnswerResponse(question.getValue(), answer.getValue());
+    public static AnswerResponse of(ReviewFormQuestion reviewFormQuestion, Answer answer) {
+        return new AnswerResponse(reviewFormQuestion.getValue(), answer.getValue());
     }
 }

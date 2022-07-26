@@ -5,7 +5,7 @@
   gap: 1rem;
 
   border-radius: 1.5rem;
-  background-color: $LIGHT_COLOR_THEME_BACKGROUND_100;
+  background-color: $THEME_COLOR_THEME_BACKGROUND_100;
   box-shadow: 0px 15px 50px $GLOBAL_COLOR_BLACK_50;
 
   @include animate(0.5s ease) {
@@ -28,21 +28,21 @@
   align-items: center;
 
   .numbering {
-    color: $LIGHT_COLOR_STATUS_PRIMARY_500;
+    color: $THEME_COLOR_STATUS_PRIMARY_500;
   }
 
   .type {
-    color: $LIGHT_COLOR_THEME_TEXT_400;
+    color: $THEME_COLOR_THEME_TEXT_400;
   }
 }
 
 .line {
   width: 100%;
   border: none;
-  border-bottom: 1px solid $LIGHT_COLOR_STATUS_PRIMARY_200;
+  border-bottom: 1px solid $THEME_COLOR_STATUS_PRIMARY_200;
   margin: 0 0 0.25rem;
 }
 
 .title {
-  color: $LIGHT_COLOR_STATUS_PRIMARY_700;
+  color: $THEME_COLOR_STATUS_PRIMARY_700;
 }

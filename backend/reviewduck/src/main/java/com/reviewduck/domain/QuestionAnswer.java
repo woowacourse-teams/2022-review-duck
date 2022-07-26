@@ -24,13 +24,20 @@ public class QuestionAnswer {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    private Question question;
+    private ReviewFormQuestion reviewFormQuestion;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Answer answer;
 
-    public QuestionAnswer(Question question, Answer answer) {
-        this.question = question;
+    @Column(nullable = false)
+    private int position = -1;
+
+    public QuestionAnswer(ReviewFormQuestion reviewFormQuestion, Answer answer) {
+        this.reviewFormQuestion = reviewFormQuestion;
         this.answer = answer;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }

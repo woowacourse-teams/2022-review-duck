@@ -1,5 +1,6 @@
 package com.reviewduck.dto.response;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,12 +16,15 @@ public class ReviewResponse {
     private Long reviewId;
     private String nickname;
     private List<AnswerResponse> answers;
+    private long updatedAt;
 
     public static ReviewResponse from(Review review) {
         List<AnswerResponse> answerResponses = review.getQuestionAnswers().stream()
-            .map(questionAnswer -> AnswerResponse.of(questionAnswer.getQuestion(), questionAnswer.getAnswer()))
+            .map(
+                questionAnswer -> AnswerResponse.of(questionAnswer.getReviewFormQuestion(), questionAnswer.getAnswer()))
             .collect(Collectors.toUnmodifiableList());
 
-        return new ReviewResponse(review.getId(), review.getNickname(), answerResponses);
+        return new ReviewResponse(review.getId(), review.getNickname(), answerResponses,
+            Timestamp.valueOf(review.getUpdatedAt()).getTime());
     }
 }

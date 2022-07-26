@@ -15,6 +15,7 @@ jobs:
     env:
       SETTING_JSON_PATH: ./frontend/.design-tokens/designTokens.json
       SETTING_OUTPUT_PATH: ./frontend/src/styles/designTokens.scss
+      SETTING_THEME_OUTPUT_PATH: ./frontend/src/styles/theme.scss
       SETTING_UPDATE_BRANCHES: figma
 
     strategy:
@@ -28,13 +29,20 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - run: JSON_PATH=$SETTING_JSON_PATH OUTPUT_PATH=$SETTING_OUTPUT_PATH node ./frontend/.design-tokens/designTokensConverter.js
+      - run: JSON_PATH=$SETTING_JSON_PATH OUTPUT_PATH=$SETTING_OUTPUT_PATH THEME_OUTPUT_PATH=$SETTING_THEME_OUTPUT_PATH node ./frontend/.design-tokens/index.js
 
       - name: Add & Commit
         uses: EndBug/add-and-commit@v4.4.0
         with:
           add: "${{ env.SETTING_OUTPUT_PATH }}"
-          message: "[FE] design : Github Action 디자인 토큰 자동 생성"
+          message: "[FE] design : Github Action 디자인 토큰 Sass Variable 자동 생성"
+          ref: "${{ env.SETTING_UPDATE_BRANCHES }}"
+
+      - name: Add & Commit
+        uses: EndBug/add-and-commit@v4.4.0
+        with:
+          add: "${{ env.SETTING_THEME_OUTPUT_PATH }}"
+          message: "[FE] design : Github Action 디자인 토큰 Css Theme Variable 자동 생성"
           ref: "${{ env.SETTING_UPDATE_BRANCHES }}"
 
       - name: Push commit
