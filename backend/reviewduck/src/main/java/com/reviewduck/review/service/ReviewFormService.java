@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.common.exception.NotFoundException;
+import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
@@ -75,7 +76,7 @@ public class ReviewFormService {
         return reviewFormQuestion;
     }
 
-    public ReviewForm saveFromTemplate(Long templateId, ReviewFormCreateFromTemplateRequest request) {
+    public ReviewForm saveFromTemplate(Long templateId, Member member, ReviewFormCreateFromTemplateRequest request) {
         Template template = templateService.findById(templateId);
 
         List<String> questionValues = template.getQuestions().stream()

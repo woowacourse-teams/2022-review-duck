@@ -7,13 +7,16 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
+import com.reviewduck.member.domain.Member;
 import com.reviewduck.template.exception.TemplateException;
 
 import lombok.AccessLevel;
@@ -33,6 +36,9 @@ public class Template {
     @Column(nullable = false)
     private String templateTitle;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
+
     @Column(nullable = false)
     private String templateDescription;
 
@@ -41,9 +47,10 @@ public class Template {
     @OrderBy("position asc")
     private List<TemplateQuestion> questions;
 
-    public Template(String templateTitle, String templateDescription, List<String> questionValues) {
-        validate(templateTitle, templateDescription, questionValues);
+    public Template(String templateTitle, Member member, String templateDescription, List<String> questionValues) {
+        validate(templateTitle, member, templateDescription, questionValues);
         this.templateTitle = templateTitle;
+        this.member = member;
         this.templateDescription = templateDescription;
         this.questions = setQuestions(questionValues);
     }
@@ -74,11 +81,18 @@ public class Template {
         this.questions = questions;
     }
 
-    private void validate(String templateTitle, String templateDescription, List<String> questionValues) {
+    private void validate(String templateTitle, Member member, String templateDescription, List<String> questionValues) {
         validateBlankTitle(templateTitle);
         validateTitleLength(templateTitle);
+        validateNullMember(member);
         validateNullDescription(templateDescription);
         validateNullQuestions(questionValues);
+    }
+
+    private void validateNullMember(Member member) {
+        if(Objects.isNull(member)){
+            throw new TemplateException("템플릿의 작성자가 존재해야 합니다.");
+        }
     }
 
     private void validateNullQuestions(List<String> questionValues) {

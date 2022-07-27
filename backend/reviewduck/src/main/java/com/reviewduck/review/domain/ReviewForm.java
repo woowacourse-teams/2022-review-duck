@@ -7,17 +7,21 @@ import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
 import com.reviewduck.common.domain.BaseDate;
+import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.exception.ReviewFormException;
+import com.reviewduck.template.exception.TemplateException;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -33,6 +37,9 @@ public class ReviewForm extends BaseDate {
     @Column(nullable = false)
     private Long id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
+
     @Column(name = "code", nullable = false, updatable = false)
     private String code;
 
@@ -44,9 +51,10 @@ public class ReviewForm extends BaseDate {
     @OrderBy("position asc")
     private List<ReviewFormQuestion> reviewFormQuestions;
 
-    public ReviewForm(String reviewTitle, List<String> questionValues) {
-        validate(reviewTitle, questionValues);
+    public ReviewForm(String reviewTitle, Member member, List<String> questionValues) {
+        validate(reviewTitle, member, questionValues);
         this.reviewTitle = reviewTitle;
+        this.member = member;
         this.reviewFormQuestions = setReviewFormQuestions(questionValues);
         this.code = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
     }
@@ -74,10 +82,17 @@ public class ReviewForm extends BaseDate {
         this.reviewFormQuestions = reviewFormQuestions;
     }
 
-    private void validate(String reviewTitle, List<String> questionValues) {
+    private void validate(String reviewTitle, Member member, List<String> questionValues) {
         validateBlankTitle(reviewTitle);
         validateTitleLength(reviewTitle);
+        validateNullMember(member);
         validateNullQuestions(questionValues);
+    }
+
+    private void validateNullMember(Member member) {
+        if(Objects.isNull(member)){
+            throw new ReviewFormException("회고 폼의 작성자가 존재해야 합니다.");
+        }
     }
 
     private void validateNullQuestions(List<String> questionValues) {

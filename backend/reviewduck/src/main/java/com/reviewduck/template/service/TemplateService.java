@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
+import com.reviewduck.member.domain.Member;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.domain.TemplateQuestion;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
@@ -29,12 +31,12 @@ public class TemplateService {
         this.questionRepository = questionRepository;
     }
 
-    public Template save(TemplateCreateRequest createRequest) {
+    public Template save(Member member, TemplateCreateRequest createRequest) {
         List<String> questionValues = createRequest.getQuestions().stream()
             .map(TemplateQuestionRequest::getQuestionValue)
             .collect(Collectors.toUnmodifiableList());
 
-        Template template = new Template(createRequest.getTemplateTitle(), createRequest.getTemplateDescription(),
+        Template template = new Template(createRequest.getTemplateTitle(), member, createRequest.getTemplateDescription(),
             questionValues);
         return templateRepository.save(template);
     }
@@ -49,19 +51,25 @@ public class TemplateService {
         return templateRepository.findAll();
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long id, Member member) {
         Template template = findById(id);
+        if(!template.getMember().equals(member)){
+            throw new AuthorizationException("본인이 생성한 템플릿이 아니면 삭제할 수 없습니다.");
+        }
         templateRepository.delete(template);
     }
 
-    public Template update(Long id, TemplateUpdateRequest templateUpdateRequest) {
+    public Template update(Long id, Member member, TemplateUpdateRequest templateUpdateRequest) {
         Template template = findById(id);
+        if(!template.getMember().equals(member)){
+            throw new AuthorizationException("본인이 생성한 템플릿이 아니면 수정할 수 없습니다.");
+        }
 
         List<TemplateQuestion> questions = templateUpdateRequest.getQuestions().stream()
             .map(request -> saveOrUpdateQuestion(request.getQuestionId(), request.getQuestionValue()))
             .collect(Collectors.toUnmodifiableList());
 
-        template.update(templateUpdateRequest.getTemplateTitle(), templateUpdateRequest.getTemplateDescription(),
+        template.update(templateUpdateRequest.getTemplateTitle(), member, templateUpdateRequest.getTemplateDescription(),
             questions);
 
         return template;

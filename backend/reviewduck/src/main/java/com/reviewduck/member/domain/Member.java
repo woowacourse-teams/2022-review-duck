@@ -41,4 +41,19 @@ public class Member {
             throw new MemberException("닉네임이 비어있을 수 없습니다.");
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Member member = (Member)o;
+        return Objects.equals(Id, member.Id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Id);
+    }
 }
