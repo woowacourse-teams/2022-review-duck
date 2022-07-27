@@ -31,13 +31,13 @@ function PageRoutes() {
           </Route>
         </Route>
 
+        <Route element={<CommunityLayout />}>
+          <Route path="playground" element={<Playground />} />
+        </Route>
+
         <Route path={PAGE_LIST.REVIEW_OVERVIEW}>
           <Route index element={<ReviewOverviewPage />} />
           <Route path=":reviewFormCode" element={<ReviewOverviewPage />} />
-        </Route>
-
-        <Route element={<CommunityLayout />}>
-          <Route path="playground" element={<Playground />} />
         </Route>
       </Routes>
     </BrowserRouter>
