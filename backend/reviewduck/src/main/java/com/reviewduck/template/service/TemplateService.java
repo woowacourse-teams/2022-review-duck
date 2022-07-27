@@ -69,7 +69,7 @@ public class TemplateService {
             .map(request -> saveOrUpdateQuestion(request.getQuestionId(), request.getQuestionValue()))
             .collect(Collectors.toUnmodifiableList());
 
-        template.update(templateUpdateRequest.getTemplateTitle(), templateUpdateRequest.getTemplateDescription(),
+        template.update(templateUpdateRequest.getTemplateTitle(), member, templateUpdateRequest.getTemplateDescription(),
             questions);
 
         return template;
