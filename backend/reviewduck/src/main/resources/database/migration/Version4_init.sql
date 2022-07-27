@@ -1,5 +1,4 @@
-#
-database 삭제는 V4에서만 적용
+# database 삭제는 V4에서만 적용
 drop
 database review_duck;
 create
