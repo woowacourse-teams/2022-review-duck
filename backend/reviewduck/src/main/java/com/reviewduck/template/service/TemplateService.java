@@ -54,15 +54,18 @@ public class TemplateService {
 
     public void deleteById(Member member, Long id) {
         Template template = findById(id);
-        if (!template.getMember().equals(member)) {
+
+        if (!template.isMine(member)) {
             throw new AuthorizationException("본인이 생성한 템플릿이 아니면 삭제할 수 없습니다.");
         }
+
         templateRepository.delete(template);
     }
 
     public Template update(Member member, Long id, TemplateUpdateRequest templateUpdateRequest) {
         Template template = findById(id);
-        if (!template.getMember().equals(member)) {
+
+        if (!template.isMine(member)) {
             throw new AuthorizationException("본인이 생성한 템플릿이 아니면 수정할 수 없습니다.");
         }
 

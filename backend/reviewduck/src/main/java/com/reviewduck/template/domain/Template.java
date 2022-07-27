@@ -66,6 +66,10 @@ public class Template {
         this.questions = questions;
     }
 
+    public boolean isMine(Member member) {
+        return member.equals(this.member);
+    }
+
     private List<TemplateQuestion> setQuestions(List<String> questionValues) {
         List<TemplateQuestion> questions = questionValues.stream()
             .map(TemplateQuestion::new)

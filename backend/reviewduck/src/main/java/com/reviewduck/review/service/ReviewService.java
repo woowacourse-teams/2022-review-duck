@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Answer;
@@ -15,7 +16,6 @@ import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.review.dto.request.AnswerRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
-import com.reviewduck.review.exception.ReviewException;
 import com.reviewduck.review.repository.ReviewFormQuestionRepository;
 import com.reviewduck.review.repository.ReviewRepository;
 
@@ -65,7 +65,7 @@ public class ReviewService {
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
 
         if (!review.isMine(member)) {
-            throw new ReviewException("본인이 생성한 회고가 아니면 수정할 수 없습니다.");
+            throw new AuthorizationException("본인이 생성한 회고가 아니면 수정할 수 없습니다.");
         }
 
         review.update(convertToQuestionAnswers(request.getAnswers()));
@@ -77,7 +77,7 @@ public class ReviewService {
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
 
         if (!review.isMine(member)) {
-            throw new ReviewException("본인이 생성한 회고가 아니면 삭제할 수 없습니다.");
+            throw new AuthorizationException("본인이 생성한 회고가 아니면 삭제할 수 없습니다.");
         }
 
         reviewRepository.deleteById(id);

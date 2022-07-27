@@ -67,7 +67,7 @@ public class ReviewForm extends BaseDate {
     }
 
     public boolean isMine(Member member) {
-        return this.member.equals(member);
+        return member.equals(this.member);
     }
 
     private List<ReviewFormQuestion> setReviewFormQuestions(List<String> questionValues) {

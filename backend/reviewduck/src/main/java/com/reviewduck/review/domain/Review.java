@@ -53,7 +53,7 @@ public class Review extends BaseDate {
     }
 
     public boolean isMine(Member member) {
-        return this.member.equals(member);
+        return member.equals(this.member);
     }
 
     private void sortQuestionAnswers(List<QuestionAnswer> questionAnswers) {
