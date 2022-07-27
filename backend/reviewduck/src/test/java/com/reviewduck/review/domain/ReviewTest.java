@@ -12,11 +12,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import com.reviewduck.review.exception.ReviewException;
-import com.reviewduck.review.domain.Answer;
-import com.reviewduck.review.domain.QuestionAnswer;
-import com.reviewduck.review.domain.Review;
-import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.domain.ReviewFormQuestion;
 
 public class ReviewTest {
     @Test

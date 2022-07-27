@@ -21,55 +21,55 @@ import com.reviewduck.review.repository.ReviewRepository;
 @Transactional
 public class ReviewService {
 
-	private final ReviewFormService reviewFormService;
-	private final ReviewRepository reviewRepository;
-	private final ReviewFormQuestionRepository reviewFormQuestionRepository;
+    private final ReviewFormService reviewFormService;
+    private final ReviewRepository reviewRepository;
+    private final ReviewFormQuestionRepository reviewFormQuestionRepository;
 
-	public ReviewService(ReviewFormService reviewFormService,
-		ReviewRepository reviewRepository, ReviewFormQuestionRepository reviewFormQuestionRepository) {
-		this.reviewFormService = reviewFormService;
-		this.reviewRepository = reviewRepository;
-		this.reviewFormQuestionRepository = reviewFormQuestionRepository;
-	}
+    public ReviewService(ReviewFormService reviewFormService,
+        ReviewRepository reviewRepository, ReviewFormQuestionRepository reviewFormQuestionRepository) {
+        this.reviewFormService = reviewFormService;
+        this.reviewRepository = reviewRepository;
+        this.reviewFormQuestionRepository = reviewFormQuestionRepository;
+    }
 
-	public Review save(String code, ReviewRequest request) {
-		ReviewForm reviewForm = reviewFormService.findByCode(code);
+    public Review save(String code, String nickName, ReviewRequest request) {
+        ReviewForm reviewForm = reviewFormService.findByCode(code);
 
-		List<QuestionAnswer> questionAnswers = convertToQuestionAnswers(request.getAnswers());
+        List<QuestionAnswer> questionAnswers = convertToQuestionAnswers(request.getAnswers());
 
-		Review review = Review.of(request.getNickname(), reviewForm, questionAnswers);
-		return reviewRepository.save(review);
-	}
+        Review review = Review.of(nickName, reviewForm, questionAnswers);
+        return reviewRepository.save(review);
+    }
 
-	private List<QuestionAnswer> convertToQuestionAnswers(List<AnswerRequest> answerRequests) {
-		List<QuestionAnswer> questionAnswers = new ArrayList<>();
-		for (AnswerRequest answerRequest : answerRequests) {
-			ReviewFormQuestion reviewFormQuestion = reviewFormQuestionRepository.findById(answerRequest.getQuestionId())
-				.orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
-			questionAnswers.add(new QuestionAnswer(reviewFormQuestion, new Answer(answerRequest.getAnswerValue())));
-		}
+    private List<QuestionAnswer> convertToQuestionAnswers(List<AnswerRequest> answerRequests) {
+        List<QuestionAnswer> questionAnswers = new ArrayList<>();
+        for (AnswerRequest answerRequest : answerRequests) {
+            ReviewFormQuestion reviewFormQuestion = reviewFormQuestionRepository.findById(answerRequest.getQuestionId())
+                .orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
+            questionAnswers.add(new QuestionAnswer(reviewFormQuestion, new Answer(answerRequest.getAnswerValue())));
+        }
 
-		return questionAnswers;
-	}
+        return questionAnswers;
+    }
 
-	@Transactional(readOnly = true)
-	public List<Review> findAllByCode(String code) {
-		ReviewForm reviewForm = reviewFormService.findByCode(code);
-		return reviewRepository.findByReviewForm(reviewForm);
-	}
+    @Transactional(readOnly = true)
+    public List<Review> findAllByCode(String code) {
+        ReviewForm reviewForm = reviewFormService.findByCode(code);
+        return reviewRepository.findByReviewForm(reviewForm);
+    }
 
-	public Review update(Long id, ReviewRequest request) {
-		Review review = reviewRepository.findById(id)
-			.orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
+    public Review update(Long id, ReviewRequest request) {
+        Review review = reviewRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
 
-		review.update(convertToQuestionAnswers(request.getAnswers()));
-		return review;
-	}
+        review.update(convertToQuestionAnswers(request.getAnswers()));
+        return review;
+    }
 
-	public void delete(Long id) {
-		if (!reviewRepository.existsById(id)) {
-			throw new NotFoundException("존재하지 않는 회고입니다.");
-		}
-		reviewRepository.deleteById(id);
-	}
+    public void delete(Long id) {
+        if (!reviewRepository.existsById(id)) {
+            throw new NotFoundException("존재하지 않는 회고입니다.");
+        }
+        reviewRepository.deleteById(id);
+    }
 }

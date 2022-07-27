@@ -14,15 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.request.AnswerRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
-import com.reviewduck.common.exception.NotFoundException;
-import com.reviewduck.review.service.ReviewFormService;
-import com.reviewduck.review.service.ReviewService;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")
@@ -57,7 +55,7 @@ public class ReviewServiceTest {
         // when
         ReviewRequest reviewCreateRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
-        Review savedReview = reviewService.save(savedReviewForm.getCode(), reviewCreateRequest);
+        Review savedReview = reviewService.save(savedReviewForm.getCode(), "제이슨", reviewCreateRequest);
 
         // then
         assertAll(
@@ -78,7 +76,7 @@ public class ReviewServiceTest {
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
 
         // when, then
-        assertThatThrownBy(() -> reviewService.save(invalidCode, reviewCreateRequest))
+        assertThatThrownBy(() -> reviewService.save(invalidCode, "제이슨", reviewCreateRequest))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 회고 폼입니다.");
     }
@@ -92,7 +90,7 @@ public class ReviewServiceTest {
                 new AnswerRequest(2L, "answer2")));
 
         // when, then
-        assertThatThrownBy(() -> reviewService.save(savedReviewForm.getCode(), reviewCreateRequest))
+        assertThatThrownBy(() -> reviewService.save(savedReviewForm.getCode(), "제이슨", reviewCreateRequest))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 질문입니다.");
     }
@@ -103,7 +101,7 @@ public class ReviewServiceTest {
         // given
         ReviewRequest reviewCreateRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
-        Review savedReview = reviewService.save(savedReviewForm.getCode(), reviewCreateRequest);
+        Review savedReview = reviewService.save(savedReviewForm.getCode(), "제이슨", reviewCreateRequest);
 
         // when
         List<Review> reviews = reviewService.findAllByCode(savedReviewForm.getCode());
@@ -121,7 +119,7 @@ public class ReviewServiceTest {
         // given
         ReviewRequest reviewCreateRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
-        Review savedReview = reviewService.save(savedReviewForm.getCode(), reviewCreateRequest);
+        Review savedReview = reviewService.save(savedReviewForm.getCode(), "제이슨", reviewCreateRequest);
 
         // when
         ReviewRequest editRequest = new ReviewRequest("제이슨",
@@ -143,7 +141,7 @@ public class ReviewServiceTest {
         // given
         ReviewRequest reviewCreateRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
-        Review savedReview = reviewService.save(savedReviewForm.getCode(), reviewCreateRequest);
+        Review savedReview = reviewService.save(savedReviewForm.getCode(), "제이슨", reviewCreateRequest);
 
         // when
         reviewService.delete(savedReview.getId());

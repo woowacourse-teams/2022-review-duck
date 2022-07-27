@@ -13,18 +13,18 @@ import lombok.Getter;
 @Getter
 public class ReviewResponse {
 
-	private Long reviewId;
-	private String nickname;
-	private List<AnswerResponse> answers;
-	private long updatedAt;
+    private Long reviewId;
+    private String nickname;
+    private List<AnswerResponse> answers;
+    private long updatedAt;
 
-	public static ReviewResponse from(Review review) {
-		List<AnswerResponse> answerResponses = review.getQuestionAnswers().stream()
-			.map(
-				questionAnswer -> AnswerResponse.of(questionAnswer.getReviewFormQuestion(), questionAnswer.getAnswer()))
-			.collect(Collectors.toUnmodifiableList());
+    public static ReviewResponse from(Review review) {
+        List<AnswerResponse> answerResponses = review.getQuestionAnswers().stream()
+            .map(
+                questionAnswer -> AnswerResponse.of(questionAnswer.getReviewFormQuestion(), questionAnswer.getAnswer()))
+            .collect(Collectors.toUnmodifiableList());
 
-		return new ReviewResponse(review.getId(), review.getNickname(), answerResponses,
-			Timestamp.valueOf(review.getUpdatedAt()).getTime());
-	}
+        return new ReviewResponse(review.getId(), review.getNickname(), answerResponses,
+            Timestamp.valueOf(review.getUpdatedAt()).getTime());
+    }
 }

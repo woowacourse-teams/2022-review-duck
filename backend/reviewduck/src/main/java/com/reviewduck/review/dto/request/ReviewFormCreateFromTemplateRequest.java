@@ -14,6 +14,6 @@ import lombok.ToString;
 @ToString
 public class ReviewFormCreateFromTemplateRequest {
 
-	@NotBlank(message = "회고 폼의 제목은 비어있을 수 없습니다.")
-	private String reviewFormTitle;
+    @NotBlank(message = "회고 폼의 제목은 비어있을 수 없습니다.")
+    private String reviewFormTitle;
 }

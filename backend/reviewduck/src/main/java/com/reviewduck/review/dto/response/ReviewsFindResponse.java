@@ -14,17 +14,17 @@ import lombok.Getter;
 @Getter
 public class ReviewsFindResponse {
 
-	private String reviewFormTitle;
-	private long updatedAt;
-	private List<ReviewResponse> reviews;
+    private String reviewFormTitle;
+    private long updatedAt;
+    private List<ReviewResponse> reviews;
 
-	public static ReviewsFindResponse of(ReviewForm reviewForm, List<Review> reviews) {
-		List<ReviewResponse> reviewResponses = reviews.stream()
-			.map(ReviewResponse::from)
-			.collect(Collectors.toUnmodifiableList());
+    public static ReviewsFindResponse of(ReviewForm reviewForm, List<Review> reviews) {
+        List<ReviewResponse> reviewResponses = reviews.stream()
+            .map(ReviewResponse::from)
+            .collect(Collectors.toUnmodifiableList());
 
-		return new ReviewsFindResponse(reviewForm.getReviewTitle(),
-			Timestamp.valueOf(reviewForm.getUpdatedAt()).getTime(),
-			reviewResponses);
-	}
+        return new ReviewsFindResponse(reviewForm.getReviewTitle(),
+            Timestamp.valueOf(reviewForm.getUpdatedAt()).getTime(),
+            reviewResponses);
+    }
 }

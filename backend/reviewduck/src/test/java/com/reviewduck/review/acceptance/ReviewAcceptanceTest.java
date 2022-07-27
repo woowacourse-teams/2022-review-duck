@@ -2,14 +2,19 @@ package com.reviewduck.review.acceptance;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import com.reviewduck.acceptance.AcceptanceTest;
+import com.reviewduck.auth.support.JwtTokenProvider;
+import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.request.AnswerRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewsFindResponse;
@@ -17,6 +22,21 @@ import com.reviewduck.review.dto.response.ReviewsFindResponse;
 public class ReviewAcceptanceTest extends AcceptanceTest {
 
     private final Long invalidReviewId = 99L;
+
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private MemberService memberService;
+
+    private static String accessToken;
+
+    @BeforeEach
+    void createMemberAndGetAccessToken(){
+        Member member = new Member("panda", "제이슨", "profileUrl");
+        memberService.save(member);
+        accessToken = jwtTokenProvider.createToken("1");
+    }
 
     @Test
     @DisplayName("회고를 수정한다.")
@@ -27,7 +47,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         ReviewRequest editRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(1L, "editedAnswer1"), new AnswerRequest(2L, "editedAnswer2")));
 
-        put("/api/reviews/" + reviewId, editRequest)
+        put("/api/reviews/" + reviewId, editRequest, accessToken)
             .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
@@ -37,7 +57,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         // when, then
         ReviewRequest createRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
-        put("/api/reviews/" + invalidReviewId, createRequest)
+        put("/api/reviews/" + invalidReviewId, createRequest, accessToken)
             .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
@@ -51,16 +71,12 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         String code = createReviewFormAndGetCode(reviewTitle, questions);
         ReviewRequest createRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
-        post("/api/review-forms/" + code, createRequest);
-
-        ReviewsFindResponse response = get("/api/review-forms/" + code + "/reviews")
-            .extract()
-            .as(ReviewsFindResponse.class);
+        post("/api/review-forms/" + code, createRequest, accessToken);
 
         Long reviewId = saveReviewAndGetId();
 
         //when, then
-        delete("/api/reviews/" + reviewId)
+        delete("/api/reviews/" + reviewId, accessToken)
             .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
@@ -68,7 +84,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 회고를 삭제할 수 없다.")
     void failToDeleteReview() {
         // when, then
-        delete("/api/reviews/" + invalidReviewId)
+        delete("/api/reviews/" + invalidReviewId, accessToken)
             .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
@@ -77,7 +93,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
 
         // when, then
-        return post("/api/review-forms", request)
+        return post("/api/review-forms", request, accessToken)
             .extract()
             .as(ReviewFormCodeResponse.class)
             .getReviewFormCode();
@@ -90,9 +106,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         String code = createReviewFormAndGetCode(reviewTitle, questions);
         ReviewRequest createRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
-        post("/api/review-forms/" + code, createRequest);
+        post("/api/review-forms/" + code, createRequest, accessToken);
 
-        return get("/api/review-forms/" + code + "/reviews")
+        return get("/api/review-forms/" + code + "/reviews", accessToken)
             .extract()
             .as(ReviewsFindResponse.class).getReviews()
             .get(0)

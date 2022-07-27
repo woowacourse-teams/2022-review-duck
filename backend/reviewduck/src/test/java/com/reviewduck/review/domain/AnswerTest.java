@@ -9,7 +9,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 
 import com.reviewduck.review.exception.AnswerException;
-import com.reviewduck.review.domain.Answer;
 
 public class AnswerTest {
 

@@ -14,9 +14,9 @@ import lombok.ToString;
 @ToString
 public class AnswerRequest {
 
-	@NotNull(message = "질문 번호는 비어있을 수 없습니다.")
-	private Long questionId;
+    @NotNull(message = "질문 번호는 비어있을 수 없습니다.")
+    private Long questionId;
 
-	@NotNull(message = "답변은 비어있을 수 없습니다.")
-	private String answerValue;
+    @NotNull(message = "답변은 비어있을 수 없습니다.")
+    private String answerValue;
 }

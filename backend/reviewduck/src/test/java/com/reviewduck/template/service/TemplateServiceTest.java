@@ -14,14 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.reviewduck.template.dto.request.TemplateQuestionRequest;
-import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
+import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
+import com.reviewduck.template.dto.request.TemplateQuestionRequest;
+import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
-import com.reviewduck.common.exception.NotFoundException;
-import com.reviewduck.template.service.TemplateService;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")
@@ -214,7 +213,8 @@ public class TemplateServiceTest {
         return expected;
     }
 
-    private Template saveTemplate(String templateTitle, String templateDescription, List<TemplateQuestionRequest> questions) {
+    private Template saveTemplate(String templateTitle, String templateDescription,
+        List<TemplateQuestionRequest> questions) {
         TemplateCreateRequest createRequest = new TemplateCreateRequest(templateTitle, templateDescription, questions);
         return templateService.save(createRequest);
     }

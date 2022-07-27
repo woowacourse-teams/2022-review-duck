@@ -29,9 +29,26 @@ public class AcceptanceTest {
             .then().log().all();
     }
 
+    public ValidatableResponse post(String url, Object request, String accessToken) {
+        return RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .auth().oauth2(accessToken)
+            .body(request)
+            .when().post(url)
+            .then().log().all();
+    }
+
     public ValidatableResponse get(String url) {
         return RestAssured.given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get(url)
+            .then().log().all();
+    }
+
+    public ValidatableResponse get(String url, String accessToken) {
+        return RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .auth().oauth2(accessToken)
             .when().get(url)
             .then().log().all();
     }
@@ -44,9 +61,26 @@ public class AcceptanceTest {
             .then().log().all();
     }
 
+    public ValidatableResponse put(String url, Object request, String accessToken) {
+        return RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .auth().oauth2(accessToken)
+            .body(request)
+            .when().put(url)
+            .then().log().all();
+    }
+
     public ValidatableResponse delete(String url) {
         return RestAssured.given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().delete(url)
+            .then().log().all();
+    }
+
+    public ValidatableResponse delete(String url, String accessToken) {
+        return RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .auth().oauth2(accessToken)
             .when().delete(url)
             .then().log().all();
     }

@@ -1,11 +1,14 @@
 package com.reviewduck.review.controller;
 
 import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -17,19 +20,22 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.reviewduck.auth.service.AuthService;
+import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.request.AnswerRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
-import com.reviewduck.review.dto.request.ReviewQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
+import com.reviewduck.review.dto.request.ReviewQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
-import com.reviewduck.review.controller.ReviewFormController;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
 @WebMvcTest(ReviewFormController.class)
 public class ReviewFormControllerTest {
-    private final String invalidCode = "aaaaaaaa";
+    private static final String accessToken = "access_token";
+    private static final String invalidCode = "aaaaaaaa";
 
     @Autowired
     private MockMvc mockMvc;
@@ -42,6 +48,19 @@ public class ReviewFormControllerTest {
 
     @MockBean
     private ReviewService reviewService;
+
+    @MockBean
+    private AuthService authService;
+
+    @MockBean
+    private MemberService memberService;
+
+    @BeforeEach
+    void createMemberAndGetAccessToken() {
+        Member member = new Member("panda", "제이슨", "profileUrl");
+        given(authService.getPayload(any())).willReturn("1");
+        given(memberService.findById(any())).willReturn(member);
+    }
 
     @ParameterizedTest
     @NullAndEmptySource
@@ -145,6 +164,7 @@ public class ReviewFormControllerTest {
 
     private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {
         mockMvc.perform(post(uri)
+                .header("Authorization", "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
             ).andExpect(status().isBadRequest())
@@ -153,6 +173,7 @@ public class ReviewFormControllerTest {
 
     private void assertBadRequestFromPut(String uri, Object request, String errorMessage) throws Exception {
         mockMvc.perform(put(uri)
+                .header("Authorization", "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
             ).andExpect(status().isBadRequest())

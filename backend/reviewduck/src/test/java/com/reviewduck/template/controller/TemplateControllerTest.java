@@ -1,11 +1,14 @@
 package com.reviewduck.template.controller;
 
 import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -17,17 +20,21 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.reviewduck.auth.service.AuthService;
+import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.service.MemberService;
+import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
+import com.reviewduck.review.service.ReviewFormService;
+import com.reviewduck.template.dto.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
-import com.reviewduck.template.dto.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
-import com.reviewduck.review.service.ReviewFormService;
-import com.reviewduck.template.controller.TemplateController;
 import com.reviewduck.template.service.TemplateService;
 
 @WebMvcTest(TemplateController.class)
 public class TemplateControllerTest {
+
+    private static final String accessToken = "access_token";
 
     @Autowired
     private MockMvc mockMvc;
@@ -40,6 +47,19 @@ public class TemplateControllerTest {
 
     @MockBean
     private ReviewFormService reviewFormService;
+
+    @MockBean
+    private AuthService authService;
+
+    @MockBean
+    private MemberService memberService;
+
+    @BeforeEach
+    void createMemberAndGetAccessToken() {
+        Member member = new Member("panda", "제이슨", "profileUrl");
+        given(authService.getPayload(any())).willReturn("1");
+        given(memberService.findById(any())).willReturn(member);
+    }
 
     @ParameterizedTest
     @NullAndEmptySource
@@ -109,6 +129,7 @@ public class TemplateControllerTest {
 
     private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {
         mockMvc.perform(post(uri)
+                .header("Authorization", "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
             ).andExpect(status().isBadRequest())
@@ -117,6 +138,7 @@ public class TemplateControllerTest {
 
     private void assertBadRequestFromPut(String uri, Object request, String errorMessage) throws Exception {
         mockMvc.perform(put(uri)
+                .header("Authorization", "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
             ).andExpect(status().isBadRequest())

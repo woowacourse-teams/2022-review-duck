@@ -14,8 +14,8 @@ import lombok.ToString;
 @ToString
 public class TemplateQuestionUpdateRequest {
 
-	private Long questionId;
+    private Long questionId;
 
-	@NotNull(message = "템플릿의 질문 수정 중 오류가 발생했습니다.")
-	private String questionValue;
+    @NotNull(message = "템플릿의 질문 수정 중 오류가 발생했습니다.")
+    private String questionValue;
 }

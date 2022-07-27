@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.reviewduck.review.domain.ReviewFormQuestion;
-import com.reviewduck.review.repository.ReviewFormQuestionRepository;
 
 @DataJpaTest
 public class ReviewFormQuestionRepositoryTest {

@@ -10,10 +10,10 @@ import lombok.Getter;
 @Getter
 public class AnswerResponse {
 
-	private String questionValue;
-	private String answerValue;
+    private String questionValue;
+    private String answerValue;
 
-	public static AnswerResponse of(ReviewFormQuestion reviewFormQuestion, Answer answer) {
-		return new AnswerResponse(reviewFormQuestion.getValue(), answer.getValue());
-	}
+    public static AnswerResponse of(ReviewFormQuestion reviewFormQuestion, Answer answer) {
+        return new AnswerResponse(reviewFormQuestion.getValue(), answer.getValue());
+    }
 }

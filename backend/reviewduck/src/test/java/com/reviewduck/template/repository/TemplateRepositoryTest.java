@@ -11,10 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.template.domain.Template;
-import com.reviewduck.common.exception.NotFoundException;
-import com.reviewduck.template.repository.TemplateRepository;
 
 @DataJpaTest
 public class TemplateRepositoryTest {
