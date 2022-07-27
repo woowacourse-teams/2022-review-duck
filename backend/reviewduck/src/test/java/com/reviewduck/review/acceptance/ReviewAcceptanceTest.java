@@ -21,18 +21,15 @@ import com.reviewduck.review.dto.response.ReviewsFindResponse;
 
 public class ReviewAcceptanceTest extends AcceptanceTest {
 
+    private static String accessToken;
     private final Long invalidReviewId = 99L;
-
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
-
     @Autowired
     private MemberService memberService;
 
-    private static String accessToken;
-
     @BeforeEach
-    void createMemberAndGetAccessToken(){
+    void createMemberAndGetAccessToken() {
         Member member = new Member("panda", "제이슨", "profileUrl");
         memberService.save(member);
         accessToken = jwtTokenProvider.createToken("1");

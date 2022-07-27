@@ -66,7 +66,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
         // when, then
         ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest("reviewFormTitle");
-        post("/api/templates/" + templateId + "/review-forms", request, accessToken).statusCode(HttpStatus.CREATED.value())
+        post("/api/templates/" + templateId + "/review-forms", request, accessToken).statusCode(
+                HttpStatus.CREATED.value())
             .assertThat().body("reviewFormCode", notNullValue());
     }
 

@@ -46,7 +46,8 @@ public class ReviewFormController {
     @Operation(summary = "회고 폼을 생성한다.")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ReviewFormCodeResponse create(@AuthenticationPrincipal Member member, @RequestBody @Valid ReviewFormCreateRequest request) {
+    public ReviewFormCodeResponse create(@AuthenticationPrincipal Member member,
+        @RequestBody @Valid ReviewFormCreateRequest request) {
 
         log.info("uri={}, method = {}, request = {}",
             "/api/review-forms", "POST", request.toString());
@@ -83,7 +84,8 @@ public class ReviewFormController {
     @Operation(summary = "회고 답변을 생성한다.")
     @PostMapping("/{reviewFormCode}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@AuthenticationPrincipal Member member, @PathVariable String reviewFormCode, @RequestBody @Valid ReviewRequest request) {
+    public void create(@AuthenticationPrincipal Member member, @PathVariable String reviewFormCode,
+        @RequestBody @Valid ReviewRequest request) {
 
         log.info("uri={}, method = {}, request = {}",
             "/api/review-forms/" + reviewFormCode, "POST", request.toString());

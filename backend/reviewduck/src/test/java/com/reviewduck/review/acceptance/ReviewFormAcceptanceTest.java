@@ -28,18 +28,15 @@ import com.reviewduck.review.dto.response.ReviewResponse;
 import com.reviewduck.review.dto.response.ReviewsFindResponse;
 
 public class ReviewFormAcceptanceTest extends AcceptanceTest {
+    private static String accessToken;
     private final String invalidCode = "aaaaaaaa";
-
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
-
     @Autowired
     private MemberService memberService;
 
-    private static String accessToken;
-
     @BeforeEach
-    void createMemberAndGetAccessToken(){
+    void createMemberAndGetAccessToken() {
         Member member = new Member("panda", "제이슨", "profileUrl");
         memberService.save(member);
         accessToken = jwtTokenProvider.createToken("1");
@@ -154,7 +151,6 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         // 리뷰생성
         ReviewRequest createRequest = new ReviewRequest("제이슨",
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
-
 
         post("/api/review-forms/" + code, createRequest, accessToken)
             .statusCode(HttpStatus.CREATED.value());

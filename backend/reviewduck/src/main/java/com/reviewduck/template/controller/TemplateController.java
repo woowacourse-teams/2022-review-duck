@@ -48,7 +48,8 @@ public class TemplateController {
     @Operation(summary = "템플릿을 생성한다.")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TemplateCreateResponse create(@AuthenticationPrincipal Member member, @RequestBody @Valid TemplateCreateRequest request) {
+    public TemplateCreateResponse create(@AuthenticationPrincipal Member member,
+        @RequestBody @Valid TemplateCreateRequest request) {
 
         log.info("uri={}, method = {}, request = {}",
             "/api/templates", "POST", request.toString());
@@ -60,7 +61,8 @@ public class TemplateController {
     @Operation(summary = "템플릿을 기반으로 회고 폼을 생성한다.")
     @PostMapping("/{templateId}/review-forms")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReviewFormCodeResponse createReviewFormFromTemplate(@AuthenticationPrincipal Member member, @PathVariable Long templateId,
+    public ReviewFormCodeResponse createReviewFormFromTemplate(@AuthenticationPrincipal Member member,
+        @PathVariable Long templateId,
         @RequestBody @Valid ReviewFormCreateFromTemplateRequest request) {
 
         log.info("uri={}, method = {}, request = {}",
@@ -108,7 +110,8 @@ public class TemplateController {
     @Operation(summary = "템플릿을 수정한다.")
     @PutMapping("/{templateId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@AuthenticationPrincipal Member member, @PathVariable Long templateId, @RequestBody @Valid TemplateUpdateRequest request) {
+    public void update(@AuthenticationPrincipal Member member, @PathVariable Long templateId,
+        @RequestBody @Valid TemplateUpdateRequest request) {
 
         log.info("uri={}, method = {}, request = {}",
             "/api/templates/" + templateId, "PUT", "");
