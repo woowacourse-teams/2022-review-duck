@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.ReviewForm;
@@ -16,6 +15,7 @@ import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
+import com.reviewduck.review.exception.ReviewFormException;
 import com.reviewduck.review.repository.ReviewFormQuestionRepository;
 import com.reviewduck.review.repository.ReviewFormRepository;
 import com.reviewduck.template.domain.Template;
@@ -60,7 +60,7 @@ public class ReviewFormService {
             .collect(Collectors.toUnmodifiableList());
 
         if (!reviewForm.isMine(member)) {
-            throw new AuthorizationException("본인이 생성한 회고폼이 아니면 수정할 수 없습니다.");
+            throw new ReviewFormException("자신이 작성한 회고폼만 수정 가능합니다.");
         }
 
         reviewForm.update(updateRequest.getReviewTitle(), reviewFormQuestions);
@@ -91,5 +91,9 @@ public class ReviewFormService {
         ReviewForm reviewForm = new ReviewForm(member, request.getReviewFormTitle(), questionValues);
         return reviewFormRepository.save(reviewForm);
 
+    }
+
+    public boolean isReviewFormCreator(ReviewForm reviewForm, Member member) {
+        return reviewForm.isMine(member);
     }
 }

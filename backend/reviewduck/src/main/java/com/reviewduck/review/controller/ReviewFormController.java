@@ -52,11 +52,11 @@ public class ReviewFormController {
         log.info("uri={}, method = {}, request = {}",
             "/api/review-forms", "POST", request.toString());
 
-        ReviewForm reviewForm = reviewFormService.save(request);
+        ReviewForm reviewForm = reviewFormService.save(member, request);
         return ReviewFormCodeResponse.from(reviewForm);
     }
 
-    @Operation(summary = "회고 폼의 질문들을 모두 조회한다.")
+    @Operation(summary = "특정 회고폼의 정보를 조회한다.")
     @GetMapping("/{reviewFormCode}")
     @ResponseStatus(HttpStatus.OK)
     public ReviewFormResponse find(@AuthenticationPrincipal Member member, @PathVariable String reviewFormCode) {
@@ -65,7 +65,9 @@ public class ReviewFormController {
             "/api/review-forms/" + reviewFormCode, "GET", "");
 
         ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
-        return ReviewFormResponse.from(reviewForm);
+        boolean isCreator = reviewFormService.isReviewFormCreator(reviewForm, member);
+
+       return ReviewFormResponse.of(reviewForm, isCreator);
     }
 
     @Operation(summary = "회고 폼을 수정한다.")
@@ -77,7 +79,7 @@ public class ReviewFormController {
         log.info("uri={}, method = {}, request = {}",
             "/api/review-forms/" + reviewFormCode, "PUT", request.toString());
 
-        ReviewForm reviewForm = reviewFormService.update(reviewFormCode, request);
+        ReviewForm reviewForm = reviewFormService.update(member, reviewFormCode, request);
         return ReviewFormCodeResponse.from(reviewForm);
     }
 
@@ -90,7 +92,7 @@ public class ReviewFormController {
         log.info("uri={}, method = {}, request = {}",
             "/api/review-forms/" + reviewFormCode, "POST", request.toString());
 
-        reviewService.save(reviewFormCode, member.getNickname(), request);
+        reviewService.save(member, reviewFormCode, request);
     }
 
     @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 모두 조회한다.")
