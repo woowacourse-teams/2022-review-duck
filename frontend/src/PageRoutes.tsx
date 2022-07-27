@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { PAGE_LIST } from 'service/@shared/constants';
+import CommunityLayout from 'service/community/layout/CommunityLayout';
 import ReviewLayout from 'service/review/layout/ReviewLayout';
 import MainPage from 'service/review/pages/MainPage';
 import Playground from 'service/review/pages/Playground';
@@ -35,7 +36,9 @@ function PageRoutes() {
           <Route path=":reviewFormCode" element={<ReviewOverviewPage />} />
         </Route>
 
-        <Route path="playground" element={<Playground />} />
+        <Route element={<CommunityLayout />}>
+          <Route path="playground" element={<Playground />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
