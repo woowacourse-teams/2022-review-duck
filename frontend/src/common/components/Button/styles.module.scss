@@ -98,6 +98,11 @@
 .small {
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
+  font-weight: lighter;
+
+  &.theme-outlined::before {
+    border-width: 1px;
+  }
 }
 
 .medium {
