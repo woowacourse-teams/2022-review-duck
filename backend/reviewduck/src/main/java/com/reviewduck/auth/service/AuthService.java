@@ -46,9 +46,16 @@ public class AuthService {
 
     public String createToken(final LoginRequest loginRequest) {
         Member member = getMemberFromGithub(loginRequest.getCode());
-        Member savedMember = memberService.save(member);
+        Member loginMember = login(member);
 
-        return jwtTokenProvider.createToken(String.valueOf(savedMember.getId()));
+        return jwtTokenProvider.createToken(String.valueOf(loginMember.getId()));
+    }
+
+    private Member login(Member member) {
+        if(memberService.existMember(member.getSocialId())){
+            return memberService.findBySocialId(member.getSocialId());
+        }
+        return memberService.save(member);
     }
 
     private Member getMemberFromGithub(String code) {
