@@ -98,3 +98,8 @@ h5 {
 h6 {
   font-size: 16px;
 }
+
+hr {
+  border: none;
+  border: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
+}
