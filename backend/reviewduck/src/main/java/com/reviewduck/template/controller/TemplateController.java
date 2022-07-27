@@ -68,7 +68,7 @@ public class TemplateController {
         log.info("uri={}, method = {}, request = {}",
             "/api/templates/" + templateId + "/review-forms", "POST", request.toString());
 
-        ReviewForm reviewForm = reviewFormService.saveFromTemplate(templateId, member, request);
+        ReviewForm reviewForm = reviewFormService.saveFromTemplate(member, templateId, request);
         return ReviewFormCodeResponse.from(reviewForm);
     }
 
@@ -104,7 +104,7 @@ public class TemplateController {
         log.info("uri={}, method = {}, request = {}",
             "/api/templates/" + templateId, "DELETE", "");
 
-        templateService.deleteById(templateId, member);
+        templateService.deleteById(member, templateId);
     }
 
     @Operation(summary = "템플릿을 수정한다.")
@@ -116,6 +116,6 @@ public class TemplateController {
         log.info("uri={}, method = {}, request = {}",
             "/api/templates/" + templateId, "PUT", "");
 
-        templateService.update(templateId, member, request);
+        templateService.update(member, templateId, request);
     }
 }

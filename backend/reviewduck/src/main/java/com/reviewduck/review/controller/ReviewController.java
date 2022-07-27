@@ -37,7 +37,7 @@ public class ReviewController {
         log.info("uri={}, method = {}, request = {}",
             "/api/reviews/" + reviewId, "PUT", request.toString());
 
-        reviewService.update(reviewId, request);
+        reviewService.update(member, reviewId, request);
     }
 
     @Operation(summary = "회고 답변을 삭제한다.")
@@ -48,6 +48,6 @@ public class ReviewController {
         log.info("uri={}, method = {}, request = {}",
             "/api/reviews/" + reviewId, "DELETE", "");
 
-        reviewService.delete(reviewId);
+        reviewService.delete(member, reviewId);
     }
 }

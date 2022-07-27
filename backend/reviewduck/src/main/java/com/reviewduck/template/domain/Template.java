@@ -33,11 +33,11 @@ public class Template {
     @Column(nullable = false)
     private Long id;
 
-    @Column(nullable = false)
-    private String templateTitle;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
+    @Column(nullable = false)
+    private String templateTitle;
 
     @Column(nullable = false)
     private String templateDescription;
@@ -47,12 +47,23 @@ public class Template {
     @OrderBy("position asc")
     private List<TemplateQuestion> questions;
 
-    public Template(String templateTitle, Member member, String templateDescription, List<String> questionValues) {
-        validate(templateTitle, member, templateDescription, questionValues);
+    public Template(Member member, String templateTitle, String templateDescription, List<String> questionValues) {
+        validate(member, templateTitle, templateDescription, questionValues);
         this.templateTitle = templateTitle;
         this.member = member;
         this.templateDescription = templateDescription;
         this.questions = setQuestions(questionValues);
+    }
+
+    public void update(String templateTitle, String templateDescription, List<TemplateQuestion> questions) {
+        validateTitleLength(templateTitle);
+        validateBlankTitle(templateTitle);
+        validateNullDescription(templateDescription);
+
+        this.templateTitle = templateTitle;
+        this.templateDescription = templateDescription;
+        sortQuestions(questions);
+        this.questions = questions;
     }
 
     private List<TemplateQuestion> setQuestions(List<String> questionValues) {
@@ -70,18 +81,8 @@ public class Template {
         }
     }
 
-    public void update(String templateTitle, String templateDescription, List<TemplateQuestion> questions) {
-        validateTitleLength(templateTitle);
-        validateBlankTitle(templateTitle);
-        validateNullDescription(templateDescription);
-
-        this.templateTitle = templateTitle;
-        this.templateDescription = templateDescription;
-        sortQuestions(questions);
-        this.questions = questions;
-    }
-
-    private void validate(String templateTitle, Member member, String templateDescription, List<String> questionValues) {
+    private void validate(Member member, String templateTitle, String templateDescription,
+        List<String> questionValues) {
         validateBlankTitle(templateTitle);
         validateTitleLength(templateTitle);
         validateNullMember(member);
@@ -90,7 +91,7 @@ public class Template {
     }
 
     private void validateNullMember(Member member) {
-        if(Objects.isNull(member)){
+        if (Objects.isNull(member)) {
             throw new TemplateException("템플릿의 작성자가 존재해야 합니다.");
         }
     }
