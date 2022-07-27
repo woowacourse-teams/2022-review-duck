@@ -24,7 +24,7 @@ public class ReviewResponse {
                 questionAnswer -> AnswerResponse.of(questionAnswer.getReviewFormQuestion(), questionAnswer.getAnswer()))
             .collect(Collectors.toUnmodifiableList());
 
-        return new ReviewResponse(review.getId(), review.getNickname(), answerResponses,
+        return new ReviewResponse(review.getId(), review.getMember().getNickname(), answerResponses,
             Timestamp.valueOf(review.getUpdatedAt()).getTime());
     }
 }

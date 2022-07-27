@@ -21,7 +21,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.exception.ReviewFormException;
-import com.reviewduck.template.exception.TemplateException;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -51,12 +50,24 @@ public class ReviewForm extends BaseDate {
     @OrderBy("position asc")
     private List<ReviewFormQuestion> reviewFormQuestions;
 
-    public ReviewForm(String reviewTitle, Member member, List<String> questionValues) {
+    public ReviewForm(Member member, String reviewTitle, List<String> questionValues) {
         validate(reviewTitle, member, questionValues);
         this.reviewTitle = reviewTitle;
         this.member = member;
         this.reviewFormQuestions = setReviewFormQuestions(questionValues);
         this.code = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
+    }
+
+    public void update(String reviewTitle, List<ReviewFormQuestion> reviewFormQuestions) {
+        validateTitleLength(reviewTitle);
+        validateBlankTitle(reviewTitle);
+        this.reviewTitle = reviewTitle;
+        sortQuestions(reviewFormQuestions);
+        this.reviewFormQuestions = reviewFormQuestions;
+    }
+
+    public boolean isMine(Member member) {
+        return member.equals(this.member);
     }
 
     private List<ReviewFormQuestion> setReviewFormQuestions(List<String> questionValues) {
@@ -74,14 +85,6 @@ public class ReviewForm extends BaseDate {
         }
     }
 
-    public void update(String reviewTitle, List<ReviewFormQuestion> reviewFormQuestions) {
-        validateTitleLength(reviewTitle);
-        validateBlankTitle(reviewTitle);
-        this.reviewTitle = reviewTitle;
-        sortQuestions(reviewFormQuestions);
-        this.reviewFormQuestions = reviewFormQuestions;
-    }
-
     private void validate(String reviewTitle, Member member, List<String> questionValues) {
         validateBlankTitle(reviewTitle);
         validateTitleLength(reviewTitle);
@@ -90,7 +93,7 @@ public class ReviewForm extends BaseDate {
     }
 
     private void validateNullMember(Member member) {
-        if(Objects.isNull(member)){
+        if (Objects.isNull(member)) {
             throw new ReviewFormException("회고 폼의 작성자가 존재해야 합니다.");
         }
     }

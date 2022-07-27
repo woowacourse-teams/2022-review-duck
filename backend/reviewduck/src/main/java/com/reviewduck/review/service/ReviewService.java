@@ -6,7 +6,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
+import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.domain.QuestionAnswer;
 import com.reviewduck.review.domain.Review;
@@ -32,12 +34,12 @@ public class ReviewService {
         this.reviewFormQuestionRepository = reviewFormQuestionRepository;
     }
 
-    public Review save(String code, String nickName, ReviewRequest request) {
+    public Review save(Member member, String code, ReviewRequest request) {
         ReviewForm reviewForm = reviewFormService.findByCode(code);
 
         List<QuestionAnswer> questionAnswers = convertToQuestionAnswers(request.getAnswers());
 
-        Review review = Review.of(nickName, reviewForm, questionAnswers);
+        Review review = new Review(member, reviewForm, questionAnswers);
         return reviewRepository.save(review);
     }
 
@@ -58,18 +60,26 @@ public class ReviewService {
         return reviewRepository.findByReviewForm(reviewForm);
     }
 
-    public Review update(Long id, ReviewRequest request) {
+    public Review update(Member member, Long id, ReviewRequest request) {
         Review review = reviewRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
+
+        if (!review.isMine(member)) {
+            throw new AuthorizationException("본인이 생성한 회고가 아니면 수정할 수 없습니다.");
+        }
 
         review.update(convertToQuestionAnswers(request.getAnswers()));
         return review;
     }
 
-    public void delete(Long id) {
-        if (!reviewRepository.existsById(id)) {
-            throw new NotFoundException("존재하지 않는 회고입니다.");
+    public void delete(Member member, Long id) {
+        Review review = reviewRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
+
+        if (!review.isMine(member)) {
+            throw new AuthorizationException("본인이 생성한 회고가 아니면 삭제할 수 없습니다.");
         }
+
         reviewRepository.deleteById(id);
     }
 }

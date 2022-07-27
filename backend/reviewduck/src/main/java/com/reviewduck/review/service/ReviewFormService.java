@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.ReviewForm;
@@ -36,12 +37,12 @@ public class ReviewFormService {
         this.templateService = templateService;
     }
 
-    public ReviewForm save(ReviewFormCreateRequest createRequest) {
+    public ReviewForm save(Member member, ReviewFormCreateRequest createRequest) {
         List<String> questionValues = createRequest.getQuestions().stream()
             .map(ReviewFormQuestionRequest::getQuestionValue)
             .collect(Collectors.toUnmodifiableList());
 
-        ReviewForm reviewForm = new ReviewForm(createRequest.getReviewTitle(), questionValues);
+        ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewTitle(), questionValues);
         return reviewFormRepository.save(reviewForm);
     }
 
@@ -51,12 +52,16 @@ public class ReviewFormService {
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고 폼입니다."));
     }
 
-    public ReviewForm update(String code, ReviewFormUpdateRequest updateRequest) {
+    public ReviewForm update(Member member, String code, ReviewFormUpdateRequest updateRequest) {
         ReviewForm reviewForm = findByCode(code);
 
         List<ReviewFormQuestion> reviewFormQuestions = updateRequest.getQuestions().stream()
             .map(request -> saveOrUpdateQuestion(request.getQuestionId(), request.getQuestionValue()))
             .collect(Collectors.toUnmodifiableList());
+
+        if (!reviewForm.isMine(member)) {
+            throw new AuthorizationException("본인이 생성한 회고폼이 아니면 수정할 수 없습니다.");
+        }
 
         reviewForm.update(updateRequest.getReviewTitle(), reviewFormQuestions);
 
@@ -76,14 +81,14 @@ public class ReviewFormService {
         return reviewFormQuestion;
     }
 
-    public ReviewForm saveFromTemplate(Long templateId, Member member, ReviewFormCreateFromTemplateRequest request) {
+    public ReviewForm saveFromTemplate(Member member, Long templateId, ReviewFormCreateFromTemplateRequest request) {
         Template template = templateService.findById(templateId);
 
         List<String> questionValues = template.getQuestions().stream()
             .map(TemplateQuestion::getValue)
             .collect(Collectors.toUnmodifiableList());
 
-        ReviewForm reviewForm = new ReviewForm(request.getReviewFormTitle(), questionValues);
+        ReviewForm reviewForm = new ReviewForm(member, request.getReviewFormTitle(), questionValues);
         return reviewFormRepository.save(reviewForm);
 
     }

@@ -52,7 +52,7 @@ public class AuthService {
     }
 
     private Member login(Member member) {
-        if(memberService.existMember(member.getSocialId())){
+        if (memberService.existMember(member.getSocialId())) {
             return memberService.findBySocialId(member.getSocialId());
         }
         return memberService.save(member);

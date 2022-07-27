@@ -5,7 +5,6 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.reviewduck.auth.exception.AuthorizationException;
-import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
 
