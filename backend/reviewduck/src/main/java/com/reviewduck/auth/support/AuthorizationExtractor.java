@@ -18,10 +18,6 @@ public class AuthorizationExtractor {
         return token.substring(BEARER_TYPE.length() + 1);
     }
 
-    public static String extract(String token) {
-        return token.substring(BEARER_TYPE.length() + 1);
-    }
-
     private static void validateNullToken(String token) {
         if (Objects.isNull(token)) {
             throw new AuthorizationException("토큰이 존재하지 않습니다.");

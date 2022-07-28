@@ -19,6 +19,7 @@ import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
+import com.reviewduck.review.dto.response.ReviewResponse;
 
 public class ReviewAcceptanceTest extends AcceptanceTest {
 
@@ -32,13 +33,14 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void createMemberAndGetAccessToken() {
-
-        Member member1 = new Member("panda", "제이슨", "profileUrl1");
+        Member member1 = new Member("jason", "제이슨", "profileUrl1");
         Member savedMember1 = memberService.save(member1);
-        Member member2 = new Member("ariari", "브리", "profileUrl2");
+
+        Member member2 = new Member("woni", "워니", "profileUrl2");
         Member savedMember2 = memberService.save(member2);
-        accessToken1 = jwtTokenProvider.createToken(String.valueOf(savedMember1.getId()));
-        accessToken2 = jwtTokenProvider.createToken(String.valueOf(savedMember2.getId()));
+
+        accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember1.getId()));
+        accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember2.getId()));
     }
 
     @Test
@@ -47,7 +49,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         Long reviewId = saveReviewAndGetId(accessToken1);
 
         //when, then
-        ReviewRequest editRequest = new ReviewRequest("제이슨",
+        ReviewRequest editRequest = new ReviewRequest(
             List.of(new AnswerRequest(1L, "editedAnswer1"), new AnswerRequest(2L, "editedAnswer2")));
 
         put("/api/reviews/" + reviewId, editRequest, accessToken1)
@@ -55,27 +57,44 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("로그인하지 않은 상태로 회고를 수정할 수 없다")
+    void failToFindReviewsWithoutLogin() {
+        Long reviewId = saveReviewAndGetId(accessToken1);
+
+        //when, then
+        ReviewRequest editRequest = new ReviewRequest(
+            List.of(new AnswerRequest(1L, "editedAnswer1"), new AnswerRequest(2L, "editedAnswer2")));
+
+        put("/api/reviews/" + reviewId, editRequest)
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
     @DisplayName("존재하지 않는 회고를 수정할 수 없다.")
     void failToEditReview() {
         // when, then
-        ReviewRequest createRequest = new ReviewRequest("제이슨",
+        ReviewRequest createRequest = new ReviewRequest(
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
         put("/api/reviews/" + invalidReviewId, createRequest, accessToken1)
             .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
+    @DisplayName("본인이 생성한 회고가 아니면 수정할 수 없다.")
+    void failToEditNotMyReview() {
+        Long reviewId = saveReviewAndGetId(accessToken1);
+
+        //when, then
+        ReviewRequest editRequest = new ReviewRequest(
+            List.of(new AnswerRequest(1L, "editedAnswer1"), new AnswerRequest(2L, "editedAnswer2")));
+
+        put("/api/reviews/" + reviewId, editRequest, accessToken2)
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
     @DisplayName("회고를 삭제한다.")
     void deleteReview() {
-        // given
-        String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
-        String code = createReviewFormAndGetCode(accessToken1, reviewTitle, questions);
-        ReviewRequest createRequest = new ReviewRequest("제이슨",
-            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
-        post("/api/review-forms/" + code, createRequest, accessToken1);
-
         Long reviewId = saveReviewAndGetId(accessToken1);
 
         //when, then
@@ -84,11 +103,33 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("로그인하지 않은 상태로 회고를 삭제할 수 없다")
+    void failToDeleteReviewWithoutLogin() {
+        // given
+        Long reviewId = saveReviewAndGetId(accessToken1);
+
+        //when, then
+        delete("/api/reviews/" + reviewId)
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
     @DisplayName("존재하지 않는 회고를 삭제할 수 없다.")
     void failToDeleteReview() {
         // when, then
         delete("/api/reviews/" + invalidReviewId, accessToken1)
             .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    @DisplayName("본인이 생성한 회고가 아니면 삭제할 수 없다.")
+    void failToDeleteNotMyReview() {
+        // given
+        Long reviewId = saveReviewAndGetId(accessToken1);
+
+        //when, then
+        delete("/api/reviews/" + reviewId, accessToken2)
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test
@@ -103,6 +144,12 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             .assertThat()
             .body("reviews", hasSize(1))
             .body("numberOfReviews", equalTo(1));
+    }
+
+    @Test
+    @DisplayName("로그인하지 않은 상태로 내가 작성한 회고를 모두 조회할 수 없다")
+    void failToFindAllMyReviewsWithoutLogin() {
+        get("/api/reviews/me").statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     private String createReviewFormAndGetCode(String accessToken, String reviewTitle,
@@ -122,13 +169,14 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
             new ReviewFormQuestionRequest("question2"));
         String code = createReviewFormAndGetCode(accessToken, reviewTitle, questions);
-        ReviewRequest createRequest = new ReviewRequest("제이슨",
+        ReviewRequest createRequest = new ReviewRequest(
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
         post("/api/review-forms/" + code, createRequest, accessToken);
 
         return get("/api/review-forms/" + code + "/reviews", accessToken)
             .extract()
-            .as(ReviewsFindResponse.class).getReviews()
+            .jsonPath()
+            .getList("", ReviewResponse.class)
             .get(0)
             .getReviewId();
     }

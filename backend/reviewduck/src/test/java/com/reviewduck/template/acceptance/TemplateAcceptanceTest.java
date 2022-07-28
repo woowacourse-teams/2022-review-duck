@@ -36,8 +36,10 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
     void createMemberAndGetAccessToken() {
         Member member1 = new Member("panda", "제이슨", "profileUrl1");
         Member savedMember1 = memberService.save(member1);
+
         Member member2 = new Member("ariari", "브리", "profileUrl2");
         Member savedMember2 = memberService.save(member2);
+
         accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember1.getId()));
         accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember2.getId()));
     }

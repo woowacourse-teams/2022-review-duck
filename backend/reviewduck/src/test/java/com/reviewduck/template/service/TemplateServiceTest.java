@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
@@ -49,8 +50,8 @@ public class TemplateServiceTest {
     }
 
     @Test
-    @DisplayName("회고 폼을 생성한다.")
-    void createReviewForm() {
+    @DisplayName("템플릿을 생성한다.")
+    void createTemplate() {
         // given
         // 템플릿 생성
         String templateTitle = "title";
@@ -74,15 +75,6 @@ public class TemplateServiceTest {
                 .ignoringFields("id")
                 .isEqualTo(expected)
         );
-    }
-
-    @Test
-    @DisplayName("없는 템플릿을 조회하면 실패한다.")
-    void findTemplateWithInvalidId() {
-        // when, then
-        assertThatThrownBy(() -> templateService.findById(9999L))
-            .isInstanceOf(NotFoundException.class)
-            .hasMessageContaining("존재하지 않는 템플릿입니다.");
     }
 
     @Test
@@ -115,6 +107,15 @@ public class TemplateServiceTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 템플릿을 조회할 수 없다.")
+    void findTemplateWithInvalidId() {
+        // when, then
+        assertThatThrownBy(() -> templateService.findById(9999L))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessageContaining("존재하지 않는 템플릿입니다.");
+    }
+
+    @Test
     @DisplayName("템플릿을 모두 조회한다.")
     void findAllTemplates() {
         // given
@@ -131,15 +132,6 @@ public class TemplateServiceTest {
 
         // then
         assertThat(templates).hasSize(2);
-    }
-
-    @Test
-    @DisplayName("없는 템플릿을 삭제하면 실패한다.")
-    void deleteTemplateWithInvalidId() {
-        // when, then
-        assertThatThrownBy(() -> templateService.deleteById(member1, 9999L))
-            .isInstanceOf(NotFoundException.class)
-            .hasMessageContaining("존재하지 않는 템플릿입니다.");
     }
 
     @Test
@@ -164,12 +156,27 @@ public class TemplateServiceTest {
     }
 
     @Test
-    @DisplayName("없는 템플릿을 수정하면 실패한다.")
-    void updateTemplateWithInvalidId() {
+    @DisplayName("본인이 생성한 템플릿이 아니면 삭제할 수 없다.")
+    void failToDeleteNotMyTemplate() {
         // given
-        TemplateUpdateRequest request = new TemplateUpdateRequest("title", "description", List.of());
+        // 템플릿 생성
+        String templateTitle = "title";
+        String templateDescription = "description";
+        List<TemplateQuestionRequest> questions = List.of(new TemplateQuestionRequest("question1"),
+            new TemplateQuestionRequest("question2"));
+
+        Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
+
+        assertThatThrownBy(() -> templateService.deleteById(member2, template.getId()))
+            .isInstanceOf(AuthorizationException.class)
+            .hasMessageContaining("본인이 생성한 템플릿이 아니면 삭제할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 템플릿을 삭제할 수 없다.")
+    void deleteTemplateWithInvalidId() {
         // when, then
-        assertThatThrownBy(() -> templateService.update(member1, 9999L, request))
+        assertThatThrownBy(() -> templateService.deleteById(member1, 9999L))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 템플릿입니다.");
     }
@@ -217,6 +224,42 @@ public class TemplateServiceTest {
                 .ignoringFields("id")
                 .isEqualTo(expectedReviewFormQuestions)
         );
+    }
+
+    @Test
+    @DisplayName("본인이 생성한 템플릿이 아니면 수정할 수 없다.")
+    void failToUpdateNotMyTemplate() {
+        // given
+        // 템플릿 생성
+        String templateTitle = "title";
+        String templateDescription = "description";
+        List<TemplateQuestionRequest> questions = List.of(new TemplateQuestionRequest("question1"),
+            new TemplateQuestionRequest("question2"));
+
+        Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
+
+        // when
+        List<TemplateQuestionUpdateRequest> newQuestions = List.of(
+            new TemplateQuestionUpdateRequest(1L, "new question1"),
+            new TemplateQuestionUpdateRequest(2L, "question2"),
+            new TemplateQuestionUpdateRequest(null, "question3"));
+        TemplateUpdateRequest updateRequest = new TemplateUpdateRequest("new title", "new description", newQuestions);
+
+        // then
+        assertThatThrownBy(() -> templateService.update(member2, template.getId(), updateRequest))
+            .isInstanceOf(AuthorizationException.class)
+            .hasMessageContaining("본인이 생성한 템플릿이 아니면 수정할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 템플릿을 수정할 수 없다.")
+    void updateTemplateWithInvalidId() {
+        // given
+        TemplateUpdateRequest request = new TemplateUpdateRequest("title", "description", List.of());
+        // when, then
+        assertThatThrownBy(() -> templateService.update(member1, 9999L, request))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessageContaining("존재하지 않는 템플릿입니다.");
     }
 
     @Test
