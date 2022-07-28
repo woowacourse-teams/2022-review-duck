@@ -32,6 +32,7 @@ dependencies {
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'io.micrometer:micrometer-registry-prometheus'
+	implementation 'com.navercorp.lucy:lucy-xss-servlet:2.0.1'
 }
 
 tasks.named('test') {
