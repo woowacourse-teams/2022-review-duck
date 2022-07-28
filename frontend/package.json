@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --config ./.webpack/webpack.dev.js --mode development --open --hot",
     "build": "webpack --config ./.webpack/webpack.prod.js --mode production",
-    "storybook": "start-storybook -p 6006",
+    "storybook": "start-storybook -p 6006 --no-manager-cache",
     "build-storybook": "build-storybook",
     "pretty": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\""
   },
@@ -54,8 +54,10 @@
     "postcss": "^8.4.14",
     "postcss-loader": "^7.0.1",
     "prettier": "^2.7.1",
+    "prop-types": "^15.8.1",
     "sass": "^1.53.0",
     "sass-loader": "^13.0.2",
+    "storybook-addon-root-attribute": "^1.0.2",
     "ts-loader": "^9.3.1",
     "typescript": "^4.7.4",
     "webpack": "^5.73.0",
