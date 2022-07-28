@@ -1,4 +1,4 @@
-package com.reviewduck.review.acceptance.domain;
+package com.reviewduck.review.domain;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;

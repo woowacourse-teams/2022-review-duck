@@ -27,7 +27,7 @@ public class MemberService {
             .orElseThrow(() -> new AuthorizationException("존재하지 않는 사용자입니다."));
     }
 
-    public boolean existMember(String socialId) {
+    public boolean existsMember(String socialId) {
         return memberRepository.existsBySocialId(socialId);
     }
 
