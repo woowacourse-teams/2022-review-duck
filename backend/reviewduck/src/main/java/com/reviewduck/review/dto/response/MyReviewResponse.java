@@ -24,7 +24,7 @@ public class MyReviewResponse {
             .collect(Collectors.toUnmodifiableList());
 
         long updatedAt = Timestamp.valueOf(review.getUpdatedAt()).getTime();
-        MyReviewReviewFormResponse reviewForm = MyReviewReviewFormResponse.of(review.getReviewForm());
+        MyReviewReviewFormResponse reviewForm = MyReviewReviewFormResponse.from(review.getReviewForm());
         return new MyReviewResponse(review.getId(), updatedAt, answers, reviewForm);
     }
 }

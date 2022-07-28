@@ -15,7 +15,7 @@ public class MyReviewsResponse {
     private int numberOfReviews;
     private List<MyReviewResponse> reviews;
 
-    public static MyReviewsResponse of(List<Review> reviews) {
+    public static MyReviewsResponse from(List<Review> reviews) {
         List<MyReviewResponse> reviewResponses = reviews.stream()
             .map(MyReviewResponse::of)
             .collect(Collectors.toList());
