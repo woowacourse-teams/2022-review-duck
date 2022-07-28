@@ -82,4 +82,8 @@ public class ReviewService {
 
         reviewRepository.deleteById(id);
     }
+
+    public List<Review> findByMember(Member member) {
+        return reviewRepository.findByMember(member);
+    }
 }

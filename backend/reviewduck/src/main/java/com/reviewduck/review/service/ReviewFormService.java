@@ -92,4 +92,8 @@ public class ReviewFormService {
         return reviewFormRepository.save(reviewForm);
 
     }
+
+    public List<ReviewForm> findByMember(Member member) {
+        return reviewFormRepository.findByMember(member);
+    }
 }

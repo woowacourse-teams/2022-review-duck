@@ -59,13 +59,13 @@ public class ControllerAdvice {
 
         return new ErrorResponse(e.getMessage());
     }
-
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleException(Exception e) {
-
-        log.error(e.getMessage());
-
-        return new ErrorResponse("예상치 못한 오류가 발생하였습니다.");
-    }
+    //
+    // @ExceptionHandler(Exception.class)
+    // @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    // public ErrorResponse handleException(Exception e) {
+    //
+    //     log.error(e.getMessage());
+    //
+    //     return new ErrorResponse("예상치 못한 오류가 발생하였습니다.");
+    // }
 }

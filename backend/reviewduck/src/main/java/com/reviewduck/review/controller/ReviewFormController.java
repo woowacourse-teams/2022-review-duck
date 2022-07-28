@@ -21,6 +21,7 @@ import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
+import com.reviewduck.review.dto.response.MyReviewFormsResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
 import com.reviewduck.review.dto.response.ReviewsFindResponse;
@@ -52,7 +53,7 @@ public class ReviewFormController {
         log.info("uri={}, method = {}, request = {}",
             "/api/review-forms", "POST", request.toString());
 
-        ReviewForm reviewForm = reviewFormService.save(request);
+        ReviewForm reviewForm = reviewFormService.save(member, request);
         return ReviewFormCodeResponse.from(reviewForm);
     }
 
@@ -77,7 +78,7 @@ public class ReviewFormController {
         log.info("uri={}, method = {}, request = {}",
             "/api/review-forms/" + reviewFormCode, "PUT", request.toString());
 
-        ReviewForm reviewForm = reviewFormService.update(reviewFormCode, request);
+        ReviewForm reviewForm = reviewFormService.update(member, reviewFormCode, request);
         return ReviewFormCodeResponse.from(reviewForm);
     }
 
@@ -90,7 +91,7 @@ public class ReviewFormController {
         log.info("uri={}, method = {}, request = {}",
             "/api/review-forms/" + reviewFormCode, "POST", request.toString());
 
-        reviewService.save(reviewFormCode, member.getNickname(), request);
+        reviewService.save(member, reviewFormCode, request);
     }
 
     @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 모두 조회한다.")
@@ -105,5 +106,18 @@ public class ReviewFormController {
         List<Review> reviews = reviewService.findAllByCode(reviewFormCode);
 
         return ReviewsFindResponse.of(reviewForm, reviews);
+    }
+
+    @Operation(summary = "내가 작성한 회고폼을 모두 조회한다.")
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public MyReviewFormsResponse findByMember(@AuthenticationPrincipal Member member) {
+
+        log.info("uri={}, method = {}, request = {}",
+            "/api/review-forms/me", "GET", "");
+
+        List<ReviewForm> reviewForms = reviewFormService.findByMember(member);
+
+        return MyReviewFormsResponse.of(reviewForms);
     }
 }
