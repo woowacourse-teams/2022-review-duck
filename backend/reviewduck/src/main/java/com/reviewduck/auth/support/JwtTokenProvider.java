@@ -14,11 +14,14 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @Component
 public class JwtTokenProvider {
     private final long validityInMilliseconds;
+    private final long refreshValidityInMilliseconds;
     private final String secretKey;
 
     public JwtTokenProvider(@Value("${security.jwt.token.expire-length}") long validityInMilliseconds,
+        @Value("${security.jwt.refresh-token.expire-length}") long refreshValidityInMilliseconds,
         @Value("${security.jwt.token.secret-key}") String secretKey) {
         this.validityInMilliseconds = validityInMilliseconds;
+        this.refreshValidityInMilliseconds = refreshValidityInMilliseconds;
         this.secretKey = secretKey;
     }
 
@@ -31,6 +34,19 @@ public class JwtTokenProvider {
             .setClaims(claims)
             .setIssuedAt(now)
             .setExpiration(validity)
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact();
+    }
+
+    public String createRefreshToken(String payload) {
+        Claims claims = Jwts.claims().setSubject(payload);
+        Date now = new Date();
+        Date refreshValidity = new Date(now.getTime() + refreshValidityInMilliseconds);
+
+        return Jwts.builder()
+            .setClaims(claims)
+            .setIssuedAt(now)
+            .setExpiration(refreshValidity)
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .compact();
     }

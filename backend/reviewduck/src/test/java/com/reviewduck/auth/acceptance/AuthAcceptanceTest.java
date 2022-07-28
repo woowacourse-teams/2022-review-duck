@@ -17,15 +17,4 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         post("/api/login", request)
             .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
-
-    // @Test
-    // @DisplayName("로그인에 성공하면 토큰을 받아온다.")
-    // void loginAndGetToken() {
-    //     LoginRequest request = new LoginRequest("5bd386bf9eb516c302cb");
-    //
-    //     post("/api/login", request)
-    //         .statusCode(HttpStatus.OK.value())
-    //         .assertThat()
-    //         .body("accessToken", notNullValue());
-    // }
 }

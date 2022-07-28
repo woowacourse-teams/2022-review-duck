@@ -17,6 +17,7 @@ import com.reviewduck.auth.dto.request.GithubTokenRequest;
 import com.reviewduck.auth.dto.request.LoginRequest;
 import com.reviewduck.auth.dto.response.GithubMemberResponse;
 import com.reviewduck.auth.dto.response.GithubTokenResponse;
+import com.reviewduck.auth.dto.service.Tokens;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
@@ -44,11 +45,18 @@ public class AuthService {
         this.memberService = memberService;
     }
 
-    public String createToken(final LoginRequest loginRequest) {
+    public Tokens createTokens(final LoginRequest loginRequest) {
         Member member = getMemberFromGithub(loginRequest.getCode());
         Member loginMember = login(member);
 
-        return jwtTokenProvider.createAccessToken(String.valueOf(loginMember.getId()));
+        return generateTokens(loginMember.getId());
+    }
+
+    public Tokens generateTokens(Long memberId) {
+        String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(memberId));
+        String refreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(memberId));
+
+        return new Tokens(accessToken, refreshToken);
     }
 
     private Member login(Member member) {
@@ -125,4 +133,5 @@ public class AuthService {
     public String getPayload(String token) {
         return jwtTokenProvider.getPayload(token);
     }
+
 }
