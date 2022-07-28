@@ -272,7 +272,7 @@
         "type": "borderRadius"
       },
       "max": {
-        "value": "999",
+        "value": "999px",
         "type": "borderRadius"
       },
       "xlarge": {
