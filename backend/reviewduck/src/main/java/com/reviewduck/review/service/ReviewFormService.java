@@ -93,6 +93,10 @@ public class ReviewFormService {
 
     }
 
+    public boolean isReviewFormCreator(ReviewForm reviewForm, Member member) {
+        return reviewForm.isMine(member);
+    }
+
     public List<ReviewForm> findByMember(Member member) {
         return reviewFormRepository.findByMember(member);
     }

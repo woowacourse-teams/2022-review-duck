@@ -57,7 +57,7 @@ public class ReviewFormController {
         return ReviewFormCodeResponse.from(reviewForm);
     }
 
-    @Operation(summary = "회고 폼의 질문들을 모두 조회한다.")
+    @Operation(summary = "특정 회고폼의 정보를 조회한다.")
     @GetMapping("/{reviewFormCode}")
     @ResponseStatus(HttpStatus.OK)
     public ReviewFormResponse find(@AuthenticationPrincipal Member member, @PathVariable String reviewFormCode) {
@@ -66,7 +66,9 @@ public class ReviewFormController {
             "/api/review-forms/" + reviewFormCode, "GET", "");
 
         ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
-        return ReviewFormResponse.from(reviewForm);
+        boolean isCreator = reviewFormService.isReviewFormCreator(reviewForm, member);
+
+        return ReviewFormResponse.of(reviewForm, isCreator);
     }
 
     @Operation(summary = "회고 폼을 수정한다.")
