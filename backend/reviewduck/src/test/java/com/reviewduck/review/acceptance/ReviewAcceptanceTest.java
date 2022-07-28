@@ -32,12 +32,13 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void createMemberAndGetAccessToken() {
+
         Member member1 = new Member("panda", "제이슨", "profileUrl1");
-        memberService.save(member1);
+        Member savedMember1 = memberService.save(member1);
         Member member2 = new Member("ariari", "브리", "profileUrl2");
-        memberService.save(member2);
-        accessToken1 = jwtTokenProvider.createToken("1");
-        accessToken2 = jwtTokenProvider.createToken("2");
+        Member savedMember2 = memberService.save(member2);
+        accessToken1 = jwtTokenProvider.createToken(String.valueOf(savedMember1.getId()));
+        accessToken2 = jwtTokenProvider.createToken(String.valueOf(savedMember2.getId()));
     }
 
     @Test
@@ -104,7 +105,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             .body("numberOfReviews", equalTo(1));
     }
 
-    private String createReviewFormAndGetCode(String accessToken, String reviewTitle, List<ReviewFormQuestionRequest> questions) {
+    private String createReviewFormAndGetCode(String accessToken, String reviewTitle,
+        List<ReviewFormQuestionRequest> questions) {
         // given
         ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
 

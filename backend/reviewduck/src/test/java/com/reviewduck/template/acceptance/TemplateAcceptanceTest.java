@@ -1,6 +1,8 @@
 package com.reviewduck.template.acceptance;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
@@ -19,10 +21,12 @@ import com.reviewduck.template.dto.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
+import com.reviewduck.template.dto.response.MyTemplatesResponse;
 import com.reviewduck.template.dto.response.TemplateCreateResponse;
 
 public class TemplateAcceptanceTest extends AcceptanceTest {
-    private static String accessToken;
+    private static String accessToken1;
+    private static String accessToken2;
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
@@ -30,9 +34,12 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void createMemberAndGetAccessToken() {
-        Member member = new Member("panda", "제이슨", "profileUrl");
-        memberService.save(member);
-        accessToken = jwtTokenProvider.createToken("1");
+        Member member1 = new Member("panda", "제이슨", "profileUrl1");
+        Member savedMember1 = memberService.save(member1);
+        Member member2 = new Member("ariari", "브리", "profileUrl2");
+        Member savedMember2 = memberService.save(member2);
+        accessToken1 = jwtTokenProvider.createToken(String.valueOf(savedMember1.getId()));
+        accessToken2 = jwtTokenProvider.createToken(String.valueOf(savedMember2.getId()));
     }
 
     @Test
@@ -46,7 +53,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         TemplateCreateRequest request = new TemplateCreateRequest(templateTitle, templateDescription, questions);
 
         // when, then
-        post("/api/templates", request, accessToken).statusCode(HttpStatus.CREATED.value())
+        post("/api/templates", request, accessToken1).statusCode(HttpStatus.CREATED.value())
             .assertThat().body("templateId", notNullValue());
     }
 
@@ -60,13 +67,13 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             new TemplateQuestionRequest("question2"));
         TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, description, questions);
 
-        Long templateId = post("/api/templates", templateCreateRequest, accessToken).extract()
+        Long templateId = post("/api/templates", templateCreateRequest, accessToken1).extract()
             .as(TemplateCreateResponse.class)
             .getTemplateId();
 
         // when, then
         ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest("reviewFormTitle");
-        post("/api/templates/" + templateId + "/review-forms", request, accessToken).statusCode(
+        post("/api/templates/" + templateId + "/review-forms", request, accessToken1).statusCode(
                 HttpStatus.CREATED.value())
             .assertThat().body("reviewFormCode", notNullValue());
     }
@@ -77,7 +84,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
         // when, then
         ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest("reviewFormTitle");
-        post("/api/templates/9999/review-forms", request, accessToken).statusCode(HttpStatus.NOT_FOUND.value());
+        post("/api/templates/9999/review-forms", request, accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -92,11 +99,11 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             questions1);
         TemplateCreateRequest request2 = new TemplateCreateRequest("title2", "test description2",
             questions2);
-        post("/api/templates", request1, accessToken);
-        post("/api/templates", request2, accessToken);
+        post("/api/templates", request1, accessToken1);
+        post("/api/templates", request2, accessToken1);
 
         // when, then
-        get("/api/templates", accessToken).statusCode(HttpStatus.OK.value())
+        get("/api/templates", accessToken1).statusCode(HttpStatus.OK.value())
             .assertThat().body("templates", hasSize(2));
 
     }
@@ -106,7 +113,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
     void findTemplateWithInvalidId() {
 
         // when, then
-        get("/api/templates/" + 9999L, accessToken).statusCode(HttpStatus.NOT_FOUND.value());
+        get("/api/templates/" + 9999L, accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -120,12 +127,12 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             new TemplateQuestionRequest("question2"));
         TemplateCreateRequest request = new TemplateCreateRequest(templateTitle, templateDescription, questions);
 
-        Long templateId = post("/api/templates", request, accessToken).extract()
+        Long templateId = post("/api/templates", request, accessToken1).extract()
             .as(TemplateCreateResponse.class)
             .getTemplateId();
 
         // when, then
-        get("/api/templates/" + templateId, accessToken).statusCode(HttpStatus.OK.value())
+        get("/api/templates/" + templateId, accessToken1).statusCode(HttpStatus.OK.value())
             .assertThat()
             .body("templateId", notNullValue())
             .body("templateTitle", equalTo(templateTitle))
@@ -137,7 +144,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
     void deleteTemplateWithInvalidId() {
 
         // when, then
-        delete("/api/templates/" + 9999L, accessToken).statusCode(HttpStatus.NOT_FOUND.value());
+        delete("/api/templates/" + 9999L, accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -150,12 +157,12 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             new TemplateQuestionRequest("question2"));
         TemplateCreateRequest request = new TemplateCreateRequest(templateTitle, templateDescription, questions);
 
-        Long templateId = post("/api/templates", request, accessToken).extract()
+        Long templateId = post("/api/templates", request, accessToken1).extract()
             .as(TemplateCreateResponse.class)
             .getTemplateId();
 
         // when, then
-        delete("/api/templates/" + templateId, accessToken).statusCode(HttpStatus.NO_CONTENT.value());
+        delete("/api/templates/" + templateId, accessToken1).statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -168,7 +175,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             new TemplateQuestionRequest("question2"));
         TemplateCreateRequest createRequest = new TemplateCreateRequest(templateTitle, templateDescription, questions);
 
-        Long templateId = post("/api/templates", createRequest, accessToken).extract()
+        Long templateId = post("/api/templates", createRequest, accessToken1).extract()
             .as(TemplateCreateResponse.class)
             .getTemplateId();
 
@@ -183,14 +190,45 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         TemplateUpdateRequest updateRequest = new TemplateUpdateRequest(newTemplateTitle, newTemplateDescription,
             newQuestions);
 
-        put("/api/templates/" + templateId, updateRequest, accessToken).statusCode(HttpStatus.NO_CONTENT.value());
+        put("/api/templates/" + templateId, updateRequest, accessToken1).statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
     @DisplayName("존재하지 않는 템플릿을 수정할 수 없다.")
     void updateTemplateWithInvalidId() {
         // when, then
-        put("/api/templates/" + 9999L, new TemplateUpdateRequest("title", "description", List.of()), accessToken)
+        put("/api/templates/" + 9999L, new TemplateUpdateRequest("title", "description", List.of()), accessToken1)
             .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    @DisplayName("내가 작성한 템플릿을 모두 조회한다.")
+    void findAllMyTemplates() {
+        // given
+        String templateTitle1 = "title1";
+        String templateDescription1 = "test description1";
+        List<TemplateQuestionRequest> questions1 = List.of(new TemplateQuestionRequest("question1"),
+            new TemplateQuestionRequest("question2"));
+        TemplateCreateRequest request1 = new TemplateCreateRequest(templateTitle1, templateDescription1, questions1);
+        post("/api/templates", request1, accessToken1);
+
+        String templateTitle2 = "title2";
+        String templateDescription2 = "test description2";
+        List<TemplateQuestionRequest> questions2 = List.of(new TemplateQuestionRequest("question3"),
+            new TemplateQuestionRequest("question4"));
+        TemplateCreateRequest request2 = new TemplateCreateRequest(templateTitle2, templateDescription2, questions2);
+        post("/api/templates", request2, accessToken2);
+
+        // when, then
+        MyTemplatesResponse myTemplatesResponse = get("/api/templates/me", accessToken2).statusCode(
+                HttpStatus.OK.value())
+            .extract()
+            .as(MyTemplatesResponse.class);
+
+        assertAll(
+            () -> assertThat(myTemplatesResponse.getTemplates()).hasSize(1),
+            () -> assertThat(myTemplatesResponse.getTemplates().get(0)).isNotNull(),
+            () -> assertThat(myTemplatesResponse.getTemplates().get(0).getTemplateTitle()).isEqualTo(templateTitle2)
+        );
     }
 }

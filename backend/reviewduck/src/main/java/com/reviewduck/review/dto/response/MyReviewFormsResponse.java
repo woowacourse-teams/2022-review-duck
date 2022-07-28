@@ -19,6 +19,7 @@ public class MyReviewFormsResponse {
         List<MyReviewFormResponse> reviewFormResponses = reviewForms.stream()
             .map(MyReviewFormResponse::from)
             .collect(Collectors.toList());
+
         return new MyReviewFormsResponse(reviewForms.size(), reviewFormResponses);
     }
 }

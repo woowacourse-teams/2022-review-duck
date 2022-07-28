@@ -24,6 +24,7 @@ import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
+import com.reviewduck.template.dto.response.MyTemplatesResponse;
 import com.reviewduck.template.dto.response.TemplateCreateResponse;
 import com.reviewduck.template.dto.response.TemplateResponse;
 import com.reviewduck.template.dto.response.TemplatesFindResponse;
@@ -117,5 +118,18 @@ public class TemplateController {
             "/api/templates/" + templateId, "PUT", "");
 
         templateService.update(member, templateId, request);
+    }
+
+    @Operation(summary = "내가 작성한 템플릿을 모두 조회한다.")
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public MyTemplatesResponse findByMember(@AuthenticationPrincipal Member member) {
+
+        log.info("uri={}, method = {}, request = {}",
+            "/api/templates/me", "GET", "");
+
+        List<Template> templates = templateService.findByMember(member);
+
+        return MyTemplatesResponse.from(templates);
     }
 }
