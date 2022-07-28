@@ -166,3 +166,34 @@ useQuery<GetMyReviewFormsResponse, ErrorResponse>(
   },
 );
 ```
+
+- [x] **단일 페이지**에서 사용되는 커스텀훅이라면 컴포넌트와 함께 위치시킨다.
+  - 예시 : 단일 페이지 내에서 비즈니스 로직을 분리하기 위한 커스텀훅.
+
+## CSS 스타일 관련
+
+- [x] 상위 컴포넌트의 스타일시트에서 자식 선택자를 통해 하위 컴포넌트의 Element를 선택하여 스타일을 추가할 수 없다.
+
+  - 예시 : 상위 페이지에서 Button 요소에 스타일을 추가한다.
+
+    ```
+    // ⛔️ 올바르지 않은 방법
+    <div className={styles.container}>
+    	<Editor>컴포넌트입니다.</Editor>
+    </div>
+
+    .container > div {
+    	background-color: red;
+    }
+
+    // ✅ 올바른 방법
+    <div className={styles.container}>
+    	<Editor className={styles.editor}>컴포넌트입니다.</Editor>
+    </div>
+
+    .editor {
+    	background-color: green;
+    }
+    ```
+
+  - 이유 : 이런식으로 스타일을 내려줄 시 계층에 종속된 구조로 작성되어 컴포넌트의 유연성이 떨어질 것으로 생각됩니다.
