@@ -1,9 +1,12 @@
 package com.reviewduck.review.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.review.domain.Review;
+import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.request.ReviewRequest;
+import com.reviewduck.review.dto.response.MyReviewFormsResponse;
+import com.reviewduck.review.dto.response.MyReviewsResponse;
 import com.reviewduck.review.service.ReviewService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,5 +56,18 @@ public class ReviewController {
             "/api/reviews/" + reviewId, "DELETE", "");
 
         reviewService.delete(member, reviewId);
+    }
+
+    @Operation(summary = "내가 작성한 회고 답변을 모두 조회한다.")
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public MyReviewsResponse findByMember(@AuthenticationPrincipal Member member) {
+
+        log.info("uri={}, method = {}, request = {}",
+            "/api/reviews/me", "GET", "");
+
+        List<Review> reviews = reviewService.findByMember(member);
+
+        return MyReviewsResponse.of(reviews);
     }
 }

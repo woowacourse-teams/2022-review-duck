@@ -21,6 +21,7 @@ import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
+import com.reviewduck.review.dto.response.MyReviewFormsResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
 import com.reviewduck.review.dto.response.ReviewsFindResponse;
@@ -67,7 +68,7 @@ public class ReviewFormController {
         ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
         boolean isCreator = reviewFormService.isReviewFormCreator(reviewForm, member);
 
-       return ReviewFormResponse.of(reviewForm, isCreator);
+        return ReviewFormResponse.of(reviewForm, isCreator);
     }
 
     @Operation(summary = "회고 폼을 수정한다.")
@@ -107,5 +108,18 @@ public class ReviewFormController {
         List<Review> reviews = reviewService.findAllByCode(reviewFormCode);
 
         return ReviewsFindResponse.of(reviewForm, reviews);
+    }
+
+    @Operation(summary = "내가 작성한 회고폼을 모두 조회한다.")
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public MyReviewFormsResponse findByMember(@AuthenticationPrincipal Member member) {
+
+        log.info("uri={}, method = {}, request = {}",
+            "/api/review-forms/me", "GET", "");
+
+        List<ReviewForm> reviewForms = reviewFormService.findByMember(member);
+
+        return MyReviewFormsResponse.of(reviewForms);
     }
 }

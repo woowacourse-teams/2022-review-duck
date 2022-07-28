@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.domain.QuestionAnswer;
 import com.reviewduck.review.domain.Review;
@@ -25,14 +27,19 @@ public class ReviewRepositoryTest {
     @Autowired
     private ReviewFormRepository reviewFormRepository;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     private ReviewForm savedReviewForm;
     private Review review;
 
     @BeforeEach
     void setUp() {
-        ReviewForm reviewForm = new ReviewForm("title", List.of("question1", "question2"));
+        Member member = new Member("panda", "제이슨", "testUrl");
+        memberRepository.save(member);
+        ReviewForm reviewForm = new ReviewForm(member, "title", List.of("question1", "question2"));
         this.savedReviewForm = reviewFormRepository.save(reviewForm);
-        this.review = Review.of("제이슨", savedReviewForm,
+        this.review = new Review(member, savedReviewForm,
             List.of(
                 new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(0), new Answer("answer1")),
                 new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(1), new Answer("answer2"))
@@ -49,7 +56,7 @@ public class ReviewRepositoryTest {
         // then
         assertAll(
             () -> assertThat(savedReview.getId()).isNotNull(),
-            () -> assertThat(savedReview.getNickname()).isEqualTo("제이슨"),
+            () -> assertThat(savedReview.getMember().getNickname()).isEqualTo("제이슨"),
             () -> assertThat(savedReview.getQuestionAnswers().get(0).getAnswer().getValue())
                 .isEqualTo("answer1")
         );
@@ -67,7 +74,7 @@ public class ReviewRepositoryTest {
         // then
         assertAll(
             () -> assertThat(reviews).hasSize(1),
-            () -> assertThat(reviews.get(0).getNickname()).isEqualTo(savedReview.getNickname())
+            () -> assertThat(reviews.get(0).getMember().getNickname()).isEqualTo(savedReview.getMember().getNickname())
         );
     }
 

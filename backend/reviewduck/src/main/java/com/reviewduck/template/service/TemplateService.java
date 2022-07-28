@@ -36,8 +36,7 @@ public class TemplateService {
             .map(TemplateQuestionRequest::getQuestionValue)
             .collect(Collectors.toUnmodifiableList());
 
-        Template template = new Template(member,
-            createRequest.getTemplateTitle(),
+        Template template = new Template(member, createRequest.getTemplateTitle(),
             createRequest.getTemplateDescription(),
             questionValues);
         return templateRepository.save(template);
