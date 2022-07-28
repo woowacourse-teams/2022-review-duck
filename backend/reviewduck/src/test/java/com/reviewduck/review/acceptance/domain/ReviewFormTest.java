@@ -1,4 +1,4 @@
-package com.reviewduck.review.domain;
+package com.reviewduck.review.acceptance.domain;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,6 +13,8 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.review.domain.ReviewForm;
+import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.review.exception.ReviewFormException;
 
 class ReviewFormTest {

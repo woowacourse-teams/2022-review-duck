@@ -1,4 +1,4 @@
-package com.reviewduck.review.domain;
+package com.reviewduck.review.acceptance.domain;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,6 +10,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.review.domain.Answer;
+import com.reviewduck.review.domain.QuestionAnswer;
+import com.reviewduck.review.domain.Review;
+import com.reviewduck.review.domain.ReviewForm;
+import com.reviewduck.review.domain.ReviewFormQuestion;
 
 public class ReviewTest {
     @Test

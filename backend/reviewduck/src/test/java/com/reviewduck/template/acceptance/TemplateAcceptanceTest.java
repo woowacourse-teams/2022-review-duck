@@ -36,10 +36,12 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
     void createMemberAndGetAccessToken() {
         Member member1 = new Member("panda", "제이슨", "profileUrl1");
         Member savedMember1 = memberService.save(member1);
+
         Member member2 = new Member("ariari", "브리", "profileUrl2");
         Member savedMember2 = memberService.save(member2);
-        accessToken1 = jwtTokenProvider.createToken(String.valueOf(savedMember1.getId()));
-        accessToken2 = jwtTokenProvider.createToken(String.valueOf(savedMember2.getId()));
+
+        accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember1.getId()));
+        accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember2.getId()));
     }
 
     @Test
@@ -58,18 +60,24 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("로그인하지 않은 상태로 템플릿을 생성할 수 없다.")
+    void failToCreateTemplateWithoutLogin() {
+        // given
+        String templateTitle = "title";
+        String templateDescription = "test description";
+        List<TemplateQuestionRequest> questions = List.of(new TemplateQuestionRequest("question1"),
+            new TemplateQuestionRequest("question2"));
+        TemplateCreateRequest request = new TemplateCreateRequest(templateTitle, templateDescription, questions);
+
+        // when, then
+        post("/api/templates", request).statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
     @DisplayName("템플릿을 기반으로 회고 폼을 생성한다.")
     void createReviewFormFromTemplate() {
         // given
-        String templateTitle = "title";
-        String description = "test description";
-        List<TemplateQuestionRequest> questions = List.of(new TemplateQuestionRequest("question1"),
-            new TemplateQuestionRequest("question2"));
-        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, description, questions);
-
-        Long templateId = post("/api/templates", templateCreateRequest, accessToken1).extract()
-            .as(TemplateCreateResponse.class)
-            .getTemplateId();
+        long templateId = saveTemplateAndGetId(accessToken1);
 
         // when, then
         ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest("reviewFormTitle");
@@ -79,12 +87,54 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 템플릿을 기반으로 회고 폼을 생성할 수 없다.")
-    void createReviewFormFromTemplateWithInvalidId() {
+    @DisplayName("로그인하지 않은 상태로 템플릿을 기반으로 회고 폼을 생성할 수 없다.")
+    void FailToCreateReviewFormFromTemplateWithoutLogin() {
+        // given
+        long templateId = saveTemplateAndGetId(accessToken1);
 
         // when, then
         ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest("reviewFormTitle");
+        post("/api/templates/" + templateId + "/review-forms", request)
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 템플릿을 기반으로 회고 폼을 생성할 수 없다.")
+    void createReviewFormFromTemplateWithInvalidId() {
+        // when, then
+        ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest("reviewFormTitle");
         post("/api/templates/9999/review-forms", request, accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    @DisplayName("특정 템플릿을 조회한다.")
+    void findTemplate() {
+        //given
+        long templateId = saveTemplateAndGetId(accessToken1);
+
+        // when, then
+        get("/api/templates/" + templateId, accessToken1).statusCode(HttpStatus.OK.value())
+            .assertThat()
+            .body("templateId", notNullValue())
+            .body("templateTitle", equalTo("title"))
+            .body("questions", hasSize(2));
+    }
+
+    @Test
+    @DisplayName("로그인하지 않은 상태로 특정 템플릿을 조회할 수 없다.")
+    void FailToCreateFindTemplateWithoutLogin() {
+        //given
+        long templateId = saveTemplateAndGetId(accessToken1);
+
+        // when, then
+        get("/api/templates/" + templateId).statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 템플릿을 조회할 수 없다.")
+    void findTemplateWithInvalidId() {
+        // when, then
+        get("/api/templates/" + 9999L, accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -99,85 +149,63 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             questions1);
         TemplateCreateRequest request2 = new TemplateCreateRequest("title2", "test description2",
             questions2);
+
         post("/api/templates", request1, accessToken1);
         post("/api/templates", request2, accessToken1);
 
         // when, then
         get("/api/templates", accessToken1).statusCode(HttpStatus.OK.value())
             .assertThat().body("templates", hasSize(2));
-
     }
 
     @Test
-    @DisplayName("존재하지 않는 템플릿을 조회할 수 없다.")
-    void findTemplateWithInvalidId() {
-
-        // when, then
-        get("/api/templates/" + 9999L, accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
-    }
-
-    @Test
-    @DisplayName("템플릿을 조회한다.")
-    void findTemplate() {
-
-        //given
-        String templateTitle = "title";
-        String templateDescription = "test description";
-        List<TemplateQuestionRequest> questions = List.of(new TemplateQuestionRequest("question1"),
-            new TemplateQuestionRequest("question2"));
-        TemplateCreateRequest request = new TemplateCreateRequest(templateTitle, templateDescription, questions);
-
-        Long templateId = post("/api/templates", request, accessToken1).extract()
-            .as(TemplateCreateResponse.class)
-            .getTemplateId();
-
-        // when, then
-        get("/api/templates/" + templateId, accessToken1).statusCode(HttpStatus.OK.value())
-            .assertThat()
-            .body("templateId", notNullValue())
-            .body("templateTitle", equalTo(templateTitle))
-            .body("questions", hasSize(questions.size()));
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 템플릿을 삭제할 수 없다.")
-    void deleteTemplateWithInvalidId() {
-
-        // when, then
-        delete("/api/templates/" + 9999L, accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
+    @DisplayName("로그인하지 않은 상태로 전체 템플릿을 조회할 수 없다.")
+    void FailToCreateFindAllTemplatesWithoutLogin() {
+        get("/api/templates").statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test
     @DisplayName("템플릿을 삭제한다.")
     void deleteTemplate() {
         // given
-        String templateTitle = "title";
-        String templateDescription = "test description";
-        List<TemplateQuestionRequest> questions = List.of(new TemplateQuestionRequest("question1"),
-            new TemplateQuestionRequest("question2"));
-        TemplateCreateRequest request = new TemplateCreateRequest(templateTitle, templateDescription, questions);
-
-        Long templateId = post("/api/templates", request, accessToken1).extract()
-            .as(TemplateCreateResponse.class)
-            .getTemplateId();
+        long templateId = saveTemplateAndGetId(accessToken1);
 
         // when, then
         delete("/api/templates/" + templateId, accessToken1).statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
+    @DisplayName("로그인하지 않은 상태로 템플릿을 삭제할 수 없다.")
+    void FailToDeleteTemplateWithoutLogin() {
+        //given
+        long templateId = saveTemplateAndGetId(accessToken1);
+
+        delete("/api/templates/" + templateId).statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
+    @DisplayName("본인이 생성한 템플릿이 아니면 삭제할 수 없다.")
+    void failToDeleteNotMyTemplate() {
+        // given
+        long templateId = saveTemplateAndGetId(accessToken1);
+
+        // when, then
+        delete("/api/templates/" + templateId, accessToken2).statusCode(HttpStatus.UNAUTHORIZED.value());
+
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 템플릿을 삭제할 수 없다.")
+    void deleteTemplateWithInvalidId() {
+        // when, then
+        delete("/api/templates/" + 9999L, accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
     @DisplayName("템플릿을 수정한다.")
     void updateTemplate() {
         // given
-        String templateTitle = "title";
-        String templateDescription = "test description";
-        List<TemplateQuestionRequest> questions = List.of(new TemplateQuestionRequest("question1"),
-            new TemplateQuestionRequest("question2"));
-        TemplateCreateRequest createRequest = new TemplateCreateRequest(templateTitle, templateDescription, questions);
-
-        Long templateId = post("/api/templates", createRequest, accessToken1).extract()
-            .as(TemplateCreateResponse.class)
-            .getTemplateId();
+        long templateId = saveTemplateAndGetId(accessToken1);
 
         // when, then
         String newTemplateTitle = "new title";
@@ -191,6 +219,48 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             newQuestions);
 
         put("/api/templates/" + templateId, updateRequest, accessToken1).statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    @DisplayName("로그인하지 않은 상태로 템플릿을 수정할 수 없다.")
+    void FailToUpdateTemplateWithoutLogin() {
+        // given
+        long templateId = saveTemplateAndGetId(accessToken1);
+
+        // when, then
+        String newTemplateTitle = "new title";
+        String newTemplateDescription = "new test description";
+        List<TemplateQuestionUpdateRequest> newQuestions = List.of(
+            new TemplateQuestionUpdateRequest(1L, "new question1"),
+            new TemplateQuestionUpdateRequest(2L, "question2"),
+            new TemplateQuestionUpdateRequest(null, "question3")
+        );
+        TemplateUpdateRequest updateRequest = new TemplateUpdateRequest(newTemplateTitle, newTemplateDescription,
+            newQuestions);
+
+        put("/api/templates/" + templateId, updateRequest)
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
+    @DisplayName("본인이 생성한 템플릿이 아니면 수정할 수 없다.")
+    void failToUpdateNotMyTemplate() {
+        // given
+        long templateId = saveTemplateAndGetId(accessToken1);
+
+        // when, then
+        String newTemplateTitle = "new title";
+        String newTemplateDescription = "new test description";
+        List<TemplateQuestionUpdateRequest> newQuestions = List.of(
+            new TemplateQuestionUpdateRequest(1L, "new question1"),
+            new TemplateQuestionUpdateRequest(2L, "question2"),
+            new TemplateQuestionUpdateRequest(null, "question3")
+        );
+        TemplateUpdateRequest updateRequest = new TemplateUpdateRequest(newTemplateTitle, newTemplateDescription,
+            newQuestions);
+
+        put("/api/templates/" + templateId, updateRequest, accessToken2)
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test
@@ -230,5 +300,23 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             () -> assertThat(myTemplatesResponse.getTemplates().get(0)).isNotNull(),
             () -> assertThat(myTemplatesResponse.getTemplates().get(0).getTemplateTitle()).isEqualTo(templateTitle2)
         );
+    }
+
+    @Test
+    @DisplayName("로그인하지 않은 상태로 내가 작성한 템플릿을 모두 조회할 수 없다.")
+    void FailToFindAllMyTemplatesWithoutLogin() {
+        get("/api/templates/me").statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private long saveTemplateAndGetId(String accessToken) {
+        String templateTitle = "title";
+        String description = "test description";
+        List<TemplateQuestionRequest> questions = List.of(new TemplateQuestionRequest("question1"),
+            new TemplateQuestionRequest("question2"));
+        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, description, questions);
+
+        return post("/api/templates", templateCreateRequest, accessToken).extract()
+            .as(TemplateCreateResponse.class)
+            .getTemplateId();
     }
 }

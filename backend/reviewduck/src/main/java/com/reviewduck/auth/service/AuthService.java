@@ -48,7 +48,7 @@ public class AuthService {
         Member member = getMemberFromGithub(loginRequest.getCode());
         Member loginMember = login(member);
 
-        return jwtTokenProvider.createToken(String.valueOf(loginMember.getId()));
+        return jwtTokenProvider.createAccessToken(String.valueOf(loginMember.getId()));
     }
 
     private Member login(Member member) {

@@ -22,7 +22,7 @@ public class JwtTokenProvider {
         this.secretKey = secretKey;
     }
 
-    public String createToken(String payload) {
+    public String createAccessToken(String payload) {
         Claims claims = Jwts.claims().setSubject(payload);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);

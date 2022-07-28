@@ -73,7 +73,7 @@ public class TemplateController {
         return ReviewFormCodeResponse.from(reviewForm);
     }
 
-    @Operation(summary = "템플릿을 조회한다.")
+    @Operation(summary = "특정 템플릿을 조회한다.")
     @GetMapping("/{templateId}")
     @ResponseStatus(HttpStatus.OK)
     public TemplateResponse find(@AuthenticationPrincipal Member member, @PathVariable Long templateId) {
