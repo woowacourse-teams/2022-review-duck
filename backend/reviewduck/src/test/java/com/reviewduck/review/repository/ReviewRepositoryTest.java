@@ -90,4 +90,34 @@ public class ReviewRepositoryTest {
         // then
         assertThat(reviewRepository.findById(savedReview.getId()).isEmpty()).isTrue();
     }
+
+    @Test
+    @DisplayName("개인이 작성한 회고를 조회한다.")
+    void findMyReviewForms() {
+        // given
+        reviewRepository.save(review);
+
+        Member member2 = new Member("ariari", "브리", "testUrl2");
+        memberRepository.save(member2);
+        ReviewForm reviewForm = new ReviewForm(member2, "title", List.of("question1", "question2"));
+        ReviewForm savedReviewForm = reviewFormRepository.save(reviewForm);
+        Review review2 = new Review(member2, savedReviewForm,
+            List.of(
+                new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(0), new Answer("answer3")),
+                new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(1), new Answer("answer4"))
+            )
+        );
+        reviewRepository.save(review2);
+
+        //when
+        List<Review> myReviews = reviewRepository.findByMember(member2);
+
+        //then
+        assertAll(
+            () -> assertThat(myReviews).hasSize(1),
+            () -> assertThat(myReviews.get(0)).isNotNull(),
+            () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo("브리"),
+            () -> assertThat(myReviews.get(0).getQuestionAnswers().get(0).getAnswer().getValue()).isEqualTo("answer3")
+        );
+    }
 }

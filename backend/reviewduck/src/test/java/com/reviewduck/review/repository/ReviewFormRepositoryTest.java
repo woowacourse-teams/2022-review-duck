@@ -51,20 +51,18 @@ public class ReviewFormRepositoryTest {
     }
 
     @Test
-    @DisplayName("내가 작성한 회고 폼을 조회한다.")
+    @DisplayName("개인이 작성한 회고 폼을 조회한다.")
     void findMyReviewForms() {
         // given
         List<String> questionValues1 = List.of("question1", "question2");
-        List<ReviewFormQuestion> reviewFormQuestions1 = getReviewFormQuestions(
-            questionValues1);
+        getReviewFormQuestions(questionValues1);
 
         Member member1 = new Member("panda", "제이슨", "testUrl1");
         memberRepository.save(member1);
         ReviewForm reviewForm1 = new ReviewForm(member1, "title1", questionValues1);
 
         List<String> questionValues2 = List.of("question3", "question4");
-        List<ReviewFormQuestion> reviewFormQuestions2 = getReviewFormQuestions(
-            questionValues2);
+        getReviewFormQuestions(questionValues2);
 
         Member member2 = new Member("ariari", "브리", "testUrl2");
         memberRepository.save(member2);

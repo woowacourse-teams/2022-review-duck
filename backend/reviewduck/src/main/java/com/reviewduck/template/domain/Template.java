@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
+import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.template.exception.TemplateException;
 
@@ -26,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Template {
+public class Template extends BaseDate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

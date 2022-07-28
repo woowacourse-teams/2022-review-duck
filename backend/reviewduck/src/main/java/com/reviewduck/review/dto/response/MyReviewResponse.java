@@ -20,7 +20,8 @@ public class MyReviewResponse {
 
     public static MyReviewResponse of(Review review) {
         List<AnswerResponse> answers = review.getQuestionAnswers().stream()
-            .map(questionAnswer -> AnswerResponse.of(questionAnswer.getReviewFormQuestion(), questionAnswer.getAnswer()))
+            .map(
+                questionAnswer -> AnswerResponse.of(questionAnswer.getReviewFormQuestion(), questionAnswer.getAnswer()))
             .collect(Collectors.toUnmodifiableList());
 
         long updatedAt = Timestamp.valueOf(review.getUpdatedAt()).getTime();

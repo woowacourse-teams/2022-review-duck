@@ -91,4 +91,8 @@ public class TemplateService {
 
         return question;
     }
+
+    public List<Template> findByMember(Member member) {
+        return templateRepository.findByMember(member);
+    }
 }

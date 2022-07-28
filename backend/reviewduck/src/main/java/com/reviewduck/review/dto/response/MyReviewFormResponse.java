@@ -25,6 +25,7 @@ public class MyReviewFormResponse {
 
         long updatedAt = Timestamp.valueOf(reviewForm.getUpdatedAt()).getTime();
 
-        return new MyReviewFormResponse(reviewForm.getReviewTitle(), reviewForm.getCode(), updatedAt, reviewFormQuestionResponses);
+        return new MyReviewFormResponse(reviewForm.getReviewTitle(), reviewForm.getCode(), updatedAt,
+            reviewFormQuestionResponses);
     }
 }

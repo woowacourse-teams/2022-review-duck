@@ -237,8 +237,8 @@ public class ReviewFormServiceTest {
     }
 
     @Test
-    @DisplayName("본인이 작성한 회고를 조회한다.")
-    void findMyReviewForms(){
+    @DisplayName("개인이 작성한 회고를 조회한다.")
+    void findMyReviewForms() {
         String reviewTitle1 = "title1";
         List<ReviewFormQuestionRequest> questions1 = List.of(new ReviewFormQuestionRequest("question1"),
             new ReviewFormQuestionRequest("question2"));

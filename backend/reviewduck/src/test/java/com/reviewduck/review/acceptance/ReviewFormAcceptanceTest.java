@@ -39,11 +39,11 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     void createMemberAndGetAccessToken() {
         Member member1 = new Member("panda", "제이슨", "profileUrl1");
-        memberService.save(member1);
+        Member savedMember1 = memberService.save(member1);
         Member member2 = new Member("ariari", "브리", "profileUrl2");
-        memberService.save(member2);
-        accessToken1 = jwtTokenProvider.createToken("1");
-        accessToken2 = jwtTokenProvider.createToken("2");
+        Member savedMember2 = memberService.save(member2);
+        accessToken1 = jwtTokenProvider.createToken(String.valueOf(savedMember1.getId()));
+        accessToken2 = jwtTokenProvider.createToken(String.valueOf(savedMember2.getId()));
     }
 
     @Test
@@ -226,7 +226,8 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         assertReviewTitleFromFoundReviewForm(reviewFormCode2, reviewTitle2, accessToken2);
 
         // then
-        MyReviewFormsResponse myReviewFormsResponse = get("/api/review-forms/me", accessToken1).statusCode(HttpStatus.OK.value())
+        MyReviewFormsResponse myReviewFormsResponse = get("/api/review-forms/me", accessToken1).statusCode(
+                HttpStatus.OK.value())
             .assertThat()
             .body("reviewForms", hasSize(1))
             .extract()
@@ -235,7 +236,8 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         assertThat(myReviewFormsResponse.getReviewForms().get(0).getTitle()).isEqualTo(reviewTitle1);
     }
 
-    private String createReviewFormAndGetCode(String reviewTitle, List<ReviewFormQuestionRequest> questions, String accessToken) {
+    private String createReviewFormAndGetCode(String reviewTitle, List<ReviewFormQuestionRequest> questions,
+        String accessToken) {
         ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
 
         return post("/api/review-forms", request, accessToken)
