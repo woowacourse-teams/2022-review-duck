@@ -18,7 +18,7 @@ public class MyReviewFormResponse {
     private long updatedAt;
     private List<ReviewFormQuestionResponse> questions;
 
-    public static MyReviewFormResponse of(ReviewForm reviewForm) {
+    public static MyReviewFormResponse from(ReviewForm reviewForm) {
         List<ReviewFormQuestionResponse> reviewFormQuestionResponses = reviewForm.getReviewFormQuestions().stream()
             .map(ReviewFormQuestionResponse::from)
             .collect(Collectors.toList());

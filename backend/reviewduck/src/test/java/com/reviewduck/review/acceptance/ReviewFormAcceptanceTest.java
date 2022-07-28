@@ -26,7 +26,6 @@ import com.reviewduck.review.dto.response.MyReviewFormsResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
 import com.reviewduck.review.dto.response.ReviewResponse;
-import com.reviewduck.review.dto.response.ReviewsFindResponse;
 
 public class ReviewFormAcceptanceTest extends AcceptanceTest {
     private static String accessToken1;

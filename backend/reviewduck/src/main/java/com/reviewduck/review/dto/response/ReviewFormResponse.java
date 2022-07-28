@@ -16,7 +16,7 @@ public class ReviewFormResponse {
 
     private String reviewTitle;
     private long updatedAt;
-    private MemberResponse creator;
+    private CreatorResponse creator;
     private boolean isCreator;
     private List<ReviewFormQuestionResponse> questions;
 
@@ -28,7 +28,7 @@ public class ReviewFormResponse {
         return new ReviewFormResponse(
             reviewForm.getReviewTitle(),
             Timestamp.valueOf(reviewForm.getUpdatedAt()).getTime(),
-            MemberResponse.from(reviewForm.getMember()),
+            CreatorResponse.from(reviewForm.getMember()),
             isCreator,
             reviewFormQuestionRespons
         );

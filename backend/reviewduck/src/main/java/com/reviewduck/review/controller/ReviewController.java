@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
-import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.request.ReviewRequest;
-import com.reviewduck.review.dto.response.MyReviewFormsResponse;
 import com.reviewduck.review.dto.response.MyReviewsResponse;
 import com.reviewduck.review.service.ReviewService;
 
@@ -68,6 +66,6 @@ public class ReviewController {
 
         List<Review> reviews = reviewService.findByMember(member);
 
-        return MyReviewsResponse.of(reviews);
+        return MyReviewsResponse.from(reviews);
     }
 }

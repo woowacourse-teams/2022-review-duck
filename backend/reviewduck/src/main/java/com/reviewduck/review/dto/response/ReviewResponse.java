@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
 
 import lombok.AllArgsConstructor;
@@ -14,17 +15,27 @@ import lombok.Getter;
 public class ReviewResponse {
 
     private Long reviewId;
-    private String nickname;
-    private List<AnswerResponse> answers;
     private long updatedAt;
+    private boolean isMine;
+    private CreatorResponse participant;
+    private List<AnswerResponse> answers;
 
-    public static ReviewResponse from(Review review) {
+    public static ReviewResponse of(Member member, Review review, boolean isMine) {
         List<AnswerResponse> answerResponses = review.getQuestionAnswers().stream()
             .map(
                 questionAnswer -> AnswerResponse.of(questionAnswer.getReviewFormQuestion(), questionAnswer.getAnswer()))
             .collect(Collectors.toUnmodifiableList());
 
-        return new ReviewResponse(review.getId(), review.getMember().getNickname(), answerResponses,
-            Timestamp.valueOf(review.getUpdatedAt()).getTime());
+        return new ReviewResponse(
+            review.getId(),
+            Timestamp.valueOf(review.getUpdatedAt()).getTime(),
+            isMine,
+            CreatorResponse.from(member),
+            answerResponses
+        );
+    }
+
+    public boolean getIsMine() {
+        return isMine;
     }
 }

@@ -15,9 +15,9 @@ public class MyReviewFormsResponse {
     private int numberOfReviewForms;
     private List<MyReviewFormResponse> reviewForms;
 
-    public static MyReviewFormsResponse of(List<ReviewForm> reviewForms) {
+    public static MyReviewFormsResponse from(List<ReviewForm> reviewForms) {
         List<MyReviewFormResponse> reviewFormResponses = reviewForms.stream()
-            .map(MyReviewFormResponse::of)
+            .map(MyReviewFormResponse::from)
             .collect(Collectors.toList());
         return new MyReviewFormsResponse(reviewForms.size(), reviewFormResponses);
     }
