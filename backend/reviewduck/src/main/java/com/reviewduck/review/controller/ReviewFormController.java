@@ -6,6 +6,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -58,7 +59,7 @@ public class ReviewFormController {
         return ReviewFormCodeResponse.from(reviewForm);
     }
 
-    @Operation(summary = "특정 회고폼의 정보를 조회한다.")
+    @Operation(summary = "특정 회고 폼의 정보를 조회한다.")
     @GetMapping("/{reviewFormCode}")
     @ResponseStatus(HttpStatus.OK)
     public ReviewFormResponse find(@AuthenticationPrincipal Member member, @PathVariable String reviewFormCode) {
@@ -83,6 +84,17 @@ public class ReviewFormController {
 
         ReviewForm reviewForm = reviewFormService.update(member, reviewFormCode, request);
         return ReviewFormCodeResponse.from(reviewForm);
+    }
+
+    @Operation(summary = "회고 폼을 삭제한다.")
+    @DeleteMapping("/{reviewFormCode}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@AuthenticationPrincipal Member member, @PathVariable String reviewFormCode) {
+
+        log.info("uri={}, method = {}, request = {}",
+            "/api/review-forms/" + reviewFormCode, "DELETE", "");
+
+        reviewFormService.deleteByCode(member, reviewFormCode);
     }
 
     @Operation(summary = "회고 답변을 생성한다.")
@@ -117,7 +129,7 @@ public class ReviewFormController {
         return response;
     }
 
-    @Operation(summary = "내가 작성한 회고폼을 모두 조회한다.")
+    @Operation(summary = "내가 작성한 회고 폼을 모두 조회한다.")
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
     public MyReviewFormsResponse findByMember(@AuthenticationPrincipal Member member) {

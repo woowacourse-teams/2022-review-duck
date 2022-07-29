@@ -164,7 +164,7 @@ public class ReviewFormServiceTest {
     }
 
     @Test
-    @DisplayName("본인이 생성한 회고가 아니면 수정할 수 없다.")
+    @DisplayName("본인이 생성한 회고 폼이 아니면 수정할 수 없다.")
     void updateNotMyReviewForm() {
         // given
         ReviewForm savedReviewForm = saveReviewForm(member1);
@@ -190,11 +190,11 @@ public class ReviewFormServiceTest {
 
         assertThatThrownBy(() -> reviewFormService.update(member2, code, updateRequest))
             .isInstanceOf(AuthorizationException.class)
-            .hasMessageContaining("본인이 생성한 회고폼이 아니면 수정할 수 없습니다.");
+            .hasMessageContaining("본인이 생성한 회고 폼이 아니면 수정, 삭제할 수 없습니다.");
     }
 
     @Test
-    @DisplayName("존재하지 않는 회고폼을 수정할 수 없다.")
+    @DisplayName("존재하지 않는 회고 폼을 수정할 수 없다.")
     void updateReviewFormByInvalidCode() {
         // when
         List<ReviewQuestionUpdateRequest> updateRequests = List.of(new ReviewQuestionUpdateRequest(1L, "new question1"),
@@ -221,6 +221,44 @@ public class ReviewFormServiceTest {
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 질문입니다.");
 
+    }
+
+    @Test
+    @DisplayName("회고 폼을 삭제한다.")
+    void deleteReviewForm() {
+        // given
+        ReviewForm savedReviewForm = saveReviewForm(member1);
+        String code = savedReviewForm.getCode();
+
+        // when
+        reviewFormService.deleteByCode(member1, code);
+
+        // then
+        assertThatThrownBy(() -> reviewFormService.findByCode(code))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessageContaining("존재하지 않는 회고 폼입니다.");
+    }
+
+    @Test
+    @DisplayName("본인이 생성한 회고 폼이 아니면 삭제할 수 없다.")
+    void deleteNotMyReviewForm() {
+        // given
+        ReviewForm savedReviewForm = saveReviewForm(member1);
+        String code = savedReviewForm.getCode();
+
+        // when, then
+        assertThatThrownBy(() -> reviewFormService.deleteByCode(member2, code))
+            .isInstanceOf(AuthorizationException.class)
+            .hasMessageContaining("본인이 생성한 회고 폼이 아니면 수정, 삭제할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 회고 폼을 삭제할 수 없다.")
+    void deleteReviewFormByInvalidCode() {
+        // when, then
+        assertThatThrownBy(() -> reviewFormService.deleteByCode(member1, invalidCode))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessageContaining("존재하지 않는 회고 폼입니다.");
     }
 
     @Test

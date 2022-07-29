@@ -56,27 +56,33 @@ public class ReviewFormRepositoryTest {
         // given
         List<String> questionValues1 = List.of("question1", "question2");
         getReviewFormQuestions(questionValues1);
-
-        Member member1 = new Member("panda", "제이슨", "testUrl1");
-        memberRepository.save(member1);
-        ReviewForm reviewForm1 = new ReviewForm(member1, "title1", questionValues1);
-
         List<String> questionValues2 = List.of("question3", "question4");
         getReviewFormQuestions(questionValues2);
 
-        Member member2 = new Member("ariari", "브리", "testUrl2");
-        memberRepository.save(member2);
-        ReviewForm reviewForm2 = new ReviewForm(member2, "title2", questionValues2);
+        Member member1 = new Member("panda", "제이슨", "testUrl1");
+        memberRepository.save(member1);
+
+        ReviewForm reviewForm1 = new ReviewForm(member1, "title1", questionValues1);
+        ReviewForm reviewForm2 = new ReviewForm(member1, "title2", questionValues2);
 
         reviewFormRepository.save(reviewForm1);
         reviewFormRepository.save(reviewForm2);
+
+        Member member2 = new Member("ariari", "브리", "testUrl2");
+        memberRepository.save(member2);
+
+        List<String> otherUserQuestionValues = List.of("other user's question1", "other user's question2");
+        getReviewFormQuestions(otherUserQuestionValues);
+        ReviewForm otherUserReviewForm = new ReviewForm(member2, "other user's title", otherUserQuestionValues);
+
+        reviewFormRepository.save(otherUserReviewForm);
 
         // when
         List<ReviewForm> myReviewForms = reviewFormRepository.findByMember(member1);
 
         // then
         assertAll(
-            () -> assertThat(myReviewForms).hasSize(1),
+            () -> assertThat(myReviewForms).hasSize(2),
             () -> assertThat(myReviewForms.get(0)).isNotNull(),
             () -> assertThat(myReviewForms.get(0).getMember().getNickname()).isEqualTo("제이슨")
         );

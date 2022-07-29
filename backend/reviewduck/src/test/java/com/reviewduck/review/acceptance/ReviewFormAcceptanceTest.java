@@ -77,7 +77,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("특정 회고폼을 조회한다.")
+    @DisplayName("특정 회고 폼을 조회한다.")
     void findReviewForm() {
         // given
         String reviewTitle = "title";
@@ -111,14 +111,14 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("특정 회고폼 조회에 실패한다.")
+    @DisplayName("특정 회고 폼 조회에 실패한다.")
     void failToFindReviewForm() {
         // when, then
         get("/api/review-forms/" + "AAAAAAAA", accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
-    @DisplayName("회고폼을 수정한다.")
+    @DisplayName("회고 폼을 수정한다.")
     void updateReviewForm() {
         // given
         List<ReviewFormQuestionRequest> createQuestions = List.of(new ReviewFormQuestionRequest("question1"),
@@ -163,7 +163,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 회고폼을 수정할 수 없다.")
+    @DisplayName("존재하지 않는 회고 폼을 수정할 수 없다.")
     void updateInvalidReviewForm() {
         // when, then
         List<ReviewQuestionUpdateRequest> updateQuestions = List.of(
@@ -175,7 +175,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("본인이 생성한 회고폼이 아니면 수정할 수 없다.")
+    @DisplayName("본인이 생성한 회고 폼이 아니면 수정할 수 없다.")
     void failToUpdateNotMyReviewForm() {
         // given
         List<ReviewFormQuestionRequest> createQuestions = List.of(new ReviewFormQuestionRequest("question1"),
@@ -190,6 +190,56 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
         // then
         put("/api/review-forms/" + createReviewFormCode, updateRequest, accessToken2)
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
+    @DisplayName("회고 폼을 삭제한다.")
+    void deleteReviewForm() {
+        // given
+        List<ReviewFormQuestionRequest> createQuestions = List.of(new ReviewFormQuestionRequest("question1"),
+            new ReviewFormQuestionRequest("question2"));
+        String createReviewFormCode = createReviewFormAndGetCode("title", createQuestions, accessToken1);
+
+        // when, then
+        delete("/api/review-forms/" + createReviewFormCode, accessToken1)
+            .statusCode(HttpStatus.NO_CONTENT.value());
+
+        get("/api/review-forms/" + createReviewFormCode, accessToken1)
+            .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    @DisplayName("로그인하지 않은 상태로 회고 폼을 삭제할 수 없다.")
+    void failToDeleteReviewFormWithoutLogin() {
+        // given
+        List<ReviewFormQuestionRequest> createQuestions = List.of(new ReviewFormQuestionRequest("question1"),
+            new ReviewFormQuestionRequest("question2"));
+        String createReviewFormCode = createReviewFormAndGetCode("title", createQuestions, accessToken1);
+
+        // when, then
+        delete("/api/review-forms/" + createReviewFormCode)
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 회고 폼을 삭제할 수 없다.")
+    void deleteInvalidReviewForm() {
+        // when, then
+        delete("/api/review-forms/aaaaaaaa", accessToken1)
+            .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    @DisplayName("본인이 생성한 회고 폼이 아니면 삭제할 수 없다.")
+    void failToDeleteNotMyReviewForm() {
+        // given
+        List<ReviewFormQuestionRequest> createQuestions = List.of(new ReviewFormQuestionRequest("question1"),
+            new ReviewFormQuestionRequest("question2"));
+        String createReviewFormCode = createReviewFormAndGetCode("title", createQuestions, accessToken1);
+
+        // when, then
+        delete("/api/review-forms/" + createReviewFormCode, accessToken2)
             .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
@@ -303,7 +353,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("내가 작성한 회고폼을 모두 조회한다.")
+    @DisplayName("내가 작성한 회고 폼을 모두 조회한다.")
     void findAllMyReviewForms() {
         // given
         String reviewTitle1 = "title1";

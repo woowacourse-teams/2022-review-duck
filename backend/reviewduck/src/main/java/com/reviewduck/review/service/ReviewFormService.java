@@ -59,13 +59,17 @@ public class ReviewFormService {
             .map(request -> saveOrUpdateQuestion(request.getQuestionId(), request.getQuestionValue()))
             .collect(Collectors.toUnmodifiableList());
 
-        if (!reviewForm.isMine(member)) {
-            throw new AuthorizationException("본인이 생성한 회고폼이 아니면 수정할 수 없습니다.");
-        }
+        validateReviewFormIsMine(member, reviewForm);
 
         reviewForm.update(updateRequest.getReviewTitle(), reviewFormQuestions);
 
         return reviewForm;
+    }
+
+    private void validateReviewFormIsMine(Member member, ReviewForm reviewForm) {
+        if (!reviewForm.isMine(member)) {
+            throw new AuthorizationException("본인이 생성한 회고 폼이 아니면 수정, 삭제할 수 없습니다.");
+        }
     }
 
     private ReviewFormQuestion saveOrUpdateQuestion(Long questionId, String questionValue) {
@@ -99,5 +103,11 @@ public class ReviewFormService {
 
     public List<ReviewForm> findByMember(Member member) {
         return reviewFormRepository.findByMember(member);
+    }
+
+    public void deleteByCode(Member member, String reviewFormCode) {
+        ReviewForm reviewForm = findByCode(reviewFormCode);
+        validateReviewFormIsMine(member, reviewForm);
+        reviewFormRepository.delete(reviewForm);
     }
 }

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 
-import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.exception.AnswerException;
 
 public class AnswerTest {
