@@ -1,6 +1,5 @@
 package com.reviewduck.review.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -26,7 +25,7 @@ import com.reviewduck.review.dto.request.ReviewRequest;
 import com.reviewduck.review.dto.response.MyReviewFormsResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
-import com.reviewduck.review.dto.response.ReviewResponse;
+import com.reviewduck.review.dto.response.ReviewsResponse;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
@@ -112,7 +111,7 @@ public class ReviewFormController {
     @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 모두 조회한다.")
     @GetMapping("/{reviewFormCode}/reviews")
     @ResponseStatus(HttpStatus.OK)
-    public List<ReviewResponse> findByCode(@AuthenticationPrincipal Member member,
+    public ReviewsResponse findByCode(@AuthenticationPrincipal Member member,
         @PathVariable String reviewFormCode) {
 
         log.info("uri={}, method = {}, request = {}",
@@ -120,13 +119,7 @@ public class ReviewFormController {
 
         List<Review> reviews = reviewService.findAllByCode(reviewFormCode);
 
-        List<ReviewResponse> response = new ArrayList<>();
-
-        for (Review review : reviews) {
-            response.add(ReviewResponse.of(member, review, reviewService.isReviewCreator(review, member)));
-        }
-
-        return response;
+        return ReviewsResponse.of(member, reviews);
     }
 
     @Operation(summary = "내가 작성한 회고 폼을 모두 조회한다.")
