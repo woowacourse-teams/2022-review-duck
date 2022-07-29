@@ -2,10 +2,11 @@ package com.reviewduck.review.dto.response;
 
 import com.reviewduck.review.domain.ReviewForm;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class MyReviewReviewFormResponse {
     private String title;
