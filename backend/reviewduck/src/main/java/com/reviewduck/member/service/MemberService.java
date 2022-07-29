@@ -1,5 +1,7 @@
 package com.reviewduck.member.service;
 
+import java.util.Optional;
+
 import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
@@ -31,7 +33,7 @@ public class MemberService {
         return memberRepository.existsBySocialId(socialId);
     }
 
-    public Member findBySocialId(String socialId) {
+    public Optional<Member> findBySocialId(String socialId) {
         return memberRepository.findBySocialId(socialId);
     }
 }

@@ -70,7 +70,7 @@ public class MemberServiceTest {
     @DisplayName("소셜 아이디로 멤버를 조회한다.")
     void findMemberBySocialId() {
         // when
-        Member foundMember = memberService.findBySocialId(savedMember.getSocialId());
+        Member foundMember = memberService.findBySocialId(savedMember.getSocialId()).get();
 
         // then
         assertEqualMemberInfo(foundMember, savedMember);

@@ -59,7 +59,7 @@ public class MemberRepositoryTest {
         memberRepository.save(member);
 
         // when
-        Member foundMember = memberRepository.findBySocialId(member.getSocialId());
+        Member foundMember = memberRepository.findBySocialId(member.getSocialId()).get();
 
         // then
         assertAll(
