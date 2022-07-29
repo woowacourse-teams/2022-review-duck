@@ -17,8 +17,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.domain.Member;
@@ -29,8 +27,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@SQLDelete(sql = "UPDATE review_form SET is_active = false WHERE id=?")
-@Where(clause = "is_active=true")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class ReviewForm extends BaseDate {
@@ -55,7 +51,7 @@ public class ReviewForm extends BaseDate {
     private List<ReviewFormQuestion> reviewFormQuestions;
 
     @Column(nullable = false)
-    private final boolean isActive = true;
+    private boolean isActive = true;
 
     public ReviewForm(Member member, String reviewTitle, List<String> questionValues) {
         validate(reviewTitle, member, questionValues);
@@ -121,5 +117,9 @@ public class ReviewForm extends BaseDate {
         if (Objects.isNull(reviewTitle) || reviewTitle.isBlank()) {
             throw new ReviewFormException("회고 폼의 제목은 비어있을 수 없습니다.");
         }
+    }
+
+    public void delete() {
+        this.isActive = false;
     }
 }

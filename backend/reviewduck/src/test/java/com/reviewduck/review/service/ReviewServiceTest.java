@@ -127,6 +127,25 @@ public class ReviewServiceTest {
     }
 
     @Test
+    @DisplayName("특정 회고 폼을 삭제해도 본인이 작성한 회고를 조회할 수 있다.")
+    void findReviewsByDeletedSpecificReviewForm() {
+        // given
+        ReviewRequest reviewCreateRequest = new ReviewRequest(
+            List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
+        Review savedReview = reviewService.save(member1, savedReviewForm.getCode(), reviewCreateRequest);
+
+        // when
+        reviewFormService.deleteByCode(member1, savedReviewForm.getCode());
+        List<Review> reviews = reviewService.findByMember(member1);
+
+        // then
+        assertAll(
+            () -> assertThat(reviews).hasSize(1),
+            () -> assertThat(reviews.get(0).getMember().getNickname()).isEqualTo(savedReview.getMember().getNickname())
+        );
+    }
+
+    @Test
     @DisplayName("회고를 수정한다.")
     void editReview() {
         // given

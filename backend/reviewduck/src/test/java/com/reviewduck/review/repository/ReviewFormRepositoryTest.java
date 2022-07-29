@@ -88,6 +88,45 @@ public class ReviewFormRepositoryTest {
         );
     }
 
+    @Test
+    @DisplayName("삭제된 회고 폼을 코드로 조회할 수 없다.")
+    void NotFoundDeletedReviewFormByCode() {
+        // given
+        List<String> questionValues = List.of("question1", "question2");
+        getReviewFormQuestions(questionValues);
+
+        Member member = new Member("socialId", "소주캉", "testUrl");
+        memberRepository.save(member);
+        ReviewForm myReviewForm = new ReviewForm(member, "title1", questionValues);
+        String reviewFormCode = myReviewForm.getCode();
+        reviewFormRepository.save(myReviewForm);
+
+        // when
+        myReviewForm.delete();
+
+        // then
+        assertThat(reviewFormRepository.findByCode(reviewFormCode).isEmpty()).isTrue();
+    }
+
+    @Test
+    @DisplayName("삭제된 회고 폼을 멤버로 조회할 수 없다.")
+    void NotFoundDeletedReviewFormByMember() {
+        // given
+        List<String> questionValues = List.of("question1", "question2");
+        getReviewFormQuestions(questionValues);
+
+        Member member = new Member("socialId", "소주캉", "testUrl");
+        memberRepository.save(member);
+        ReviewForm myReviewForm = new ReviewForm(member, "title1", questionValues);
+        reviewFormRepository.save(myReviewForm);
+
+        // when
+        myReviewForm.delete();
+
+        // then
+        assertThat(reviewFormRepository.findByMember(member).isEmpty()).isTrue();
+    }
+
     private List<ReviewFormQuestion> getReviewFormQuestions(List<String> questionValues) {
         List<ReviewFormQuestion> reviewFormQuestions = questionValues.stream()
             .map(ReviewFormQuestion::new)

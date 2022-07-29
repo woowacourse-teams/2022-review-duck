@@ -19,7 +19,6 @@ import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
-import com.reviewduck.review.dto.response.ReviewResponse;
 import com.reviewduck.review.dto.response.ReviewsResponse;
 
 public class ReviewAcceptanceTest extends AcceptanceTest {
@@ -140,6 +139,31 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         saveReviewAndGetId(accessToken1);
         saveReviewAndGetId(accessToken2);
 
+        get("/api/reviews/me", accessToken1)
+            .statusCode(HttpStatus.OK.value())
+            .assertThat()
+            .body("reviews", hasSize(1))
+            .body("numberOfReviews", equalTo(1));
+    }
+
+    @Test
+    @DisplayName("특정 회고 폼을 삭제해도 본인이 작성한 회고를 조회할 수 있다.")
+    void findReviewsByDeletedSpecificReviewForm() {
+        // given
+        // 회고 폼 등록
+        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
+            new ReviewFormQuestionRequest("question2"));
+        String reviewFormCode = createReviewFormAndGetCode(accessToken1, "title", questions);
+
+        // 회고 등록
+        ReviewRequest createRequest = new ReviewRequest(
+            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
+        post("/api/review-forms/" + reviewFormCode, createRequest, accessToken1);
+
+        // when
+        delete("/api/review-forms/" + reviewFormCode, accessToken1);
+
+        // then
         get("/api/reviews/me", accessToken1)
             .statusCode(HttpStatus.OK.value())
             .assertThat()
