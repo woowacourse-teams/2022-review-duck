@@ -7,10 +7,11 @@ import java.util.stream.Collectors;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class ReviewResponse {
 
@@ -20,7 +21,7 @@ public class ReviewResponse {
     private CreatorResponse participant;
     private List<AnswerResponse> answers;
 
-    public static ReviewResponse of(Member member, Review review, boolean isMine) {
+    public static ReviewResponse of(Member member, Review review) {
         List<AnswerResponse> answerResponses = review.getQuestionAnswers().stream()
             .map(
                 questionAnswer -> AnswerResponse.of(questionAnswer.getReviewFormQuestion(), questionAnswer.getAnswer()))
@@ -29,7 +30,7 @@ public class ReviewResponse {
         return new ReviewResponse(
             review.getId(),
             Timestamp.valueOf(review.getUpdatedAt()).getTime(),
-            isMine,
+            review.isMine(member),
             CreatorResponse.from(member),
             answerResponses
         );

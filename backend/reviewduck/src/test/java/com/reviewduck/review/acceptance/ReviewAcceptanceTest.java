@@ -20,6 +20,7 @@ import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewResponse;
+import com.reviewduck.review.dto.response.ReviewsResponse;
 
 public class ReviewAcceptanceTest extends AcceptanceTest {
 
@@ -175,8 +176,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         return get("/api/review-forms/" + code + "/reviews", accessToken)
             .extract()
-            .jsonPath()
-            .getList("", ReviewResponse.class)
+            .as(ReviewsResponse.class)
+            .getReviews()
             .get(0)
             .getReviewId();
     }
