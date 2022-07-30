@@ -30,7 +30,8 @@ const GITHUB_OAUTH_ERROR = {
 };
 
 const ACCESS_PERMISSION = {
-  NON_LOGIN: false,
+  LOGOUT_USER: false,
+  LOGIN_USER: true,
 };
 
 const ACCESS_TOKEN_EXPIRE_TIME = 60 * 10 * 1000;

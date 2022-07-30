@@ -3,14 +3,17 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 import useAuth from 'service/@shared/hooks/useAuth';
 
-import { PAGE_LIST } from 'service/@shared/constants';
+import { ACCESS_PERMISSION, PAGE_LIST } from 'service/@shared/constants';
 
 interface Props {
   permission?: boolean;
   isDeniedPageEnabled?: boolean;
 }
 
-function RequireAuth({ permission = true, isDeniedPageEnabled = false }: Props) {
+function RequireAuth({
+  permission = ACCESS_PERMISSION.LOGIN_USER,
+  isDeniedPageEnabled = false,
+}: Props) {
   // TODO: 유저 프로필 확인 API 구현 시 getUserProfileQuery로 변경 필요
   const { getAccessTokenQuery } = useAuth();
 
