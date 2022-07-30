@@ -23,6 +23,12 @@ const QUERY_KEY = {
   },
 };
 
+const GITHUB_OAUTH_ERROR = {
+  APPLICATION_SUSPENDED: 'application_suspended',
+  ACCESS_DENIED: 'access_denied',
+  REDIRECT_URI_MISMATCH: 'redirect_uri_mismatch',
+};
+
 const ACCESS_PERMISSION = {
   NON_LOGIN: false,
 };
@@ -36,6 +42,7 @@ const ACCESS_VALID_TIME = 60;
 export {
   PAGE_LIST,
   QUERY_KEY,
+  GITHUB_OAUTH_ERROR,
   ACCESS_PERMISSION,
   ACCESS_TOKEN_EXPIRE_TIME,
   ACCESS_TOKEN_REFRESH_TIME,
