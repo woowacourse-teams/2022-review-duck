@@ -5,7 +5,7 @@ const path = require('path');
 module.exports = (env, options) =>
   merge(common(env, options), {
     mode: 'development',
-    devtool: 'eval',
+    devtool: 'eval-source-map',
     devServer: {
       historyApiFallback: true,
       port: 3000,
