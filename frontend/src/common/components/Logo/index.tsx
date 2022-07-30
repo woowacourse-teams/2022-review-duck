@@ -3,10 +3,10 @@ import propTypes from 'prop-types';
 
 import styles from './styles.module.scss';
 
-const sizeProps = ['small', 'medium', 'large'] as const;
+const propSizeType = ['small', 'medium', 'large'] as const;
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
-  size: typeof sizeProps[number];
+  size: typeof propSizeType[number];
 }
 
 function Logo({ size, ...rest }: Props) {
@@ -28,7 +28,7 @@ function Logo({ size, ...rest }: Props) {
 }
 
 Logo.propTypes = {
-  size: propTypes.oneOf(sizeProps),
+  size: propTypes.oneOf(propSizeType),
 };
 
 Logo.defaultProps = {
