@@ -1,6 +1,12 @@
+import { Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
-import { PAGE_LIST } from 'service/@shared/constants';
+import useAuth from 'service/@shared/hooks/useAuth';
+
+import RequireAuth from 'service/@shared/components/RequireAuth';
+
+import { ACCESS_PERMISSION, PAGE_LIST } from 'service/@shared/constants';
+import Authorize from 'service/@shared/pages/Authorize';
 import CommunityLayout from 'service/community/layout/CommunityLayout';
 import ReviewLayout from 'service/review/layout/ReviewLayout';
 import MainPage from 'service/review/pages/MainPage';
@@ -11,22 +17,26 @@ import ReviewOverviewPage from 'service/review/pages/ReviewOverviewPage';
 import ReviewPage from 'service/review/pages/ReviewPage';
 
 function PageRoutes() {
+  const { isLogin } = useAuth();
+
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<ReviewLayout />}>
           <Route index element={<MainPage />} />
 
-          <Route path={PAGE_LIST.REVIEW_FORM}>
-            <Route index element={<ReviewFormPage />} />
-            <Route path={':reviewFormCode'} element={<ReviewFormPage />} />
-          </Route>
+          <Route element={<RequireAuth />}>
+            <Route path={PAGE_LIST.REVIEW_FORM}>
+              <Route index element={<ReviewFormPage />} />
+              <Route path={':reviewFormCode'} element={<ReviewFormPage />} />
+            </Route>
 
-          <Route>
-            <Route path={PAGE_LIST.REVIEW_JOIN} element={<ReviewJoinPage />} />
-            <Route path={PAGE_LIST.REVIEW}>
-              <Route index element={<ReviewPage />} />
-              <Route path=":reviewFormCode" element={<ReviewPage />} />
+            <Route>
+              <Route path={PAGE_LIST.REVIEW_JOIN} element={<ReviewJoinPage />} />
+              <Route path={PAGE_LIST.REVIEW}>
+                <Route index element={<ReviewPage />} />
+                <Route path=":reviewFormCode" element={<ReviewPage />} />
+              </Route>
             </Route>
           </Route>
         </Route>
@@ -38,6 +48,10 @@ function PageRoutes() {
         <Route path={PAGE_LIST.REVIEW_OVERVIEW}>
           <Route index element={<ReviewOverviewPage />} />
           <Route path=":reviewFormCode" element={<ReviewOverviewPage />} />
+        </Route>
+
+        <Route element={<RequireAuth permission={ACCESS_PERMISSION.LOGOUT_USER} />}>
+          <Route path={PAGE_LIST.AUTHORIZE} element={<Authorize />} />
         </Route>
       </Routes>
     </BrowserRouter>

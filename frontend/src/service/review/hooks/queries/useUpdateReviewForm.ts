@@ -1,17 +1,20 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-import { UseCustomMutationOptions } from 'service/review/types';
+import { UpdateReviewFormResponse, UseCustomMutationOptions } from 'service/review/types';
 
 import { QUERY_KEY } from 'service/@shared/constants';
 import reviewAPI from 'service/review/api';
 
-function useUpdateReviewForm(reviewFormCode: string, mutationOptions?: UseCustomMutationOptions) {
+function useUpdateReviewForm(
+  reviewFormCode: string,
+  mutationOptions?: UseCustomMutationOptions<UpdateReviewFormResponse>,
+) {
   const queryClient = useQueryClient();
 
   return useMutation(reviewAPI.updateForm, {
     onSuccess: () => {
-      queryClient.invalidateQueries([QUERY_KEY.GET_REVIEW_FORM, { reviewFormCode }]);
-      queryClient.invalidateQueries([QUERY_KEY.GET_REVIEWS, { reviewFormCode }]);
+      queryClient.invalidateQueries([QUERY_KEY.API.GET_REVIEW_FORM, { reviewFormCode }]);
+      queryClient.invalidateQueries([QUERY_KEY.API.GET_REVIEWS, { reviewFormCode }]);
     },
     ...mutationOptions,
   });

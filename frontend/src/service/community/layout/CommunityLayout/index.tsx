@@ -32,9 +32,13 @@ function CommunityLayout() {
               <span>회고 시작하기</span>
             </Button>
 
-            <Text className={styles.loginText} weight="lighter">
-              LOGIN
-            </Text>
+            <a
+              href={`https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_OAUTH_CLIENT_KEY}`}
+            >
+              <Text className={styles.loginText} weight="lighter">
+                LOGIN
+              </Text>
+            </a>
             {/*  <div className={styles.profile}></div> */}
           </div>
         </nav>
