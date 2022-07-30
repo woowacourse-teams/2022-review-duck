@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, Suspense } from 'react';
 import { QueryClientProvider, QueryClient } from 'react-query';
 
 import PageRoutes from 'PageRoutes';
@@ -23,11 +23,14 @@ function ContextWrapper({ children }: { children: ReactNode }) {
 }
 
 function App() {
+  // TODO: 전역 페이지 로딩 화면 구현하기, 페이지 단위로 lazy 로드 처리
   return (
     <ContextWrapper>
-      <ErrorBoundary>
-        <PageRoutes />
-      </ErrorBoundary>
+      <Suspense>
+        <ErrorBoundary>
+          <PageRoutes />
+        </ErrorBoundary>
+      </Suspense>
     </ContextWrapper>
   );
 }

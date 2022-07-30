@@ -7,7 +7,7 @@ import {
   UpdateReviewFormResponse,
 } from '../types';
 
-import { axiosInstance } from 'service/@shared/utils';
+import axiosInstance from 'service/@shared/api/axiosInstance';
 
 const getForm = async (reviewFormCode = ''): Promise<GetReviewFormResponse> => {
   const { data } = await axiosInstance.get(`/api/review-forms/${reviewFormCode}`);
