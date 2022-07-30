@@ -6,11 +6,7 @@ import useCreateRefreshToken from './queries/user/useCreateRefreshToken';
 import useGetUserProfile from './queries/user/useGetUserProfie';
 
 function useAuth() {
-  const createRefreshToken = useCreateRefreshToken({
-    onSuccess: ({ accessToken }) => {
-      axiosInstanceUtils.setHeader('Authorization', `Bearer ${accessToken}`);
-    },
-  });
+  const createRefreshToken = useCreateRefreshToken();
 
   const getAccessTokenQuery = useGetAccessToken({
     onSuccess: ({ accessToken }) => {
