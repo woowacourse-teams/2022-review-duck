@@ -55,4 +55,8 @@ export interface SubmitAnswerRequest {
   nickname: string;
 }
 
-export type UseCustomMutationOptions = UseMutationOptions<unknown, ErrorResponse, unknown>;
+export type UseCustomMutationOptions<TData = unknown> = UseMutationOptions<
+  TData,
+  ErrorResponse,
+  unknown
+>;
