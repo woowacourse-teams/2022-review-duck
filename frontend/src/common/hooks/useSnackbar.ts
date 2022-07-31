@@ -7,12 +7,12 @@ import { SnackbarProps } from 'common/components/Snackbar';
 import snackbarStackAtom from 'common/recoil/snackbar';
 
 function useSnackbar() {
-  const resetSnackbarStack = useResetRecoilState(snackbarStackAtom);
+  const resetSnackbar = useResetRecoilState(snackbarStackAtom);
   const setSnackbarStack = useSetRecoilState(snackbarStackAtom);
 
   const snackbarUniqueId = useRef(0);
 
-  const addSnackbarStack = (options: SnackbarProps) => {
+  const addSnackbar = (options: SnackbarProps) => {
     setSnackbarStack((currentValue) => {
       const newStack = [...currentValue];
 
@@ -23,11 +23,11 @@ function useSnackbar() {
     });
   };
 
-  const removeSnackbarStack = (targetId: number) => {
+  const removeSnackbar = (targetId: number) => {
     setSnackbarStack((currentValue) => [...currentValue].filter(({ id }) => id !== targetId));
   };
 
-  return { addSnackbarStack, removeSnackbarStack, resetSnackbarStack };
+  return { addSnackbar, removeSnackbar, resetSnackbar };
 }
 
 export default useSnackbar;
