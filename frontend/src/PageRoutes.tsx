@@ -49,9 +49,7 @@ function PageRoutes() {
           <Route path=":reviewFormCode" element={<ReviewOverviewPage />} />
         </Route>
 
-        <Route element={<RequireAuth permission={ACCESS_PERMISSION.LOGOUT_USER} />}>
-          <Route path={PAGE_LIST.AUTHORIZE} element={<Authorize />} />
-        </Route>
+        <Route path={PAGE_LIST.AUTHORIZE} element={<Authorize />} />
       </Routes>
     </BrowserRouter>
   );
