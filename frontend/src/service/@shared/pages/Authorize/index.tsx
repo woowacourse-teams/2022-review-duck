@@ -1,46 +1,37 @@
 import { useLayoutEffect } from 'react';
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { Navigate, useSearchParams } from 'react-router-dom';
 
+import useSnackbar from 'common/hooks/useSnackbar';
 import useAuth from 'service/@shared/hooks/useAuth';
 
-import { GITHUB_OAUTH_ERROR, PAGE_LIST } from 'service/@shared/constants';
+import { getErrorMessage } from 'service/@shared/utils';
+
+import { PAGE_LIST } from 'service/@shared/constants';
+import { validateGithubOAuth } from 'service/@shared/validator';
 
 function Authorize() {
-  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const { addSnackbar } = useSnackbar();
 
   const { createRefreshToken } = useAuth();
 
   const { code = '', error = '' } = Object.fromEntries(searchParams.entries());
 
-  switch (error) {
-    case GITHUB_OAUTH_ERROR.APPLICATION_SUSPENDED:
-      alert('Github OAuth 정책을 확인하여주세요.');
-      break;
-
-    case GITHUB_OAUTH_ERROR.ACCESS_DENIED:
-      alert('Github 소셜 로그인 시도를 취소하셨습니다.');
-      break;
-
-    case GITHUB_OAUTH_ERROR.REDIRECT_URI_MISMATCH:
-      alert('잘못된 URL입니다.');
-      break;
-
-    // no default.
-  }
-
   useLayoutEffect(() => {
-    if (!code && !error) {
-      alert('잘못된 접근입니다.');
+    try {
+      validateGithubOAuth(code, error);
+    } catch (error) {
+      addSnackbar({
+        theme: 'warning',
+        title: 'Github 소셜 로그인에 실패하였습니다.',
+        description: getErrorMessage(error),
+      });
       return;
     }
 
     createRefreshToken.mutate(
       { code },
       {
-        onSettled: () => {
-          navigate(PAGE_LIST.HOME);
-        },
         onError: ({ message }) => {
           alert(message);
         },
@@ -48,8 +39,19 @@ function Authorize() {
     );
   }, []);
 
-  // TODO: 로그인 진행 화면 디자인
-  return <Navigate to={PAGE_LIST.HOME} />;
+  if (createRefreshToken.isSuccess) {
+    addSnackbar({
+      theme: 'primary',
+      title: '환영합니다! 회고덕에 로그인되었습니다.',
+      description: '공용 PC에서 사용 시, 사용 후 꼭 로그아웃을 진행해주세요.',
+    });
+  }
+
+  if (createRefreshToken.isSuccess || error) {
+    return <Navigate to={PAGE_LIST.HOME} />;
+  }
+
+  return <></>;
 }
 
 export default Authorize;

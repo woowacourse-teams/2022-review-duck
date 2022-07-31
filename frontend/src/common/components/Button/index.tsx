@@ -5,13 +5,13 @@ import PropTypes from 'prop-types';
 
 import styles from './styles.module.scss';
 
-const size = ['small', 'medium', 'large'] as const;
-const themeProps = ['default', 'outlined', 'circle'] as const;
+const propSizeType = ['small', 'medium', 'large'] as const;
+const propThemeType = ['default', 'outlined', 'circle'] as const;
 
 interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
-  size: typeof size[number];
-  theme: typeof themeProps[number];
+  size: typeof propSizeType[number];
+  theme: typeof propThemeType[number];
   filled: boolean;
   children: React.ReactNode;
 }
@@ -55,9 +55,8 @@ function Button({ className, size, theme, filled, onClick, children, ...rest }: 
 }
 
 Button.propTypes = {
-  type: PropTypes.oneOf(['submit', 'button']),
-  theme: PropTypes.oneOf(themeProps),
-  size: PropTypes.oneOf(['small', 'medium', 'large']),
+  theme: PropTypes.oneOf(propThemeType),
+  size: PropTypes.oneOf(propSizeType),
   filled: PropTypes.bool,
   disabled: PropTypes.bool,
 };

@@ -1,7 +1,7 @@
 import TextBox from '.';
 
 export default {
-  title: 'Common/Component/TextBox',
+  title: 'Common/Components/TextBox',
   component: TextBox,
 };
 

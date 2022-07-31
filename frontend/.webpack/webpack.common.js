@@ -28,12 +28,16 @@ module.exports = (env = {}, options = {}) => {
           use: ['babel-loader', 'ts-loader'],
         },
         {
-          test: /\.(png|jpe?g|gif|svg)$/,
+          test: /\.(png|jpe?g|gif)$/,
           use: [
             {
               loader: 'file-loader',
             },
           ],
+        },
+        {
+          test: /\.svg$/,
+          use: ['@svgr/webpack'],
         },
         {
           test: /\.css$/i,

@@ -14,7 +14,7 @@ div.container {
   gap: 0.5rem;
 
   & > div {
-    @include animate(2s infinite ease-in-out) {
+    @include animation(2s infinite ease-in-out) {
       0% {
         background-color: $GLOBAL_COLOR_BLACK_50;
       }
