@@ -197,3 +197,16 @@ useQuery<GetMyReviewFormsResponse, ErrorResponse>(
     ```
 
   - 이유 : 이런식으로 스타일을 내려줄 시 계층에 종속된 구조로 작성되어 컴포넌트의 유연성이 떨어질 것으로 생각됩니다.
+
+  ## 주석관련
+
+  - [ ] 페이지나 함수 등 규격을 새로 만들거나 사용방법에 대해서 팀원에게 글로 설명이 필요하다는 판단이 들 때는 함수 바로 위에 주석을 추가한다.
+
+  ```js
+  /**
+   * @author 돔하디 <zuzudnf@gmail.com>
+   * @comment 이 페이지로 라우팅을 할 때는 state로 { redirect : <redirect할 path>: string }
+   *          의 형태로 넣어줘야 합니다. 이 페이지 안에서 redirect할 때 state.redirect 값을 사용해서
+   *          리다이렉트를 해줍니다.
+   */
+  ```
