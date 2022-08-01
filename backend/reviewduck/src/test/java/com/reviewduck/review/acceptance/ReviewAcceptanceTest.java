@@ -15,9 +15,11 @@ import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.request.AnswerRequest;
+import com.reviewduck.review.dto.request.AnswerUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
+import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewsResponse;
 
@@ -77,8 +79,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         Long reviewId = saveReviewAndGetId(accessToken1);
 
         //when, then
-        ReviewRequest editRequest = new ReviewRequest(
-            List.of(new AnswerRequest(1L, "editedAnswer1"), new AnswerRequest(2L, "editedAnswer2")));
+        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
+            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
 
         put("/api/reviews/" + reviewId, editRequest, accessToken1)
             .statusCode(HttpStatus.NO_CONTENT.value());
@@ -90,8 +92,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         Long reviewId = saveReviewAndGetId(accessToken1);
 
         //when, then
-        ReviewRequest editRequest = new ReviewRequest(
-            List.of(new AnswerRequest(1L, "editedAnswer1"), new AnswerRequest(2L, "editedAnswer2")));
+        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
+            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
 
         put("/api/reviews/" + reviewId, editRequest)
             .statusCode(HttpStatus.UNAUTHORIZED.value());
@@ -101,9 +103,10 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 회고를 수정할 수 없다.")
     void failToEditReview() {
         // when, then
-        ReviewRequest createRequest = new ReviewRequest(
-            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
-        put("/api/reviews/" + invalidReviewId, createRequest, accessToken1)
+        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
+            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
+
+        put("/api/reviews/" + invalidReviewId, editRequest, accessToken1)
             .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
@@ -113,8 +116,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         Long reviewId = saveReviewAndGetId(accessToken1);
 
         //when, then
-        ReviewRequest editRequest = new ReviewRequest(
-            List.of(new AnswerRequest(1L, "editedAnswer1"), new AnswerRequest(2L, "editedAnswer2")));
+        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
+            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
 
         put("/api/reviews/" + reviewId, editRequest, accessToken2)
             .statusCode(HttpStatus.UNAUTHORIZED.value());

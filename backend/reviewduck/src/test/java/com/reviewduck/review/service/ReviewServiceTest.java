@@ -21,9 +21,11 @@ import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.request.AnswerRequest;
+import com.reviewduck.review.dto.request.AnswerUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
+import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")
@@ -178,8 +180,8 @@ public class ReviewServiceTest {
         Review savedReview = reviewService.save(member1, savedReviewForm.getCode(), reviewCreateRequest);
 
         // when
-        ReviewRequest editRequest = new ReviewRequest(
-            List.of(new AnswerRequest(questionId1, "editedAnswer1"), new AnswerRequest(questionId2, "editedAnswer2")));
+        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
+            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
         Review updatedReview = reviewService.update(member1, savedReview.getId(), editRequest);
 
         // then
@@ -198,8 +200,8 @@ public class ReviewServiceTest {
         ReviewRequest reviewCreateRequest = new ReviewRequest(
             List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
         Review savedReview = reviewService.save(member1, savedReviewForm.getCode(), reviewCreateRequest);
-        ReviewRequest editRequest = new ReviewRequest(
-            List.of(new AnswerRequest(questionId1, "editedAnswer1"), new AnswerRequest(questionId2, "editedAnswer2")));
+        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
+            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
 
         // when, then
         assertThatThrownBy(() -> reviewService.update(member2, savedReview.getId(), editRequest))
@@ -211,8 +213,8 @@ public class ReviewServiceTest {
     @DisplayName("존재하지 않는 회고는 수정할 수 없다.")
     void updateInvalidReview() {
         // given
-        ReviewRequest editRequest = new ReviewRequest(
-            List.of(new AnswerRequest(questionId1, "editedAnswer1"), new AnswerRequest(questionId2, "editedAnswer2")));
+        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
+            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
 
         // when, then
         assertThatThrownBy(() -> reviewService.update(member1, 99999L, editRequest))

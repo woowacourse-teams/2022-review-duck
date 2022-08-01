@@ -22,8 +22,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reviewduck.auth.service.AuthService;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
-import com.reviewduck.review.dto.request.AnswerRequest;
-import com.reviewduck.review.dto.request.ReviewRequest;
+import com.reviewduck.review.dto.request.AnswerUpdateRequest;
+import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 import com.reviewduck.review.service.ReviewService;
 
 @WebMvcTest(ReviewController.class)
@@ -51,13 +51,14 @@ public class ReviewControllerTest {
 
     @ParameterizedTest
     @NullSource
-    @DisplayName("회고 수정 시 질문 번호에 null 값이 들어갈 경우 예외가 발생한다.")
-    void nullQuestionIdRequestInEditing(Long questionId) throws Exception {
+    @DisplayName("회고 수정 시 답변 번호에 null 값이 들어갈 경우 예외가 발생한다.")
+    void nullQuestionIdRequestInEditing(Long answerId) throws Exception {
         // given
-        ReviewRequest request = new ReviewRequest(List.of(new AnswerRequest(questionId, "answer")));
+        ReviewUpdateRequest request = new ReviewUpdateRequest(
+            List.of(new AnswerUpdateRequest(answerId, "editedAnswer1")));
 
         // when, then
-        assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "질문 번호는 비어있을 수 없습니다.");
+        assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "답변 번호는 비어있을 수 없습니다.");
     }
 
     @ParameterizedTest
@@ -65,7 +66,8 @@ public class ReviewControllerTest {
     @DisplayName("회고 수정 시 답변에 null 값이 들어갈 경우 예외가 발생한다.")
     void nullAnswerRequestInEditing(String answer) throws Exception {
         // given
-        ReviewRequest request = new ReviewRequest(List.of(new AnswerRequest(1L, answer)));
+        ReviewUpdateRequest request = new ReviewUpdateRequest(
+            List.of(new AnswerUpdateRequest(1L, answer)));
 
         // when, then
         assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "답변은 비어있을 수 없습니다.");
@@ -74,9 +76,9 @@ public class ReviewControllerTest {
     @ParameterizedTest
     @NullSource
     @DisplayName("회고 수정 시 답변 목록에 null 값이 들어갈 경우 예외가 발생한다.")
-    void nullAnswerRequestsInEditing(List<AnswerRequest> answers) throws Exception {
+    void nullAnswerRequestsInEditing(List<AnswerUpdateRequest> answers) throws Exception {
         // given
-        ReviewRequest request = new ReviewRequest(answers);
+        ReviewUpdateRequest request = new ReviewUpdateRequest(answers);
 
         // when, then
         assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "회고 답변 관련 오류가 발생했습니다.");
