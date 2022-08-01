@@ -113,6 +113,10 @@
         "950": {
           "value": "#f5f5f5",
           "type": "color"
+        },
+        "970": {
+          "value": "#f9f9f9",
+          "type": "color"
         }
       },
       "deep-green": {
@@ -586,6 +590,10 @@
             "value": "{color.white.900}",
             "type": "color",
             "description": "기본 배경화면 색입니다."
+          },
+          "150": {
+            "value": "{color.gray.970}",
+            "type": "color"
           },
           "200": {
             "value": "{color.gray.900}",
