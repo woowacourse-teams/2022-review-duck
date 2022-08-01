@@ -1,0 +1,19 @@
+@import 'styles/@global.scss';
+
+.title {
+  padding: 0.625rem;
+  margin-top: 0.625rem;
+  border-bottom: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
+}
+
+.reviewContainer {
+  padding: 16px 20px;
+  margin: 10px;
+  border-radius: 10px;
+  border: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+  }
+}
