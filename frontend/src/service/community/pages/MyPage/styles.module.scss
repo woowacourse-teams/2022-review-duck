@@ -1,0 +1,11 @@
+@import 'styles/@global.scss';
+
+.mypage-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .review-list-container {
+    width: 50vw;
+  }
+}

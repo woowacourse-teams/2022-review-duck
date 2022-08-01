@@ -5,6 +5,7 @@ const PAGE_LIST = {
   REVIEW_JOIN: '/review/join',
   REVIEW_OVERVIEW: '/overview',
   AUTHORIZE: '/authorize',
+  MY_PAGE: '/mypage',
 };
 
 const QUERY_KEY = {
@@ -20,6 +21,9 @@ const QUERY_KEY = {
 
     GET_REVIEWS: 'getReviews',
     GET_REVIEW_FORM: 'getReviewForm',
+
+    GET_MY_REVIEWS: 'getMyReviews',
+    GET_MY_REVIEW_FORMS: 'getMyReviewForms',
   },
 };
 
@@ -40,6 +44,11 @@ const ACCESS_TOKEN_REFRESH_TIME = ACCESS_TOKEN_EXPIRE_TIME - 60 * 2 * 1000;
 
 const ACCESS_VALID_TIME = 60;
 
+const TAB = {
+  MY_REVIEWS: 'my-reviews',
+  MY_REVIEW_FORMS: 'my-review-forms',
+};
+
 export {
   PAGE_LIST,
   QUERY_KEY,
@@ -48,4 +57,5 @@ export {
   ACCESS_TOKEN_EXPIRE_TIME,
   ACCESS_TOKEN_REFRESH_TIME,
   ACCESS_VALID_TIME,
+  TAB,
 };

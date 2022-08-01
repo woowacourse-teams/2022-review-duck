@@ -8,6 +8,7 @@ import RequireAuth from 'service/@shared/components/RequireAuth';
 import { ACCESS_PERMISSION, PAGE_LIST } from 'service/@shared/constants';
 import Authorize from 'service/@shared/pages/Authorize';
 import CommunityLayout from 'service/community/layout/CommunityLayout';
+import MyPage from 'service/community/pages/MyPage';
 import ReviewLayout from 'service/review/layout/ReviewLayout';
 import MainPage from 'service/review/pages/MainPage';
 import Playground from 'service/review/pages/Playground';
@@ -26,11 +27,6 @@ function PageRoutes() {
           <Route index element={<MainPage />} />
 
           <Route element={<RequireAuth />}>
-            <Route path={PAGE_LIST.REVIEW_FORM}>
-              <Route index element={<ReviewFormPage />} />
-              <Route path={':reviewFormCode'} element={<ReviewFormPage />} />
-            </Route>
-
             <Route>
               <Route path={PAGE_LIST.REVIEW_JOIN} element={<ReviewJoinPage />} />
               <Route path={PAGE_LIST.REVIEW}>
@@ -39,15 +35,24 @@ function PageRoutes() {
               </Route>
             </Route>
           </Route>
+          <Route path={PAGE_LIST.REVIEW_FORM}>
+            <Route index element={<ReviewFormPage />} />
+            <Route path={':reviewFormCode'} element={<ReviewFormPage />} />
+          </Route>
         </Route>
 
         <Route element={<CommunityLayout />}>
-          <Route path="playground" element={<Playground />} />
+          <Route element={<RequireAuth />}>
+            <Route path="playground" element={<Playground />} />
+            <Route path={PAGE_LIST.MY_PAGE} element={<MyPage />} />
+          </Route>
         </Route>
 
         <Route path={PAGE_LIST.REVIEW_OVERVIEW}>
-          <Route index element={<ReviewOverviewPage />} />
-          <Route path=":reviewFormCode" element={<ReviewOverviewPage />} />
+          <Route element={<RequireAuth />}>
+            <Route index element={<ReviewOverviewPage />} />
+            <Route path=":reviewFormCode" element={<ReviewOverviewPage />} />
+          </Route>
         </Route>
 
         <Route element={<RequireAuth permission={ACCESS_PERMISSION.LOGOUT_USER} />}>
