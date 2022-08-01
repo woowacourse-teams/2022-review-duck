@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,7 +52,7 @@ public class AuthController {
     }
 
     @Operation(summary = "리프레시 토큰을 사용한 로그인 연장을 시도한다.")
-    @PostMapping("/login/refresh")
+    @GetMapping("/login/refresh")
     @ResponseStatus(HttpStatus.OK)
     public TokenResponse refresh(@CookieValue(value = "refreshToken", required = false) Cookie cookie,
         HttpServletResponse response) {
@@ -78,7 +79,7 @@ public class AuthController {
     }
 
     @Operation(summary = "로그아웃을 시도한다.")
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     @ResponseStatus(HttpStatus.OK)
     public void logout(@CookieValue(value = "refreshToken", required = false) Cookie cookie,
         HttpServletResponse response) {
