@@ -2,8 +2,9 @@ import { ReactNode, Suspense } from 'react';
 import { QueryClientProvider, QueryClient } from 'react-query';
 
 import PageRoutes from 'PageRoutes';
+import { RecoilRoot } from 'recoil';
 
-import { ErrorBoundary } from 'common/components';
+import { ErrorBoundary, SnackbarContainer } from 'common/components';
 
 import 'styles/@app.scss';
 
@@ -19,7 +20,11 @@ const queryClient = new QueryClient({
 });
 
 function ContextWrapper({ children }: { children: ReactNode }) {
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
+  return (
+    <RecoilRoot>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </RecoilRoot>
+  );
 }
 
 function App() {
@@ -28,6 +33,7 @@ function App() {
     <ContextWrapper>
       <Suspense>
         <ErrorBoundary>
+          <SnackbarContainer />
           <PageRoutes />
         </ErrorBoundary>
       </Suspense>

@@ -4,7 +4,7 @@ import { UserProfileResponse } from 'service/@shared/types';
 import { ErrorResponse } from 'service/review/types';
 
 import { userAPI } from 'service/@shared/api';
-import { ACCESS_VALID_TIME, QUERY_KEY } from 'service/@shared/constants';
+import { PERMISSION_VALID_TIME, QUERY_KEY } from 'service/@shared/constants';
 
 function useGetUserProfile(queryOptions?: UseQueryOptions<UserProfileResponse, ErrorResponse>) {
   return useQuery<UserProfileResponse, ErrorResponse>(
@@ -13,7 +13,7 @@ function useGetUserProfile(queryOptions?: UseQueryOptions<UserProfileResponse, E
     {
       suspense: true,
       useErrorBoundary: false,
-      staleTime: ACCESS_VALID_TIME,
+      staleTime: PERMISSION_VALID_TIME,
       ...queryOptions,
     },
   );

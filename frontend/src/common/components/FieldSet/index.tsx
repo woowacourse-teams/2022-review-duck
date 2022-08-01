@@ -7,11 +7,11 @@ import Icon from 'common/components/Icon';
 
 import styles from './styles.module.scss';
 
-const sizeProps = ['medium', 'large'] as const;
+const propSizeType = ['medium', 'large'] as const;
 
 interface Props {
   className?: string;
-  size: typeof sizeProps[number];
+  size: typeof propSizeType[number];
   title: string;
   description?: string;
   children: ReactNode;
@@ -35,7 +35,7 @@ function FieldSet({ className, size, title, description, children }: Props) {
 }
 
 FieldSet.propTypes = {
-  size: PropTypes.oneOf(sizeProps),
+  size: PropTypes.oneOf(propSizeType),
   title: PropTypes.string.isRequired,
   description: PropTypes.string,
   children: PropTypes.element.isRequired,

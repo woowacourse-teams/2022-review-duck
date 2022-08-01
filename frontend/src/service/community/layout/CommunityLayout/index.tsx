@@ -12,7 +12,7 @@ function CommunityLayout() {
       <header className={styles.header}>
         <nav className={cn(styles.navbar, styles.container)}>
           <div className={styles.navItemContainer}>
-            <Logo size="small" />
+            <Logo theme="border" weight="bold" size="small" />
           </div>
 
           <div className={styles.navItemContainer}>
