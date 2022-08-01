@@ -600,7 +600,7 @@
             "type": "color"
           },
           "blur": {
-            "value": "{color.white.300}",
+            "value": "{color.white.600}",
             "type": "color"
           }
         },
