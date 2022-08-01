@@ -1,8 +1,6 @@
 import { UseMutationOptions } from 'react-query';
 
-import { AxiosError } from 'axios';
-
-export type ErrorResponse = AxiosError<{ message: string }>;
+import { ErrorResponse } from 'service/@shared/types';
 
 export interface Question {
   questionId?: number | null;
@@ -12,19 +10,48 @@ export interface Question {
   listKey?: string | undefined;
 }
 
-export interface Review {
-  answers: Question[];
-  nickname: string;
-  reviewId: number;
-  updatedAt: number;
-}
-
 export interface ReviewForm {
   reviewTitle: string;
   questions: Question[];
 }
 
-export type GetReviewFormResponse = ReviewForm;
+export interface InitReviewForm extends ReviewForm {
+  creator: {
+    nickname: string;
+    profileUrl: string;
+  };
+}
+
+export interface Answer {
+  questionValue: string;
+  answerValue: string;
+}
+
+export interface GetReviewFormResponse {
+  reviewTitle: string;
+  updatedAt: number;
+  creator: {
+    nickname: string;
+    profileUrl: string;
+  };
+  isCreator: boolean;
+  questions: Question[];
+}
+
+export interface Review {
+  reviewId: number;
+  updatedAt: number;
+  isMine: boolean;
+  participant: {
+    nickname: string;
+    profileUrl: string;
+  };
+  answers: Answer[];
+}
+
+export interface GetReviewsResponse {
+  reviews: Review[];
+}
 
 export interface UpdateReviewFormRequest extends ReviewForm {
   reviewFormCode?: string | null;
@@ -33,14 +60,6 @@ export interface UpdateReviewFormRequest extends ReviewForm {
 export interface UpdateReviewFormResponse {
   reviewFormCode: string;
 }
-
-export interface GetReviewsResponse {
-  reviewFormTitle: string;
-  reviews: Review[];
-  updatedAt: number;
-}
-
-export type CreateReviewAnswer = Omit<Review, 'reviewId' | 'updatedAt'>;
 
 export type RequiredPartialType<Type, P extends keyof Type> = Type & {
   [key in P]-?: Type[key];
@@ -60,3 +79,7 @@ export type UseCustomMutationOptions<TData = unknown> = UseMutationOptions<
   ErrorResponse,
   unknown
 >;
+
+export interface RedirectState {
+  redirect: string;
+}

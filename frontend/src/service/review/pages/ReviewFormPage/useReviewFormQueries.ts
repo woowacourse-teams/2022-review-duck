@@ -1,4 +1,4 @@
-import { ReviewForm as GetReviewFormResponse } from 'service/review/types';
+import { InitReviewForm } from 'service/review/types';
 
 import {
   useCreateReviewForm,
@@ -17,7 +17,7 @@ function useReviewFormQueries(reviewFormCode = '') {
     enabled: !!reviewFormCode,
   });
 
-  const initReviewFormData: GetReviewFormResponse = getReviewFormQuery.data || {
+  const initReviewFormData: InitReviewForm = getReviewFormQuery.data || {
     reviewTitle: '',
     questions: [
       {
@@ -25,6 +25,10 @@ function useReviewFormQueries(reviewFormCode = '') {
         listKey: 'list-0',
       },
     ],
+    creator: {
+      nickname: '',
+      profileUrl: '',
+    },
   };
 
   return { reviewFormMutation, getReviewFormQuery, initReviewFormData };
