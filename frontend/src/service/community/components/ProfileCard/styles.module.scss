@@ -1,0 +1,107 @@
+@import 'styles/@global.scss';
+
+.header {
+  position: relative;
+  width: 100%;
+  display: flex;
+  padding: 3.5625rem 2.375rem;
+  border-radius: $GLOBAL_BORDERRADIUS_XLARGE;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0.125rem 0.125rem 0.4375rem $GLOBAL_COLOR_BLACK_100;
+
+  .background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: $GLOBAL_COLOR_WHITE_400;
+    backdrop-filter: blur(6.25rem);
+    border-radius: $GLOBAL_BORDERRADIUS_XLARGE;
+  }
+
+  .profile-image {
+    position: relative;
+    width: 9.375rem;
+    height: 9.375rem;
+    background-size: cover;
+    border-radius: $GLOBAL_BORDERRADIUS_MAX;
+    opacity: 0.95;
+
+    .status-image {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.5rem;
+      position: absolute;
+      width: 2.625rem;
+      height: 2.625rem;
+      background: $GLOBAL_COLOR_WHITE_200;
+      border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+      left: 75%;
+      top: 75%;
+      box-shadow: 0 0 1.125rem $GLOBAL_COLOR_BLACK_300;
+      backdrop-filter: blur(0.1875rem);
+    }
+  }
+
+  .user-info-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 3rem;
+    z-index: 1;
+
+    .name {
+      color: $GLOBAL_COLOR_DEEP-GREEN_700;
+    }
+
+    .name-container {
+      display: flex;
+      margin-bottom: 0.5rem;
+
+      .edit-icon {
+        margin-left: 1rem;
+      }
+    }
+
+    .line {
+      height: 1px;
+      width: 24px;
+      background-color: black;
+      margin: 1rem 0;
+    }
+
+    .review-info-container {
+      display: flex;
+      gap: 2rem;
+
+      .title-container {
+        display: flex;
+        align-items: center;
+
+        .icon {
+          margin-right: 0.4375rem;
+        }
+      }
+
+      .review-info {
+        gap: 1.5rem;
+        background: $GLOBAL_COLOR_WHITE_200;
+        display: flex;
+        padding: 0.4375rem 0.875rem;
+        border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+
+        .number {
+          background-color: $GLOBAL_COLOR_BLACK_100;
+          color: $GLOBAL_COLOR_WHITE_900;
+          font-size: 0.75rem;
+          padding: 0.25rem 0.625rem;
+          border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
