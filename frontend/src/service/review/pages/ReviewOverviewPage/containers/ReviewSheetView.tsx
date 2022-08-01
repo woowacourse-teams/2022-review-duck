@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Question } from 'service/review/types';
+import { Question, Review, Answer } from 'service/review/types';
 
 import { useGetReviewForm, useGetReviews } from 'service/review/hooks/queries';
 
@@ -18,21 +18,21 @@ function ReviewSheetView({ reviewFormCode }: Record<'reviewFormCode', string>) {
       <thead>
         <tr>
           <th></th>
-          {questions.map((question: Question, index: number) => (
-            <th key={index}>{question.questionValue}</th>
+          {questions.map((question: Question) => (
+            <th key={question.questionId}>{question.questionValue}</th>
           ))}
         </tr>
       </thead>
 
       <tbody>
-        {reviews.map(({ answers, nickname }: any, index: number) => {
-          const answersTable = answers.map((answer: any, index: number) => (
-            <td key={index}>{answer.answerValue}</td>
+        {reviews.map(({ answers, participant, reviewId }: Review) => {
+          const answersTable = answers.map((answer: Answer) => (
+            <td key={reviewId}>{answer.answerValue}</td>
           ));
 
           return (
-            <tr key={index}>
-              <td>{nickname}</td>
+            <tr key={reviewId}>
+              <td>{participant.nickname}</td>
               {answersTable}
             </tr>
           );

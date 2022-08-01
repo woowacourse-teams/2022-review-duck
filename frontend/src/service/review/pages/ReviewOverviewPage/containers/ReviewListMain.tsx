@@ -1,25 +1,28 @@
 import cn from 'classnames';
 
+import { Review } from 'service/review/types';
+
 import { useGetReviews } from 'service/review/hooks/queries';
 
+import QuestionContent from 'service/@shared/components/QuestionContent';
 import Profile from 'service/review/components/Profile';
-import QuestionContent from 'service/review/components/QuestionContent';
 import Reaction from 'service/review/components/Reaction';
-
-import imageAri from 'assets/images/ari.jpg';
-import imageCompy from 'assets/images/compy.png';
-import imageDom from 'assets/images/dom.png';
-import imagePanda from 'assets/images/panda.jpg';
-import imageProfile from 'assets/images/profile.png';
-import imageRuna from 'assets/images/runa.jpg';
-import imageSoju from 'assets/images/soju.png';
 
 import styles from '../styles.module.scss';
 
 function ReviewListMain({ reviewFormCode }: Record<'reviewFormCode', string>) {
-  const { data } = useGetReviews(reviewFormCode);
+  const { data, isError, error } = useGetReviews(reviewFormCode);
 
   const { reviews = [] } = data || {};
+
+  // TODO: 에러 바운더리로 처리 예정
+  // if (isError) {
+  //   return (
+  //     <div className={styles.participantContainer}>
+  //       <section className={styles.articleContainer}>에러가 발생했습니다 {error.message}</section>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className={styles.participantContainer}>
@@ -29,19 +32,18 @@ function ReviewListMain({ reviewFormCode }: Record<'reviewFormCode', string>) {
         </div>
 
         <div className={styles.profileList}>
-          <Profile image={imageDom} type="square" title="돔하디" description="오늘" />
-          <Profile image={imageCompy} type="square" title="콤피" description="오늘" />
-          <Profile image={imageAri} type="square" title="아리" description="오늘" />
-          <Profile image={imageSoju} type="square" title="소주캉" description="오늘" />
-          <Profile image={imageRuna} type="square" title="루나" description="오늘" />
-          <Profile image={imagePanda} type="square" title="판다" description="오늘" />
-          {/*  {reviews.map((review: any) => (
-            <Profile key={review.reviewId} title={review.nickname} description="1일 전" />
-          ))} */}
+          {reviews.map((review: Review) => (
+            <Profile
+              image={review.participant.profileUrl}
+              key={review.reviewId}
+              title={review.participant.nickname}
+              description="1일 전"
+            />
+          ))}
         </div>
       </section>
 
-      {reviews.map((review: any) => (
+      {reviews.map((review: Review) => (
         <section
           className={cn(styles.articleContainer, styles.postContainer)}
           key={review.reviewId}
@@ -49,8 +51,8 @@ function ReviewListMain({ reviewFormCode }: Record<'reviewFormCode', string>) {
           <Profile
             key={review.reviewId}
             type="round"
-            image={imageProfile}
-            title={`${review.nickname}의 회고`}
+            image={review.participant.profileUrl}
+            title={`${review.participant.nickname}의 회고`}
             description="오늘, 1회 조회됨"
           />
 

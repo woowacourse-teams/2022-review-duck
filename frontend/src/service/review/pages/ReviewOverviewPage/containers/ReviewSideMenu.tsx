@@ -1,9 +1,9 @@
 import { useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import cn from 'classnames';
 
-import { useGetReviews } from 'service/review/hooks/queries';
+import { useGetReviewForm, useGetReviews } from 'service/review/hooks/queries';
 
 import { Button, Icon, Text, TextBox } from 'common/components';
 
@@ -11,10 +11,21 @@ import styles from '../styles.module.scss';
 import { PAGE_LIST } from 'service/@shared/constants';
 
 function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
-  const { data: reviewsData } = useGetReviews(reviewFormCode);
-  const { reviews = [] } = reviewsData || {};
+  const { data: reviewForm, isError, error } = useGetReviewForm(reviewFormCode);
+  const { data } = useGetReviews(reviewFormCode);
+
+  const { reviews = [] } = data || {};
 
   const linkInputBox = useRef<HTMLInputElement>(null);
+
+  const isAlreadySubmitted = () => reviews.some((review) => review.isMine === true);
+
+  // if (isError) {
+  //   alert(error.message);
+  //   navigate(-1);
+
+  //   return <></>;
+  // }
 
   const onClickCopyLink = async () => {
     const $copyLink = linkInputBox.current;
@@ -42,7 +53,7 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
               크리에이터
             </Text>
             <Text className={styles.text} size={14} weight="lighter">
-              건어물 가게 주인장
+              {reviewForm?.creator.nickname}
             </Text>
           </div>
 
@@ -60,14 +71,22 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
               업데이트
             </Text>
             <Text className={styles.text} size={14} weight="lighter">
-              3일 전 업데이트 됨
+              {reviewForm?.updatedAt}일 전 업데이트 됨
             </Text>
           </div>
         </div>
 
         <Link to={`${PAGE_LIST.REVIEW}/${reviewFormCode}`}>
           <Button className={styles.joinButton} theme="outlined">
-            <Icon code="group_add"></Icon>이 회고에 참여하기
+            {isAlreadySubmitted() === true ? (
+              <>
+                <Icon code="edit"></Icon>회고 수정하기
+              </>
+            ) : (
+              <>
+                <Icon code="group_add"></Icon>이 회고에 참여하기
+              </>
+            )}
           </Button>
         </Link>
 
@@ -87,25 +106,30 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
           </Text>
         </div>
 
-        <section className="admin-review">
-          <Text className={styles.smallTitle} size={14}>
-            회고 관리
-          </Text>
+        {reviewForm?.isCreator && (
+          <section className="admin-review">
+            <Text className={styles.smallTitle} size={14}>
+              회고 관리
+            </Text>
 
-          <div className={styles.buttonContainer}>
-            <Link to={`${PAGE_LIST.REVIEW_FORM}/${reviewFormCode}`}>
-              <Button size="small">
-                <Icon code="edit_note"></Icon>
-                질문 수정
+            <div className={styles.buttonContainer}>
+              <Link
+                to={`${PAGE_LIST.REVIEW_FORM}/${reviewFormCode}`}
+                state={{ redirect: `${PAGE_LIST.REVIEW_OVERVIEW}` }}
+              >
+                <Button size="small">
+                  <Icon code="edit_note"></Icon>
+                  질문 수정
+                </Button>
+              </Link>
+
+              <Button theme="outlined" size="small">
+                <Icon code="share"></Icon>
+                템플릿 공유
               </Button>
-            </Link>
-
-            <Button theme="outlined" size="small">
-              <Icon code="share"></Icon>
-              템플릿 공유
-            </Button>
-          </div>
-        </section>
+            </div>
+          </section>
+        )}
       </div>
 
       <div className={styles.articleContainer}>

@@ -3,8 +3,6 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import cn from 'classnames';
 
-import { useGetReviews } from 'service/review/hooks/queries';
-
 import { Button, Icon, Logo } from 'common/components';
 
 import Skeleton from 'common/components/Skeleton';
@@ -17,22 +15,10 @@ import ReviewSheetView from './containers/ReviewSheetView';
 import ReviewSideMenu from './containers/ReviewSideMenu';
 import { PAGE_LIST } from 'service/@shared/constants';
 
-function ReviewListPage() {
-  const navigate = useNavigate();
+function ReviewOverviewPage() {
   const { reviewFormCode = '' } = useParams();
 
-  const { isError, error } = useGetReviews(reviewFormCode, {
-    suspense: false,
-  });
-
   const [isSheetEnabled, setSheetEnabled] = useState(false);
-
-  if (isError) {
-    alert(error.message);
-    navigate(-1);
-
-    return <></>;
-  }
 
   const onClickModeChange = (isEnabled: boolean) => () => {
     if (isEnabled === isSheetEnabled) return;
@@ -97,4 +83,4 @@ function ReviewListPage() {
   );
 }
 
-export default ReviewListPage;
+export default ReviewOverviewPage;
