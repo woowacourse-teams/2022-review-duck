@@ -1,0 +1,131 @@
+@import 'styles/@global.scss';
+
+.layout {
+  min-height: 100vh;
+}
+
+.container {
+  /* 
+  TODO: 반응형 추후 고려하기
+  min-width: 768px;
+  max-width: 1056px; */
+  width: 1056px;
+  padding: 0 1rem;
+  margin: 0 auto;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  margin-bottom: 1rem;
+  z-index: 5;
+
+  background-color: $THEME_COLOR_THEME_BACKGROUND_BLUR;
+  backdrop-filter: blur(0.6rem);
+  border-bottom: 1px solid $LIGHT_COLOR_THEME_BACKGROUND_200;
+}
+
+.main {
+  min-height: 31.25rem;
+}
+
+.navbar {
+  display: grid;
+  grid-template-columns: 4% 25% 45% 20%;
+  gap: 2%;
+}
+
+.nav-item-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+
+  transform: translateY(-50%);
+}
+
+.menu-list {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  text-align: center;
+
+  > li {
+    cursor: pointer;
+    position: relative;
+    display: block;
+    letter-spacing: 1px;
+    padding: 2.3125rem 5%;
+    margin: 0 0.2%;
+    color: $THEME_COLOR_STATUS_PRIMARY_800;
+
+    &:after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 0px;
+
+      left: 0;
+      bottom: 0;
+      transition: 0.2s ease background-color, 0.2s ease height;
+    }
+
+    &:hover {
+      color: $THEME_COLOR_STATUS_PRIMARY_500;
+
+      &::after {
+        height: 4px;
+        background-color: $THEME_COLOR_STATUS_PRIMARY_500;
+      }
+    }
+  }
+}
+
+.quick-menu-container {
+  position: relative;
+  justify-content: right;
+  gap: 5%;
+}
+
+.profile {
+  width: 2rem;
+  height: 2rem;
+
+  background-color: $THEME_COLOR_THEME_BACKGROUND_200;
+  border-radius: 50%;
+}
+
+.login-text {
+  cursor: pointer;
+  color: $THEME_COLOR_STATUS_PRIMARY_500;
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+
+  transition: background-color 0.2s ease;
+
+  &::after {
+    content: '';
+
+    display: block;
+    width: 100%;
+    height: 1px;
+
+    background-color: $THEME_COLOR_STATUS_PRIMARY_500;
+
+    transition: background-color 0.2s ease;
+  }
+
+  &:hover {
+    background-color: $THEME_COLOR_THEME_BACKGROUND_200;
+
+    &::after {
+      background-color: transparent;
+    }
+  }
+}

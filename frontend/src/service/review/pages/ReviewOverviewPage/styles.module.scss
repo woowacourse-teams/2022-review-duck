@@ -20,7 +20,7 @@
     flex-direction: row;
     justify-content: space-between;
     border-bottom: 1px solid $THEME_COLOR_STATUS_PRIMARY_100;
-    padding: 1.5rem 0;
+    padding: 1.5rem 1rem;
 
     .left-container {
       display: flex;
@@ -54,16 +54,18 @@
 }
 
 .container {
-  width: 1024px;
+  min-width: 768px;
+  max-width: 1056px;
+  padding: 0 1rem;
   height: 100%;
   margin: 0 auto;
 }
 
 .content {
   display: grid;
-  grid-template-columns: 40.25rem 21.25rem;
-  gap: 2.5rem;
-  padding: 1.5rem 0;
+  grid-template-columns: 63% 32%;
+  gap: 5%;
+  padding: 1.5rem 1rem;
 
   .participant-container {
     display: flex;
@@ -92,6 +94,7 @@
   display: flex;
   flex-direction: row;
   gap: 0.5rem;
+  overflow: scroll hidden;
 }
 
 .post-container {

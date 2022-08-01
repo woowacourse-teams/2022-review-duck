@@ -10,7 +10,7 @@ function useGetReviewForm(
   queryOptions?: UseQueryOptions<GetReviewFormResponse, ErrorResponse>,
 ) {
   return useQuery<GetReviewFormResponse, ErrorResponse>(
-    [QUERY_KEY.GET_REVIEW_FORM, { reviewFormCode }],
+    [QUERY_KEY.DATA.REVIEW_FORM, QUERY_KEY.API.GET_REVIEW_FORM, { reviewFormCode }],
     () => reviewAPI.getForm(reviewFormCode),
     {
       suspense: true,

@@ -14,7 +14,7 @@
   line-height: 3.5rem;
   word-break: break-word;
 
-  @include animate(0.5s ease) {
+  @include animation(0.5s ease) {
     from {
       opacity: 0;
       filter: blur(1rem);
@@ -34,7 +34,7 @@
   color: $THEME_COLOR_THEME_TEXT_900;
   margin-bottom: 2rem;
 
-  @include animate(1.5s ease) {
+  @include animation(1.5s ease) {
     from {
       opacity: 0;
     }

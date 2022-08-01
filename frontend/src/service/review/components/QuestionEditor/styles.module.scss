@@ -22,7 +22,7 @@
     background-color: $THEME_COLOR_STATUS_PRIMARY_500;
   }
 
-  @include animate(0.2s ease) {
+  @include animation(0.2s ease) {
     from {
       opacity: 0;
       transform: translateX(15%);

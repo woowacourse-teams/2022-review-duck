@@ -43,7 +43,7 @@ function ReviewListPage() {
   return (
     <div className={cn(styles.layout)}>
       <header className={cn(styles.header)}>
-        <div className={cn(styles.container, styles.menuBar)}>
+        <nav className={cn(styles.container, styles.menuBar)}>
           <div className={styles.leftContainer}>
             <Link to={PAGE_LIST.HOME}>
               <Logo size="small" />
@@ -71,7 +71,7 @@ function ReviewListPage() {
               <span>시트형 보기</span>
             </Button>
           </div>
-        </div>
+        </nav>
       </header>
 
       {isSheetEnabled && (
