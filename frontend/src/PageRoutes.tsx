@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import useAuth from 'service/@shared/hooks/useAuth';
@@ -55,9 +54,7 @@ function PageRoutes() {
           </Route>
         </Route>
 
-        <Route element={<RequireAuth permission={ACCESS_PERMISSION.LOGOUT_USER} />}>
-          <Route path={PAGE_LIST.AUTHORIZE} element={<Authorize />} />
-        </Route>
+        <Route path={PAGE_LIST.AUTHORIZE} element={<Authorize />} />
       </Routes>
     </BrowserRouter>
   );

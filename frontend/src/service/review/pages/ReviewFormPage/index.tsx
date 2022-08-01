@@ -13,6 +13,7 @@ import cn from 'classnames';
 
 import { RedirectState } from 'service/review/types';
 
+import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/review/hooks/useQuestions';
 
 import { setFormFocus } from 'service/@shared/utils';
@@ -35,6 +36,7 @@ import { PAGE_LIST } from 'service/@shared/constants';
  */
 function CreateReviewFormPage() {
   const { reviewFormCode } = useParams();
+  const { addSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -49,6 +51,8 @@ function CreateReviewFormPage() {
   const { questions, addQuestion, removeQuestion, updateQuestion } = useQuestions(
     initReviewFormData.questions,
   );
+
+  const isEditMode = !!reviewFormCode;
 
   useEffect(() => {
     if (getReviewFormQuery.isError) {
@@ -120,6 +124,10 @@ function CreateReviewFormPage() {
             `${redirectUrl}${redirectUrl !== PAGE_LIST.MY_PAGE ? `/${reviewFormCode}` : ''}`,
             { replace: true },
           );
+          addSnackbar({
+            title: isEditMode ? '회고가 수정되었습니다.' : '회고가 생성되었습니다.',
+            description: '회고 참여코드를 공유하여, 회고를 시작할 수 있습니다.',
+          });
         },
         onError: ({ message }) => {
           alert(message);
@@ -192,7 +200,7 @@ function CreateReviewFormPage() {
               disabled={reviewFormMutation.isLoading}
             >
               <Icon code="drive_file_rename_outline" />
-              <span>{reviewFormCode ? '수정하기' : '생성하기'}</span>
+              <span>{isEditMode ? '수정하기' : '생성하기'}</span>
             </Button>
           </div>
         </form>

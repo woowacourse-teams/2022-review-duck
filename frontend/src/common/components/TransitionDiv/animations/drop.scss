@@ -1,0 +1,51 @@
+.drop.down {
+  @include setAnimationContent {
+    from {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0%);
+    }
+  }
+}
+
+.drop.up {
+  @include setAnimationContent {
+    from {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0%);
+    }
+  }
+}
+
+.drop.left {
+  @include setAnimationContent {
+    from {
+      opacity: 0;
+      transform: translateX(-50%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0%);
+    }
+  }
+}
+
+.drop.right {
+  @include setAnimationContent {
+    from {
+      opacity: 0;
+      transform: translateX(50%);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0%);
+    }
+  }
+}

@@ -5,6 +5,7 @@ import cn from 'classnames';
 
 import { Question } from 'service/review/types';
 
+import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/review/hooks/useQuestions';
 
 import { Logo, ProgressBar, FieldSet, Text, Button, Icon, TextBox } from 'common/components';
@@ -19,6 +20,7 @@ import { PAGE_LIST } from 'service/@shared/constants';
 function SubmitReviewPage() {
   const { reviewFormCode = '' } = useParams();
   const navigate = useNavigate();
+  const { addSnackbar } = useSnackbar();
 
   const { getQuestionsQuery, reviewForm, reviewMutation } = useReviewQueries(reviewFormCode);
   const { questions, updateQuestion } = useQuestions(reviewForm.questions);
@@ -45,7 +47,11 @@ function SubmitReviewPage() {
       { reviewFormCode, answers, nickname: reviewForm.creator.nickname },
       {
         onSuccess: () => {
-          alert('회고 답변을 성공적으로 제출했습니다.');
+          addSnackbar({
+            icon: 'rate_review',
+            title: '작성하신 회고가 기록되었습니다.',
+            description: '작성한 회고는 마이페이지를 통해 모아볼 수 있습니다.',
+          });
           navigate(`${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`, { replace: true });
         },
         onError: ({ message }) => {
