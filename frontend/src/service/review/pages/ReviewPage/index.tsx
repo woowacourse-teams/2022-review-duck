@@ -10,8 +10,6 @@ import useQuestions from 'service/review/hooks/useQuestions';
 
 import { Logo, ProgressBar, FieldSet, Text, Button, Icon, TextBox } from 'common/components';
 
-import dom from 'assets/images/dom.png';
-
 import styles from './styles.module.scss';
 
 import useReviewQueries from './useReviewQueries';
