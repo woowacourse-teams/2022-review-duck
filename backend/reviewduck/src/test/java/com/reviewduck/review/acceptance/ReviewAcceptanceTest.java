@@ -15,9 +15,11 @@ import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.request.AnswerRequest;
+import com.reviewduck.review.dto.request.AnswerUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
+import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewsResponse;
 
@@ -44,13 +46,41 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("특정 회고를 조회한다.")
+    void findReview() {
+        Long reviewId = saveReviewAndGetId(accessToken1);
+
+        //when, then
+        get("/api/reviews/" + reviewId, accessToken1)
+            .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("로그인하지 않은 상태로 특정 회고를 조회할 수 없다")
+    void failToFindReviewWithoutLogin() {
+        Long reviewId = saveReviewAndGetId(accessToken1);
+
+        //when, then
+        get("/api/reviews/" + reviewId)
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 회고를 조회할 수 없다.")
+    void failToFindReview() {
+        // when, then
+        get("/api/reviews/999999", accessToken1)
+            .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
     @DisplayName("회고를 수정한다.")
     void editReview() {
         Long reviewId = saveReviewAndGetId(accessToken1);
 
         //when, then
-        ReviewRequest editRequest = new ReviewRequest(
-            List.of(new AnswerRequest(1L, "editedAnswer1"), new AnswerRequest(2L, "editedAnswer2")));
+        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
+            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
 
         put("/api/reviews/" + reviewId, editRequest, accessToken1)
             .statusCode(HttpStatus.NO_CONTENT.value());
@@ -58,12 +88,12 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("로그인하지 않은 상태로 회고를 수정할 수 없다")
-    void failToFindReviewsWithoutLogin() {
+    void failToEditReviewWithoutLogin() {
         Long reviewId = saveReviewAndGetId(accessToken1);
 
         //when, then
-        ReviewRequest editRequest = new ReviewRequest(
-            List.of(new AnswerRequest(1L, "editedAnswer1"), new AnswerRequest(2L, "editedAnswer2")));
+        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
+            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
 
         put("/api/reviews/" + reviewId, editRequest)
             .statusCode(HttpStatus.UNAUTHORIZED.value());
@@ -73,9 +103,10 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 회고를 수정할 수 없다.")
     void failToEditReview() {
         // when, then
-        ReviewRequest createRequest = new ReviewRequest(
-            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
-        put("/api/reviews/" + invalidReviewId, createRequest, accessToken1)
+        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
+            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
+
+        put("/api/reviews/" + invalidReviewId, editRequest, accessToken1)
             .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
@@ -85,8 +116,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         Long reviewId = saveReviewAndGetId(accessToken1);
 
         //when, then
-        ReviewRequest editRequest = new ReviewRequest(
-            List.of(new AnswerRequest(1L, "editedAnswer1"), new AnswerRequest(2L, "editedAnswer2")));
+        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
+            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
 
         put("/api/reviews/" + reviewId, editRequest, accessToken2)
             .statusCode(HttpStatus.UNAUTHORIZED.value());

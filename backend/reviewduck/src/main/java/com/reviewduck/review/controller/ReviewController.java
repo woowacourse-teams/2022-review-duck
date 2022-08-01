@@ -17,8 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
-import com.reviewduck.review.dto.request.ReviewRequest;
+import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 import com.reviewduck.review.dto.response.MyReviewsResponse;
+import com.reviewduck.review.dto.response.ReviewSummaryResponse;
 import com.reviewduck.review.service.ReviewService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,11 +34,22 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
+    @Operation(summary = "특정한 회고 답변을 조회한다.")
+    @GetMapping("/{reviewId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ReviewSummaryResponse findById(@AuthenticationPrincipal Member member, @PathVariable Long reviewId) {
+
+        log.info("uri={}, method = {}, request = {}",
+            "/api/reviews/" + reviewId, "GET", "");
+
+        return ReviewSummaryResponse.from(reviewService.findById(reviewId));
+    }
+
     @Operation(summary = "회고 답변을 수정한다.")
     @PutMapping("/{reviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@AuthenticationPrincipal Member member, @PathVariable Long reviewId,
-        @RequestBody @Valid ReviewRequest request) {
+        @RequestBody @Valid ReviewUpdateRequest request) {
 
         log.info("uri={}, method = {}, request = {}",
             "/api/reviews/" + reviewId, "PUT", request.toString());
@@ -60,11 +72,10 @@ public class ReviewController {
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
     public MyReviewsResponse findByMember(@AuthenticationPrincipal Member member) {
+        List<Review> reviews = reviewService.findByMember(member);
 
         log.info("uri={}, method = {}, request = {}",
             "/api/reviews/me", "GET", "");
-
-        List<Review> reviews = reviewService.findByMember(member);
 
         return MyReviewsResponse.from(reviews);
     }

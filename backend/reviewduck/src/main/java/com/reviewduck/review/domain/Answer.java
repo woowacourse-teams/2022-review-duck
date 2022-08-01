@@ -37,4 +37,9 @@ public class Answer {
             throw new AnswerException("답변 작성 중 오류가 발생했습니다.");
         }
     }
+
+    public void update(String value) {
+        validate(value);
+        this.value = value;
+    }
 }
