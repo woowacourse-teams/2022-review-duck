@@ -19,6 +19,7 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.dto.request.ReviewRequest;
 import com.reviewduck.review.dto.response.MyReviewsResponse;
+import com.reviewduck.review.dto.response.ReviewSummaryResponse;
 import com.reviewduck.review.service.ReviewService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,6 +33,17 @@ import lombok.extern.slf4j.Slf4j;
 public class ReviewController {
 
     private final ReviewService reviewService;
+
+    @Operation(summary = "특정한 회고 답변을 조회한다.")
+    @GetMapping("/{reviewId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ReviewSummaryResponse findById(@AuthenticationPrincipal Member member, @PathVariable Long reviewId) {
+
+        log.info("uri={}, method = {}, request = {}",
+            "/api/reviews/" + reviewId, "GET", "");
+
+        return ReviewSummaryResponse.from(reviewService.findById(reviewId));
+    }
 
     @Operation(summary = "회고 답변을 수정한다.")
     @PutMapping("/{reviewId}")
@@ -60,11 +72,10 @@ public class ReviewController {
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
     public MyReviewsResponse findByMember(@AuthenticationPrincipal Member member) {
+        List<Review> reviews = reviewService.findByMember(member);
 
         log.info("uri={}, method = {}, request = {}",
             "/api/reviews/me", "GET", "");
-
-        List<Review> reviews = reviewService.findByMember(member);
 
         return MyReviewsResponse.from(reviews);
     }

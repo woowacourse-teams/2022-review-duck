@@ -109,6 +109,30 @@ public class ReviewServiceTest {
     }
 
     @Test
+    @DisplayName("특정 회고를 조회한다.")
+    void findById() {
+        // given
+        ReviewRequest reviewCreateRequest = new ReviewRequest(
+            List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
+        Review saved = reviewService.save(member1, savedReviewForm.getCode(), reviewCreateRequest);
+
+        // when
+        Review actual = reviewService.findById(saved.getId());
+
+        // then
+        assertThat(actual).isEqualTo(saved);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 회고는 조회할 수 없다.")
+    void findInvalidReview() {
+        // when, then
+        assertThatThrownBy(() -> reviewService.findById(99999L))
+            .isInstanceOf(NotFoundException.class)
+            .hasMessageContaining("존재하지 않는 회고입니다.");
+    }
+
+    @Test
     @DisplayName("특정 회고 폼을 기반으로 작성된 회고를 모두 조회한다.")
     void findReviewsBySpecificReviewForm() {
         // given

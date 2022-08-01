@@ -55,6 +55,14 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
+    public Review findById(long reviewId) {
+        Review review = reviewRepository.findById(reviewId)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
+
+        return review;
+    }
+
+    @Transactional(readOnly = true)
     public List<Review> findAllByCode(String code) {
         ReviewForm reviewForm = reviewFormService.findByCode(code);
         return reviewRepository.findByReviewForm(reviewForm);
@@ -87,7 +95,4 @@ public class ReviewService {
         return reviewRepository.findByMember(member);
     }
 
-    public boolean isReviewCreator(Review review, Member member) {
-        return review.isMine(member);
-    }
 }

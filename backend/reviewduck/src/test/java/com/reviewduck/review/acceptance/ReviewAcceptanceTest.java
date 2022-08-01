@@ -44,6 +44,34 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("특정 회고를 조회한다.")
+    void findReview() {
+        Long reviewId = saveReviewAndGetId(accessToken1);
+
+        //when, then
+        get("/api/reviews/" + reviewId, accessToken1)
+            .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("로그인하지 않은 상태로 특정 회고를 조회할 수 없다")
+    void failToFindReviewWithoutLogin() {
+        Long reviewId = saveReviewAndGetId(accessToken1);
+
+        //when, then
+        get("/api/reviews/" + reviewId)
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 회고를 조회할 수 없다.")
+    void failToFindReview() {
+        // when, then
+        get("/api/reviews/999999", accessToken1)
+            .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
     @DisplayName("회고를 수정한다.")
     void editReview() {
         Long reviewId = saveReviewAndGetId(accessToken1);
@@ -58,7 +86,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
     @Test
     @DisplayName("로그인하지 않은 상태로 회고를 수정할 수 없다")
-    void failToFindReviewsWithoutLogin() {
+    void failToEditReviewWithoutLogin() {
         Long reviewId = saveReviewAndGetId(accessToken1);
 
         //when, then
