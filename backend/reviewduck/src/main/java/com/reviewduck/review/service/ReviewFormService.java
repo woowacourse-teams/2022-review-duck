@@ -108,6 +108,6 @@ public class ReviewFormService {
     public void deleteByCode(Member member, String reviewFormCode) {
         ReviewForm reviewForm = findByCode(reviewFormCode);
         validateReviewFormIsMine(member, reviewForm);
-        reviewForm.delete();
+        reviewFormRepository.delete(reviewForm);
     }
 }

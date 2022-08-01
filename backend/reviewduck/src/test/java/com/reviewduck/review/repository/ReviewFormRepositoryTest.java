@@ -102,7 +102,7 @@ public class ReviewFormRepositoryTest {
         reviewFormRepository.save(myReviewForm);
 
         // when
-        myReviewForm.delete();
+        reviewFormRepository.delete(myReviewForm);
 
         // then
         assertThat(reviewFormRepository.findByCode(reviewFormCode).isEmpty()).isTrue();
@@ -121,7 +121,7 @@ public class ReviewFormRepositoryTest {
         reviewFormRepository.save(myReviewForm);
 
         // when
-        myReviewForm.delete();
+        reviewFormRepository.delete(myReviewForm);
 
         // then
         assertThat(reviewFormRepository.findByMember(member).isEmpty()).isTrue();
