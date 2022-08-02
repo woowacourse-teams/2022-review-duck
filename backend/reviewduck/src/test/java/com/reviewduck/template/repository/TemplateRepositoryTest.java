@@ -6,20 +6,37 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.reviewduck.common.exception.NotFoundException;
+import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.template.domain.Template;
 
 @DataJpaTest
 public class TemplateRepositoryTest {
 
+    private static Member member1;
+    private static Member member2;
+
     @Autowired
     private TemplateRepository templateRepository;
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @BeforeEach
+    void createAndSaveMember() {
+        Member tempMember1 = new Member("panda", "제이슨", "testUrl1");
+        member1 = memberRepository.save(tempMember1);
+
+        Member tempMember2 = new Member("ariari", "브리", "testUrl2");
+        member2 = memberRepository.save(tempMember2);
+    }
 
     @Test
     @DisplayName("템플릿을 저장한다.")
@@ -28,7 +45,7 @@ public class TemplateRepositoryTest {
         List<String> questionValues = List.of("question1", "question2");
         List<ReviewFormQuestion> reviewFormQuestions = convertValuesToQuestions(questionValues);
 
-        Template template = new Template("title", "description", questionValues);
+        Template template = new Template(member1, "title", "description", questionValues);
 
         // when
         Template savedTemplate = templateRepository.save(template);
@@ -50,7 +67,7 @@ public class TemplateRepositoryTest {
         List<String> questionValues = List.of("question1", "question2");
         List<ReviewFormQuestion> reviewFormQuestions = convertValuesToQuestions(questionValues);
 
-        Template template = new Template("title", "description", questionValues);
+        Template template = new Template(member1, "title", "description", questionValues);
         Template savedTemplate = templateRepository.save(template);
 
         // when
@@ -72,10 +89,10 @@ public class TemplateRepositoryTest {
     void findAllTemplates() {
         // given
         List<String> questionValues1 = List.of("question1", "question2");
-        Template template1 = new Template("title1", "description1", questionValues1);
+        Template template1 = new Template(member1, "title1", "description1", questionValues1);
         templateRepository.save(template1);
         List<String> questionValues2 = List.of("question3", "question4");
-        Template template2 = new Template("title2", "description2", questionValues2);
+        Template template2 = new Template(member1, "title2", "description2", questionValues2);
         templateRepository.save(template2);
 
         // when
@@ -90,7 +107,7 @@ public class TemplateRepositoryTest {
     void deleteTemplate() {
         // given
         List<String> questionValues = List.of("question1", "question2");
-        Template template = new Template("title", "description", questionValues);
+        Template template = new Template(member1, "title", "description", questionValues);
         Template savedTemplate = templateRepository.save(template);
 
         // when
@@ -99,6 +116,36 @@ public class TemplateRepositoryTest {
 
         // then
         assertThat(templateRepository.findById(templateId)).isEmpty();
+    }
+
+    @Test
+    @DisplayName("개인이 작성한 템플릿을 조회한다.")
+    void findByMember() {
+        // given
+        List<String> questionValues1 = List.of("question1", "question2");
+        Template template1 = new Template(member1, "title1", "description1", questionValues1);
+
+        List<String> questionValues2 = List.of("question3", "question4");
+        Template template2 = new Template(member2, "title2", "description2", questionValues2);
+
+        templateRepository.save(template1);
+        templateRepository.save(template2);
+
+        // when
+        List<Template> myTemplates = templateRepository.findByMember(member2);
+        List<ReviewFormQuestion> reviewFormQuestions = convertValuesToQuestions(questionValues2);
+
+        // then
+        assertAll(
+            () -> assertThat(myTemplates).hasSize(1),
+            () -> assertThat(myTemplates.get(0)).isNotNull(),
+            () -> assertThat(myTemplates.get(0).getMember().getNickname()).isEqualTo("브리"),
+            () -> assertThat(myTemplates.get(0).getTemplateTitle()).isEqualTo("title2"),
+            () -> assertThat(myTemplates.get(0).getQuestions())
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(reviewFormQuestions)
+        );
     }
 
     private List<ReviewFormQuestion> convertValuesToQuestions(List<String> questionValues) {

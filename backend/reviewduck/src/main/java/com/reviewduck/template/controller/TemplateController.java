@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.reviewduck.auth.support.AuthenticationPrincipal;
+import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
@@ -22,6 +24,7 @@ import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
+import com.reviewduck.template.dto.response.MyTemplatesResponse;
 import com.reviewduck.template.dto.response.TemplateCreateResponse;
 import com.reviewduck.template.dto.response.TemplateResponse;
 import com.reviewduck.template.dto.response.TemplatesFindResponse;
@@ -46,32 +49,34 @@ public class TemplateController {
     @Operation(summary = "템플릿을 생성한다.")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TemplateCreateResponse create(@RequestBody @Valid TemplateCreateRequest request) {
+    public TemplateCreateResponse create(@AuthenticationPrincipal Member member,
+        @RequestBody @Valid TemplateCreateRequest request) {
 
         log.info("uri={}, method = {}, request = {}",
             "/api/templates", "POST", request.toString());
 
-        Template template = templateService.save(request);
+        Template template = templateService.save(member, request);
         return TemplateCreateResponse.from(template);
     }
 
     @Operation(summary = "템플릿을 기반으로 회고 폼을 생성한다.")
     @PostMapping("/{templateId}/review-forms")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReviewFormCodeResponse createReviewFormFromTemplate(@PathVariable Long templateId,
+    public ReviewFormCodeResponse createReviewFormFromTemplate(@AuthenticationPrincipal Member member,
+        @PathVariable Long templateId,
         @RequestBody @Valid ReviewFormCreateFromTemplateRequest request) {
 
         log.info("uri={}, method = {}, request = {}",
             "/api/templates/" + templateId + "/review-forms", "POST", request.toString());
 
-        ReviewForm reviewForm = reviewFormService.saveFromTemplate(templateId, request);
+        ReviewForm reviewForm = reviewFormService.saveFromTemplate(member, templateId, request);
         return ReviewFormCodeResponse.from(reviewForm);
     }
 
-    @Operation(summary = "템플릿을 조회한다.")
+    @Operation(summary = "특정 템플릿을 조회한다.")
     @GetMapping("/{templateId}")
     @ResponseStatus(HttpStatus.OK)
-    public TemplateResponse find(@PathVariable Long templateId) {
+    public TemplateResponse find(@AuthenticationPrincipal Member member, @PathVariable Long templateId) {
 
         log.info("uri={}, method = {}, request = {}",
             "/api/templates/" + templateId, "GET", "");
@@ -83,7 +88,7 @@ public class TemplateController {
     @Operation(summary = "템플릿을 모두 조회한다.")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public TemplatesFindResponse findAll() {
+    public TemplatesFindResponse findAll(@AuthenticationPrincipal Member member) {
 
         log.info("uri={}, method = {}, request = {}",
             "/api/templates", "GET", "");
@@ -95,22 +100,36 @@ public class TemplateController {
     @Operation(summary = "템플릿을 삭제한다.")
     @DeleteMapping("/{templateId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long templateId) {
+    public void delete(@AuthenticationPrincipal Member member, @PathVariable Long templateId) {
 
         log.info("uri={}, method = {}, request = {}",
             "/api/templates/" + templateId, "DELETE", "");
 
-        templateService.deleteById(templateId);
+        templateService.deleteById(member, templateId);
     }
 
     @Operation(summary = "템플릿을 수정한다.")
     @PutMapping("/{templateId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable Long templateId, @RequestBody @Valid TemplateUpdateRequest request) {
+    public void update(@AuthenticationPrincipal Member member, @PathVariable Long templateId,
+        @RequestBody @Valid TemplateUpdateRequest request) {
 
         log.info("uri={}, method = {}, request = {}",
             "/api/templates/" + templateId, "PUT", "");
 
-        templateService.update(templateId, request);
+        templateService.update(member, templateId, request);
+    }
+
+    @Operation(summary = "내가 작성한 템플릿을 모두 조회한다.")
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public MyTemplatesResponse findByMember(@AuthenticationPrincipal Member member) {
+
+        log.info("uri={}, method = {}, request = {}",
+            "/api/templates/me", "GET", "");
+
+        List<Template> templates = templateService.findByMember(member);
+
+        return MyTemplatesResponse.from(templates);
     }
 }

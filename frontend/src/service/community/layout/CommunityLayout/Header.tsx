@@ -2,13 +2,21 @@ import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
 
-import { Button, Icon, Logo, Text, TextBox } from 'common/components';
+import useAuth from 'service/@shared/hooks/useAuth';
+
+import { Button, Icon, Logo, Text, TextBox, PopupBox } from 'common/components';
+
+import imageDefaultProfile from 'assets/images/profile.png';
 
 import styles from './styles.module.scss';
 
-import { PAGE_LIST } from 'service/@shared/constants';
+import { GITHUB_OAUTH_LOGIN_URL, PAGE_LIST } from 'service/@shared/constants';
 
 function Header() {
+  const { isLogin, getUserProfileQuery } = useAuth();
+
+  const { profileUrl: profileImage = imageDefaultProfile } = getUserProfileQuery.data || {};
+
   return (
     <header className={styles.header}>
       <nav className={cn(styles.navbar, styles.container)}>
@@ -35,14 +43,31 @@ function Header() {
             <span>회고 시작하기</span>
           </Button>
 
-          <a
-            href={`https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_OAUTH_CLIENT_KEY}`}
-          >
-            <Text className={styles.loginText} weight="lighter">
-              LOGIN
-            </Text>
-          </a>
-          {/*  <div className={styles.profile}></div> */}
+          {isLogin ? (
+            <PopupBox
+              className={styles.userMenu}
+              fallback={
+                <div
+                  className={styles.profile}
+                  style={{ backgroundImage: `url(${profileImage})` }}
+                />
+              }
+            >
+              <Link className={styles.item} to={PAGE_LIST.MY_PAGE}>
+                <Icon code="person" /> <span>마이 페이지</span>
+              </Link>
+
+              <Link className={styles.item} to={PAGE_LIST.MY_PAGE}>
+                <Icon code="logout" /> <span>로그아웃</span>
+              </Link>
+            </PopupBox>
+          ) : (
+            <a href={GITHUB_OAUTH_LOGIN_URL}>
+              <Text className={styles.loginText} weight="lighter">
+                LOGIN
+              </Text>
+            </a>
+          )}
         </div>
       </nav>
     </header>

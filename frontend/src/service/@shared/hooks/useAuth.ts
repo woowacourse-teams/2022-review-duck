@@ -17,11 +17,9 @@ function useAuth() {
     },
   });
 
-  const getUserProfileQuery = useGetUserProfile({
-    enabled: false,
-  });
+  const getUserProfileQuery = useGetUserProfile();
 
-  const isLogin = getAccessTokenQuery.isSuccess; // TODO: getUserProfileQuery
+  const isLogin = getUserProfileQuery.isSuccess;
 
   return { createRefreshToken, getAccessTokenQuery, getUserProfileQuery, isLogin };
 }

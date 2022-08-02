@@ -3,7 +3,6 @@ package com.reviewduck.review.domain;
 import static lombok.AccessLevel.*;
 
 import java.util.List;
-import java.util.Objects;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -17,7 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
 import com.reviewduck.common.domain.BaseDate;
-import com.reviewduck.review.exception.ReviewException;
+import com.reviewduck.member.domain.Member;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,7 +30,8 @@ public class Review extends BaseDate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String nickname;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private ReviewForm reviewForm;
@@ -41,22 +41,19 @@ public class Review extends BaseDate {
     @OrderBy("position asc")
     private List<QuestionAnswer> questionAnswers;
 
-    private Review(String nickname, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers) {
+    public Review(Member member, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers) {
         sortQuestionAnswers(questionAnswers);
-        this.nickname = nickname;
+        this.member = member;
         this.reviewForm = reviewForm;
         this.questionAnswers = questionAnswers;
     }
 
-    public static Review of(String nickname, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers) {
-        validate(nickname);
-        return new Review(nickname, reviewForm, questionAnswers);
+    public void update(List<QuestionAnswer> questionAnswers) {
+        this.questionAnswers = questionAnswers;
     }
 
-    private static void validate(String nickname) {
-        if (Objects.isNull(nickname) || nickname.isBlank()) {
-            throw new ReviewException("닉네임이 비어있을 수 없습니다.");
-        }
+    public boolean isMine(Member member) {
+        return member.equals(this.member);
     }
 
     private void sortQuestionAnswers(List<QuestionAnswer> questionAnswers) {
@@ -64,9 +61,5 @@ public class Review extends BaseDate {
         for (QuestionAnswer questionAnswer : questionAnswers) {
             questionAnswer.setPosition(index++);
         }
-    }
-
-    public void update(List<QuestionAnswer> questionAnswers) {
-        this.questionAnswers = questionAnswers;
     }
 }
