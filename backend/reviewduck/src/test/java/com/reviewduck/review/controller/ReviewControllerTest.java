@@ -44,7 +44,7 @@ public class ReviewControllerTest {
 
     @BeforeEach
     void createMemberAndGetAccessToken() {
-        Member member = new Member("jason", "제이슨", "profileUrl");
+        Member member = new Member("1","jason", "제이슨", "profileUrl");
         given(authService.getPayload(any())).willReturn("1");
         given(memberService.findById(any())).willReturn(member);
     }

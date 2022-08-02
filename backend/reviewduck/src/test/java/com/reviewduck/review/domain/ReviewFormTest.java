@@ -21,7 +21,7 @@ class ReviewFormTest {
     @DisplayName("제약조건에 걸리지 않으면 회고 폼이 생성된다.")
     void createReviewForm() {
         // given
-        Member member = new Member("socialId", "nickname", "profileUrl");
+        Member member = new Member("1","socialId", "nickname", "profileUrl");
 
         //when, then
         assertDoesNotThrow(() -> new ReviewForm(member, "리뷰폼 제목", List.of("질문1", "질문2")));
@@ -32,7 +32,7 @@ class ReviewFormTest {
     @DisplayName("회고 폼 생성 시 타이틀이 비어있을 수 없다.")
     void notNullTitle(String reviewTitle) {
         // given
-        Member member = new Member("socialId", "nickname", "profileUrl");
+        Member member = new Member("1","socialId", "nickname", "profileUrl");
 
         //when, then
         assertThatThrownBy(() -> new ReviewForm(member, reviewTitle, List.of()))
@@ -44,7 +44,7 @@ class ReviewFormTest {
     @DisplayName("회고 폼 생성 시 타이틀의 길이는 100자 이하이어야 한다.")
     void titleProperLength() {
         // given
-        Member member = new Member("socialId", "nickname", "profileUrl");
+        Member member = new Member("1","socialId", "nickname", "profileUrl");
 
         //when, then
         assertDoesNotThrow(() -> new ReviewForm(member, "a".repeat(100), List.of()));
@@ -54,7 +54,7 @@ class ReviewFormTest {
     @DisplayName("회고 폼 생성 시 타이틀의 길이는 100자를 넘을 수 없다.")
     void titleOverLength() {
         // given
-        Member member = new Member("socialId", "nickname", "profileUrl");
+        Member member = new Member("1","socialId", "nickname", "profileUrl");
 
         //when, then
         assertThatThrownBy(() -> new ReviewForm(member, "a".repeat(101), List.of()))
@@ -67,7 +67,7 @@ class ReviewFormTest {
     @DisplayName("회고 폼 생성 시 질문 목록은 비어있을 수 없다.")
     void notNullQuestions(List<String> questions) {
         // given
-        Member member = new Member("socialId", "nickname", "profileUrl");
+        Member member = new Member("1","socialId", "nickname", "profileUrl");
 
         //when, then
         assertThatThrownBy(() -> new ReviewForm(member, "질문목록", questions))
@@ -79,7 +79,7 @@ class ReviewFormTest {
     @DisplayName("회고 폼 수정 시 타이틀의 길이는 100자 이하이어야 한다.")
     void updateTitleProperLength() {
         // given
-        Member member = new Member("socialId", "nickname", "profileUrl");
+        Member member = new Member("1","socialId", "nickname", "profileUrl");
         ReviewForm reviewForm = new ReviewForm(member, "리뷰폼 제목", List.of("질문1", "질문2"));
 
         //when, then
@@ -90,7 +90,7 @@ class ReviewFormTest {
     @DisplayName("회고 폼 수정 시 타이틀의 길이는 100자를 넘을 수 없다.")
     void updateTitleOverLength() {
         // given
-        Member member = new Member("socialId", "nickname", "profileUrl");
+        Member member = new Member("1","socialId", "nickname", "profileUrl");
         ReviewForm reviewForm = new ReviewForm(member, "리뷰폼 제목", List.of("질문1", "질문2"));
 
         //when, then
@@ -103,7 +103,7 @@ class ReviewFormTest {
     @DisplayName("질문의 순서값은 0부터 순서대로 부여된다.")
     void setPositionInOrder() {
         // given
-        Member member = new Member("socialId", "nickname", "profileUrl");
+        Member member = new Member("1","socialId", "nickname", "profileUrl");
         ReviewForm reviewForm = new ReviewForm(member, "리뷰폼 제목", List.of("질문1", "질문2", "질문3"));
         List<Integer> actual = reviewForm.getReviewFormQuestions().stream()
             .map(ReviewFormQuestion::getPosition)

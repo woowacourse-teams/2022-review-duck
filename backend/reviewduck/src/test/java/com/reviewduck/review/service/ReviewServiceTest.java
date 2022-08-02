@@ -48,10 +48,10 @@ public class ReviewServiceTest {
 
     @BeforeEach
     void setUp() {
-        Member tempMember1 = new Member("jason", "제이슨", "testUrl1");
+        Member tempMember1 = new Member("1","jason", "제이슨", "testUrl1");
         member1 = memberService.save(tempMember1);
 
-        Member tempMember2 = new Member("woni", "워니", "testUrl2");
+        Member tempMember2 = new Member("2","woni", "워니", "testUrl2");
         member2 = memberService.save(tempMember2);
 
         String reviewTitle = "title";

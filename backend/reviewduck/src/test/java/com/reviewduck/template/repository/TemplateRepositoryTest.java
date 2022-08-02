@@ -31,10 +31,10 @@ public class TemplateRepositoryTest {
 
     @BeforeEach
     void createAndSaveMember() {
-        Member tempMember1 = new Member("panda", "제이슨", "testUrl1");
+        Member tempMember1 = new Member("1","panda", "제이슨", "testUrl1");
         member1 = memberRepository.save(tempMember1);
 
-        Member tempMember2 = new Member("ariari", "브리", "testUrl2");
+        Member tempMember2 = new Member("2","ariari", "브리", "testUrl2");
         member2 = memberRepository.save(tempMember2);
     }
 

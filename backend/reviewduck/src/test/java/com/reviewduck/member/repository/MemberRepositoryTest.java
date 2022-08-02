@@ -20,14 +20,14 @@ public class MemberRepositoryTest {
     @DisplayName("멤버를 저장한다.")
     void saveMember() {
         // given
-        Member member = new Member("panda", "제이슨", "testUrl");
+        Member member = new Member("1","panda", "제이슨", "testUrl");
 
         // when
         Member savedMember = memberRepository.save(member);
 
         // then
         assertAll(
-            () -> assertThat(savedMember.getSocialId()).isEqualTo("panda"),
+            () -> assertThat(savedMember.getSocialNickname()).isEqualTo("panda"),
             () -> assertThat(savedMember.getNickname()).isEqualTo("제이슨"),
             () -> assertThat(savedMember.getProfileUrl()).isEqualTo("testUrl")
         );
@@ -37,12 +37,12 @@ public class MemberRepositoryTest {
     @DisplayName("소셜 아이디로 존재 여부를 확인한다.")
     void existsMemberBySocialId() {
         // given
-        Member member = new Member("panda", "제이슨", "testUrl");
+        Member member = new Member("1","panda", "제이슨", "testUrl");
         memberRepository.save(member);
 
         // when
-        boolean isExistMember1 = memberRepository.existsBySocialId("panda");
-        boolean isExistMember2 = memberRepository.existsBySocialId("falseSocialId");
+        boolean isExistMember1 = memberRepository.existsBySocialId("1");
+        boolean isExistMember2 = memberRepository.existsBySocialId("3");
 
         // then
         assertAll(
@@ -55,7 +55,7 @@ public class MemberRepositoryTest {
     @DisplayName("소셜 아이디로 멤버를 조회한다.")
     void findMemberBySocialId() {
         // given
-        Member member = new Member("panda", "제이슨", "testUrl");
+        Member member = new Member("1","panda", "제이슨", "testUrl");
         memberRepository.save(member);
 
         // when
@@ -63,7 +63,7 @@ public class MemberRepositoryTest {
 
         // then
         assertAll(
-            () -> assertThat(foundMember.getSocialId()).isEqualTo("panda"),
+            () -> assertThat(foundMember.getSocialNickname()).isEqualTo("panda"),
             () -> assertThat(foundMember.getNickname()).isEqualTo("제이슨"),
             () -> assertThat(foundMember.getProfileUrl()).isEqualTo("testUrl")
         );

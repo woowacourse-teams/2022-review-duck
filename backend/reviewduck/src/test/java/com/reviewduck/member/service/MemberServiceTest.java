@@ -25,7 +25,7 @@ public class MemberServiceTest {
 
     @BeforeEach
     void createAndSaveMember() {
-        Member member = new Member("panda", "제이슨", "testUrl");
+        Member member = new Member("1","panda", "제이슨", "testUrl");
         savedMember = memberService.save(member);
     }
 
@@ -33,7 +33,7 @@ public class MemberServiceTest {
     @DisplayName("멤버를 저장한다.")
     void saveMember() {
         // given
-        Member member = new Member("panda", "제이슨", "testUrl");
+        Member member = new Member("2","panda", "제이슨", "testUrl");
 
         // when
         Member savedMember = memberService.save(member);
@@ -56,8 +56,8 @@ public class MemberServiceTest {
     @DisplayName("소셜 아이디로 존재 여부를 확인한다.")
     void existsMemberBySocialId() {
         // when
-        boolean isExistMember1 = memberService.existsMember("panda");
-        boolean isExistMember2 = memberService.existsMember("falseSocialId");
+        boolean isExistMember1 = memberService.existsMember("1");
+        boolean isExistMember2 = memberService.existsMember("2");
 
         // then
         assertAll(
@@ -74,12 +74,11 @@ public class MemberServiceTest {
 
         // then
         assertEqualMemberInfo(foundMember, savedMember);
-
     }
 
     void assertEqualMemberInfo(Member actual, Member expected) {
         assertAll(
-            () -> assertThat(actual.getSocialId()).isEqualTo(expected.getSocialId()),
+            () -> assertThat(actual.getSocialNickname()).isEqualTo(expected.getSocialNickname()),
             () -> assertThat(actual.getNickname()).isEqualTo(expected.getNickname()),
             () -> assertThat(actual.getProfileUrl()).isEqualTo(expected.getProfileUrl())
         );

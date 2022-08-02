@@ -29,7 +29,7 @@ public class XssFilterTest extends AcceptanceTest {
     @DisplayName("Xss 공격이 들어오면 변환하여 반환한다.")
     void xssFilter() {
         // given
-        Member member = new Member("jason", "제이슨", "profileUrl");
+        Member member = new Member("1", "jason", "제이슨", "profileUrl");
         Member savedMember = memberService.save(member);
         String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
 
