@@ -18,6 +18,7 @@
   },
   "ignorePatterns": ["src/stories/*", "*.stories.*", "copyTS.js"],
   "rules": {
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "jsx-a11y/no-noninteractive-element-interactions": "off"
   }
 }
