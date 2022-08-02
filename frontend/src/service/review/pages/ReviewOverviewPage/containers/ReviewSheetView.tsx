@@ -1,38 +1,36 @@
 import React from 'react';
 
-import { Question } from 'service/review/types';
-
-import { useGetReviewForm, useGetReviews } from 'service/review/hooks/queries';
+import { Question, Review, Answer } from 'service/review/types';
 
 import styles from '../styles.module.scss';
+import useOverviewQueries from '../useOverviewQueries';
 
 function ReviewSheetView({ reviewFormCode }: Record<'reviewFormCode', string>) {
-  const { data: reviewFormData } = useGetReviewForm(reviewFormCode);
-  const { questions = [] } = reviewFormData || {};
+  const { reviewForm, reviews: myReviews } = useOverviewQueries(reviewFormCode);
 
-  const { data: reviewsData } = useGetReviews(reviewFormCode);
-  const { reviews = [] } = reviewsData || {};
+  const { questions = [] } = reviewForm || {};
+  const { reviews = [] } = myReviews || {};
 
   return (
     <table className={styles.table}>
       <thead>
         <tr>
-          <th></th>
-          {questions.map((question: Question, index: number) => (
-            <th key={index}>{question.questionValue}</th>
+          <th />
+          {questions.map((question: Question) => (
+            <th key={question.questionId}>{question.questionValue}</th>
           ))}
         </tr>
       </thead>
 
       <tbody>
-        {reviews.map(({ answers, nickname }: any, index: number) => {
-          const answersTable = answers.map((answer: any, index: number) => (
-            <td key={index}>{answer.answerValue}</td>
+        {reviews.map(({ answers, participant, reviewId }: Review) => {
+          const answersTable = answers.map((answer: Answer) => (
+            <td key={reviewId}>{answer.answerValue}</td>
           ));
 
           return (
-            <tr key={index}>
-              <td>{nickname}</td>
+            <tr key={reviewId}>
+              <td>{participant.nickname}</td>
               {answersTable}
             </tr>
           );

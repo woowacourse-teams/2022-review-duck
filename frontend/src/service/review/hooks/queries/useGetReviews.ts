@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from 'react-query';
 
-import { GetReviewsResponse, ErrorResponse } from 'service/review/types';
+import { ErrorResponse } from 'service/@shared/types';
+import { GetReviewsResponse } from 'service/review/types';
 
 import { QUERY_KEY } from 'service/@shared/constants';
 import reviewAPI from 'service/review/api';

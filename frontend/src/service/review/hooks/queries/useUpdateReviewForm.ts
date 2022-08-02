@@ -13,8 +13,16 @@ function useUpdateReviewForm(
 
   return useMutation(reviewAPI.updateForm, {
     onSuccess: () => {
-      queryClient.invalidateQueries([QUERY_KEY.API.GET_REVIEW_FORM, { reviewFormCode }]);
-      queryClient.invalidateQueries([QUERY_KEY.API.GET_REVIEWS, { reviewFormCode }]);
+      queryClient.invalidateQueries([
+        QUERY_KEY.DATA.REVIEW_FORM,
+        QUERY_KEY.API.GET_REVIEW_FORM,
+        { reviewFormCode },
+      ]);
+      queryClient.invalidateQueries([
+        QUERY_KEY.DATA.REVIEW,
+        QUERY_KEY.API.GET_REVIEWS,
+        { reviewFormCode },
+      ]);
     },
     ...mutationOptions,
   });

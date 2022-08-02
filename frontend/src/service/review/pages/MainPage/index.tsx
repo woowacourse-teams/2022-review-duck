@@ -25,7 +25,7 @@ function MainPage() {
           간편하게 모아 볼 수 있습니다
         </Text>
         <div className="button-container horizontal">
-          <Link to={PAGE_LIST.REVIEW_FORM}>
+          <Link to={PAGE_LIST.REVIEW_FORM} state={{ redirect: `${PAGE_LIST.REVIEW_OVERVIEW}` }}>
             <Button type="button" filled>
               <Icon type="outlined" code="maps_ugc" />
               <span>회고 생성</span>

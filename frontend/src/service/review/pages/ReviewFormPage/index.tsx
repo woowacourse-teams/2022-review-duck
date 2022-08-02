@@ -7,9 +7,11 @@ import React, {
   useEffect,
 } from 'react';
 import { flushSync } from 'react-dom';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 
 import cn from 'classnames';
+
+import { RedirectState } from 'service/review/types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/review/hooks/useQuestions';
@@ -26,10 +28,21 @@ import styles from './styles.module.scss';
 import useReviewFormQueries from './useReviewFormQueries';
 import { PAGE_LIST } from 'service/@shared/constants';
 
+/**
+ * @author 돔하디 <zuzudnf@gmail.com>
+ * @comment 이 페이지로 라우팅을 할 때는 state로 { redirect : <redirect할 path>: string }
+ *          의 형태로 넣어줘야 합니다. 이 페이지 안에서 redirect할 때 state.redirect 값을 사용해서
+ *          리다이렉트를 해줍니다.
+ */
 function CreateReviewFormPage() {
   const { reviewFormCode } = useParams();
   const { addSnackbar } = useSnackbar();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const state = location.state as RedirectState;
+
+  const redirectUrl = (state && state.redirect) || '';
 
   const { reviewFormMutation, getReviewFormQuery, initReviewFormData } =
     useReviewFormQueries(reviewFormCode);
@@ -107,11 +120,14 @@ function CreateReviewFormPage() {
       { reviewTitle, reviewFormCode, questions: removeListKey },
       {
         onSuccess: ({ reviewFormCode }) => {
+          navigate(
+            `${redirectUrl}${redirectUrl !== PAGE_LIST.MY_PAGE ? `/${reviewFormCode}` : ''}`,
+            { replace: true },
+          );
           addSnackbar({
             title: isEditMode ? '회고가 수정되었습니다.' : '회고가 생성되었습니다.',
             description: '회고 참여코드를 공유하여, 회고를 시작할 수 있습니다.',
           });
-          navigate(`${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`, { replace: true });
         },
         onError: ({ message }) => {
           alert(message);

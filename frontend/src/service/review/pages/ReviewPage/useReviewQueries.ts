@@ -6,7 +6,11 @@ function useReviewQueries(reviewFormCode: string) {
 
   const createMutation = useCreateReviewAnswer(reviewFormCode);
 
-  const reviewForm = getQuestionsQuery.data || { reviewTitle: '', questions: [] };
+  const reviewForm = getQuestionsQuery.data || {
+    reviewTitle: '',
+    questions: [],
+    creator: { nickname: '', profileUrl: '' },
+  };
 
   const reviewMutation = createMutation;
 

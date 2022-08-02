@@ -1,13 +1,13 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-import { CreateReviewAnswer, UseCustomMutationOptions } from 'service/review/types';
+import { UseCustomMutationOptions } from 'service/review/types';
 
 import { QUERY_KEY } from 'service/@shared/constants';
 import reviewAPI from 'service/review/api';
 
 function useCreateReviewAnswer(
   reviewFormCode: string,
-  mutationOptions?: UseCustomMutationOptions<CreateReviewAnswer>,
+  mutationOptions?: UseCustomMutationOptions<null>,
 ) {
   const queryClient = useQueryClient();
 

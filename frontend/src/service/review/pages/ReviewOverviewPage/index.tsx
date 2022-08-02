@@ -1,9 +1,7 @@
-import { Suspense, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Suspense, useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 
 import cn from 'classnames';
-
-import { useGetReviews } from 'service/review/hooks/queries';
 
 import { Button, Icon, Logo } from 'common/components';
 
@@ -15,30 +13,27 @@ import ReviewHeader from './containers/ReviewHeader';
 import ReviewListMain from './containers/ReviewListMain';
 import ReviewSheetView from './containers/ReviewSheetView';
 import ReviewSideMenu from './containers/ReviewSideMenu';
+import useOverviewQueries from './useOverviewQueries';
 import { PAGE_LIST } from 'service/@shared/constants';
 
-function ReviewListPage() {
-  const navigate = useNavigate();
+function ReviewOverviewPage() {
   const { reviewFormCode = '' } = useParams();
-
-  const { isError, error } = useGetReviews(reviewFormCode, {
-    suspense: false,
-  });
 
   const [isSheetEnabled, setSheetEnabled] = useState(false);
 
-  if (isError) {
-    alert(error.message);
-    navigate(-1);
-
-    return <></>;
-  }
+  const { isError, error } = useOverviewQueries(reviewFormCode);
 
   const onClickModeChange = (isEnabled: boolean) => () => {
     if (isEnabled === isSheetEnabled) return;
 
     setSheetEnabled(isEnabled);
   };
+
+  useEffect(() => {
+    if (isError) {
+      alert(error?.message);
+    }
+  }, [isError, error]);
 
   return (
     <div className={cn(styles.layout)}>
@@ -97,4 +92,4 @@ function ReviewListPage() {
   );
 }
 
-export default ReviewListPage;
+export default ReviewOverviewPage;

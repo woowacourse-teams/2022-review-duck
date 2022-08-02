@@ -10,8 +10,6 @@ import useQuestions from 'service/review/hooks/useQuestions';
 
 import { Logo, ProgressBar, FieldSet, Text, Button, Icon, TextBox } from 'common/components';
 
-import dom from 'assets/images/dom.png';
-
 import styles from './styles.module.scss';
 
 import useReviewQueries from './useReviewQueries';
@@ -43,15 +41,8 @@ function SubmitReviewPage() {
       };
     });
 
-    // TODO: 모달로 교체 및 첫 접속 시 비로그인일 때 닉네임 물어보기.
-    const nickname = prompt('닉네임을 입력해주세요.');
-
-    if (!nickname) {
-      return;
-    }
-
     reviewMutation.mutate(
-      { reviewFormCode, answers, nickname },
+      { reviewFormCode, answers },
       {
         onSuccess: () => {
           addSnackbar({
@@ -120,9 +111,12 @@ function SubmitReviewPage() {
         </Text>
         <div>
           <div className={cn(styles.profileContainer)}>
-            <div className={cn(styles.profile)} style={{ backgroundImage: 'url(' + dom + ')' }} />
+            <div
+              className={cn(styles.profile)}
+              style={{ backgroundImage: 'url(' + reviewForm.creator.profileUrl + ')' }}
+            />
             <Text className={cn(styles.creatorName)} size={24} weight="bold">
-              돔하디
+              {reviewForm.creator.nickname}
             </Text>
           </div>
           <Text className={cn(styles.profileDescription)} size={14} weight="lighter">
