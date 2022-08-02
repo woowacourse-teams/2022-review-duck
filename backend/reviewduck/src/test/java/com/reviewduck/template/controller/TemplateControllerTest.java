@@ -56,7 +56,7 @@ public class TemplateControllerTest {
 
     @BeforeEach
     void createMemberAndGetAccessToken() {
-        Member member = new Member("panda", "제이슨", "profileUrl");
+        Member member = new Member("1","panda", "제이슨", "profileUrl");
         given(authService.getPayload(any())).willReturn("1");
         given(memberService.findById(any())).willReturn(member);
     }

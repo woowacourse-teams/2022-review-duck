@@ -21,7 +21,7 @@ class TemplateTest {
 
     @BeforeEach
     void createMember() {
-        member = new Member("panda", "제이슨", "testUrl");
+        member = new Member("1","panda", "제이슨", "testUrl");
     }
 
     @Test

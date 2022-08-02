@@ -1,5 +1,7 @@
 package com.reviewduck.auth.dto.response;
 
+import java.util.Objects;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.reviewduck.member.domain.Member;
 
@@ -13,8 +15,11 @@ import lombok.NoArgsConstructor;
 @Getter
 public class GithubMemberResponse {
 
-    @JsonProperty("login")
+    @JsonProperty("id")
     private String socialId;
+
+    @JsonProperty("login")
+    private String socialNickname;
 
     @JsonProperty("name")
     private String nickname;
@@ -23,6 +28,9 @@ public class GithubMemberResponse {
     private String avatarUrl;
 
     public Member toMember() {
-        return new Member(nickname, socialId, avatarUrl);
+        if (Objects.isNull(nickname)) {
+            nickname = socialNickname;
+        }
+        return new Member(socialId, socialNickname, nickname, avatarUrl);
     }
 }

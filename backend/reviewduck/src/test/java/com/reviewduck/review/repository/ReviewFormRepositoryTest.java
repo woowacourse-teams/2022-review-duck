@@ -31,7 +31,7 @@ public class ReviewFormRepositoryTest {
         // given
         List<String> questionValues = List.of("question1", "question2");
         List<ReviewFormQuestion> reviewFormQuestions = getReviewFormQuestions(questionValues);
-        Member member = new Member("panda", "제이슨", "testUrl");
+        Member member = new Member("1","panda", "제이슨", "testUrl");
         memberRepository.save(member);
         ReviewForm reviewForm = new ReviewForm(member, "title", questionValues);
 
@@ -41,7 +41,7 @@ public class ReviewFormRepositoryTest {
         // then
         assertAll(
             () -> assertThat(savedReviewForm.getId()).isNotNull(),
-            () -> assertThat(savedReviewForm.getMember().getSocialId()).isEqualTo("panda"),
+            () -> assertThat(savedReviewForm.getMember().getSocialNickName()).isEqualTo("panda"),
             () -> assertThat(savedReviewForm.getCode().length()).isEqualTo(8),
             () -> assertThat(savedReviewForm.getReviewFormQuestions())
                 .usingRecursiveComparison()
@@ -59,7 +59,7 @@ public class ReviewFormRepositoryTest {
         List<String> questionValues2 = List.of("question3", "question4");
         getReviewFormQuestions(questionValues2);
 
-        Member member1 = new Member("panda", "제이슨", "testUrl1");
+        Member member1 = new Member("1","panda", "제이슨", "testUrl1");
         memberRepository.save(member1);
 
         ReviewForm reviewForm1 = new ReviewForm(member1, "title1", questionValues1);
@@ -68,7 +68,7 @@ public class ReviewFormRepositoryTest {
         reviewFormRepository.save(reviewForm1);
         reviewFormRepository.save(reviewForm2);
 
-        Member member2 = new Member("ariari", "브리", "testUrl2");
+        Member member2 = new Member("2","ariari", "브리", "testUrl2");
         memberRepository.save(member2);
 
         List<String> otherUserQuestionValues = List.of("other user's question1", "other user's question2");
@@ -95,7 +95,7 @@ public class ReviewFormRepositoryTest {
         List<String> questionValues = List.of("question1", "question2");
         getReviewFormQuestions(questionValues);
 
-        Member member = new Member("socialId", "소주캉", "testUrl");
+        Member member = new Member("1","socialId", "소주캉", "testUrl");
         memberRepository.save(member);
         ReviewForm myReviewForm = new ReviewForm(member, "title1", questionValues);
         String reviewFormCode = myReviewForm.getCode();
@@ -115,7 +115,7 @@ public class ReviewFormRepositoryTest {
         List<String> questionValues = List.of("question1", "question2");
         getReviewFormQuestions(questionValues);
 
-        Member member = new Member("socialId", "소주캉", "testUrl");
+        Member member = new Member("1","socialId", "소주캉", "testUrl");
         memberRepository.save(member);
         ReviewForm myReviewForm = new ReviewForm(member, "title1", questionValues);
         reviewFormRepository.save(myReviewForm);

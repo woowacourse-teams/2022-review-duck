@@ -25,13 +25,16 @@ public class Member {
 
     private String socialId;
 
+    private String socialNickName;
+
     private String nickname;
 
     private String profileUrl;
 
-    public Member(String socialId, String nickname, String profileUrl) {
+    public Member(String socialId, String socialNickName, String nickname, String profileUrl) {
         validate(nickname);
         this.socialId = socialId;
+        this.socialNickName = socialNickName;
         this.nickname = nickname;
         this.profileUrl = profileUrl;
     }
