@@ -33,18 +33,20 @@ function PageRoutes() {
                 <Route path=":reviewFormCode" element={<ReviewPage />} />
               </Route>
             </Route>
-          </Route>
-          <Route path={PAGE_LIST.REVIEW_FORM}>
-            <Route index element={<ReviewFormPage />} />
-            <Route path={':reviewFormCode'} element={<ReviewFormPage />} />
+
+            <Route path={PAGE_LIST.REVIEW_FORM}>
+              <Route index element={<ReviewFormPage />} />
+              <Route path={':reviewFormCode'} element={<ReviewFormPage />} />
+            </Route>
           </Route>
         </Route>
 
         <Route element={<CommunityLayout />}>
           <Route element={<RequireAuth />}>
-            <Route path="playground" element={<Playground />} />
             <Route path={PAGE_LIST.MY_PAGE} element={<MyPage />} />
           </Route>
+
+          <Route path="playground" element={<Playground />} />
         </Route>
 
         <Route path={PAGE_LIST.REVIEW_OVERVIEW}>

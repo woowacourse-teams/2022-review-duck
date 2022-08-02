@@ -63,23 +63,20 @@ function ReviewList({ filter }: Record<'filter', string>) {
 
   return (
     <>
-      <div className={styles.title}>
-        <Text size={20}>
-          {filter === MYPAGE_TAB.MY_REVIEWS ? '내가 작성한 회고' : '내가 생성한 회고'}
-        </Text>
-      </div>
-
       {filter === MYPAGE_TAB.MY_REVIEWS
         ? myReviews?.reviews.map((review) => (
             <div className={styles.reviewContainer} key={review.reviewId}>
               <div className={styles.header}>
-                <Text size={24}>{review.reviewForm.title}</Text>
+                <Text className={styles.title} size={24} weight="bold">
+                  {review.reviewForm.title}
+                </Text>
+
                 <div className={styles.buttonContainer}>
-                  <Icon code="arrow_right_alt"></Icon>
-                  <Icon code="edit"></Icon>
-                  <Icon code="delete"></Icon>
+                  <Icon className={styles.icon} code="edit"></Icon>
+                  <Icon className={styles.icon} code="delete"></Icon>
                 </div>
               </div>
+
               <hr />
 
               <QuestionContent questions={review.answers}></QuestionContent>
