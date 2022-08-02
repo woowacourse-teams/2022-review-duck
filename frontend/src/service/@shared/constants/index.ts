@@ -27,6 +27,8 @@ const QUERY_KEY = {
   },
 };
 
+const GITHUB_OAUTH_LOGIN_URL = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_OAUTH_CLIENT_KEY}`;
+
 const GITHUB_OAUTH_ERROR = {
   APPLICATION_SUSPENDED: 'application_suspended',
   ACCESS_DENIED: 'access_denied',
@@ -52,6 +54,7 @@ const MYPAGE_TAB = {
 export {
   PAGE_LIST,
   QUERY_KEY,
+  GITHUB_OAUTH_LOGIN_URL,
   GITHUB_OAUTH_ERROR,
   ACCESS_PERMISSION,
   ACCESS_TOKEN_EXPIRE_TIME,
