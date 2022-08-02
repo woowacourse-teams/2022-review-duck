@@ -42,7 +42,6 @@ const getReviews = async (reviewFormCode = ''): Promise<GetReviewsResponse> => {
 const submitAnswer = async (query: SubmitAnswerRequest): Promise<null> => {
   const { data } = await axiosInstance.post(`/api/review-forms/${query.reviewFormCode}`, {
     answers: query.answers,
-    nickname: query.nickname,
   });
 
   return data;

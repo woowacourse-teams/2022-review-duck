@@ -42,7 +42,7 @@ function SubmitReviewPage() {
     });
 
     reviewMutation.mutate(
-      { reviewFormCode, answers, nickname: reviewForm.creator.nickname },
+      { reviewFormCode, answers },
       {
         onSuccess: () => {
           addSnackbar({

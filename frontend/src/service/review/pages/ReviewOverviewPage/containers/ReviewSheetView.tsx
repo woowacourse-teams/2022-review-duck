@@ -15,7 +15,7 @@ function ReviewSheetView({ reviewFormCode }: Record<'reviewFormCode', string>) {
     <table className={styles.table}>
       <thead>
         <tr>
-          <th></th>
+          <th />
           {questions.map((question: Question) => (
             <th key={question.questionId}>{question.questionValue}</th>
           ))}

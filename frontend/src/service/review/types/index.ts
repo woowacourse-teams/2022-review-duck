@@ -15,13 +15,6 @@ export interface ReviewForm {
   questions: Question[];
 }
 
-export interface InitReviewForm extends ReviewForm {
-  creator: {
-    nickname: string;
-    profileUrl: string;
-  };
-}
-
 export interface Answer {
   questionValue: string;
   answerValue: string;
@@ -71,7 +64,6 @@ export interface SubmitAnswerRequest {
     answerValue: string;
     questionId: number | null | undefined;
   }[];
-  nickname: string;
 }
 
 export type UseCustomMutationOptions<TData = unknown> = UseMutationOptions<

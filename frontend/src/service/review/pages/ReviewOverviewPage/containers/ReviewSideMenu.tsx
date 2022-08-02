@@ -67,7 +67,7 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
 
         <Link to={`${PAGE_LIST.REVIEW}/${reviewFormCode}`}>
           <Button className={styles.joinButton} theme="outlined">
-            <Icon code="group_add"></Icon>이 회고에 참여하기
+            <Icon code="group_add" />이 회고에 참여하기
           </Button>
         </Link>
 
@@ -99,13 +99,13 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
                 state={{ redirect: `${PAGE_LIST.REVIEW_OVERVIEW}` }}
               >
                 <Button size="small">
-                  <Icon code="edit_note"></Icon>
+                  <Icon code="edit_note" />
                   질문 수정
                 </Button>
               </Link>
 
               <Button theme="outlined" size="small">
-                <Icon code="share"></Icon>
+                <Icon code="share" />
                 템플릿 공유
               </Button>
             </div>
