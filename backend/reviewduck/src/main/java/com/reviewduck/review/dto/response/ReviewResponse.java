@@ -31,7 +31,7 @@ public class ReviewResponse {
             review.getId(),
             Timestamp.valueOf(review.getUpdatedAt()).getTime(),
             review.isMine(member),
-            CreatorResponse.from(member),
+            CreatorResponse.from(review.getMember()),
             answerResponses
         );
     }
