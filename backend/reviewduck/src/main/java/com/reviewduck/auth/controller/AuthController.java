@@ -62,9 +62,7 @@ public class AuthController {
         validateNullRefreshTokenCookie(cookie);
 
         String refreshToken = cookie.getValue();
-        authService.validateToken(refreshToken);
-        Long memberId = Long.parseLong(authService.getPayload(refreshToken));
-        Tokens tokens = authService.generateTokens(memberId);
+        Tokens tokens = authService.regenerateTokens(refreshToken);
 
         ResponseCookie refreshTokenCookie = createRefreshToken(tokens);
         response.setHeader("Set-Cookie", refreshTokenCookie.toString());

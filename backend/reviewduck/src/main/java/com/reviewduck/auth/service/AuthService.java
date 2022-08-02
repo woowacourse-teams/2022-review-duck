@@ -52,6 +52,13 @@ public class AuthService {
         return generateTokens(loginMember.getId());
     }
 
+    public Tokens regenerateTokens(String refreshToken) {
+        validateToken(refreshToken);
+        Long memberId = Long.parseLong(getPayload(refreshToken));
+        Member member = memberService.findById(memberId);
+        return generateTokens(member.getId());
+    }
+
     public Tokens generateTokens(Long memberId) {
         String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(memberId));
         String refreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(memberId));
@@ -133,5 +140,4 @@ public class AuthService {
     public String getPayload(String token) {
         return jwtTokenProvider.getPayload(token);
     }
-
 }
