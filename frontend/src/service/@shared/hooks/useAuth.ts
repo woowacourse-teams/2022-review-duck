@@ -3,7 +3,7 @@ import useGetAccessToken from 'service/@shared/hooks/queries/user/useGetAccessTo
 import { axiosInstanceUtils } from '../utils';
 
 import useCreateRefreshToken from './queries/user/useCreateRefreshToken';
-import useGetUserProfile from './queries/user/useGetUserProfie';
+import useGetUserProfile from './queries/user/useGetUserProfile';
 
 function useAuth() {
   const createRefreshToken = useCreateRefreshToken();
