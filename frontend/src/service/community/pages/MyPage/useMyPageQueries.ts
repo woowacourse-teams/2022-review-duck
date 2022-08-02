@@ -19,6 +19,7 @@ function useMyPageQueries() {
 
   const userProfile = getUserProfileQuery.data || {
     socialId: '',
+    socialNickname: '',
     nickname: '',
     profileUrl: '',
   };
