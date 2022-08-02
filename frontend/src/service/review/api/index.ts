@@ -4,6 +4,8 @@ import {
   GetReviewFormResponse,
   UpdateReviewFormResponse,
   GetReviewsResponse,
+  GetReviewResponse,
+  UpdateReviewRequest,
 } from '../types';
 
 import axiosInstance from 'service/@shared/api/axiosInstance';
@@ -39,6 +41,20 @@ const getReviews = async (reviewFormCode = ''): Promise<GetReviewsResponse> => {
   return data;
 };
 
+const getReview = async (reviewId: number): Promise<GetReviewResponse> => {
+  const { data } = await axiosInstance.get(`/api/reviews/${reviewId}`);
+
+  return data;
+};
+
+const updateReview = async (query: UpdateReviewRequest): Promise<null> => {
+  const { data } = await axiosInstance.put(`/api/reviews/${query.reviewId}`, {
+    answers: query.answers,
+  });
+
+  return data;
+};
+
 const submitAnswer = async (query: SubmitAnswerRequest): Promise<null> => {
   const { data } = await axiosInstance.post(`/api/review-forms/${query.reviewFormCode}`, {
     answers: query.answers,
@@ -64,6 +80,8 @@ const reviewAPI = {
   createForm,
   updateForm,
   getReviews,
+  getReview,
+  updateReview,
   submitAnswer,
   deleteReview,
   deleteReviewForm,

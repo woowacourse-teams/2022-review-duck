@@ -20,6 +20,7 @@ const QUERY_KEY = {
     GET_USER_PROFILE: 'getUserProfile',
 
     GET_REVIEWS: 'getReviews',
+    GET_REVIEW: 'getReview',
     GET_REVIEW_FORM: 'getReviewForm',
 
     GET_MY_REVIEWS: 'getMyReviews',

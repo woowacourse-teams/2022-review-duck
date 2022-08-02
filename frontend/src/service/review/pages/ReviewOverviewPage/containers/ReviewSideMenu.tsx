@@ -16,6 +16,15 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
 
   const linkInputBox = useRef<HTMLInputElement>(null);
 
+  const getMyReviewId = () => {
+    const index = reviews.findIndex((review) => review.isMine === true);
+
+    if (index >= 0) {
+      return reviews[index].reviewId;
+    }
+    return -1;
+  };
+
   const onClickCopyLink = async () => {
     const $copyLink = linkInputBox.current;
 
@@ -64,8 +73,12 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
             </Text>
           </div>
         </div>
-
-        <Link to={`${PAGE_LIST.REVIEW}/${reviewFormCode}`}>
+        <Link
+          to={`${PAGE_LIST.REVIEW}/${reviewFormCode}${
+            getMyReviewId() >= 0 ? `/${getMyReviewId()}` : ''
+          }`}
+          state={{ redirect: `${PAGE_LIST.REVIEW_OVERVIEW}` }}
+        >
           <Button className={styles.joinButton} theme="outlined">
             <Icon code="group_add" />이 회고에 참여하기
           </Button>
