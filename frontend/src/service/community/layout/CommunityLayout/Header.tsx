@@ -10,7 +10,7 @@ import imageDefaultProfile from 'assets/images/profile.png';
 
 import styles from './styles.module.scss';
 
-import { PAGE_LIST } from 'service/@shared/constants';
+import { GITHUB_OAUTH_LOGIN_URL, PAGE_LIST } from 'service/@shared/constants';
 
 function Header() {
   const { isLogin, getUserProfileQuery } = useAuth();
@@ -62,9 +62,7 @@ function Header() {
               </Link>
             </PopupBox>
           ) : (
-            <a
-              href={`https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_OAUTH_CLIENT_KEY}`}
-            >
+            <a href={GITHUB_OAUTH_LOGIN_URL}>
               <Text className={styles.loginText} weight="lighter">
                 LOGIN
               </Text>
