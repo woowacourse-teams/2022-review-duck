@@ -1,7 +1,5 @@
 import { Outlet } from 'react-router-dom';
 
-import cn from 'classnames';
-
 import styles from './styles.module.scss';
 
 import Header from './Header';

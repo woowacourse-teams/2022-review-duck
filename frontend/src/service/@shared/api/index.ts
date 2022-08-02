@@ -11,14 +11,13 @@ const createRefreshToken = async (
 };
 
 const getRefreshedAccessToken = async (): Promise<CreateRefreshResponse> => {
-  // TODO: API 명세 GET으로 바뀔 예정입니다.
   const { data } = await axiosInstance.get('/api/login/refresh');
 
   return data;
 };
 
 const getProfile = async (): Promise<UserProfileResponse> => {
-  const { data } = await axiosInstance.post('/api/members/me');
+  const { data } = await axiosInstance.get('/api/members/me');
 
   return data;
 };
