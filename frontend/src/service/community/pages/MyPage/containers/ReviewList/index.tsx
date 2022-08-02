@@ -12,11 +12,13 @@ import Reaction from 'service/review/components/Reaction';
 
 import styles from './styles.module.scss';
 
-import { PAGE_LIST, TAB } from 'service/@shared/constants';
+import { PAGE_LIST, MYPAGE_TAB } from 'service/@shared/constants';
 
 function ReviewList({ filter }: Record<'filter', string>) {
-  const { data: myReviews } = useGetMyReviews({ enabled: filter === TAB.MY_REVIEWS });
-  const { data: myReviewForms } = useGetMyReviewForms({ enabled: filter === TAB.MY_REVIEW_FORMS });
+  const { data: myReviews } = useGetMyReviews({ enabled: filter === MYPAGE_TAB.MY_REVIEWS });
+  const { data: myReviewForms } = useGetMyReviewForms({
+    enabled: filter === MYPAGE_TAB.MY_REVIEW_FORMS,
+  });
 
   const deleteReviewMutation = useDeleteReview();
 
@@ -52,10 +54,12 @@ function ReviewList({ filter }: Record<'filter', string>) {
   return (
     <>
       <div className={styles.title}>
-        <Text size={20}>{filter === TAB.MY_REVIEWS ? '내가 작성한 회고' : '내가 생성한 회고'}</Text>
+        <Text size={20}>
+          {filter === MYPAGE_TAB.MY_REVIEWS ? '내가 작성한 회고' : '내가 생성한 회고'}
+        </Text>
       </div>
 
-      {filter === TAB.MY_REVIEWS
+      {filter === MYPAGE_TAB.MY_REVIEWS
         ? myReviews?.reviews.map((review) => (
             <div className={styles.reviewContainer} key={review.reviewId}>
               <div className={styles.header}>

@@ -5,7 +5,7 @@ import ProfileCard from 'service/community/components/ProfileCard';
 import styles from './styles.module.scss';
 
 import ReviewList from './containers/ReviewList';
-import { TAB } from 'service/@shared/constants';
+import { MYPAGE_TAB } from 'service/@shared/constants';
 
 const user = {
   profileUrl: 'hello',
@@ -17,7 +17,7 @@ const user = {
 };
 
 function MyPage() {
-  const [currentTab, setCurrentTab] = useState(TAB.MY_REVIEWS);
+  const [currentTab, setCurrentTab] = useState(MYPAGE_TAB.MY_REVIEWS);
   /* TODO: 사용자 관련 정보 API 요청 */
 
   return (
@@ -25,15 +25,15 @@ function MyPage() {
       <ProfileCard user={user} />
 
       <div className={styles.tabContainer}>
-        <button onClick={() => setCurrentTab(TAB.MY_REVIEWS)}>작성한 회고 보기</button>
-        <button onClick={() => setCurrentTab(TAB.MY_REVIEW_FORMS)}>생성한 회고 보기</button>
+        <button onClick={() => setCurrentTab(MYPAGE_TAB.MY_REVIEWS)}>작성한 회고 보기</button>
+        <button onClick={() => setCurrentTab(MYPAGE_TAB.MY_REVIEW_FORMS)}>생성한 회고 보기</button>
       </div>
 
       <section className={styles.reviewListContainer}>
-        {currentTab === TAB.MY_REVIEWS ? (
-          <ReviewList filter={TAB.MY_REVIEWS} />
+        {currentTab === MYPAGE_TAB.MY_REVIEWS ? (
+          <ReviewList filter={MYPAGE_TAB.MY_REVIEWS} />
         ) : (
-          <ReviewList filter={TAB.MY_REVIEW_FORMS} />
+          <ReviewList filter={MYPAGE_TAB.MY_REVIEW_FORMS} />
         )}
       </section>
     </div>
