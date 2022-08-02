@@ -12,10 +12,6 @@ function useDeleteReview(mutationOptions?: UseCustomMutationOptions<null>) {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW_FORM]);
-      alert('회고 답변을 삭제하였습니다.');
-    },
-    onError: ({ message }) => {
-      alert(message);
     },
     ...mutationOptions,
   });

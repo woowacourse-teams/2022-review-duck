@@ -11,10 +11,6 @@ function useDeleteReviewForm(mutationOptions?: UseCustomMutationOptions<null>) {
   return useMutation(reviewAPI.deleteReviewForm, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW_FORM]);
-      alert('회고를 삭제했습니다.');
-    },
-    onError: ({ message }) => {
-      alert(message);
     },
     ...mutationOptions,
   });

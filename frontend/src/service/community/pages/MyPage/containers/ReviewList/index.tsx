@@ -20,9 +20,23 @@ function ReviewList({ filter }: Record<'filter', string>) {
     enabled: filter === MYPAGE_TAB.MY_REVIEW_FORMS,
   });
 
-  const deleteReviewMutation = useDeleteReview();
+  const deleteReviewMutation = useDeleteReview({
+    onSuccess: () => {
+      alert('회고를 삭제했습니다.');
+    },
+    onError: ({ message }) => {
+      alert(message);
+    },
+  });
 
-  const deleteReviewFormMutation = useDeleteReviewForm();
+  const deleteReviewFormMutation = useDeleteReviewForm({
+    onSuccess: () => {
+      alert('회고폼을 삭제했습니다.');
+    },
+    onError: ({ message }) => {
+      alert(message);
+    },
+  });
 
   const navigate = useNavigate();
 
