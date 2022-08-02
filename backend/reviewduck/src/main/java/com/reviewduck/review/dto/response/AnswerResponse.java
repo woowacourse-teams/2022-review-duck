@@ -3,10 +3,11 @@ package com.reviewduck.review.dto.response;
 import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class AnswerResponse {
 

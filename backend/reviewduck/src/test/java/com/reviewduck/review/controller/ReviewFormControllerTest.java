@@ -1,11 +1,14 @@
 package com.reviewduck.review.controller;
 
 import static org.hamcrest.Matchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -17,6 +20,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.reviewduck.auth.service.AuthService;
+import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.request.AnswerRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
@@ -28,7 +34,9 @@ import com.reviewduck.review.service.ReviewService;
 
 @WebMvcTest(ReviewFormController.class)
 public class ReviewFormControllerTest {
-    private final String invalidCode = "aaaaaaaa";
+
+    private static final String accessToken = "access_token";
+    private static final String invalidCode = "aaaaaaaa";
 
     @Autowired
     private MockMvc mockMvc;
@@ -41,6 +49,19 @@ public class ReviewFormControllerTest {
 
     @MockBean
     private ReviewService reviewService;
+
+    @MockBean
+    private AuthService authService;
+
+    @MockBean
+    private MemberService memberService;
+
+    @BeforeEach
+    void createMemberAndGetAccessToken() {
+        Member member = new Member("jason", "제이슨", "profileUrl");
+        given(authService.getPayload(any())).willReturn("1");
+        given(memberService.findById(any())).willReturn(member);
+    }
 
     @ParameterizedTest
     @NullAndEmptySource
@@ -99,22 +120,11 @@ public class ReviewFormControllerTest {
     }
 
     @ParameterizedTest
-    @NullAndEmptySource
-    @DisplayName("회고 생성 시 닉네임에 빈 값이 들어갈 경우 예외가 발생한다.")
-    void emptyNickNameInCreation(String nickname) throws Exception {
-        // given
-        ReviewRequest request = new ReviewRequest(nickname, List.of());
-
-        // when, then
-        assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "닉네임은 비어있을 수 없습니다.");
-    }
-
-    @ParameterizedTest
     @NullSource
     @DisplayName("회고 생성 시 질문 번호에 null 값이 들어갈 경우 예외가 발생한다.")
     void nullQuestionIdRequestInCreation(Long questionId) throws Exception {
         // given
-        ReviewRequest request = new ReviewRequest("제이슨", List.of(new AnswerRequest(questionId, "answer")));
+        ReviewRequest request = new ReviewRequest(List.of(new AnswerRequest(questionId, "answer")));
 
         // when, then
         assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "질문 번호는 비어있을 수 없습니다.");
@@ -125,7 +135,7 @@ public class ReviewFormControllerTest {
     @DisplayName("회고 생성 시 답변에 null 값이 들어갈 경우 예외가 발생한다.")
     void nullAnswerRequestInCreation(String answer) throws Exception {
         // given
-        ReviewRequest request = new ReviewRequest("제이슨", List.of(new AnswerRequest(1L, answer)));
+        ReviewRequest request = new ReviewRequest(List.of(new AnswerRequest(1L, answer)));
 
         // when, then
         assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "답변은 비어있을 수 없습니다.");
@@ -136,7 +146,7 @@ public class ReviewFormControllerTest {
     @DisplayName("회고 생성 시 답변 목록에 null 값이 들어갈 경우 예외가 발생한다.")
     void nullAnswerRequestsInCreation(List<AnswerRequest> answers) throws Exception {
         // given
-        ReviewRequest request = new ReviewRequest("제이슨", answers);
+        ReviewRequest request = new ReviewRequest(answers);
 
         // when, then
         assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "회고 답변 관련 오류가 발생했습니다.");
@@ -144,6 +154,7 @@ public class ReviewFormControllerTest {
 
     private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {
         mockMvc.perform(post(uri)
+                .header("Authorization", "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
             ).andExpect(status().isBadRequest())
@@ -152,6 +163,7 @@ public class ReviewFormControllerTest {
 
     private void assertBadRequestFromPut(String uri, Object request, String errorMessage) throws Exception {
         mockMvc.perform(put(uri)
+                .header("Authorization", "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
             ).andExpect(status().isBadRequest())

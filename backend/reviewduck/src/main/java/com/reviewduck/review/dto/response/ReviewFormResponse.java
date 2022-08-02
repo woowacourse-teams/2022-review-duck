@@ -16,15 +16,25 @@ public class ReviewFormResponse {
 
     private String reviewTitle;
     private long updatedAt;
+    private CreatorResponse creator;
+    private boolean isCreator;
     private List<ReviewFormQuestionResponse> questions;
 
-    public static ReviewFormResponse from(ReviewForm reviewForm) {
+    public static ReviewFormResponse of(ReviewForm reviewForm, boolean isCreator) {
         List<ReviewFormQuestionResponse> reviewFormQuestionRespons = reviewForm.getReviewFormQuestions().stream()
             .map(ReviewFormQuestionResponse::from)
             .collect(Collectors.toUnmodifiableList());
 
-        return new ReviewFormResponse(reviewForm.getReviewTitle()
-            , Timestamp.valueOf(reviewForm.getUpdatedAt()).getTime()
-            , reviewFormQuestionRespons);
+        return new ReviewFormResponse(
+            reviewForm.getReviewTitle(),
+            Timestamp.valueOf(reviewForm.getUpdatedAt()).getTime(),
+            CreatorResponse.from(reviewForm.getMember()),
+            isCreator,
+            reviewFormQuestionRespons
+        );
+    }
+
+    public boolean getIsCreator() {
+        return isCreator;
     }
 }
