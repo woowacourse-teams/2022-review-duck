@@ -1,13 +1,11 @@
+import useGetUserProfile from 'service/@shared/hooks/queries/user/useGetUserProfile';
 import useGetMyReviewForms from 'service/community/hooks/queries/useGetMyReviewForms';
 import useGetMyReviews from 'service/community/hooks/queries/useGetMyReviews';
 
-import { MYPAGE_TAB } from 'service/@shared/constants/index';
-
-function useMyPageQueries(filter: string) {
-  const getMyReviewsQuery = useGetMyReviews({ enabled: filter === MYPAGE_TAB.MY_REVIEWS });
-  const getMyRevieFromsQuery = useGetMyReviewForms({
-    enabled: filter === MYPAGE_TAB.MY_REVIEW_FORMS,
-  });
+function useMyPageQueries() {
+  const getMyReviewsQuery = useGetMyReviews();
+  const getMyRevieFromsQuery = useGetMyReviewForms();
+  const getUserProfileQuery = useGetUserProfile();
 
   const myReviews = getMyReviewsQuery.data || {
     numberOfReviews: 0,
@@ -19,11 +17,18 @@ function useMyPageQueries(filter: string) {
     reviewForms: [],
   };
 
-  const isError = getMyReviewsQuery.isError || getMyRevieFromsQuery.isError;
+  const userProfile = getUserProfileQuery.data || {
+    socialId: '',
+    nickname: '',
+    profileUrl: '',
+  };
 
-  const { error } = getMyReviewsQuery || getMyRevieFromsQuery;
+  const isError =
+    getMyReviewsQuery.isError || getMyRevieFromsQuery.isError || getUserProfileQuery.isError;
 
-  return { myReviews, myReviewForms, isError, error };
+  const { error } = getMyReviewsQuery || getMyRevieFromsQuery || getUserProfileQuery;
+
+  return { myReviews, myReviewForms, userProfile, isError, error };
 }
 
 export default useMyPageQueries;

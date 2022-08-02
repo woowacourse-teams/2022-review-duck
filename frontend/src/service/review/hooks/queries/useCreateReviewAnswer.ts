@@ -13,11 +13,7 @@ function useCreateReviewAnswer(
 
   return useMutation(reviewAPI.submitAnswer, {
     onSuccess: () => {
-      queryClient.invalidateQueries([
-        QUERY_KEY.DATA.REVIEW,
-        QUERY_KEY.API.GET_REVIEWS,
-        { reviewFormCode },
-      ]);
+      queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
     },
     ...mutationOptions,
   });

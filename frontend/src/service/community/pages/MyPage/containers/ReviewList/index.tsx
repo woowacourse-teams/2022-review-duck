@@ -14,7 +14,7 @@ import useMyPageQueries from '../../useMyPageQueries';
 import { PAGE_LIST, MYPAGE_TAB } from 'service/@shared/constants';
 
 function ReviewList({ filter }: Record<'filter', string>) {
-  const { myReviews, myReviewForms } = useMyPageQueries(filter);
+  const { myReviews, myReviewForms } = useMyPageQueries();
 
   const deleteReviewMutation = useDeleteReview({
     onSuccess: () => {
