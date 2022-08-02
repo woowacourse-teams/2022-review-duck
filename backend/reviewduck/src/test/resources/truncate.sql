@@ -15,6 +15,8 @@ truncate table answer;
 alter table answer AUTO_INCREMENT = 1;
 truncate table question_answer;
 alter table question_answer AUTO_INCREMENT = 1;
+truncate table member;
+alter table member AUTO_INCREMENT = 1;
 
 SET
 FOREIGN_KEY_CHECKS = 1;

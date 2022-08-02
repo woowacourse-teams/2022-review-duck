@@ -1,5 +1,13 @@
-SET
-FOREIGN_KEY_CHECKS = 0;
+create table member
+(
+    id          bigint not null auto_increment,
+    nickname    varchar(255),
+    social_nickname varchar(255),
+    profile_url varchar(255),
+    social_id   varchar(255),
+    primary key (id)
+);
+
 create table review_form
 (
     id           bigint       not null auto_increment,
@@ -7,7 +15,10 @@ create table review_form
     review_title varchar(255) not null,
     created_at   DATETIME,
     updated_at   DATETIME,
-    primary key (id)
+    is_active    boolean      not null,
+    member_id    bigint,
+    primary key (id),
+    foreign key (member_id) references member (id)
 );
 
 create table answer
@@ -30,9 +41,13 @@ create table review_form_question
 create table template
 (
     id                   bigint       not null auto_increment,
+    created_at           timestamp,
+    updated_at           timestamp,
     template_description varchar(255) not null,
     template_title       varchar(255) not null,
-    primary key (id)
+    member_id            bigint,
+    primary key (id),
+    foreign key (member_id) references member (id)
 );
 
 create table template_question
@@ -48,13 +63,14 @@ create table template_question
 
 create table review
 (
-    id             bigint       not null auto_increment,
-    nickname       varchar(255) not null,
+    id             bigint not null auto_increment,
     review_form_id bigint,
     created_at     DATETIME,
     updated_at     DATETIME,
+    member_id      bigint,
     primary key (id),
-    foreign key (review_form_id) references review_form (id)
+    foreign key (review_form_id) references review_form (id),
+    foreign key (member_id) references member (id)
 );
 
 create table question_answer
@@ -69,6 +85,3 @@ create table question_answer
     foreign key (review_form_question_id) references review_form_question (id),
     foreign key (review_id) references review (id)
 );
-
-SET
-FOREIGN_KEY_CHECKS = 1;

@@ -24,7 +24,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("본인의 사용자 정보를 조회한다.")
     void findMyMemberInfo() {
         // given
-        Member member = new Member("jason", "제이슨", "profileUrl");
+        Member member = new Member("1","jason", "제이슨", "profileUrl");
         Member savedMember = memberService.save(member);
 
         String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
@@ -37,7 +37,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then
         assertAll(
-            () -> assertThat(memberResponse.getSocialId()).isEqualTo("jason"),
+            () -> assertThat(memberResponse.getSocialNickname()).isEqualTo("jason"),
             () -> assertThat(memberResponse.getNickname()).isEqualTo("제이슨"),
             () -> assertThat(memberResponse.getProfileUrl()).isEqualTo("profileUrl")
         );

@@ -16,7 +16,7 @@ public class ReviewTest {
     @DisplayName("제약조건에 걸리지 않으면 회고가 생성된다.")
     void createReview() {
         //given
-        Member member = new Member("socialId", "nickname", "pofileUrl");
+        Member member = new Member("1","socialId", "nickname", "pofileUrl");
         ReviewForm reviewForm = new ReviewForm(member, "title", List.of("question1"));
 
         //when, then
@@ -30,7 +30,7 @@ public class ReviewTest {
     @DisplayName("질문/답변의 순서값은 0부터 순서대로 부여된다.")
     void setPositionInOrder() {
         //given
-        Member member = new Member("socialId", "nickname", "pofileUrl");
+        Member member = new Member("1","socialId", "nickname", "pofileUrl");
         ReviewForm reviewForm = new ReviewForm(member, "title", List.of("question1", "question2", "question3"));
 
         // when
