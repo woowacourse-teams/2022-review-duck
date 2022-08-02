@@ -16,8 +16,6 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
 
   const linkInputBox = useRef<HTMLInputElement>(null);
 
-  const isAlreadySubmitted = () => reviews.some((review) => review.isMine === true);
-
   const onClickCopyLink = async () => {
     const $copyLink = linkInputBox.current;
 
@@ -69,15 +67,7 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
 
         <Link to={`${PAGE_LIST.REVIEW}/${reviewFormCode}`}>
           <Button className={styles.joinButton} theme="outlined">
-            {isAlreadySubmitted() === true ? (
-              <>
-                <Icon code="edit"></Icon>회고 수정하기
-              </>
-            ) : (
-              <>
-                <Icon code="group_add"></Icon>이 회고에 참여하기
-              </>
-            )}
+            <Icon code="group_add"></Icon>이 회고에 참여하기
           </Button>
         </Link>
 
