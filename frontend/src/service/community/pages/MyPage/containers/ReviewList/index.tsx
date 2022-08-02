@@ -1,7 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 
-import useGetMyReviewForms from 'service/community/hooks/queries/useGetMyReviewForms';
-import useGetMyReviews from 'service/community/hooks/queries/useGetMyReviews';
 import useDeleteReview from 'service/review/hooks/queries/useDeleteReview';
 import useDeleteReviewForm from 'service/review/hooks/queries/useDeleteReviewForm';
 
@@ -12,13 +10,11 @@ import Reaction from 'service/review/components/Reaction';
 
 import styles from './styles.module.scss';
 
+import useMyPageQueries from '../../useMyPageQueries';
 import { PAGE_LIST, MYPAGE_TAB } from 'service/@shared/constants';
 
 function ReviewList({ filter }: Record<'filter', string>) {
-  const { data: myReviews } = useGetMyReviews({ enabled: filter === MYPAGE_TAB.MY_REVIEWS });
-  const { data: myReviewForms } = useGetMyReviewForms({
-    enabled: filter === MYPAGE_TAB.MY_REVIEW_FORMS,
-  });
+  const { myReviews, myReviewForms } = useMyPageQueries(filter);
 
   const deleteReviewMutation = useDeleteReview({
     onSuccess: () => {

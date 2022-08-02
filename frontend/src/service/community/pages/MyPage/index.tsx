@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import ProfileCard from 'service/community/components/ProfileCard';
 
 import styles from './styles.module.scss';
 
 import ReviewList from './containers/ReviewList';
+import useMyPageQueries from './useMyPageQueries';
 import { MYPAGE_TAB } from 'service/@shared/constants';
 
 const user = {
@@ -19,6 +20,14 @@ const user = {
 function MyPage() {
   const [currentTab, setCurrentTab] = useState(MYPAGE_TAB.MY_REVIEWS);
   /* TODO: 사용자 관련 정보 API 요청 */
+
+  const { isError, error } = useMyPageQueries(currentTab);
+
+  useEffect(() => {
+    if (isError) {
+      alert(error?.message);
+    }
+  }, [isError, error]);
 
   const onChangeTab = (filter: string) => () => {
     setCurrentTab(filter);

@@ -1,31 +1,22 @@
 import { useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
-
-import { useGetReviewForm, useGetReviews } from 'service/review/hooks/queries';
 
 import { Button, Icon, Text, TextBox } from 'common/components';
 
 import styles from '../styles.module.scss';
+import useOverviewQueries from '../useOverviewQueries';
 import { PAGE_LIST } from 'service/@shared/constants';
 
 function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
-  const { data: reviewForm, isError, error } = useGetReviewForm(reviewFormCode);
-  const { data } = useGetReviews(reviewFormCode);
+  const { reviewForm, reviews: myReviews } = useOverviewQueries(reviewFormCode);
 
-  const { reviews = [] } = data || {};
+  const { reviews = [] } = myReviews || {};
 
   const linkInputBox = useRef<HTMLInputElement>(null);
 
   const isAlreadySubmitted = () => reviews.some((review) => review.isMine === true);
-
-  // if (isError) {
-  //   alert(error.message);
-  //   navigate(-1);
-
-  //   return <></>;
-  // }
 
   const onClickCopyLink = async () => {
     const $copyLink = linkInputBox.current;

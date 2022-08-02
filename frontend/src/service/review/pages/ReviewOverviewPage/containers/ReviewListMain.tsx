@@ -2,27 +2,17 @@ import cn from 'classnames';
 
 import { Review } from 'service/review/types';
 
-import { useGetReviews } from 'service/review/hooks/queries';
-
 import QuestionContent from 'service/@shared/components/QuestionContent';
 import Profile from 'service/review/components/Profile';
 import Reaction from 'service/review/components/Reaction';
 
 import styles from '../styles.module.scss';
+import useOverviewQueries from '../useOverviewQueries';
 
 function ReviewListMain({ reviewFormCode }: Record<'reviewFormCode', string>) {
-  const { data, isError, error } = useGetReviews(reviewFormCode);
+  const { reviews: myReviews } = useOverviewQueries(reviewFormCode);
 
-  const { reviews = [] } = data || {};
-
-  // TODO: 에러 바운더리로 처리 예정
-  // if (isError) {
-  //   return (
-  //     <div className={styles.participantContainer}>
-  //       <section className={styles.articleContainer}>에러가 발생했습니다 {error.message}</section>
-  //     </div>
-  //   );
-  // }
+  const { reviews = [] } = myReviews || {};
 
   return (
     <div className={styles.participantContainer}>

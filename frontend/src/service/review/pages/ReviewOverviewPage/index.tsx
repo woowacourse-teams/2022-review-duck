@@ -1,5 +1,5 @@
-import { Suspense, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Suspense, useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -13,6 +13,7 @@ import ReviewHeader from './containers/ReviewHeader';
 import ReviewListMain from './containers/ReviewListMain';
 import ReviewSheetView from './containers/ReviewSheetView';
 import ReviewSideMenu from './containers/ReviewSideMenu';
+import useOverviewQueries from './useOverviewQueries';
 import { PAGE_LIST } from 'service/@shared/constants';
 
 function ReviewOverviewPage() {
@@ -20,11 +21,19 @@ function ReviewOverviewPage() {
 
   const [isSheetEnabled, setSheetEnabled] = useState(false);
 
+  const { isError, error } = useOverviewQueries(reviewFormCode);
+
   const onClickModeChange = (isEnabled: boolean) => () => {
     if (isEnabled === isSheetEnabled) return;
 
     setSheetEnabled(isEnabled);
   };
+
+  useEffect(() => {
+    if (isError) {
+      alert(error?.message);
+    }
+  }, [isError, error]);
 
   return (
     <div className={cn(styles.layout)}>

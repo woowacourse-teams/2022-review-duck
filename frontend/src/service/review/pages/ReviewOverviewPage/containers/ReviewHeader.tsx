@@ -1,22 +1,12 @@
-import { useNavigate } from 'react-router-dom';
-
-import { useGetReviewForm } from 'service/review/hooks/queries';
-
 import { Text } from 'common/components';
 
 import styles from '../styles.module.scss';
+import useOverviewQueries from '../useOverviewQueries';
 
 function ReviewHeader({ reviewFormCode }: Record<'reviewFormCode', string>) {
-  const navigate = useNavigate();
-  const { data, isError, error } = useGetReviewForm(reviewFormCode);
-  const { reviewTitle, creator } = data || {};
+  const { reviewForm } = useOverviewQueries(reviewFormCode);
 
-  // if (isError) {
-  //   alert(error.message);
-  //   navigate(-1);
-
-  //   return <></>;
-  // }
+  const { reviewTitle, creator } = reviewForm || {};
 
   return (
     <div className={styles.reviewFormInfo}>
