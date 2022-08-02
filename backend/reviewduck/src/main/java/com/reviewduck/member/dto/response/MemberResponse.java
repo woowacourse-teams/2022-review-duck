@@ -15,6 +15,6 @@ public class MemberResponse {
     private String profileUrl;
 
     public static MemberResponse from(Member member) {
-        return new MemberResponse(member.getSocialId(), member.getSocialNickName(), member.getNickname(), member.getProfileUrl());
+        return new MemberResponse(member.getSocialId(), member.getSocialNickname(), member.getNickname(), member.getProfileUrl());
     }
 }

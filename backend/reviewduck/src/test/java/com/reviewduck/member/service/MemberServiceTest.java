@@ -78,7 +78,7 @@ public class MemberServiceTest {
 
     void assertEqualMemberInfo(Member actual, Member expected) {
         assertAll(
-            () -> assertThat(actual.getSocialNickName()).isEqualTo(expected.getSocialNickName()),
+            () -> assertThat(actual.getSocialNickname()).isEqualTo(expected.getSocialNickname()),
             () -> assertThat(actual.getNickname()).isEqualTo(expected.getNickname()),
             () -> assertThat(actual.getProfileUrl()).isEqualTo(expected.getProfileUrl())
         );

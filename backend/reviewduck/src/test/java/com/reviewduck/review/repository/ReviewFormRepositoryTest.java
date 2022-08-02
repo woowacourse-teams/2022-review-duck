@@ -41,7 +41,7 @@ public class ReviewFormRepositoryTest {
         // then
         assertAll(
             () -> assertThat(savedReviewForm.getId()).isNotNull(),
-            () -> assertThat(savedReviewForm.getMember().getSocialNickName()).isEqualTo("panda"),
+            () -> assertThat(savedReviewForm.getMember().getSocialNickname()).isEqualTo("panda"),
             () -> assertThat(savedReviewForm.getCode().length()).isEqualTo(8),
             () -> assertThat(savedReviewForm.getReviewFormQuestions())
                 .usingRecursiveComparison()

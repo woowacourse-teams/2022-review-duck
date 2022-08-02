@@ -27,7 +27,7 @@ public class MemberRepositoryTest {
 
         // then
         assertAll(
-            () -> assertThat(savedMember.getSocialNickName()).isEqualTo("panda"),
+            () -> assertThat(savedMember.getSocialNickname()).isEqualTo("panda"),
             () -> assertThat(savedMember.getNickname()).isEqualTo("제이슨"),
             () -> assertThat(savedMember.getProfileUrl()).isEqualTo("testUrl")
         );
@@ -63,7 +63,7 @@ public class MemberRepositoryTest {
 
         // then
         assertAll(
-            () -> assertThat(foundMember.getSocialNickName()).isEqualTo("panda"),
+            () -> assertThat(foundMember.getSocialNickname()).isEqualTo("panda"),
             () -> assertThat(foundMember.getNickname()).isEqualTo("제이슨"),
             () -> assertThat(foundMember.getProfileUrl()).isEqualTo("testUrl")
         );
