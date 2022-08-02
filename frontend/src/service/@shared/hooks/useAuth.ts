@@ -3,7 +3,7 @@ import useGetAccessToken from 'service/@shared/hooks/queries/user/useGetAccessTo
 import { axiosInstanceUtils } from '../utils';
 
 import useCreateRefreshToken from './queries/user/useCreateRefreshToken';
-import useGetUserProfile from './queries/user/useGetUserProfie';
+import useGetUserProfile from './queries/user/useGetUserProfile';
 
 function useAuth() {
   const createRefreshToken = useCreateRefreshToken();
@@ -17,11 +17,9 @@ function useAuth() {
     },
   });
 
-  const getUserProfileQuery = useGetUserProfile({
-    enabled: false,
-  });
+  const getUserProfileQuery = useGetUserProfile();
 
-  const isLogin = getAccessTokenQuery.isSuccess; // TODO: getUserProfileQuery
+  const isLogin = getUserProfileQuery.isSuccess;
 
   return { createRefreshToken, getAccessTokenQuery, getUserProfileQuery, isLogin };
 }
