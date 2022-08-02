@@ -17,7 +17,9 @@ function useAuth() {
     },
   });
 
-  const getUserProfileQuery = useGetUserProfile();
+  const getUserProfileQuery = useGetUserProfile({
+    enabled: getAccessTokenQuery.isSuccess,
+  });
 
   const isLogin = getUserProfileQuery.isSuccess;
 

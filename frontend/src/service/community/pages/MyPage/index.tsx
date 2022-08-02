@@ -49,7 +49,7 @@ function MyPage() {
             </Text>
 
             <Text size={14} weight="lighter">
-              {userProfile.socialId}
+              {userProfile.socialNickname}
             </Text>
           </div>
 
@@ -60,7 +60,7 @@ function MyPage() {
             </Button>
 
             <a
-              href={`${GITHUB_PROFILE_URL}${userProfile.socialId}`}
+              href={`${GITHUB_PROFILE_URL}${userProfile.socialNickname}`}
               target="_blank"
               rel=" noopener noreferrer"
             >

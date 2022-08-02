@@ -4,7 +4,7 @@ import useGetMyReviews from 'service/community/hooks/queries/useGetMyReviews';
 
 function useMyPageQueries() {
   const getMyReviewsQuery = useGetMyReviews();
-  const getMyRevieFromsQuery = useGetMyReviewForms();
+  const getMyReviewFormsQuery = useGetMyReviewForms();
   const getUserProfileQuery = useGetUserProfile();
 
   const myReviews = getMyReviewsQuery.data || {
@@ -12,7 +12,7 @@ function useMyPageQueries() {
     reviews: [],
   };
 
-  const myReviewForms = getMyRevieFromsQuery.data || {
+  const myReviewForms = getMyReviewFormsQuery.data || {
     numberOfReviewForms: 0,
     reviewForms: [],
   };
@@ -20,13 +20,14 @@ function useMyPageQueries() {
   const userProfile = getUserProfileQuery.data || {
     socialId: '',
     nickname: '',
+    socialNickname: '',
     profileUrl: '',
   };
 
   const isError =
-    getMyReviewsQuery.isError || getMyRevieFromsQuery.isError || getUserProfileQuery.isError;
+    getMyReviewsQuery.isError || getMyReviewFormsQuery.isError || getUserProfileQuery.isError;
 
-  const { error } = getMyReviewsQuery || getMyRevieFromsQuery || getUserProfileQuery;
+  const { error } = getMyReviewsQuery || getMyReviewFormsQuery || getUserProfileQuery;
 
   return { myReviews, myReviewForms, userProfile, isError, error };
 }
