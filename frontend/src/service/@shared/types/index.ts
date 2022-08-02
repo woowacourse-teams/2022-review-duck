@@ -13,5 +13,6 @@ export interface CreateRefreshResponse {
 export interface UserProfileResponse {
   socialId: string;
   nickname: string;
+  socialNickname: string;
   profileUrl: string;
 }
