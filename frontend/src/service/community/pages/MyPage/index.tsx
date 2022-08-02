@@ -10,7 +10,7 @@ import styles from './styles.module.scss';
 
 import ReviewList from './containers/ReviewList';
 import useMyPageQueries from './useMyPageQueries';
-import { MYPAGE_TAB } from 'service/@shared/constants';
+import { MYPAGE_TAB, GITHUB_PROFILE_URL } from 'service/@shared/constants';
 
 function MyPage() {
   const [currentTab, setCurrentTab] = useState(MYPAGE_TAB.MY_REVIEWS);
@@ -60,7 +60,7 @@ function MyPage() {
             </Button>
 
             <a
-              href={`https://github.com/${userProfile.socialId}`}
+              href={`${GITHUB_PROFILE_URL}${userProfile.socialId}`}
               target="_blank"
               rel=" noopener noreferrer"
             >
