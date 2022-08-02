@@ -9,7 +9,7 @@ import {
 function useReviewFormQueries(reviewFormCode = '') {
   const createMutation = useCreateReviewForm();
 
-  const updateMutation = useUpdateReviewForm(reviewFormCode);
+  const updateMutation = useUpdateReviewForm();
 
   const reviewFormMutation = reviewFormCode ? updateMutation : createMutation;
 
