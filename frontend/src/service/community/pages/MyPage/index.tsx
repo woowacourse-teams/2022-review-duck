@@ -81,7 +81,6 @@ function MyPage() {
             <li
               className={cn(styles.item, { [styles.focus]: currentTab === MYPAGE_TAB.MY_REVIEWS })}
               onClick={onChangeTab(MYPAGE_TAB.MY_REVIEWS)}
-              onKeyDown={onChangeTab(MYPAGE_TAB.MY_REVIEWS)}
             >
               작성한 회고글
             </li>
@@ -90,7 +89,6 @@ function MyPage() {
                 [styles.focus]: currentTab === MYPAGE_TAB.MY_REVIEW_FORMS,
               })}
               onClick={onChangeTab(MYPAGE_TAB.MY_REVIEW_FORMS)}
-              onKeyDown={onChangeTab(MYPAGE_TAB.MY_REVIEW_FORMS)}
             >
               생성한 회고
             </li>
