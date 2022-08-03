@@ -16,12 +16,18 @@ const getRefreshedAccessToken = async (): Promise<CreateRefreshResponse> => {
   return data;
 };
 
+const getDestroyRefreshToken = async (): Promise<null> => {
+  const { data } = await axiosInstance.get('/api/logout');
+
+  return data;
+};
+
 const getProfile = async (): Promise<UserProfileResponse> => {
   const { data } = await axiosInstance.get('/api/members/me');
 
   return data;
 };
 
-const userAPI = { createRefreshToken, getRefreshedAccessToken, getProfile };
+const userAPI = { createRefreshToken, getDestroyRefreshToken, getRefreshedAccessToken, getProfile };
 
 export { userAPI };
