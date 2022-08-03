@@ -2,14 +2,13 @@ package com.reviewduck.auth.service;
 
 import java.util.Objects;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,7 +23,7 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class AuthService {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -46,6 +45,7 @@ public class AuthService {
         this.memberService = memberService;
     }
 
+    @Transactional
     public TokensDto createTokens(LoginRequest loginRequest) {
         Member member = getMemberFromGithub(loginRequest.getCode());
         Member loginMember = login(member);
@@ -53,6 +53,7 @@ public class AuthService {
         return generateTokens(loginMember.getId());
     }
 
+    @Transactional
     public TokensDto regenerateTokens(String refreshToken) {
         jwtTokenProvider.validateToken(refreshToken);
         Long memberId = Long.parseLong(jwtTokenProvider.getPayload(refreshToken));
@@ -60,23 +61,11 @@ public class AuthService {
         return generateTokens(member.getId());
     }
 
-    public TokensDto generateTokens(Long memberId) {
+    private TokensDto generateTokens(Long memberId) {
         String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(memberId));
         String refreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(memberId));
 
         return new TokensDto(accessToken, refreshToken);
-    }
-
-    private Member login(Member member) {
-        return memberService.findBySocialId(member.getSocialId())
-            .orElse(member);
-    }
-
-    private Member getMemberFromGithub(String code) {
-        String githubAccessToken = getGithubAccessToken(code);
-        GithubMemberResponse githubMemberResponse = getGithubMemberResponse(githubAccessToken);
-        return githubMemberResponse.toMember();
-
     }
 
     private String getGithubAccessToken(String code) {
@@ -97,10 +86,10 @@ public class AuthService {
         return githubTokenResponse.getAccessToken();
     }
 
-    private void validateTokenResponse(GithubTokenResponse githubTokenResponse) {
-        if (Objects.isNull(githubTokenResponse.getAccessToken())) {
-            throw new AuthorizationException("깃허브 로그인이 실패했습니다.");
-        }
+    private Member getMemberFromGithub(String code) {
+        String githubAccessToken = getGithubAccessToken(code);
+        GithubMemberResponse githubMemberResponse = getGithubMemberResponse(githubAccessToken);
+        return githubMemberResponse.toMember();
     }
 
     private GithubMemberResponse getGithubMemberResponse(String githubAccessToken) {
@@ -126,6 +115,17 @@ public class AuthService {
     private void validateMemberResponse(GithubMemberResponse githubMemberResponse) {
         if (Objects.isNull(githubMemberResponse)) {
             throw new AuthorizationException("깃허브 유저 정보 가져오기가 실패했습니다.");
+        }
+    }
+
+    private Member login(Member member) {
+        return memberService.findBySocialId(member.getSocialId())
+            .orElse(member);
+    }
+
+    private void validateTokenResponse(GithubTokenResponse githubTokenResponse) {
+        if (Objects.isNull(githubTokenResponse.getAccessToken())) {
+            throw new AuthorizationException("깃허브 로그인이 실패했습니다.");
         }
     }
 }

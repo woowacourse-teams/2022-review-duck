@@ -25,19 +25,17 @@ import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.service.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api")
+@AllArgsConstructor
 public class AuthController {
 
     private static final int SEVEN_DAYS = 7 * 24 * 60 * 60;
     
     private final AuthService authService;
-
-    public AuthController(final AuthService authService) {
-        this.authService = authService;
-    }
 
     @Operation(summary = "로그인을 시도한다.")
     @PostMapping("/login")

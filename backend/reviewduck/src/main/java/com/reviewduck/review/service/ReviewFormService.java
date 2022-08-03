@@ -1,7 +1,6 @@
 package com.reviewduck.review.service;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -16,27 +15,24 @@ import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
-import com.reviewduck.review.repository.ReviewFormQuestionRepository;
 import com.reviewduck.review.repository.ReviewFormRepository;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.domain.TemplateQuestion;
 import com.reviewduck.template.service.TemplateService;
 
+import lombok.AllArgsConstructor;
+
 @Service
-@Transactional
+@Transactional(readOnly = true)
+@AllArgsConstructor
 public class ReviewFormService {
 
     private final ReviewFormRepository reviewFormRepository;
-    private final ReviewFormQuestionRepository reviewFormQuestionRepository;
+
+    private final ReviewFormQuestionService reviewFormQuestionService;
     private final TemplateService templateService;
 
-    public ReviewFormService(ReviewFormRepository reviewFormRepository,
-        ReviewFormQuestionRepository reviewFormQuestionRepository, TemplateService templateService) {
-        this.reviewFormRepository = reviewFormRepository;
-        this.reviewFormQuestionRepository = reviewFormQuestionRepository;
-        this.templateService = templateService;
-    }
-
+    @Transactional
     public ReviewForm save(Member member, ReviewFormCreateRequest createRequest) {
         List<String> questionValues = createRequest.getQuestions().stream()
             .map(ReviewFormQuestionRequest::getQuestionValue)
@@ -46,45 +42,7 @@ public class ReviewFormService {
         return reviewFormRepository.save(reviewForm);
     }
 
-    @Transactional(readOnly = true)
-    public ReviewForm findByCode(String code) {
-        return reviewFormRepository.findByCode(code)
-            .orElseThrow(() -> new NotFoundException("존재하지 않는 회고 폼입니다."));
-    }
-
-    public ReviewForm update(Member member, String code, ReviewFormUpdateRequest updateRequest) {
-        ReviewForm reviewForm = findByCode(code);
-
-        List<ReviewFormQuestion> reviewFormQuestions = updateRequest.getQuestions().stream()
-            .map(request -> saveOrUpdateQuestion(request.getQuestionId(), request.getQuestionValue()))
-            .collect(Collectors.toUnmodifiableList());
-
-        validateReviewFormIsMine(member, reviewForm);
-
-        reviewForm.update(updateRequest.getReviewTitle(), reviewFormQuestions);
-
-        return reviewForm;
-    }
-
-    private void validateReviewFormIsMine(Member member, ReviewForm reviewForm) {
-        if (!reviewForm.isMine(member)) {
-            throw new AuthorizationException("본인이 생성한 회고 폼이 아니면 수정, 삭제할 수 없습니다.");
-        }
-    }
-
-    private ReviewFormQuestion saveOrUpdateQuestion(Long questionId, String questionValue) {
-        if (Objects.isNull(questionId)) {
-            return reviewFormQuestionRepository.save(new ReviewFormQuestion(questionValue));
-        }
-
-        ReviewFormQuestion reviewFormQuestion = reviewFormQuestionRepository.findById(questionId)
-            .orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
-
-        reviewFormQuestion.updateValue(questionValue);
-
-        return reviewFormQuestion;
-    }
-
+    @Transactional
     public ReviewForm saveFromTemplate(Member member, Long templateId, ReviewFormCreateFromTemplateRequest request) {
         Template template = templateService.findById(templateId);
 
@@ -97,17 +55,41 @@ public class ReviewFormService {
 
     }
 
-    public boolean isReviewFormCreator(ReviewForm reviewForm, Member member) {
-        return reviewForm.isMine(member);
+    public ReviewForm findByCode(String code) {
+        return reviewFormRepository.findByCode(code)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 회고 폼입니다."));
     }
 
     public List<ReviewForm> findByMember(Member member) {
         return reviewFormRepository.findByMember(member);
     }
 
+    @Transactional
+    public ReviewForm update(Member member, String code, ReviewFormUpdateRequest updateRequest) {
+        ReviewForm reviewForm = findByCode(code);
+
+        List<ReviewFormQuestion> reviewFormQuestions = updateRequest.getQuestions().stream()
+            .map(request -> reviewFormQuestionService.saveOrUpdateQuestion(request.getQuestionId(),
+                request.getQuestionValue()))
+            .collect(Collectors.toUnmodifiableList());
+
+        validateReviewFormIsMine(member, reviewForm);
+
+        reviewForm.update(updateRequest.getReviewTitle(), reviewFormQuestions);
+
+        return reviewForm;
+    }
+
+    @Transactional
     public void deleteByCode(Member member, String reviewFormCode) {
         ReviewForm reviewForm = findByCode(reviewFormCode);
         validateReviewFormIsMine(member, reviewForm);
         reviewFormRepository.delete(reviewForm);
+    }
+
+    private void validateReviewFormIsMine(Member member, ReviewForm reviewForm) {
+        if (!reviewForm.isMine(member)) {
+            throw new AuthorizationException("본인이 생성한 회고 폼이 아니면 수정, 삭제할 수 없습니다.");
+        }
     }
 }
