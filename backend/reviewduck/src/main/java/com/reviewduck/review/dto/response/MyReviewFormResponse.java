@@ -21,7 +21,7 @@ public class MyReviewFormResponse {
     public static MyReviewFormResponse from(ReviewForm reviewForm) {
         List<ReviewFormQuestionResponse> reviewFormQuestionResponses = reviewForm.getReviewFormQuestions().stream()
             .map(ReviewFormQuestionResponse::from)
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         long updatedAt = Timestamp.valueOf(reviewForm.getUpdatedAt()).getTime();
 

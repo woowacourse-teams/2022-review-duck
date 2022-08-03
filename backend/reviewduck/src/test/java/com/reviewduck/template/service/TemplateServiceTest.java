@@ -204,7 +204,7 @@ public class TemplateServiceTest {
 
         List<ReviewFormQuestion> expectedReviewFormQuestions = newQuestions.stream()
             .map(questionUpdateRequest -> new ReviewFormQuestion(questionUpdateRequest.getQuestionValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
         for (ReviewFormQuestion reviewFormQuestion : expectedReviewFormQuestions) {
@@ -284,7 +284,7 @@ public class TemplateServiceTest {
 
         List<ReviewFormQuestion> expectedReviewFormQuestions = questions2.stream()
             .map(questionUpdateRequest -> new ReviewFormQuestion(questionUpdateRequest.getQuestionValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
         for (ReviewFormQuestion reviewFormQuestion : expectedReviewFormQuestions) {
@@ -308,7 +308,7 @@ public class TemplateServiceTest {
     private List<ReviewFormQuestion> convertRequestToQuestions(List<TemplateQuestionRequest> questions) {
         List<ReviewFormQuestion> expected = questions.stream()
             .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
         for (ReviewFormQuestion reviewFormQuestion : expected) {

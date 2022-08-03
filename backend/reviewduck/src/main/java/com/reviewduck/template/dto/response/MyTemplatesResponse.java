@@ -17,7 +17,7 @@ public class MyTemplatesResponse {
     public static MyTemplatesResponse from(List<Template> templates) {
         List<MyTemplateResponse> myTemplateResponses = templates.stream()
             .map(MyTemplateResponse::from)
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         return new MyTemplatesResponse(templates.size(), myTemplateResponses);
     }

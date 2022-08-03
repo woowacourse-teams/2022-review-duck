@@ -17,8 +17,9 @@ public class MyReviewsResponse {
 
     public static MyReviewsResponse from(List<Review> reviews) {
         List<MyReviewResponse> reviewResponses = reviews.stream()
-            .map(MyReviewResponse::of)
-            .collect(Collectors.toList());
+            .map(MyReviewResponse::from)
+            .collect(Collectors.toUnmodifiableList());
+
         return new MyReviewsResponse(reviews.size(), reviewResponses);
     }
 }

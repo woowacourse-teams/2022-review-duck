@@ -71,7 +71,7 @@ public class ReviewFormServiceTest {
 
         List<ReviewFormQuestion> expected = questions.stream()
             .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
         for (ReviewFormQuestion reviewFormQuestion : expected) {
@@ -140,7 +140,7 @@ public class ReviewFormServiceTest {
 
         List<ReviewFormQuestion> expected = updateRequests.stream()
             .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
         for (ReviewFormQuestion reviewFormQuestion : expected) {
@@ -181,7 +181,7 @@ public class ReviewFormServiceTest {
 
         List<ReviewFormQuestion> expected = updateRequests.stream()
             .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
         for (ReviewFormQuestion reviewFormQuestion : expected) {
@@ -282,7 +282,7 @@ public class ReviewFormServiceTest {
 
         List<ReviewFormQuestion> expected = questions.stream()
             .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
         for (ReviewFormQuestion reviewFormQuestion : expected) {
@@ -320,7 +320,7 @@ public class ReviewFormServiceTest {
 
         List<ReviewFormQuestion> expected = questions1.stream()
             .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
         for (ReviewFormQuestion reviewFormQuestion : expected) {
