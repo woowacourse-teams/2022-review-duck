@@ -26,8 +26,8 @@ public class TemplateRepositoryTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    private static Member member1;
-    private static Member member2;
+    private Member member1;
+    private Member member2;
 
     @BeforeEach
     void createAndSaveMember() {

@@ -25,14 +25,15 @@ import com.reviewduck.review.dto.response.ReviewsResponse;
 
 public class ReviewAcceptanceTest extends AcceptanceTest {
 
-    private static String accessToken1;
-    private static String accessToken2;
     private static final Long invalidReviewId = 99L;
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
     private MemberService memberService;
+
+    private String accessToken1;
+    private String accessToken2;
 
     @BeforeEach
     void createMemberAndGetAccessToken() {

@@ -14,7 +14,8 @@ import com.reviewduck.member.domain.Member;
 public class ReviewTest {
 
     private final Member member = new Member("1", "socialId", "nickname", "profileUrl");
-    private final ReviewForm reviewForm = new ReviewForm(member, "title", List.of("question1", "question2", "question3"));
+    private final ReviewForm reviewForm = new ReviewForm(member, "title",
+        List.of("question1", "question2", "question3"));
 
     @Test
     @DisplayName("제약조건에 걸리지 않으면 회고가 생성된다.")
