@@ -31,6 +31,7 @@ function PageRoutes() {
               <Route path={PAGE_LIST.REVIEW}>
                 <Route index element={<ReviewPage />} />
                 <Route path=":reviewFormCode" element={<ReviewPage />} />
+                <Route path=":reviewFormCode/:reviewId" element={<ReviewPage />} />
               </Route>
             </Route>
 
