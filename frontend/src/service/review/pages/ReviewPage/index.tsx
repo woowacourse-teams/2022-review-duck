@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useState, useRef } from 'react';
 import { Navigate, useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 
 import cn from 'classnames';
@@ -9,7 +9,7 @@ import { RedirectState } from 'service/review/types';
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/review/hooks/useQuestions';
 
-import { Logo, ProgressBar, FieldSet, Text, Button, Icon, TextBox } from 'common/components';
+import { Logo, ProgressBar, FieldSet, Text, Button, Icon, Textarea } from 'common/components';
 
 import styles from './styles.module.scss';
 
@@ -50,6 +50,8 @@ function SubmitReviewPage() {
 
   const [currentQuestion, setCurrentQuestion] = useState<Question>(reviewForm.questions[0] || {});
   const [reviewTitle] = useState<string>(reviewForm.reviewTitle);
+
+  const textareaRefs = useRef<unknown[]>([]);
 
   const answeredCount = questions.reduce(
     (prev, current) => (current.answerValue ? prev + 1 : prev),
@@ -131,6 +133,15 @@ function SubmitReviewPage() {
     return <Navigate to={'/'} replace={true} />;
   }
 
+  const onResize = (index: number) => (event: React.KeyboardEvent) => {
+    const target = textareaRefs.current[index] as HTMLTextAreaElement;
+
+    if (event.key === 'Enter' || event.key === 'Backspace') {
+      const lineCount = questions[index].answerValue?.split('\n').length;
+      target.setAttribute('rows', String(lineCount) || '1');
+    }
+  };
+
   return (
     <>
       <div className={cn(styles.container)}>
@@ -189,11 +200,16 @@ function SubmitReviewPage() {
                 title={question.questionValue || ''}
                 description={question.questionDescription}
               >
-                <TextBox
-                  value={questions[index].answerValue || ''}
-                  onFocus={onUpdateCurrentQuestion(index)}
-                  onChange={onUpdateAnswer(index)}
-                />
+                <>
+                  <Textarea
+                    size="large"
+                    ref={(el) => (textareaRefs.current[index] = el)}
+                    value={questions[index].answerValue || ''}
+                    onFocus={onUpdateCurrentQuestion(index)}
+                    onChange={onUpdateAnswer(index)}
+                    onKeyDown={onResize(index)}
+                  />
+                </>
               </FieldSet>
             </div>
           ))}
