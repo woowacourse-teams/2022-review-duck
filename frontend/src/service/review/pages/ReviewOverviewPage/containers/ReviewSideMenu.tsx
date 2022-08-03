@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
 
+import { getElapsedTimeText } from 'service/@shared/utils';
+
 import { Button, Icon, Text, TextBox } from 'common/components';
 
 import styles from '../styles.module.scss';
@@ -69,7 +71,7 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
               업데이트
             </Text>
             <Text className={styles.text} size={14} weight="lighter">
-              {reviewForm?.updatedAt}일 전 업데이트 됨
+              {getElapsedTimeText(reviewForm?.updatedAt)} 업데이트 됨
             </Text>
           </div>
         </div>

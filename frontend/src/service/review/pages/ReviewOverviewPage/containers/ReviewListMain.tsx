@@ -2,6 +2,8 @@ import cn from 'classnames';
 
 import { Review } from 'service/review/types';
 
+import { getElapsedTimeText } from 'service/@shared/utils';
+
 import QuestionContent from 'service/@shared/components/QuestionContent';
 import Profile from 'service/review/components/Profile';
 import Reaction from 'service/review/components/Reaction';
@@ -27,7 +29,7 @@ function ReviewListMain({ reviewFormCode }: Record<'reviewFormCode', string>) {
               image={review.participant.profileUrl}
               key={review.reviewId}
               title={review.participant.nickname}
-              description="1일 전"
+              description={getElapsedTimeText(review.updatedAt)}
             />
           ))}
         </div>
@@ -43,7 +45,7 @@ function ReviewListMain({ reviewFormCode }: Record<'reviewFormCode', string>) {
             type="round"
             image={review.participant.profileUrl}
             title={`${review.participant.nickname}의 회고`}
-            description="오늘, 1회 조회됨"
+            description={getElapsedTimeText(review.updatedAt) + ' 작성'}
           />
 
           <hr />
