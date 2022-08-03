@@ -17,7 +17,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.hibernate.annotations.SQLDelete;
 
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.domain.Member;
@@ -52,7 +51,7 @@ public class ReviewForm extends BaseDate {
     private List<ReviewFormQuestion> reviewFormQuestions;
 
     @Column(nullable = false)
-    private final boolean isActive = true;
+    private boolean isActive = true;
 
     public ReviewForm(Member member, String reviewTitle, List<String> questionValues) {
         validate(reviewTitle, member, questionValues);

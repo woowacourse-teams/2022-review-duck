@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.reviewduck.review.exception.ReviewFormQuestionException;
 import com.reviewduck.template.exception.TemplateQuestionException;
 
 import lombok.AccessLevel;
