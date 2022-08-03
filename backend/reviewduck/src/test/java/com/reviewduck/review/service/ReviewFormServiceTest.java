@@ -52,10 +52,10 @@ public class ReviewFormServiceTest {
 
     @BeforeEach
     void setUp() {
-        Member tempMember1 = new Member("1","jason", "제이슨", "testUrl1");
+        Member tempMember1 = new Member("1", "jason", "제이슨", "testUrl1");
         member1 = memberService.save(tempMember1);
 
-        Member tempMember2 = new Member("2","woni", "워니", "testUrl2");
+        Member tempMember2 = new Member("2", "woni", "워니", "testUrl2");
         member2 = memberService.save(tempMember2);
     }
 
@@ -71,7 +71,7 @@ public class ReviewFormServiceTest {
 
         List<ReviewFormQuestion> expected = questions.stream()
             .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
         for (ReviewFormQuestion reviewFormQuestion : expected) {
@@ -140,7 +140,7 @@ public class ReviewFormServiceTest {
 
         List<ReviewFormQuestion> expected = updateRequests.stream()
             .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
         for (ReviewFormQuestion reviewFormQuestion : expected) {
@@ -181,7 +181,7 @@ public class ReviewFormServiceTest {
 
         List<ReviewFormQuestion> expected = updateRequests.stream()
             .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
         for (ReviewFormQuestion reviewFormQuestion : expected) {
@@ -190,7 +190,7 @@ public class ReviewFormServiceTest {
 
         assertThatThrownBy(() -> reviewFormService.update(member2, code, updateRequest))
             .isInstanceOf(AuthorizationException.class)
-            .hasMessageContaining("본인이 생성한 회고 폼이 아니면 수정, 삭제할 수 없습니다.");
+            .hasMessageContaining("본인이 생성한 회고 폼이 아니면 수정할 수 없습니다.");
     }
 
     @Test
@@ -249,7 +249,7 @@ public class ReviewFormServiceTest {
         // when, then
         assertThatThrownBy(() -> reviewFormService.deleteByCode(member2, code))
             .isInstanceOf(AuthorizationException.class)
-            .hasMessageContaining("본인이 생성한 회고 폼이 아니면 수정, 삭제할 수 없습니다.");
+            .hasMessageContaining("본인이 생성한 회고 폼이 아니면 삭제할 수 없습니다.");
     }
 
     @Test
@@ -282,7 +282,7 @@ public class ReviewFormServiceTest {
 
         List<ReviewFormQuestion> expected = questions.stream()
             .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
         for (ReviewFormQuestion reviewFormQuestion : expected) {
@@ -320,7 +320,7 @@ public class ReviewFormServiceTest {
 
         List<ReviewFormQuestion> expected = questions1.stream()
             .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
         for (ReviewFormQuestion reviewFormQuestion : expected) {
@@ -352,6 +352,7 @@ public class ReviewFormServiceTest {
         List<ReviewFormQuestionRequest> createRequests = List.of(new ReviewFormQuestionRequest("question1"),
             new ReviewFormQuestionRequest("question2"));
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest("title", createRequests);
+
         return reviewFormService.save(member, createRequest);
     }
 }

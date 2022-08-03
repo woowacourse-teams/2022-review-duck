@@ -19,7 +19,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.reviewduck.auth.service.AuthService;
+import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.request.AnswerUpdateRequest;
@@ -30,7 +30,8 @@ import com.reviewduck.review.service.ReviewService;
 public class ReviewControllerTest {
 
     private static final String accessToken = "access_token";
-    private final Long invalidReviewId = 1L;
+    private static final Long invalidReviewId = 1L;
+
     @Autowired
     private MockMvc mockMvc;
     @Autowired
@@ -38,14 +39,14 @@ public class ReviewControllerTest {
     @MockBean
     private ReviewService reviewService;
     @MockBean
-    private AuthService authService;
+    private JwtTokenProvider jwtTokenProvider;
     @MockBean
     private MemberService memberService;
 
     @BeforeEach
     void createMemberAndGetAccessToken() {
-        Member member = new Member("1","jason", "제이슨", "profileUrl");
-        given(authService.getPayload(any())).willReturn("1");
+        Member member = new Member("1", "jason", "제이슨", "profileUrl");
+        given(jwtTokenProvider.getPayload(any())).willReturn("1");
         given(memberService.findById(any())).willReturn(member);
     }
 

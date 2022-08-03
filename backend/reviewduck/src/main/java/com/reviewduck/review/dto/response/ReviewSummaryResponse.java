@@ -16,9 +16,8 @@ public class ReviewSummaryResponse {
     private List<QuestionAnswerResponse> answers;
 
     public static ReviewSummaryResponse from(Review review) {
-
         List<QuestionAnswerResponse> answers = review.getQuestionAnswers().stream()
-            .map(answer -> QuestionAnswerResponse.from(answer))
+            .map(QuestionAnswerResponse::from)
             .collect(Collectors.toUnmodifiableList());
 
         return new ReviewSummaryResponse(answers);

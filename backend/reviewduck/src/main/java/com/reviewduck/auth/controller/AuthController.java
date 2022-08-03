@@ -1,5 +1,7 @@
 package com.reviewduck.auth.controller;
 
+import static com.reviewduck.common.util.Logging.*;
+
 import java.util.Objects;
 
 import javax.servlet.http.Cookie;
@@ -18,37 +20,35 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.reviewduck.auth.dto.request.LoginRequest;
 import com.reviewduck.auth.dto.response.TokenResponse;
-import com.reviewduck.auth.dto.service.Tokens;
+import com.reviewduck.auth.dto.service.TokensDto;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.service.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.extern.slf4j.Slf4j;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/api")
-@Slf4j
+@AllArgsConstructor
 public class AuthController {
-    private final AuthService authService;
 
-    public AuthController(final AuthService authService) {
-        this.authService = authService;
-    }
+    private static final int SEVEN_DAYS = 7 * 24 * 60 * 60;
+
+    private final AuthService authService;
 
     @Operation(summary = "로그인을 시도한다.")
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     public TokenResponse login(@RequestBody @Valid LoginRequest request, HttpServletResponse response) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/login", "POST", request.toString());
+        info("/api/login", "POST", request.toString());
 
-        Tokens tokens = authService.createTokens(request);
+        TokensDto tokensDto = authService.createTokens(request);
 
-        ResponseCookie cookie = createRefreshToken(tokens);
+        ResponseCookie cookie = createRefreshToken(tokensDto);
         response.setHeader("Set-Cookie", cookie.toString());
 
-        return new TokenResponse(tokens.getAccessToken());
+        return new TokenResponse(tokensDto.getAccessToken());
     }
 
     @Operation(summary = "리프레시 토큰을 사용한 로그인 연장을 시도한다.")
@@ -57,23 +57,17 @@ public class AuthController {
     public TokenResponse refresh(@CookieValue(value = "refreshToken", required = false) Cookie cookie,
         HttpServletResponse response) {
 
-        log.info("uri={}, method = {}", "/api/login/refresh", "POST");
+        info("/api/login/refresh", "POST", "");
 
-        validateNullRefreshTokenCookie(cookie);
+        validateCookie(cookie);
 
         String refreshToken = cookie.getValue();
-        Tokens tokens = authService.regenerateTokens(refreshToken);
+        TokensDto tokensDto = authService.regenerateTokens(refreshToken);
 
-        ResponseCookie refreshTokenCookie = createRefreshToken(tokens);
+        ResponseCookie refreshTokenCookie = createRefreshToken(tokensDto);
         response.setHeader("Set-Cookie", refreshTokenCookie.toString());
 
-        return new TokenResponse(tokens.getAccessToken());
-    }
-
-    private void validateNullRefreshTokenCookie(Cookie cookie) {
-        if (Objects.isNull(cookie)) {
-            throw new AuthorizationException("리프레시 토큰이 없습니다.");
-        }
+        return new TokenResponse(tokensDto.getAccessToken());
     }
 
     @Operation(summary = "로그아웃을 시도한다.")
@@ -82,7 +76,7 @@ public class AuthController {
     public void logout(@CookieValue(value = "refreshToken", required = false) Cookie cookie,
         HttpServletResponse response) {
 
-        log.info("uri={}, method = {}", "/api/login", "POST");
+        info("/api/login", "POST", "");
 
         if (!Objects.isNull(cookie)) {
             cookie.setMaxAge(0);
@@ -90,9 +84,15 @@ public class AuthController {
         }
     }
 
-    private ResponseCookie createRefreshToken(Tokens tokens) {
-        return ResponseCookie.from("refreshToken", tokens.getRefreshToken())
-            .maxAge(7 * 24 * 60 * 60)
+    private void validateCookie(Cookie cookie) {
+        if (Objects.isNull(cookie)) {
+            throw new AuthorizationException("리프레시 토큰이 없습니다.");
+        }
+    }
+
+    private ResponseCookie createRefreshToken(TokensDto tokensDto) {
+        return ResponseCookie.from("refreshToken", tokensDto.getRefreshToken())
+            .maxAge(SEVEN_DAYS)
             .path("/")
             .secure(true)
             .sameSite("None")

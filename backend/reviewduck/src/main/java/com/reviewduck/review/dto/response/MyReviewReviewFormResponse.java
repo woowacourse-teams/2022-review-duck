@@ -9,6 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class MyReviewReviewFormResponse {
+
     private String title;
     private String code;
     private CreatorResponse creator;

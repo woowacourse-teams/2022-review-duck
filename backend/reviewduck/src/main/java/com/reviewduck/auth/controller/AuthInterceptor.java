@@ -6,16 +6,15 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.reviewduck.auth.service.AuthService;
 import com.reviewduck.auth.support.AuthorizationExtractor;
+import com.reviewduck.auth.support.JwtTokenProvider;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class AuthInterceptor implements HandlerInterceptor {
 
-    private final AuthService authService;
-
-    public AuthInterceptor(AuthService authService) {
-        this.authService = authService;
-    }
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
@@ -35,6 +34,6 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     public void validateToken(HttpServletRequest request) {
         String token = AuthorizationExtractor.extract(request);
-        authService.validateToken(token);
+        jwtTokenProvider.validateToken(token);
     }
 }
