@@ -14,7 +14,11 @@ function ModalProvider({ contentList }: Props) {
 
   const ModalContent = contentList[modalKey];
 
-  const onCloseModal = () => {
+  const onCloseModal = ({ target, currentTarget }: React.MouseEvent) => {
+    const isCapturing = target !== currentTarget;
+
+    if (isCapturing) return;
+
     setModal((currentState) => ({ ...currentState, isVisible: false }));
   };
 
