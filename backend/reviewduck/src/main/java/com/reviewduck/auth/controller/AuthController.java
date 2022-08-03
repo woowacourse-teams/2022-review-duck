@@ -1,5 +1,7 @@
 package com.reviewduck.auth.controller;
 
+import static com.reviewduck.common.util.Logging.*;
+
 import java.util.Objects;
 
 import javax.servlet.http.Cookie;
@@ -27,7 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api")
-@Slf4j
 public class AuthController {
 
     private static final int SEVEN_DAYS = 7 * 24 * 60 * 60;
@@ -43,8 +44,7 @@ public class AuthController {
     @ResponseStatus(HttpStatus.OK)
     public TokenResponse login(@RequestBody @Valid LoginRequest request, HttpServletResponse response) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/login", "POST", request.toString());
+        info("/api/login", "POST", request.toString());
 
         TokensDto tokensDto = authService.createTokens(request);
 
@@ -60,7 +60,7 @@ public class AuthController {
     public TokenResponse refresh(@CookieValue(value = "refreshToken", required = false) Cookie cookie,
         HttpServletResponse response) {
 
-        log.info("uri={}, method = {}", "/api/login/refresh", "POST");
+        info("/api/login/refresh", "POST","");
 
         validateCookie(cookie);
 
@@ -85,7 +85,7 @@ public class AuthController {
     public void logout(@CookieValue(value = "refreshToken", required = false) Cookie cookie,
         HttpServletResponse response) {
 
-        log.info("uri={}, method = {}", "/api/login", "POST");
+        info( "/api/login", "POST","");
 
         if (!Objects.isNull(cookie)) {
             cookie.setMaxAge(0);

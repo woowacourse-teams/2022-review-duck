@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilter;
 
 @Configuration
-@Slf4j
 @AllArgsConstructor
 public class XssConfig implements WebMvcConfigurer {
 

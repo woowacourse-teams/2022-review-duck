@@ -1,5 +1,7 @@
 package com.reviewduck.review.controller;
 
+import static com.reviewduck.common.util.Logging.*;
+
 import java.util.List;
 
 import javax.validation.Valid;
@@ -29,7 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/reviews")
 @AllArgsConstructor
-@Slf4j
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -39,8 +40,7 @@ public class ReviewController {
     @ResponseStatus(HttpStatus.OK)
     public ReviewSummaryResponse findById(@AuthenticationPrincipal Member member, @PathVariable Long reviewId) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/reviews/" + reviewId, "GET", "");
+        info("/api/reviews/" + reviewId, "GET", "");
 
         return ReviewSummaryResponse.from(reviewService.findById(reviewId));
     }
@@ -51,8 +51,7 @@ public class ReviewController {
     public void update(@AuthenticationPrincipal Member member, @PathVariable Long reviewId,
         @RequestBody @Valid ReviewUpdateRequest request) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/reviews/" + reviewId, "PUT", request.toString());
+        info("/api/reviews/" + reviewId, "PUT", request.toString());
 
         reviewService.update(member, reviewId, request);
     }
@@ -62,8 +61,7 @@ public class ReviewController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal Member member, @PathVariable Long reviewId) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/reviews/" + reviewId, "DELETE", "");
+        info("/api/reviews/" + reviewId, "DELETE", "");
 
         reviewService.delete(member, reviewId);
     }
@@ -74,8 +72,7 @@ public class ReviewController {
     public MyReviewsResponse findByMember(@AuthenticationPrincipal Member member) {
         List<Review> reviews = reviewService.findByMember(member);
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/reviews/me", "GET", "");
+        info("/api/reviews/me", "GET", "");
 
         return MyReviewsResponse.from(reviews);
     }

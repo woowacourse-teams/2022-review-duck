@@ -1,5 +1,7 @@
 package com.reviewduck.review.controller;
 
+import static com.reviewduck.common.util.Logging.*;
+
 import java.util.List;
 
 import javax.validation.Valid;
@@ -34,7 +36,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/review-forms")
-@Slf4j
 public class ReviewFormController {
 
     private final ReviewFormService reviewFormService;
@@ -51,8 +52,7 @@ public class ReviewFormController {
     public ReviewFormCodeResponse create(@AuthenticationPrincipal Member member,
         @RequestBody @Valid ReviewFormCreateRequest request) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/review-forms", "POST", request.toString());
+        info("/api/review-forms", "POST", request.toString());
 
         ReviewForm reviewForm = reviewFormService.save(member, request);
         return ReviewFormCodeResponse.from(reviewForm);
@@ -63,8 +63,7 @@ public class ReviewFormController {
     @ResponseStatus(HttpStatus.OK)
     public ReviewFormResponse find(@AuthenticationPrincipal Member member, @PathVariable String reviewFormCode) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/review-forms/" + reviewFormCode, "GET", "");
+        info("/api/review-forms/" + reviewFormCode, "GET", "");
 
         ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
         boolean isCreator = reviewFormService.isReviewFormCreator(reviewForm, member);
@@ -78,8 +77,7 @@ public class ReviewFormController {
     public ReviewFormCodeResponse update(@AuthenticationPrincipal Member member, @PathVariable String reviewFormCode,
         @RequestBody @Valid ReviewFormUpdateRequest request) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/review-forms/" + reviewFormCode, "PUT", request.toString());
+        info("/api/review-forms/" + reviewFormCode, "PUT", request.toString());
 
         ReviewForm reviewForm = reviewFormService.update(member, reviewFormCode, request);
         return ReviewFormCodeResponse.from(reviewForm);
@@ -90,8 +88,7 @@ public class ReviewFormController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal Member member, @PathVariable String reviewFormCode) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/review-forms/" + reviewFormCode, "DELETE", "");
+        info("/api/review-forms/" + reviewFormCode, "DELETE", "");
 
         reviewFormService.deleteByCode(member, reviewFormCode);
     }
@@ -102,8 +99,7 @@ public class ReviewFormController {
     public void create(@AuthenticationPrincipal Member member, @PathVariable String reviewFormCode,
         @RequestBody @Valid ReviewRequest request) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/review-forms/" + reviewFormCode, "POST", request.toString());
+        info("/api/review-forms/" + reviewFormCode, "POST", request.toString());
 
         reviewService.save(member, reviewFormCode, request);
     }
@@ -114,8 +110,7 @@ public class ReviewFormController {
     public ReviewsResponse findByCode(@AuthenticationPrincipal Member member,
         @PathVariable String reviewFormCode) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/review-forms/" + reviewFormCode + "/reviews", "GET", "");
+        info("/api/review-forms/" + reviewFormCode + "/reviews", "GET", "");
 
         List<Review> reviews = reviewService.findAllByCode(reviewFormCode);
 
@@ -127,8 +122,7 @@ public class ReviewFormController {
     @ResponseStatus(HttpStatus.OK)
     public MyReviewFormsResponse findByMember(@AuthenticationPrincipal Member member) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/review-forms/me", "GET", "");
+        info("/api/review-forms/me", "GET", "");
 
         List<ReviewForm> reviewForms = reviewFormService.findByMember(member);
 

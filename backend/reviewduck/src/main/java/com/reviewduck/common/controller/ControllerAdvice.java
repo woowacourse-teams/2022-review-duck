@@ -1,5 +1,7 @@
 package com.reviewduck.common.controller;
 
+import static com.reviewduck.common.util.Logging.*;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -11,18 +13,18 @@ import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.dto.ErrorResponse;
 import com.reviewduck.common.exception.CustomException;
 import com.reviewduck.common.exception.NotFoundException;
+import com.reviewduck.common.util.Logging;
 
 import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
-@Slf4j
 public class ControllerAdvice {
 
     @ExceptionHandler(CustomException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleCustomException(Exception e) {
 
-        log.error(e.getMessage());
+        error(e.getMessage());
 
         return new ErrorResponse(e.getMessage());
     }
@@ -31,7 +33,7 @@ public class ControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleParameter(MethodArgumentNotValidException e) {
 
-        log.error(e.getMessage());
+        error(e.getMessage());
 
         StringBuilder message = new StringBuilder();
 
@@ -46,7 +48,7 @@ public class ControllerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(Exception e) {
 
-        log.error(e.getMessage());
+        error(e.getMessage());
 
         return new ErrorResponse(e.getMessage());
     }
@@ -55,7 +57,7 @@ public class ControllerAdvice {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorResponse handleAuthorizationException(Exception e) {
 
-        log.error(e.getMessage());
+        error(e.getMessage());
 
         return new ErrorResponse(e.getMessage());
     }
@@ -64,7 +66,7 @@ public class ControllerAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleException(Exception e) {
 
-        log.error(e.getMessage());
+        error(e.getMessage());
 
         return new ErrorResponse("예상치 못한 오류가 발생하였습니다.");
     }

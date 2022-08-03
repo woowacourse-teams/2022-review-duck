@@ -1,5 +1,7 @@
 package com.reviewduck.template.controller;
 
+import static com.reviewduck.common.util.Logging.*;
+
 import java.util.List;
 
 import javax.validation.Valid;
@@ -35,7 +37,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/templates")
-@Slf4j
 public class TemplateController {
 
     private final TemplateService templateService;
@@ -52,8 +53,7 @@ public class TemplateController {
     public TemplateCreateResponse create(@AuthenticationPrincipal Member member,
         @RequestBody @Valid TemplateCreateRequest request) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/templates", "POST", request.toString());
+        info("/api/templates", "POST", request.toString());
 
         Template template = templateService.save(member, request);
         return TemplateCreateResponse.from(template);
@@ -66,8 +66,7 @@ public class TemplateController {
         @PathVariable Long templateId,
         @RequestBody @Valid ReviewFormCreateFromTemplateRequest request) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/templates/" + templateId + "/review-forms", "POST", request.toString());
+        info("/api/templates/" + templateId + "/review-forms", "POST", request.toString());
 
         ReviewForm reviewForm = reviewFormService.saveFromTemplate(member, templateId, request);
         return ReviewFormCodeResponse.from(reviewForm);
@@ -78,8 +77,7 @@ public class TemplateController {
     @ResponseStatus(HttpStatus.OK)
     public TemplateResponse find(@AuthenticationPrincipal Member member, @PathVariable Long templateId) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/templates/" + templateId, "GET", "");
+        info("/api/templates/" + templateId, "GET", "");
 
         Template template = templateService.findById(templateId);
         return TemplateResponse.from(template);
@@ -90,8 +88,7 @@ public class TemplateController {
     @ResponseStatus(HttpStatus.OK)
     public TemplatesFindResponse findAll(@AuthenticationPrincipal Member member) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/templates", "GET", "");
+        info("/api/templates", "GET", "");
 
         List<Template> templates = templateService.findAll();
         return TemplatesFindResponse.from(templates);
@@ -102,8 +99,7 @@ public class TemplateController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal Member member, @PathVariable Long templateId) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/templates/" + templateId, "DELETE", "");
+        info("/api/templates/" + templateId, "DELETE", "");
 
         templateService.deleteById(member, templateId);
     }
@@ -114,8 +110,7 @@ public class TemplateController {
     public void update(@AuthenticationPrincipal Member member, @PathVariable Long templateId,
         @RequestBody @Valid TemplateUpdateRequest request) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/templates/" + templateId, "PUT", "");
+        info("/api/templates/" + templateId, "PUT", "");
 
         templateService.update(member, templateId, request);
     }
@@ -125,8 +120,7 @@ public class TemplateController {
     @ResponseStatus(HttpStatus.OK)
     public MyTemplatesResponse findByMember(@AuthenticationPrincipal Member member) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/templates/me", "GET", "");
+        info("/api/templates/me", "GET", "");
 
         List<Template> templates = templateService.findByMember(member);
 
