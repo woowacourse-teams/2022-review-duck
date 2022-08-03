@@ -70,12 +70,6 @@ public class AuthController {
         return new TokenResponse(tokensDto.getAccessToken());
     }
 
-    private void validateCookie(Cookie cookie) {
-        if (Objects.isNull(cookie)) {
-            throw new AuthorizationException("리프레시 토큰이 없습니다.");
-        }
-    }
-
     @Operation(summary = "로그아웃을 시도한다.")
     @GetMapping("/logout")
     @ResponseStatus(HttpStatus.OK)
@@ -87,6 +81,12 @@ public class AuthController {
         if (!Objects.isNull(cookie)) {
             cookie.setMaxAge(0);
             response.addCookie(cookie);
+        }
+    }
+
+    private void validateCookie(Cookie cookie) {
+        if (Objects.isNull(cookie)) {
+            throw new AuthorizationException("리프레시 토큰이 없습니다.");
         }
     }
 

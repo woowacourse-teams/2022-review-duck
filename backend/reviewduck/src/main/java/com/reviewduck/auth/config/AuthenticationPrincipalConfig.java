@@ -13,16 +13,14 @@ import com.reviewduck.auth.controller.AuthenticationPrincipalArgumentResolver;
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.service.MemberService;
 
+import lombok.AllArgsConstructor;
+
 @Configuration
+@AllArgsConstructor
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
-
-    public AuthenticationPrincipalConfig(JwtTokenProvider jwtTokenProvider, MemberService memberService) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.memberService = memberService;
-    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

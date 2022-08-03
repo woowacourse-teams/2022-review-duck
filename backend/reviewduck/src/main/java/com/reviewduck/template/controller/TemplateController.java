@@ -33,18 +33,15 @@ import com.reviewduck.template.dto.response.TemplatesFindResponse;
 import com.reviewduck.template.service.TemplateService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/api/templates")
+@AllArgsConstructor
 public class TemplateController {
 
     private final TemplateService templateService;
     private final ReviewFormService reviewFormService;
-
-    public TemplateController(TemplateService templateService, ReviewFormService reviewFormService) {
-        this.templateService = templateService;
-        this.reviewFormService = reviewFormService;
-    }
 
     @Operation(summary = "템플릿을 생성한다.")
     @PostMapping
