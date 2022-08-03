@@ -57,13 +57,13 @@ function ReviewList({ filter }: Record<'filter', string>) {
                     to={`${PAGE_LIST.REVIEW}/${review.reviewForm.code}/${review.reviewId}`}
                     state={{ redirect: `${PAGE_LIST.MY_PAGE}` }}
                   >
-                    <Icon className={styles.icon} code="edit"></Icon>
+                    <Icon className={styles.icon} code="edit" />
                   </Link>
                   <Icon
                     className={styles.icon}
                     code="delete"
                     onClick={onDeleteReview(review.reviewId)}
-                  ></Icon>
+                  />
                 </div>
               </div>
 
@@ -93,7 +93,7 @@ function ReviewList({ filter }: Record<'filter', string>) {
                     className={styles.icon}
                     code="delete"
                     onClick={onDeleteReviewForm(reviewForm.code)}
-                  ></Icon>
+                  />
                 </div>
               </div>
               <hr />
