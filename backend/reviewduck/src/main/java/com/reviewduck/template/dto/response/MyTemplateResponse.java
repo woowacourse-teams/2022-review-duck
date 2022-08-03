@@ -4,12 +4,14 @@ import java.sql.Timestamp;
 
 import com.reviewduck.template.domain.Template;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class MyTemplateResponse {
+
     private Long templateId;
     private long updatedAt;
     private String templateTitle;

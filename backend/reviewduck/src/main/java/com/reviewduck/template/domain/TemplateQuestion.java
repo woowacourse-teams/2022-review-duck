@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.reviewduck.review.exception.ReviewFormQuestionException;
 import com.reviewduck.template.exception.TemplateQuestionException;
 
 import lombok.AccessLevel;
@@ -38,7 +39,13 @@ public class TemplateQuestion {
     }
 
     public void updateValue(String value) {
+        validate(value);
         this.value = value;
+    }
+
+    public void setPosition(int position) {
+        validatePosition(position);
+        this.position = position;
     }
 
     private void validate(String value) {
@@ -58,7 +65,9 @@ public class TemplateQuestion {
         }
     }
 
-    public void setPosition(int position) {
-        this.position = position;
+    private void validatePosition(int position) {
+        if (position < 0) {
+            throw new TemplateQuestionException("질문 생성 중 에러가 발생하였습니다.");
+        }
     }
 }

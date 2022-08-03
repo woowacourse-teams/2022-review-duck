@@ -14,16 +14,13 @@ import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
-
-    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider,
-        MemberService memberService) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.memberService = memberService;
-    }
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {

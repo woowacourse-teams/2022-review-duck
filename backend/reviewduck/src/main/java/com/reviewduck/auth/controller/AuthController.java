@@ -26,7 +26,6 @@ import com.reviewduck.auth.service.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api")
@@ -34,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthController {
 
     private static final int SEVEN_DAYS = 7 * 24 * 60 * 60;
-    
+
     private final AuthService authService;
 
     @Operation(summary = "로그인을 시도한다.")
@@ -58,7 +57,7 @@ public class AuthController {
     public TokenResponse refresh(@CookieValue(value = "refreshToken", required = false) Cookie cookie,
         HttpServletResponse response) {
 
-        info("/api/login/refresh", "POST","");
+        info("/api/login/refresh", "POST", "");
 
         validateCookie(cookie);
 
@@ -71,23 +70,23 @@ public class AuthController {
         return new TokenResponse(tokensDto.getAccessToken());
     }
 
-    private void validateCookie(Cookie cookie) {
-        if (Objects.isNull(cookie)) {
-            throw new AuthorizationException("리프레시 토큰이 없습니다.");
-        }
-    }
-
     @Operation(summary = "로그아웃을 시도한다.")
     @GetMapping("/logout")
     @ResponseStatus(HttpStatus.OK)
     public void logout(@CookieValue(value = "refreshToken", required = false) Cookie cookie,
         HttpServletResponse response) {
 
-        info( "/api/login", "POST","");
+        info("/api/login", "POST", "");
 
         if (!Objects.isNull(cookie)) {
             cookie.setMaxAge(0);
             response.addCookie(cookie);
+        }
+    }
+
+    private void validateCookie(Cookie cookie) {
+        if (Objects.isNull(cookie)) {
+            throw new AuthorizationException("리프레시 토큰이 없습니다.");
         }
     }
 
