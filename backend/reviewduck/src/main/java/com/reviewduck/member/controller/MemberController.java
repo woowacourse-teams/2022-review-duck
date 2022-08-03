@@ -9,12 +9,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reviewduck.auth.support.AuthenticationPrincipal;
-import com.reviewduck.common.util.Logging;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.response.MemberResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/members")

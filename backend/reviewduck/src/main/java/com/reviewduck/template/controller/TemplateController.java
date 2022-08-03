@@ -34,7 +34,6 @@ import com.reviewduck.template.service.TemplateService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/templates")

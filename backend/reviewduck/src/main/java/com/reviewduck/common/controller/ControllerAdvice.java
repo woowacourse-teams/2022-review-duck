@@ -13,9 +13,6 @@ import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.dto.ErrorResponse;
 import com.reviewduck.common.exception.CustomException;
 import com.reviewduck.common.exception.NotFoundException;
-import com.reviewduck.common.util.Logging;
-
-import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
 public class ControllerAdvice {

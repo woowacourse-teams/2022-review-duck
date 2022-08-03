@@ -22,7 +22,7 @@ public class MemberRepositoryTest {
     @DisplayName("멤버를 저장한다.")
     void saveMember() {
         // given
-        Member member = new Member("1","panda", "제이슨", "testUrl");
+        Member member = new Member("1", "panda", "제이슨", "testUrl");
 
         // when
         Member savedMember = memberRepository.save(member);
@@ -39,7 +39,7 @@ public class MemberRepositoryTest {
     @DisplayName("소셜 아이디로 존재 여부를 확인한다.")
     void existsMemberBySocialId() {
         // given
-        Member member = new Member("1","panda", "제이슨", "testUrl");
+        Member member = new Member("1", "panda", "제이슨", "testUrl");
         memberRepository.save(member);
 
         // when
@@ -57,7 +57,7 @@ public class MemberRepositoryTest {
     @DisplayName("소셜 아이디로 멤버를 조회한다.")
     void findMemberBySocialId() {
         // given
-        Member member = new Member("1","panda", "제이슨", "testUrl");
+        Member member = new Member("1", "panda", "제이슨", "testUrl");
         memberRepository.save(member);
 
         // when

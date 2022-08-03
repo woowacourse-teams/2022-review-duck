@@ -32,7 +32,6 @@ import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/review-forms")
