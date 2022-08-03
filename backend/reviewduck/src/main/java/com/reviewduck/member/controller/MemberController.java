@@ -25,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/members")
 @AllArgsConstructor
-@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
@@ -46,8 +45,7 @@ public class MemberController {
     public void updateMyNickname(@AuthenticationPrincipal Member member, @Valid @RequestBody
         MemberUpdateNicknameRequest request) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/members/me", "PUT", request.toString());
+        info("/api/members/me", "PUT", request.toString());
 
         memberService.updateNickname(member, request.getNickname());
     }
