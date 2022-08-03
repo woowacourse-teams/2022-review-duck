@@ -21,13 +21,13 @@ import com.reviewduck.template.domain.Template;
 @DataJpaTest
 public class TemplateRepositoryTest {
 
-    private static Member member1;
-    private static Member member2;
-
     @Autowired
     private TemplateRepository templateRepository;
     @Autowired
     private MemberRepository memberRepository;
+
+    private static Member member1;
+    private static Member member2;
 
     @BeforeEach
     void createAndSaveMember() {

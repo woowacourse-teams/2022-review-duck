@@ -15,6 +15,7 @@ import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.service.MemberService;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
+
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     @Autowired

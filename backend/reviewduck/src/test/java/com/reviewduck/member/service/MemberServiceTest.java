@@ -21,9 +21,10 @@ import com.reviewduck.member.domain.Member;
 @Transactional
 public class MemberServiceTest {
 
-    private Member savedMember;
     @Autowired
     private MemberService memberService;
+
+    private Member savedMember;
 
     @BeforeEach
     void createAndSaveMember() {

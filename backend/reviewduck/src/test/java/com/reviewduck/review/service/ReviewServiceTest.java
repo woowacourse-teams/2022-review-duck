@@ -32,7 +32,8 @@ import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 @Transactional
 public class ReviewServiceTest {
 
-    private final String invalidCode = "aaaaaaaa";
+    private static final String invalidCode = "aaaaaaaa";
+
     @Autowired
     private ReviewFormService reviewFormService;
     @Autowired

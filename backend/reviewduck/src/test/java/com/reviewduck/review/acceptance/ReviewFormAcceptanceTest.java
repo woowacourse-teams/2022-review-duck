@@ -32,7 +32,8 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
     private static String accessToken1;
     private static String accessToken2;
-    private final String invalidCode = "aaaaaaaa";
+    private static final String invalidCode = "aaaaaaaa";
+
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     @Autowired

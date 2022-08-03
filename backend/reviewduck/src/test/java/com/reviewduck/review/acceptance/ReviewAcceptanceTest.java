@@ -27,7 +27,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
     private static String accessToken1;
     private static String accessToken2;
-    private final Long invalidReviewId = 99L;
+    private static final Long invalidReviewId = 99L;
+
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     @Autowired

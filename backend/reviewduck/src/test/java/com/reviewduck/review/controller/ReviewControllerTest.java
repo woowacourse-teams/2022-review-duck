@@ -30,7 +30,8 @@ import com.reviewduck.review.service.ReviewService;
 public class ReviewControllerTest {
 
     private static final String accessToken = "access_token";
-    private final Long invalidReviewId = 1L;
+    private static final Long invalidReviewId = 1L;
+
     @Autowired
     private MockMvc mockMvc;
     @Autowired

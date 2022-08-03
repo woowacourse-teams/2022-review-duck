@@ -25,12 +25,14 @@ import com.reviewduck.template.dto.response.MyTemplatesResponse;
 import com.reviewduck.template.dto.response.TemplateCreateResponse;
 
 public class TemplateAcceptanceTest extends AcceptanceTest {
-    private static String accessToken1;
-    private static String accessToken2;
+
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
     private MemberService memberService;
+
+    private String accessToken1;
+    private String accessToken2;
 
     @BeforeEach
     void createMemberAndGetAccessToken() {
