@@ -8,19 +8,20 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import com.reviewduck.auth.service.AuthService;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.auth.support.AuthorizationExtractor;
+import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private final AuthService authService;
+
+    private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
 
-    public AuthenticationPrincipalArgumentResolver(AuthService authService,
+    public AuthenticationPrincipalArgumentResolver(JwtTokenProvider jwtTokenProvider,
         MemberService memberService) {
-        this.authService = authService;
+        this.jwtTokenProvider = jwtTokenProvider;
         this.memberService = memberService;
     }
 
@@ -36,9 +37,9 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
         String token = AuthorizationExtractor.extract(request);
 
-        authService.validateToken(token);
+        jwtTokenProvider.validateToken(token);
 
-        Long memberId = Long.parseLong(authService.getPayload(token));
+        Long memberId = Long.parseLong(jwtTokenProvider.getPayload(token));
 
         return memberService.findById(memberId);
     }

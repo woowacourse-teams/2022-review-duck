@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reviewduck.auth.service.AuthService;
+import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.request.AnswerRequest;
@@ -51,7 +52,7 @@ public class ReviewFormControllerTest {
     private ReviewService reviewService;
 
     @MockBean
-    private AuthService authService;
+    private JwtTokenProvider jwtTokenProvider;
 
     @MockBean
     private MemberService memberService;
@@ -59,7 +60,7 @@ public class ReviewFormControllerTest {
     @BeforeEach
     void createMemberAndGetAccessToken() {
         Member member = new Member("1","jason", "제이슨", "profileUrl");
-        given(authService.getPayload(any())).willReturn("1");
+        given(jwtTokenProvider.getPayload(any())).willReturn("1");
         given(memberService.findById(any())).willReturn(member);
     }
 

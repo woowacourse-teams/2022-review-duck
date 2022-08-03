@@ -11,21 +11,23 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.reviewduck.auth.controller.AuthInterceptor;
 import com.reviewduck.auth.controller.AuthenticationPrincipalArgumentResolver;
 import com.reviewduck.auth.service.AuthService;
+import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.service.MemberService;
 
 @Configuration
 public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
-    private final AuthService authService;
+
+    private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
 
-    public AuthenticationPrincipalConfig(AuthService authService, MemberService memberService) {
-        this.authService = authService;
+    public AuthenticationPrincipalConfig(JwtTokenProvider jwtTokenProvider, MemberService memberService) {
+        this.jwtTokenProvider = jwtTokenProvider;
         this.memberService = memberService;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new AuthInterceptor(authService))
+        registry.addInterceptor(new AuthInterceptor(jwtTokenProvider))
             .addPathPatterns("api/*")
             .excludePathPatterns("/api/login");
     }
@@ -37,6 +39,6 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
 
     @Bean
     public AuthenticationPrincipalArgumentResolver createAuthenticationPrincipalArgumentResolver() {
-        return new AuthenticationPrincipalArgumentResolver(authService, memberService);
+        return new AuthenticationPrincipalArgumentResolver(jwtTokenProvider, memberService);
     }
 }

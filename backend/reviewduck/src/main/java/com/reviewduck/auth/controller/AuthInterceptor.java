@@ -8,13 +8,14 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.reviewduck.auth.service.AuthService;
 import com.reviewduck.auth.support.AuthorizationExtractor;
+import com.reviewduck.auth.support.JwtTokenProvider;
 
 public class AuthInterceptor implements HandlerInterceptor {
 
-    private final AuthService authService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public AuthInterceptor(AuthService authService) {
-        this.authService = authService;
+    public AuthInterceptor(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -35,6 +36,6 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     public void validateToken(HttpServletRequest request) {
         String token = AuthorizationExtractor.extract(request);
-        authService.validateToken(token);
+        jwtTokenProvider.validateToken(token);
     }
 }

@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reviewduck.auth.dto.request.LoginRequest;
 import com.reviewduck.auth.service.AuthService;
+import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.service.MemberService;
 
 @WebMvcTest(AuthController.class)
@@ -27,6 +28,8 @@ public class AuthControllerTest {
     private ObjectMapper objectMapper;
     @MockBean
     private AuthService authService;
+    @MockBean
+    private JwtTokenProvider jwtTokenProvider;
     @MockBean
     private MemberService memberService;
 

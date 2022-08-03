@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.reviewduck.auth.dto.request.LoginRequest;
 import com.reviewduck.auth.dto.response.TokenResponse;
-import com.reviewduck.auth.dto.service.Tokens;
+import com.reviewduck.auth.dto.service.TokensDto;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.service.AuthService;
 
@@ -29,6 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api")
 @Slf4j
 public class AuthController {
+
+    private static final int SEVEN_DAYS = 7 * 24 * 60 * 60;
+    
     private final AuthService authService;
 
     public AuthController(final AuthService authService) {
@@ -43,12 +46,12 @@ public class AuthController {
         log.info("uri={}, method = {}, request = {}",
             "/api/login", "POST", request.toString());
 
-        Tokens tokens = authService.createTokens(request);
+        TokensDto tokensDto = authService.createTokens(request);
 
-        ResponseCookie cookie = createRefreshToken(tokens);
+        ResponseCookie cookie = createRefreshToken(tokensDto);
         response.setHeader("Set-Cookie", cookie.toString());
 
-        return new TokenResponse(tokens.getAccessToken());
+        return new TokenResponse(tokensDto.getAccessToken());
     }
 
     @Operation(summary = "리프레시 토큰을 사용한 로그인 연장을 시도한다.")
@@ -59,18 +62,18 @@ public class AuthController {
 
         log.info("uri={}, method = {}", "/api/login/refresh", "POST");
 
-        validateNullRefreshTokenCookie(cookie);
+        validateCookie(cookie);
 
         String refreshToken = cookie.getValue();
-        Tokens tokens = authService.regenerateTokens(refreshToken);
+        TokensDto tokensDto = authService.regenerateTokens(refreshToken);
 
-        ResponseCookie refreshTokenCookie = createRefreshToken(tokens);
+        ResponseCookie refreshTokenCookie = createRefreshToken(tokensDto);
         response.setHeader("Set-Cookie", refreshTokenCookie.toString());
 
-        return new TokenResponse(tokens.getAccessToken());
+        return new TokenResponse(tokensDto.getAccessToken());
     }
 
-    private void validateNullRefreshTokenCookie(Cookie cookie) {
+    private void validateCookie(Cookie cookie) {
         if (Objects.isNull(cookie)) {
             throw new AuthorizationException("리프레시 토큰이 없습니다.");
         }
@@ -90,9 +93,9 @@ public class AuthController {
         }
     }
 
-    private ResponseCookie createRefreshToken(Tokens tokens) {
-        return ResponseCookie.from("refreshToken", tokens.getRefreshToken())
-            .maxAge(7 * 24 * 60 * 60)
+    private ResponseCookie createRefreshToken(TokensDto tokensDto) {
+        return ResponseCookie.from("refreshToken", tokensDto.getRefreshToken())
+            .maxAge(SEVEN_DAYS)
             .path("/")
             .secure(true)
             .sameSite("None")
