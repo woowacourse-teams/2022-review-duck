@@ -2,6 +2,7 @@ import cn from 'classnames';
 
 import { Review } from 'service/review/types';
 
+import NoResult from 'service/@shared/components/NoResult';
 import QuestionContent from 'service/@shared/components/QuestionContent';
 import Profile from 'service/review/components/Profile';
 import Reaction from 'service/review/components/Reaction';
@@ -32,6 +33,7 @@ function ReviewListMain({ reviewFormCode }: Record<'reviewFormCode', string>) {
           ))}
         </div>
       </section>
+      {reviews.length === 0 && <NoResult size="medium" title="제출된 회고가 없습니다." />}
 
       {reviews.map((review: Review) => (
         <section

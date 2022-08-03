@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 
 import { Text, Icon } from 'common/components';
 
+import NoResult from 'service/@shared/components/NoResult';
 import QuestionContent from 'service/@shared/components/QuestionContent';
 import Reaction from 'service/review/components/Reaction';
 
@@ -36,6 +37,18 @@ function ReviewList({ filter }: Record<'filter', string>) {
       },
     });
   };
+
+  const noResultInMyReview = filter === MYPAGE_TAB.MY_REVIEWS && myReviews.reviews.length === 0;
+  const noResultInMyReviewForm =
+    filter === MYPAGE_TAB.MY_REVIEW_FORMS && myReviewForms.reviewForms.length === 0;
+
+  if (noResultInMyReview) {
+    return <NoResult className={styles.noResult} title="작성한 회고가 없습니다." />;
+  }
+
+  if (noResultInMyReviewForm) {
+    return <NoResult className={styles.noResult} title="생성한 회고가 없습니다." />;
+  }
 
   return (
     <>
