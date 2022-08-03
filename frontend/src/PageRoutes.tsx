@@ -6,6 +6,7 @@ import RequireAuth from 'service/@shared/components/RequireAuth';
 
 import { ACCESS_PERMISSION, PAGE_LIST } from 'service/@shared/constants';
 import Authorize from 'service/@shared/pages/Authorize';
+import Logout from 'service/@shared/pages/Logout';
 import CommunityLayout from 'service/community/layout/CommunityLayout';
 import MyPage from 'service/community/pages/MyPage';
 import ReviewLayout from 'service/review/layout/ReviewLayout';
@@ -57,7 +58,10 @@ function PageRoutes() {
           </Route>
         </Route>
 
+        {/*  TODO: ErrorBoundary 구현 후 권한에 따라 로그인/로그아웃 분기 해주기. */}
+
         <Route path={PAGE_LIST.AUTHORIZE} element={<Authorize />} />
+        <Route path={PAGE_LIST.LOGOUT} element={<Logout />} />
       </Routes>
     </BrowserRouter>
   );

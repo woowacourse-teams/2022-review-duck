@@ -57,7 +57,7 @@ function Header() {
                 <Icon code="person" /> <span>마이 페이지</span>
               </Link>
 
-              <Link className={styles.item} to={PAGE_LIST.MY_PAGE}>
+              <Link className={styles.item} to={PAGE_LIST.LOGOUT}>
                 <Icon code="logout" /> <span>로그아웃</span>
               </Link>
             </PopupBox>
