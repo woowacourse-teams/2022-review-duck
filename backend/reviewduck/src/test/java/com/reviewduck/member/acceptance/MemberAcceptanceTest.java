@@ -15,6 +15,7 @@ import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.service.MemberService;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
+
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
@@ -24,7 +25,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("본인의 사용자 정보를 조회한다.")
     void findMyMemberInfo() {
         // given
-        Member member = new Member("1","jason", "제이슨", "profileUrl");
+        Member member = new Member("1", "jason", "제이슨", "profileUrl");
         Member savedMember = memberService.save(member);
 
         String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));

@@ -8,5 +8,6 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.template.domain.Template;
 
 public interface TemplateRepository extends JpaRepository<Template, Long> {
+
     List<Template> findByMember(Member member);
 }

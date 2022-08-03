@@ -18,22 +18,22 @@ import com.reviewduck.review.dto.request.AnswerRequest;
 import com.reviewduck.review.dto.request.AnswerUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
-import com.reviewduck.review.repository.AnswerRepository;
-import com.reviewduck.review.repository.ReviewFormQuestionRepository;
 import com.reviewduck.review.repository.ReviewRepository;
 
 import lombok.AllArgsConstructor;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @AllArgsConstructor
 public class ReviewService {
 
-    private final ReviewFormService reviewFormService;
     private final ReviewRepository reviewRepository;
-    private final ReviewFormQuestionRepository reviewFormQuestionRepository;
-    private final AnswerRepository answerRepository;
 
+    private final ReviewFormService reviewFormService;
+    private final ReviewFormQuestionService reviewFormQuestionService;
+    private final AnswerService answerService;
+
+    @Transactional
     public Review save(Member member, String code, ReviewRequest request) {
         ReviewForm reviewForm = reviewFormService.findByCode(code);
 
@@ -43,45 +43,34 @@ public class ReviewService {
         return reviewRepository.save(review);
     }
 
-    private List<QuestionAnswer> convertToQuestionAnswers(List<AnswerRequest> answerRequests) {
-        List<QuestionAnswer> questionAnswers = new ArrayList<>();
-        for (AnswerRequest answerRequest : answerRequests) {
-            ReviewFormQuestion reviewFormQuestion = reviewFormQuestionRepository.findById(answerRequest.getQuestionId())
-                .orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
-            questionAnswers.add(new QuestionAnswer(reviewFormQuestion, new Answer(answerRequest.getAnswerValue())));
-        }
-
-        return questionAnswers;
-    }
-
-    @Transactional(readOnly = true)
     public Review findById(long reviewId) {
-        Review review = reviewRepository.findById(reviewId)
+        return reviewRepository.findById(reviewId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
-
-        return review;
     }
 
-    @Transactional(readOnly = true)
+    public List<Review> findByMember(Member member) {
+        return reviewRepository.findByMember(member);
+    }
+
     public List<Review> findAllByCode(String code) {
         ReviewForm reviewForm = reviewFormService.findByCode(code);
         return reviewRepository.findByReviewForm(reviewForm);
     }
 
+    @Transactional
     public Review update(Member member, Long id, ReviewUpdateRequest request) {
         Review review = findById(id);
         validateMyReview(member, review, "본인이 생성한 회고가 아니면 수정할 수 없습니다.");
 
         for (AnswerUpdateRequest answerRequest : request.getAnswers()) {
-            Answer answer = answerRepository.findById(answerRequest.getAnswerId())
-                .orElseThrow(() -> new NotFoundException("존재하지 않는 답변입니다."));
-
+            Answer answer = answerService.findById(answerRequest.getAnswerId());
             answer.update(answerRequest.getAnswerValue());
         }
 
         return review;
     }
 
+    @Transactional
     public void delete(Member member, Long id) {
         Review review = findById(id);
         validateMyReview(member, review, "본인이 생성한 회고가 아니면 삭제할 수 없습니다.");
@@ -89,8 +78,14 @@ public class ReviewService {
         reviewRepository.deleteById(id);
     }
 
-    public List<Review> findByMember(Member member) {
-        return reviewRepository.findByMember(member);
+    private List<QuestionAnswer> convertToQuestionAnswers(List<AnswerRequest> answerRequests) {
+        List<QuestionAnswer> questionAnswers = new ArrayList<>();
+        for (AnswerRequest answerRequest : answerRequests) {
+            ReviewFormQuestion reviewFormQuestion = reviewFormQuestionService.findById(answerRequest.getQuestionId());
+            questionAnswers.add(new QuestionAnswer(reviewFormQuestion, new Answer(answerRequest.getAnswerValue())));
+        }
+
+        return questionAnswers;
     }
 
     private void validateMyReview(Member member, Review review, String message) {
@@ -98,5 +93,4 @@ public class ReviewService {
             throw new AuthorizationException(message);
         }
     }
-
 }

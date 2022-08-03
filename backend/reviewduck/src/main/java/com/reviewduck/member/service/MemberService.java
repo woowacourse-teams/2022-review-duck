@@ -1,23 +1,24 @@
 package com.reviewduck.member.service;
 
-import javax.transaction.Transactional;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
 
+import lombok.AllArgsConstructor;
+
 @Service
-@Transactional
+@AllArgsConstructor
+@Transactional(readOnly = true)
 public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    public MemberService(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
-    }
-
+    @Transactional
     public Member save(Member member) {
         return memberRepository.save(member);
     }
@@ -27,11 +28,7 @@ public class MemberService {
             .orElseThrow(() -> new AuthorizationException("존재하지 않는 사용자입니다."));
     }
 
-    public boolean existsMember(String socialId) {
-        return memberRepository.existsBySocialId(socialId);
-    }
-
-    public Member findBySocialId(String socialId) {
+    public Optional<Member> findBySocialId(String socialId) {
         return memberRepository.findBySocialId(socialId);
     }
 }

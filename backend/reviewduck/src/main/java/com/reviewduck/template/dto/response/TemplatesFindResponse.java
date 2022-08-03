@@ -5,10 +5,11 @@ import java.util.stream.Collectors;
 
 import com.reviewduck.template.domain.Template;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class TemplatesFindResponse {
 
