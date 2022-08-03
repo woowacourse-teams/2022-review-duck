@@ -45,6 +45,11 @@ public class Member {
         }
     }
 
+    public void updateNickname(String nickname) {
+        validate(nickname);
+        this.nickname = nickname;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
