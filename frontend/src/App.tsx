@@ -4,8 +4,9 @@ import { QueryClientProvider, QueryClient } from 'react-query';
 import PageRoutes from 'PageRoutes';
 import { RecoilRoot } from 'recoil';
 
-import { ErrorBoundary, SnackbarProvider } from 'common/components';
+import { ErrorBoundary, ModalProvider, SnackbarProvider } from 'common/components';
 
+import modalContentList from 'service/@shared/pages/modals';
 import 'styles/@app.scss';
 
 const queryClient = new QueryClient({
@@ -34,6 +35,7 @@ function App() {
       <Suspense>
         <ErrorBoundary>
           <SnackbarProvider />
+          <ModalProvider contentList={modalContentList} />
           <PageRoutes />
         </ErrorBoundary>
       </Suspense>
