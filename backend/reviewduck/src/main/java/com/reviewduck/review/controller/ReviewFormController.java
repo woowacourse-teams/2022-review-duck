@@ -66,9 +66,8 @@ public class ReviewFormController {
         info("/api/review-forms/" + reviewFormCode, "GET", "");
 
         ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
-        boolean isCreator = reviewFormService.isReviewFormCreator(reviewForm, member);
 
-        return ReviewFormResponse.of(reviewForm, isCreator);
+        return ReviewFormResponse.of(reviewForm, member);
     }
 
     @Operation(summary = "회고 폼을 수정한다.")
