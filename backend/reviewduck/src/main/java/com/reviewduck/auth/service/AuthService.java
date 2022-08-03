@@ -120,7 +120,7 @@ public class AuthService {
 
     private Member login(Member member) {
         return memberService.findBySocialId(member.getSocialId())
-            .orElse(member);
+            .orElse(memberService.save(member));
     }
 
     private void validateTokenResponse(GithubTokenResponse githubTokenResponse) {
