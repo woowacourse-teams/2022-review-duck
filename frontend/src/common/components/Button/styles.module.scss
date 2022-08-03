@@ -71,7 +71,7 @@
   position: relative;
   color: $THEME_COLOR_STATUS_PRIMARY_500;
   background-color: transparent;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: background-color 0.25s ease, color 0.25s ease;
 
   &:hover {
     color: $THEME_COLOR_STATUS_INNER_PRIMARY_500;
