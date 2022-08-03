@@ -2,25 +2,27 @@ import { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import useSnackbar from 'common/hooks/useSnackbar';
-import useGetDestroyRefreshToken from 'service/@shared/hooks/queries/user/useGetDestroyRefreshToken';
+import useAuth from 'service/@shared/hooks/useAuth';
 
 import { PAGE_LIST } from 'service/@shared/constants';
 
 function Logout() {
   const { addSnackbar } = useSnackbar();
-  const { isSuccess } = useGetDestroyRefreshToken();
+  const { deleteRefreshToken } = useAuth();
 
   useEffect(() => {
-    if (isSuccess) {
-      addSnackbar({
-        icon: 'exit_to_app',
-        title: '로그아웃이 완료되었습니다.',
-        description: '회고덕에서 로그아웃 되었습니다.',
-      });
-    }
+    deleteRefreshToken.mutate(null, {
+      onSuccess: () => {
+        addSnackbar({
+          icon: 'exit_to_app',
+          title: '로그아웃이 완료되었습니다.',
+          description: '회고덕에서 로그아웃 되었습니다.',
+        });
+      },
+    });
   }, []);
 
-  return isSuccess ? <Navigate to={PAGE_LIST.HOME} /> : <></>;
+  return deleteRefreshToken.isSuccess ? <Navigate to={PAGE_LIST.HOME} /> : <></>;
 }
 
 export default Logout;
