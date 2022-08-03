@@ -8,6 +8,8 @@ function useMyPageQueries() {
   const getMyReviewsQuery = useGetMyReviews();
   const getMyReviewFormsQuery = useGetMyReviewForms();
   const getUserProfileQuery = useGetUserProfile();
+  const deleteReviewMutation = useDeleteReview();
+  const deleteReviewFormMutation = useDeleteReviewForm();
 
   const myReviews = getMyReviewsQuery.data || {
     numberOfReviews: 0,
@@ -25,10 +27,6 @@ function useMyPageQueries() {
     socialNickname: '',
     profileUrl: '',
   };
-
-  const deleteReviewMutation = useDeleteReview();
-
-  const deleteReviewFormMutation = useDeleteReviewForm();
 
   const isError =
     getMyReviewsQuery.isError || getMyReviewFormsQuery.isError || getUserProfileQuery.isError;
