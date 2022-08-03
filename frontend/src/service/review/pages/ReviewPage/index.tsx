@@ -28,12 +28,10 @@ function SubmitReviewPage() {
   const { addSnackbar } = useSnackbar();
   const location = useLocation();
 
-  const state = location.state as RedirectState;
-
-  const redirectUrl = (state && state.redirect) || '';
-
   const { getReviewFormQuery, reviewForm, review, createMutation, updateMutation } =
     useReviewQueries(reviewFormCode, reviewId);
+  const [currentQuestion, setCurrentQuestion] = useState<Question>(reviewForm.questions[0] || {});
+  const [reviewTitle] = useState<string>(reviewForm.reviewTitle);
 
   let initQuestions = [...reviewForm.questions];
 
@@ -48,8 +46,9 @@ function SubmitReviewPage() {
 
   const { questions, updateQuestion } = useQuestions(initQuestions);
 
-  const [currentQuestion, setCurrentQuestion] = useState<Question>(reviewForm.questions[0] || {});
-  const [reviewTitle] = useState<string>(reviewForm.reviewTitle);
+  const state = location.state as RedirectState;
+
+  const redirectUrl = (state && state.redirect) || '';
 
   const textareaRefs = useRef<unknown[]>([]);
 
@@ -58,16 +57,20 @@ function SubmitReviewPage() {
     0,
   );
 
+  const isSubmitDisabled =
+    answeredCount !== questions.length || createMutation.isLoading || updateMutation.isLoading;
+
   const onSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const answers = questions.map((question) => {
-      return {
-        questionId: question.questionId,
-        answerId: question.answerId,
-        answerValue: question.answerValue || '',
-      };
-    });
+    const answers = questions.map(({ questionId, answerId, answerValue = '' }) => ({
+      questionId,
+      answerId,
+      answerValue,
+    }));
+
+    const getRedirectUrl = () =>
+      `${redirectUrl}${redirectUrl !== PAGE_LIST.MY_PAGE ? `/${reviewFormCode}` : ''}`;
 
     if (reviewId) {
       updateMutation.mutate(
@@ -79,10 +82,7 @@ function SubmitReviewPage() {
               title: '작성하신 회고가 수정되었습니다.',
               description: '작성한 회고는 마이페이지를 통해 모아볼 수 있습니다.',
             });
-            navigate(
-              `${redirectUrl}${redirectUrl !== PAGE_LIST.MY_PAGE ? `/${reviewFormCode}` : ''}`,
-              { replace: true },
-            );
+            navigate(getRedirectUrl(), { replace: true });
           },
           onError: ({ message }) => {
             alert(message);
@@ -100,10 +100,7 @@ function SubmitReviewPage() {
             title: '작성하신 회고가 기록되었습니다.',
             description: '작성한 회고는 마이페이지를 통해 모아볼 수 있습니다.',
           });
-          navigate(
-            `${redirectUrl}${redirectUrl !== PAGE_LIST.MY_PAGE ? `/${reviewFormCode}` : ''}`,
-            { replace: true },
-          );
+          navigate(getRedirectUrl(), { replace: true });
         },
         onError: ({ message }) => {
           alert(message);
@@ -219,15 +216,7 @@ function SubmitReviewPage() {
               <span>취소하기</span>
             </Button>
 
-            <Button
-              type="submit"
-              onClick={onSubmitReviewForm}
-              disabled={
-                answeredCount !== questions.length ||
-                createMutation.isLoading ||
-                updateMutation.isLoading
-              }
-            >
+            <Button type="submit" onClick={onSubmitReviewForm} disabled={isSubmitDisabled}>
               <Icon code="send" />
               <span>제출하기</span>
             </Button>

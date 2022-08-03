@@ -31,4 +31,9 @@ public class MemberService {
     public Optional<Member> findBySocialId(String socialId) {
         return memberRepository.findBySocialId(socialId);
     }
+
+    @Transactional
+    public void updateNickname(Member member, String nickname) {
+        member.updateNickname(nickname);
+    }
 }

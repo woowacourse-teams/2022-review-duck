@@ -29,4 +29,31 @@ public class MemberTest {
             .isInstanceOf(MemberException.class)
             .hasMessageContaining("닉네임이 비어있을 수 없습니다.");
     }
+
+    @Test
+    @DisplayName("멤버의 닉네임을 변경한다.")
+    void updateNickname() {
+        // given
+        Member member = new Member("1", "socialId", "original nickname", "profileUrl");
+
+        // when
+        String expected = "updated nickname";
+        member.updateNickname(expected);
+
+        // then
+        assertThat(member.getNickname()).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("올바르지 않은 닉네임으로 변경할 수 없다.")
+    void updateToEmptyNickname(String nicknameToUpdate) {
+        // given
+        Member member = new Member("1", "socialId", "original nickname", "profileUrl");
+
+        // when, then
+        assertThatThrownBy(() -> member.updateNickname(nicknameToUpdate))
+            .isInstanceOf(MemberException.class)
+            .hasMessageContaining("닉네임이 비어있을 수 없습니다.");
+    }
 }
