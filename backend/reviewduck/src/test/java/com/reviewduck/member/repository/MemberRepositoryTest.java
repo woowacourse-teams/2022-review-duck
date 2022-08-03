@@ -3,6 +3,8 @@ package com.reviewduck.member.repository;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,13 +43,13 @@ public class MemberRepositoryTest {
         memberRepository.save(member);
 
         // when
-        boolean isExistMember1 = memberRepository.existsBySocialId("1");
-        boolean isExistMember2 = memberRepository.existsBySocialId("3");
+        Optional<Member> foundMember1 = memberRepository.findBySocialId("1");
+        Optional<Member> foundMember2 = memberRepository.findBySocialId("2");
 
         // then
         assertAll(
-            () -> assertThat(isExistMember1).isTrue(),
-            () -> assertThat(isExistMember2).isFalse()
+            () -> assertThat(foundMember1.isPresent()).isTrue(),
+            () -> assertThat(foundMember2.isPresent()).isFalse()
         );
     }
 
@@ -59,13 +61,12 @@ public class MemberRepositoryTest {
         memberRepository.save(member);
 
         // when
-        Member foundMember = memberRepository.findBySocialId(member.getSocialId());
+        Optional<Member> foundMember = memberRepository.findBySocialId(member.getSocialId());
 
         // then
         assertAll(
-            () -> assertThat(foundMember.getSocialNickname()).isEqualTo("panda"),
-            () -> assertThat(foundMember.getNickname()).isEqualTo("제이슨"),
-            () -> assertThat(foundMember.getProfileUrl()).isEqualTo("testUrl")
+            () -> assertThat(foundMember.isPresent()).isTrue(),
+            () -> assertThat(foundMember.get()).usingRecursiveComparison().isEqualTo(member)
         );
     }
 }

@@ -68,10 +68,8 @@ public class AuthService {
     }
 
     private Member login(Member member) {
-        if (memberService.existsMember(member.getSocialId())) {
-            return memberService.findBySocialId(member.getSocialId());
-        }
-        return memberService.save(member);
+        return memberService.findBySocialId(member.getSocialId())
+            .orElse(member);
     }
 
     private Member getMemberFromGithub(String code) {

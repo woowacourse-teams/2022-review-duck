@@ -9,6 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class MemberResponse {
+    
     private String socialId;
     private String socialNickname;
     private String nickname;
