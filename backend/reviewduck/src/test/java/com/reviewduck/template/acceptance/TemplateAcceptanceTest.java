@@ -34,10 +34,10 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
     @BeforeEach
     void createMemberAndGetAccessToken() {
-        Member member1 = new Member("1","panda", "제이슨", "profileUrl1");
+        Member member1 = new Member("1", "panda", "제이슨", "profileUrl1");
         Member savedMember1 = memberService.save(member1);
 
-        Member member2 = new Member("2","ariari", "브리", "profileUrl2");
+        Member member2 = new Member("2", "ariari", "브리", "profileUrl2");
         Member savedMember2 = memberService.save(member2);
 
         accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember1.getId()));

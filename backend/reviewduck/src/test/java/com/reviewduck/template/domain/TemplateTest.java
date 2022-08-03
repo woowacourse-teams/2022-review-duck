@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,7 +17,7 @@ import com.reviewduck.template.exception.TemplateException;
 
 class TemplateTest {
 
-    private Member member = new Member("1", "socialId", "nickname", "profileUrl");
+    private final Member member = new Member("1", "socialId", "nickname", "profileUrl");
 
     @Test
     @DisplayName("제약조건에 걸리지 않으면 템플릿이 생성된다.")

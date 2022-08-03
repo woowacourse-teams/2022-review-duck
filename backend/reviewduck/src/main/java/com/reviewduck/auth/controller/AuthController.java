@@ -26,7 +26,6 @@ import com.reviewduck.auth.service.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api")
@@ -34,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 public class AuthController {
 
     private static final int SEVEN_DAYS = 7 * 24 * 60 * 60;
-    
+
     private final AuthService authService;
 
     @Operation(summary = "로그인을 시도한다.")
@@ -58,7 +57,7 @@ public class AuthController {
     public TokenResponse refresh(@CookieValue(value = "refreshToken", required = false) Cookie cookie,
         HttpServletResponse response) {
 
-        info("/api/login/refresh", "POST","");
+        info("/api/login/refresh", "POST", "");
 
         validateCookie(cookie);
 
@@ -83,7 +82,7 @@ public class AuthController {
     public void logout(@CookieValue(value = "refreshToken", required = false) Cookie cookie,
         HttpServletResponse response) {
 
-        info( "/api/login", "POST","");
+        info("/api/login", "POST", "");
 
         if (!Objects.isNull(cookie)) {
             cookie.setMaxAge(0);

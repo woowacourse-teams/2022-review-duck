@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import com.reviewduck.auth.service.AuthService;
 import com.reviewduck.auth.support.AuthorizationExtractor;
 import com.reviewduck.auth.support.JwtTokenProvider;
 

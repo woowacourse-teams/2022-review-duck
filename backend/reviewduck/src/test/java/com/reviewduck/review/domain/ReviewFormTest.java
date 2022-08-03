@@ -17,7 +17,7 @@ import com.reviewduck.review.exception.ReviewFormException;
 
 class ReviewFormTest {
 
-    private Member member = new Member("1", "socialId", "nickname", "profileUrl");
+    private final Member member = new Member("1", "socialId", "nickname", "profileUrl");
 
     @Test
     @DisplayName("제약조건에 걸리지 않으면 회고 폼이 생성된다.")

@@ -16,7 +16,7 @@ public class MemberTest {
     void createMember() {
         // when, then
         assertDoesNotThrow(() ->
-            new Member("1","socialId", "nickname", "profileUrl"));
+            new Member("1", "socialId", "nickname", "profileUrl"));
     }
 
     @ParameterizedTest
@@ -24,7 +24,7 @@ public class MemberTest {
     @DisplayName("멤버 생성 시 닉네임이 비어있을 수 없다.")
     void notBlankNickname(String nickname) {
         //when, then
-        assertThatThrownBy(() -> new Member("1","socialId", nickname, "profileUrl"))
+        assertThatThrownBy(() -> new Member("1", "socialId", nickname, "profileUrl"))
             .isInstanceOf(MemberException.class)
             .hasMessageContaining("닉네임이 비어있을 수 없습니다.");
     }

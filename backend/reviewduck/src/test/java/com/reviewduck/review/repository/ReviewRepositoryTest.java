@@ -35,7 +35,7 @@ public class ReviewRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Member member = new Member("1","panda", "제이슨", "testUrl");
+        Member member = new Member("1", "panda", "제이슨", "testUrl");
         memberRepository.save(member);
         ReviewForm reviewForm = new ReviewForm(member, "title", List.of("question1", "question2"));
         this.savedReviewForm = reviewFormRepository.save(reviewForm);
@@ -97,7 +97,7 @@ public class ReviewRepositoryTest {
         // given
         reviewRepository.save(review);
 
-        Member member2 = new Member("1","ariari", "브리", "testUrl2");
+        Member member2 = new Member("1", "ariari", "브리", "testUrl2");
         memberRepository.save(member2);
         ReviewForm reviewForm = new ReviewForm(member2, "title", List.of("question1", "question2"));
         ReviewForm savedReviewForm = reviewFormRepository.save(reviewForm);

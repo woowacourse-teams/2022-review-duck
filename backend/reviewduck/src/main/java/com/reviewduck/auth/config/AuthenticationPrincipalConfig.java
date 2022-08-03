@@ -10,7 +10,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.reviewduck.auth.controller.AuthInterceptor;
 import com.reviewduck.auth.controller.AuthenticationPrincipalArgumentResolver;
-import com.reviewduck.auth.service.AuthService;
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.service.MemberService;
 
