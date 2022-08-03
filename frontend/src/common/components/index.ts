@@ -9,5 +9,7 @@ export { default as Textarea } from './Textarea';
 export { default as ErrorBoundary } from './ErrorBoundary';
 export { default as TransitionDiv } from './TransitionDiv';
 export { default as Snackbar } from './Snackbar';
-export { default as SnackbarContainer } from './SnackbarContainer';
+export { default as SnackbarProvider } from './SnackbarProvider';
 export { default as PopupBox } from './PopupBox';
+export { default as Modal } from './Modal';
+export { default as ModalProvider } from './ModalProvider';

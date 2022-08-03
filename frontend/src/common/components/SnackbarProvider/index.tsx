@@ -6,7 +6,7 @@ import Snackbar from 'common/components/Snackbar';
 
 import { snackbarStackWithActive } from 'common/recoil/snackbar';
 
-function SnackbarContainer() {
+function SnackbarProvider() {
   const snackbarActivityStack = useRecoilValue(snackbarStackWithActive);
   const { removeSnackbar } = useSnackbar();
 
@@ -23,4 +23,4 @@ function SnackbarContainer() {
   );
 }
 
-export default SnackbarContainer;
+export default SnackbarProvider;
