@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
 
+import useSnackbar from 'common/hooks/useSnackbar';
+
 import { Button, Icon, Text, TextBox } from 'common/components';
 
 import styles from '../styles.module.scss';
@@ -11,10 +13,11 @@ import { PAGE_LIST } from 'service/@shared/constants';
 
 function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
   const { reviewForm, reviews: myReviews } = useOverviewQueries(reviewFormCode);
-
-  const { reviews = [] } = myReviews || {};
+  const { addSnackbar } = useSnackbar();
 
   const linkInputBox = useRef<HTMLInputElement>(null);
+
+  const { reviews = [] } = myReviews || {};
 
   const getMyReviewId = () => {
     const index = reviews.findIndex((review) => review.isMine === true);
@@ -32,7 +35,11 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
 
     try {
       await navigator.clipboard.writeText($copyLink.value);
-      alert('링크를 클립보드에 복사했습니다.');
+      addSnackbar({
+        icon: 'done',
+        title: '참여 링크를 클립보드에 복사했습니다.',
+        description: '함께 회고할 팀원들에게 공유해주세요.',
+      });
     } catch (e) {
       alert('링크 복사에 실패했습니다.');
     }
