@@ -37,9 +37,14 @@ function TransitionDiv({
   ...rest
 }: Props) {
   const duplicatedChildren = useRef<JSX.Element>();
-  const [displayState, setDisplayState] = useState<DisplayState>('appear');
+  const [displayState, setDisplayState] = useState<DisplayState>(isVisible ? 'visible' : 'hidden');
 
   useLayoutEffect(() => {
+    const isConditionAppear = isVisible;
+    const isConditionDisappear = displayState === 'visible' && !isVisible;
+
+    if (!isConditionAppear && !isConditionDisappear) return;
+
     setDisplayState(isVisible ? 'appear' : 'disappear');
   }, [isVisible]);
 
@@ -49,27 +54,28 @@ function TransitionDiv({
     return <></>;
   }
 
-  if (isVisible && children) {
+  if (displayState === 'visible' && children) {
     duplicatedChildren.current = React.cloneElement(<>{children}</>);
   }
 
-  const onDisplayUpdated = (event: React.AnimationEvent<HTMLDivElement>) => {
+  const onTransitionEnd = (event: React.AnimationEvent<HTMLDivElement>) => {
     const { target, currentTarget } = event;
+    const isEventCapturing = target !== currentTarget;
 
-    if (target !== currentTarget) return;
+    if (isEventCapturing) return;
 
-    if (isVisible === true) {
+    if (displayState === 'appear') {
       setDisplayState('visible');
       onAppear && onAppear(event);
     }
 
-    if (isVisible === false) {
+    if (displayState === 'disappear') {
       setDisplayState('hidden');
       onDisappear && onDisappear(event);
     }
   };
 
-  const currentEffect = all || isVisible ? appear : disappear;
+  const currentEffect = all || (isVisible ? appear : disappear);
   const animationDuration = `${(duration / 1000).toFixed(2)}s`;
   const isEffectActivated = displayState === 'appear' || displayState === 'disappear';
 
@@ -78,7 +84,7 @@ function TransitionDiv({
       className={cn(className, styles[direction], styles[displayState], {
         [styles[currentEffect]]: isEffectActivated,
       })}
-      onAnimationEnd={onDisplayUpdated}
+      onAnimationEnd={onTransitionEnd}
       style={{ animationDuration }}
       {...rest}
     >

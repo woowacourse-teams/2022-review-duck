@@ -4,7 +4,7 @@ import { QueryClientProvider, QueryClient } from 'react-query';
 import PageRoutes from 'PageRoutes';
 import { RecoilRoot } from 'recoil';
 
-import { ErrorBoundary, SnackbarContainer } from 'common/components';
+import { ErrorBoundary, SnackbarProvider } from 'common/components';
 
 import 'styles/@app.scss';
 
@@ -33,7 +33,7 @@ function App() {
     <ContextWrapper>
       <Suspense>
         <ErrorBoundary>
-          <SnackbarContainer />
+          <SnackbarProvider />
           <PageRoutes />
         </ErrorBoundary>
       </Suspense>
