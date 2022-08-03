@@ -40,18 +40,16 @@ public class ReviewServiceTest {
     @Autowired
     private MemberService memberService;
 
-    private ReviewForm savedReviewForm;
-    private Long questionId1;
-    private Long questionId2;
+    private ReviewForm reviewForm;
     private Member member1;
     private Member member2;
 
     @BeforeEach
     void setUp() {
-        Member tempMember1 = new Member("1","jason", "제이슨", "testUrl1");
+        Member tempMember1 = new Member("1", "jason", "제이슨", "testUrl1");
         member1 = memberService.save(tempMember1);
 
-        Member tempMember2 = new Member("2","woni", "워니", "testUrl2");
+        Member tempMember2 = new Member("2", "woni", "워니", "testUrl2");
         member2 = memberService.save(tempMember2);
 
         String reviewTitle = "title";
@@ -59,18 +57,20 @@ public class ReviewServiceTest {
             new ReviewFormQuestionRequest("question2"));
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
 
-        this.savedReviewForm = reviewFormService.save(member1, createRequest);
-        this.questionId1 = savedReviewForm.getReviewFormQuestions().get(0).getId();
-        this.questionId2 = savedReviewForm.getReviewFormQuestions().get(1).getId();
+        this.reviewForm = reviewFormService.save(member1, createRequest);
     }
 
     @Test
     @DisplayName("회고를 저장한다.")
-    void saveReview() {
-        // when
+    void createReview() {
+        // given
+        long questionId1 = reviewForm.getReviewFormQuestions().get(0).getId();
+        long questionId2 = reviewForm.getReviewFormQuestions().get(1).getId();
         ReviewRequest reviewCreateRequest = new ReviewRequest(
             List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
-        Review savedReview = reviewService.save(member1, savedReviewForm.getCode(), reviewCreateRequest);
+
+        // when
+        Review savedReview = reviewService.save(member1, reviewForm.getCode(), reviewCreateRequest);
 
         // then
         assertAll(
@@ -105,7 +105,7 @@ public class ReviewServiceTest {
                 new AnswerRequest(2L, "answer2")));
 
         // when, then
-        assertThatThrownBy(() -> reviewService.save(member1, savedReviewForm.getCode(), reviewCreateRequest))
+        assertThatThrownBy(() -> reviewService.save(member1, reviewForm.getCode(), reviewCreateRequest))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 질문입니다.");
     }
@@ -114,9 +114,7 @@ public class ReviewServiceTest {
     @DisplayName("특정 회고를 조회한다.")
     void findById() {
         // given
-        ReviewRequest reviewCreateRequest = new ReviewRequest(
-            List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
-        Review saved = reviewService.save(member1, savedReviewForm.getCode(), reviewCreateRequest);
+        Review saved = saveReview(member1);
 
         // when
         Review actual = reviewService.findById(saved.getId());
@@ -138,12 +136,10 @@ public class ReviewServiceTest {
     @DisplayName("특정 회고 폼을 기반으로 작성된 회고를 모두 조회한다.")
     void findReviewsBySpecificReviewForm() {
         // given
-        ReviewRequest reviewCreateRequest = new ReviewRequest(
-            List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
-        Review savedReview = reviewService.save(member1, savedReviewForm.getCode(), reviewCreateRequest);
+        Review savedReview = saveReview(member1);
 
         // when
-        List<Review> reviews = reviewService.findAllByCode(savedReviewForm.getCode());
+        List<Review> reviews = reviewService.findAllByCode(reviewForm.getCode());
 
         // then
         assertAll(
@@ -156,12 +152,10 @@ public class ReviewServiceTest {
     @DisplayName("특정 회고 폼을 삭제해도 본인이 작성한 회고를 조회할 수 있다.")
     void findReviewsByDeletedSpecificReviewForm() {
         // given
-        ReviewRequest reviewCreateRequest = new ReviewRequest(
-            List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
-        Review savedReview = reviewService.save(member1, savedReviewForm.getCode(), reviewCreateRequest);
+        Review savedReview = saveReview(member1);
 
         // when
-        reviewFormService.deleteByCode(member1, savedReviewForm.getCode());
+        reviewFormService.deleteByCode(member1, reviewForm.getCode());
         List<Review> reviews = reviewService.findByMember(member1);
 
         // then
@@ -175,9 +169,7 @@ public class ReviewServiceTest {
     @DisplayName("회고를 수정한다.")
     void editReview() {
         // given
-        ReviewRequest reviewCreateRequest = new ReviewRequest(
-            List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
-        Review savedReview = reviewService.save(member1, savedReviewForm.getCode(), reviewCreateRequest);
+        Review savedReview = saveReview(member1);
 
         // when
         ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
@@ -197,13 +189,13 @@ public class ReviewServiceTest {
     @DisplayName("본인이 생성한 회고가 아니면 수정할 수 없다.")
     void updateNotMyReview() {
         // given
-        ReviewRequest reviewCreateRequest = new ReviewRequest(
-            List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
-        Review savedReview = reviewService.save(member1, savedReviewForm.getCode(), reviewCreateRequest);
+        Review savedReview = saveReview(member1);
+
+        // when
         ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
             List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
 
-        // when, then
+        // then
         assertThatThrownBy(() -> reviewService.update(member2, savedReview.getId(), editRequest))
             .isInstanceOf(AuthorizationException.class)
             .hasMessageContaining("본인이 생성한 회고가 아니면 수정할 수 없습니다.");
@@ -226,27 +218,23 @@ public class ReviewServiceTest {
     @DisplayName("회고를 삭제한다.")
     void deleteReview() {
         // given
-        ReviewRequest reviewCreateRequest = new ReviewRequest(
-            List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
-        Review savedReview = reviewService.save(member1, savedReviewForm.getCode(), reviewCreateRequest);
+        Review savedReview = saveReview(member1);
 
         // when
         reviewService.delete(member1, savedReview.getId());
 
         // then
-        assertThat(reviewService.findAllByCode(savedReviewForm.getCode())).hasSize(0);
+        assertThat(reviewService.findAllByCode(reviewForm.getCode())).hasSize(0);
     }
 
     @Test
     @DisplayName("본인이 생성한 회고가 아니면 삭제할 수 없다.")
     void deleteNotMyReview() {
         // given
-        ReviewRequest reviewCreateRequest = new ReviewRequest(
-            List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
-        long savedReviewId = reviewService.save(member1, savedReviewForm.getCode(), reviewCreateRequest).getId();
+        Review savedReview = saveReview(member1);
 
         // when, then
-        assertThatThrownBy(() -> reviewService.delete(member2, savedReviewId))
+        assertThatThrownBy(() -> reviewService.delete(member2, savedReview.getId()))
             .isInstanceOf(AuthorizationException.class)
             .hasMessageContaining("본인이 생성한 회고가 아니면 삭제할 수 없습니다.");
     }
@@ -264,13 +252,8 @@ public class ReviewServiceTest {
     @DisplayName("개인이 작성한 회고 답변을 조회한다.")
     void findMyReviews() {
         // given
-        ReviewRequest reviewCreateRequest = new ReviewRequest(
-            List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
-        reviewService.save(member1, savedReviewForm.getCode(), reviewCreateRequest);
-
-        ReviewRequest reviewCreateRequest2 = new ReviewRequest(
-            List.of(new AnswerRequest(questionId1, "answer3"), new AnswerRequest(questionId2, "answer4")));
-        reviewService.save(member2, savedReviewForm.getCode(), reviewCreateRequest2);
+        saveReview(member1);
+        saveReview(member2);
 
         // when
         List<Review> myReviews = reviewService.findByMember(member2);
@@ -281,5 +264,13 @@ public class ReviewServiceTest {
             () -> assertThat(myReviews.get(0)).isNotNull(),
             () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo("워니")
         );
+    }
+
+    private Review saveReview(Member member) {
+        ReviewRequest reviewCreateRequest = new ReviewRequest(
+            List.of(new AnswerRequest(reviewForm.getReviewFormQuestions().get(0).getId(), "answer1")
+                , new AnswerRequest(reviewForm.getReviewFormQuestions().get(1).getId(), "answer2")));
+
+        return reviewService.save(member, reviewForm.getCode(), reviewCreateRequest);
     }
 }

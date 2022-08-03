@@ -17,12 +17,8 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.template.exception.TemplateException;
 
 class TemplateTest {
-    private static Member member;
 
-    @BeforeEach
-    void createMember() {
-        member = new Member("1","panda", "제이슨", "testUrl");
-    }
+    private Member member = new Member("1", "socialId", "nickname", "profileUrl");
 
     @Test
     @DisplayName("제약조건에 걸리지 않으면 템플릿이 생성된다.")
