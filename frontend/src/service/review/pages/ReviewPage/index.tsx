@@ -55,7 +55,7 @@ function SubmitReviewPage() {
     0,
   );
 
-  const isSubmitDisabled = () =>
+  const isSubmitDisabled =
     answeredCount !== questions.length || createMutation.isLoading || updateMutation.isLoading;
 
   const onSubmitReviewForm = (event: React.FormEvent) => {
@@ -200,7 +200,7 @@ function SubmitReviewPage() {
               <span>취소하기</span>
             </Button>
 
-            <Button type="submit" onClick={onSubmitReviewForm} disabled={isSubmitDisabled()}>
+            <Button type="submit" onClick={onSubmitReviewForm} disabled={isSubmitDisabled}>
               <Icon code="send" />
               <span>제출하기</span>
             </Button>
