@@ -59,6 +59,8 @@ const MYPAGE_TAB = {
   MY_REVIEW_FORMS: 'my-review-forms',
 };
 
+const REVIEW_FORM_CODE_LENGTH = 8;
+
 export {
   PAGE_LIST,
   MODAL_LIST,
@@ -71,4 +73,5 @@ export {
   ACCESS_TOKEN_REFRESH_TIME,
   MYPAGE_TAB,
   PERMISSION_VALID_TIME,
+  REVIEW_FORM_CODE_LENGTH,
 };

@@ -1,4 +1,4 @@
-import { GITHUB_OAUTH_ERROR } from 'service/@shared/constants';
+import { GITHUB_OAUTH_ERROR, REVIEW_FORM_CODE_LENGTH } from 'service/@shared/constants';
 
 function validateGithubOAuth(code: string, error: string) {
   if (!code && !error) {
@@ -19,4 +19,10 @@ function validateGithubOAuth(code: string, error: string) {
   }
 }
 
-export { validateGithubOAuth };
+const validateReviewFormCode = (reviewFormCode: string) => {
+  if (!reviewFormCode || reviewFormCode.length !== REVIEW_FORM_CODE_LENGTH) {
+    throw new Error('참여코드는 8자리를 입력해야 합니다.');
+  }
+};
+
+export { validateGithubOAuth, validateReviewFormCode };

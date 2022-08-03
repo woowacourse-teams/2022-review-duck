@@ -3,22 +3,16 @@ import { useNavigate } from 'react-router-dom';
 
 import useModal from 'common/hooks/useModal';
 
+import { getErrorMessage } from 'service/@shared/utils';
+
 import { Button, FieldSet, Icon, TextBox } from 'common/components';
 
 import { MODAL_LIST, PAGE_LIST } from 'service/@shared/constants';
+import { validateReviewFormCode } from 'service/@shared/validator';
 
 function ModalReviewJoin() {
   const navigate = useNavigate();
   const { showModal, hideModal } = useModal();
-
-  const REVIEW_FORM_CODE_LENGTH = 8;
-
-  const checkValidation = (code: string) => {
-    if (!code || code.length !== REVIEW_FORM_CODE_LENGTH) {
-      throw new Error('참여코드는 8자리를 입력해야 합니다.');
-    }
-    /* Q: 알파벳과 숫자로만 이루어져야 하는 등 검사도 해야 할까? */
-  };
 
   const onSubmitReviewFormCode = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -27,9 +21,11 @@ function ModalReviewJoin() {
     const reviewFormCode = formData.get('reviewFormCode')?.toString() || '';
 
     try {
-      checkValidation(reviewFormCode);
-    } catch (error: any) {
-      alert(error.message);
+      validateReviewFormCode(reviewFormCode);
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+
+      alert(errorMessage);
       return;
     }
 
