@@ -1,11 +1,3 @@
-/* eslint-disable */
-import useOriginModal from 'common/hooks/useModal';
-import ModalStartReview from './ModalStartReview';
+export { default as ModalReviewStart } from './ModalReviewStart';
 
-const modalContentList = { ModalStartReview } as const;
-
-type ModalKeyList = keyof typeof modalContentList;
-
-export const useModal = useOriginModal<ModalKeyList>;
-
-export default modalContentList;
+export { default as ModalReviewJoin } from './ModalReviewJoin';

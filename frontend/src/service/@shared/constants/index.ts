@@ -8,6 +8,11 @@ const PAGE_LIST = {
   MY_PAGE: '/mypage',
 };
 
+const MODAL_LIST = {
+  REVIEW_START: 'ModalReviewStart',
+  REVIEW_JOIN: 'ModalReviewJoin',
+};
+
 const QUERY_KEY = {
   DATA: {
     USER: 'user',
@@ -56,6 +61,7 @@ const MYPAGE_TAB = {
 
 export {
   PAGE_LIST,
+  MODAL_LIST,
   QUERY_KEY,
   GITHUB_OAUTH_LOGIN_URL,
   GITHUB_PROFILE_URL,
