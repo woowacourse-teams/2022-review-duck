@@ -10,11 +10,14 @@ import javax.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.exception.MemberException;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")
@@ -77,5 +80,15 @@ public class MemberServiceTest {
 
         // then
         assertThat(foundMember).usingRecursiveComparison().isEqualTo(savedMember);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("올바르지 않은 닉네임으로 변경할 수 없다.")
+    void updateToInvalidNickname(String nicknameToUpdate) {
+        // when, then
+        assertThatThrownBy(() -> memberService.updateNickname(savedMember, nicknameToUpdate))
+            .isInstanceOf(MemberException.class)
+            .hasMessageContaining("닉네임이 비어있을 수 없습니다.");
     }
 }
