@@ -1,9 +1,12 @@
 package com.reviewduck.auth.support;
 
 import java.util.Date;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import com.reviewduck.auth.exception.AuthorizationException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -13,6 +16,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class JwtTokenProvider {
+
     private final long validityInMilliseconds;
     private final long refreshValidityInMilliseconds;
     private final String secretKey;
@@ -52,7 +56,8 @@ public class JwtTokenProvider {
     }
 
     public String getPayload(String token) {
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
+            .getBody().getSubject();
     }
 
     public boolean isInvalidToken(String token) {
@@ -62,6 +67,24 @@ public class JwtTokenProvider {
             return claims.getBody().getExpiration().before(new Date());
         } catch (JwtException | IllegalArgumentException e) {
             return true;
+        }
+    }
+
+    public void validateToken(String token) {
+        validateNullToken(token);
+
+        validateInvalidToken(token);
+    }
+
+    private void validateNullToken(String token) {
+        if (Objects.isNull(token)) {
+            throw new AuthorizationException("토큰이 없습니다.");
+        }
+    }
+
+    private void validateInvalidToken(String token) {
+        if (isInvalidToken(token)) {
+            throw new AuthorizationException("인증되지 않은 사용자입니다.");
         }
     }
 }

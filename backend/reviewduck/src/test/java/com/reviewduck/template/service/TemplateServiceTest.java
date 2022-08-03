@@ -42,10 +42,10 @@ public class TemplateServiceTest {
 
     @BeforeEach
     void createAndSaveMember() {
-        Member tempMember1 = new Member("1","panda", "제이슨", "testUrl1");
+        Member tempMember1 = new Member("1", "panda", "제이슨", "testUrl1");
         member1 = memberService.save(tempMember1);
 
-        Member tempMember2 = new Member("2","ariari", "브리", "testUrl2");
+        Member tempMember2 = new Member("2", "ariari", "브리", "testUrl2");
         member2 = memberService.save(tempMember2);
     }
 
@@ -204,7 +204,7 @@ public class TemplateServiceTest {
 
         List<ReviewFormQuestion> expectedReviewFormQuestions = newQuestions.stream()
             .map(questionUpdateRequest -> new ReviewFormQuestion(questionUpdateRequest.getQuestionValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
         for (ReviewFormQuestion reviewFormQuestion : expectedReviewFormQuestions) {
@@ -284,7 +284,7 @@ public class TemplateServiceTest {
 
         List<ReviewFormQuestion> expectedReviewFormQuestions = questions2.stream()
             .map(questionUpdateRequest -> new ReviewFormQuestion(questionUpdateRequest.getQuestionValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
         for (ReviewFormQuestion reviewFormQuestion : expectedReviewFormQuestions) {
@@ -308,7 +308,7 @@ public class TemplateServiceTest {
     private List<ReviewFormQuestion> convertRequestToQuestions(List<TemplateQuestionRequest> questions) {
         List<ReviewFormQuestion> expected = questions.stream()
             .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
         for (ReviewFormQuestion reviewFormQuestion : expected) {

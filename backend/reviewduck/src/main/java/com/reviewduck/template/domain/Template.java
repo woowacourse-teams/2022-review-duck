@@ -49,7 +49,8 @@ public class Template extends BaseDate {
     private List<TemplateQuestion> questions;
 
     public Template(Member member, String templateTitle, String templateDescription, List<String> questionValues) {
-        validate(member, templateTitle, templateDescription, questionValues);
+        validateWhenCreate(member, templateTitle, templateDescription, questionValues);
+
         this.templateTitle = templateTitle;
         this.member = member;
         this.templateDescription = templateDescription;
@@ -57,9 +58,7 @@ public class Template extends BaseDate {
     }
 
     public void update(String templateTitle, String templateDescription, List<TemplateQuestion> questions) {
-        validateTitleLength(templateTitle);
-        validateBlankTitle(templateTitle);
-        validateNullDescription(templateDescription);
+        validateWhenUpdate(templateTitle, templateDescription);
 
         this.templateTitle = templateTitle;
         this.templateDescription = templateDescription;
@@ -86,7 +85,13 @@ public class Template extends BaseDate {
         }
     }
 
-    private void validate(Member member, String templateTitle, String templateDescription,
+    private void validateWhenUpdate(String templateTitle, String templateDescription) {
+        validateTitleLength(templateTitle);
+        validateBlankTitle(templateTitle);
+        validateNullDescription(templateDescription);
+    }
+
+    private void validateWhenCreate(Member member, String templateTitle, String templateDescription,
         List<String> questionValues) {
         validateBlankTitle(templateTitle);
         validateTitleLength(templateTitle);

@@ -1,5 +1,7 @@
 package com.reviewduck.member.controller;
 
+import static com.reviewduck.common.util.Logging.*;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,11 +13,9 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.response.MemberResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/members")
-@Slf4j
 public class MemberController {
 
     @Operation(summary = "본인의 사용자 정보를 조회한다.")
@@ -23,8 +23,7 @@ public class MemberController {
     @ResponseStatus(HttpStatus.OK)
     public MemberResponse findMyMemberInfo(@AuthenticationPrincipal Member member) {
 
-        log.info("uri={}, method = {}, request = {}",
-            "/api/members/me", "GET", "");
+        info("/api/members/me", "GET", "");
 
         return MemberResponse.from(member);
     }

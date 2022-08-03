@@ -13,6 +13,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class MyReviewFormResponse {
+
     private String title;
     private String code;
     private long updatedAt;
@@ -21,7 +22,7 @@ public class MyReviewFormResponse {
     public static MyReviewFormResponse from(ReviewForm reviewForm) {
         List<ReviewFormQuestionResponse> reviewFormQuestionResponses = reviewForm.getReviewFormQuestions().stream()
             .map(ReviewFormQuestionResponse::from)
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         long updatedAt = Timestamp.valueOf(reviewForm.getUpdatedAt()).getTime();
 
