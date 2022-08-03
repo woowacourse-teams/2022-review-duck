@@ -47,8 +47,7 @@ function Snackbar({
   return (
     <TransitionDiv
       className={cn(styles.container, styles[theme])}
-      appear="drop"
-      disappear="drop"
+      all="drop"
       direction="right"
       duration={500}
       onClick={onProgressEnd}
