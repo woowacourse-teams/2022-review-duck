@@ -12,6 +12,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class MyReviewFormsResponse {
+
     private int numberOfReviewForms;
     private List<MyReviewFormResponse> reviewForms;
 

@@ -73,7 +73,7 @@ public class ReviewFormService {
                 request.getQuestionValue()))
             .collect(Collectors.toUnmodifiableList());
 
-        validateReviewFormIsMine(member, reviewForm);
+        validateReviewFormIsMine(member, reviewForm, "본인이 생성한 회고 폼이 아니면 수정할 수 없습니다.");
 
         reviewForm.update(updateRequest.getReviewTitle(), reviewFormQuestions);
 
@@ -83,13 +83,13 @@ public class ReviewFormService {
     @Transactional
     public void deleteByCode(Member member, String reviewFormCode) {
         ReviewForm reviewForm = findByCode(reviewFormCode);
-        validateReviewFormIsMine(member, reviewForm);
+        validateReviewFormIsMine(member, reviewForm, "본인이 생성한 회고 폼이 아니면 삭제할 수 없습니다.");
         reviewFormRepository.delete(reviewForm);
     }
 
-    private void validateReviewFormIsMine(Member member, ReviewForm reviewForm) {
+    private void validateReviewFormIsMine(Member member, ReviewForm reviewForm, String message) {
         if (!reviewForm.isMine(member)) {
-            throw new AuthorizationException("본인이 생성한 회고 폼이 아니면 수정, 삭제할 수 없습니다.");
+            throw new AuthorizationException(message);
         }
     }
 }

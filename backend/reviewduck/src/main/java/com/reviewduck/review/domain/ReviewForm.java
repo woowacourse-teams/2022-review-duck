@@ -29,7 +29,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE review_form SET is_active = false WHERE id=?")
 @Getter
 public class ReviewForm extends BaseDate {
 

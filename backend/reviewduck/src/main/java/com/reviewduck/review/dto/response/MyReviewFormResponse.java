@@ -13,6 +13,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class MyReviewFormResponse {
+
     private String title;
     private String code;
     private long updatedAt;

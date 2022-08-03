@@ -190,7 +190,7 @@ public class ReviewFormServiceTest {
 
         assertThatThrownBy(() -> reviewFormService.update(member2, code, updateRequest))
             .isInstanceOf(AuthorizationException.class)
-            .hasMessageContaining("본인이 생성한 회고 폼이 아니면 수정, 삭제할 수 없습니다.");
+            .hasMessageContaining("본인이 생성한 회고 폼이 아니면 수정할 수 없습니다.");
     }
 
     @Test
@@ -249,7 +249,7 @@ public class ReviewFormServiceTest {
         // when, then
         assertThatThrownBy(() -> reviewFormService.deleteByCode(member2, code))
             .isInstanceOf(AuthorizationException.class)
-            .hasMessageContaining("본인이 생성한 회고 폼이 아니면 수정, 삭제할 수 없습니다.");
+            .hasMessageContaining("본인이 생성한 회고 폼이 아니면 삭제할 수 없습니다.");
     }
 
     @Test

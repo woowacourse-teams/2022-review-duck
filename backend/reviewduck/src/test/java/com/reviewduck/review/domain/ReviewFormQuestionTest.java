@@ -37,4 +37,16 @@ public class ReviewFormQuestionTest {
             .isInstanceOf(ReviewFormQuestionException.class)
             .hasMessageContaining("질문은 200자를 넘을 수 없습니다.");
     }
+
+    @Test
+    @DisplayName("질문의 위치 값은 음수가 될 수 없다.")
+    void positionUnderZero() {
+        //given
+        ReviewFormQuestion reviewFormQuestion = new ReviewFormQuestion("a");
+
+        //when, then
+        assertThatThrownBy(() -> reviewFormQuestion.setPosition(-1))
+            .isInstanceOf(ReviewFormQuestionException.class)
+            .hasMessageContaining("질문 생성 중 에러가 발생하였습니다.");
+    }
 }
