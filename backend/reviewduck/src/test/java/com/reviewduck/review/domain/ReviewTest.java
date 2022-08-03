@@ -33,7 +33,8 @@ public class ReviewTest {
 
     @Test
     @DisplayName("질문/답변의 순서값은 0부터 순서대로 부여된다.")
-    void setPositionInOrder() {// when
+    void setPositionInOrder() {
+        // when
         Review review = new Review(
             member,
             reviewForm,
