@@ -1,0 +1,13 @@
+@import 'styles/@global.scss';
+
+@import './animations/fade.scss';
+@import './animations/drop.scss';
+
+.appear {
+  animation-direction: normal;
+}
+
+.disappear {
+  animation-direction: reverse;
+  animation-fill-mode: forwards;
+}

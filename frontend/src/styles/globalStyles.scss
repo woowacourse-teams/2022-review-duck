@@ -1,0 +1,33 @@
+.button-container {
+  display: grid;
+
+  &.horizontal {
+    grid-template-columns: repeat(auto-fit, minmax(20%, auto));
+    gap: 1.375rem;
+    margin-top: 3rem;
+    text-align: center;
+  }
+}
+
+.flex-container {
+  display: flex;
+
+  &.column {
+    flex-direction: column;
+  }
+
+  &.row {
+    flex-direction: row;
+  }
+
+  &.centered {
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.global-content-container {
+  width: 1056px;
+  padding: 0 1rem;
+  margin: 0 auto;
+}
