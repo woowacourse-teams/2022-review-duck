@@ -6,6 +6,7 @@ import Text from 'common/components/Text';
 import styles from './styles.module.scss';
 
 interface Props {
+  className?: string;
   numbering: number;
   type: 'text';
   title: string;
@@ -17,9 +18,9 @@ interface Props {
   type에 따른 질문 타입 텍스트 처리해주기
 */
 
-function QuestionCard({ numbering, type, title, description }: Props) {
+function QuestionCard({ className, numbering, type, title, description }: Props) {
   return (
-    <section className={cn(styles.container, 'flex-container column')}>
+    <section className={cn(className, styles.container, 'flex-container column')}>
       <div className={cn(styles.header, 'flex-container row')}>
         <Text className={cn(styles.numbering)} size={18} weight="bold">
           Q{numbering}
@@ -45,6 +46,7 @@ function QuestionCard({ numbering, type, title, description }: Props) {
 }
 
 QuestionCard.propTypes = {
+  className: PropTypes.string,
   numbering: PropTypes.number.isRequired,
   type: PropTypes.oneOf(['text']).isRequired,
   title: PropTypes.string.isRequired,

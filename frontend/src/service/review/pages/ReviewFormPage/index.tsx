@@ -20,7 +20,7 @@ import { setFormFocus } from 'service/@shared/utils';
 
 import { Button, Icon, Logo, TextBox } from 'common/components';
 
-import QuestionCard from 'service/review/components/QuestionCard';
+import QuestionCard from 'service/@shared/components/QuestionCard';
 import QuestionEditor from 'service/review/components/QuestionEditor';
 
 import styles from './styles.module.scss';
