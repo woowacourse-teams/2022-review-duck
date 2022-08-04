@@ -92,15 +92,22 @@
       display: flex;
       flex-direction: column;
       margin-top: 0.5rem;
+      padding: 0.5rem 0;
 
       min-height: 9.375rem;
-      height: 17.1875rem;
-      content-visibility: auto;
+      height: 22vh;
+      max-height: 18.75rem;
       overflow: scroll;
+
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
 
       .list-item-container {
         display: flex;
-        padding: 0.5rem;
+        padding: 0.5rem 0.25rem;
         border-radius: $GLOBAL_BORDERRADIUS_MEDIUM;
         transition: background-color 0.2s ease;
 
