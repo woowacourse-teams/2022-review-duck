@@ -95,7 +95,9 @@ function ReviewList({ filter }: Record<'filter', string>) {
             <div className={styles.reviewContainer} key={reviewForm.code}>
               <div className={styles.header}>
                 <Link to={`${PAGE_LIST.REVIEW_OVERVIEW}/${reviewForm.code}`}>
-                  <Text size={24}>{reviewForm.title}</Text>
+                  <Text className={styles.title} size={24} weight="bold">
+                    {reviewForm.title}
+                  </Text>
                 </Link>
                 <div className={styles.buttonContainer}>
                   <Link
