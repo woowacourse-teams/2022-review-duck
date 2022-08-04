@@ -11,19 +11,24 @@ interface Props extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 
   size?: typeof propSizeType[number];
 }
 
-function Textarea(
-  { className, size = 'medium', ...rest }: Props,
-  ref?: React.ForwardedRef<HTMLTextAreaElement>,
-) {
+function Textarea({ className, size = 'medium', ...rest }: Props) {
+  const onResize = ({ key, target }: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (key !== 'Enter' && key !== 'Backspace') return;
+
+    const lineCount = target.value.split('\n').length;
+
+    target.setAttribute('rows', String(lineCount && lineCount + 1) || '2');
+  };
+
   return (
     <textarea
-      ref={ref}
-      rows={1}
+      rows={2}
       spellCheck={false}
       className={cn(className, styles.textarea, styles[`size-${size}`])}
+      onKeyDown={onResize}
       {...rest}
     />
   );
 }
 
-export default React.forwardRef<HTMLTextAreaElement, Props>(Textarea);
+export default Textarea;

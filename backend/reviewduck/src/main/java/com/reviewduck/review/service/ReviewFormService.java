@@ -84,7 +84,7 @@ public class ReviewFormService {
     public void deleteByCode(Member member, String reviewFormCode) {
         ReviewForm reviewForm = findByCode(reviewFormCode);
         validateReviewFormIsMine(member, reviewForm, "본인이 생성한 회고 폼이 아니면 삭제할 수 없습니다.");
-        reviewFormRepository.delete(reviewForm);
+        reviewFormRepository.delete(reviewForm.getId());
     }
 
     private void validateReviewFormIsMine(Member member, ReviewForm reviewForm, String message) {
