@@ -24,9 +24,12 @@ import { PAGE_LIST } from 'service/@shared/constants';
  */
 function SubmitReviewPage() {
   const { reviewFormCode = '', reviewId = '' } = useParams();
+
   const navigate = useNavigate();
   const { addSnackbar } = useSnackbar();
+
   const location = useLocation();
+  const { redirect = '' } = location.state as RedirectState;
 
   const { getReviewFormQuery, reviewForm, review, createMutation, updateMutation } =
     useReviewQueries(reviewFormCode, reviewId);
@@ -46,10 +49,6 @@ function SubmitReviewPage() {
 
   const { questions, updateQuestion } = useQuestions(initQuestions);
 
-  const state = location.state as RedirectState;
-
-  const redirectUrl = (state && state.redirect) || '';
-
   const answeredCount = questions.reduce(
     (prev, current) => (current.answerValue ? prev + 1 : prev),
     0,
@@ -58,8 +57,7 @@ function SubmitReviewPage() {
   const isSubmitDisabled =
     answeredCount !== questions.length || createMutation.isLoading || updateMutation.isLoading;
 
-  const getRedirectUrl = () =>
-    `${redirectUrl}${redirectUrl !== PAGE_LIST.MY_PAGE ? `/${reviewFormCode}` : ''}`;
+  const redirectUrl = redirect || `${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`;
 
   const onSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
@@ -72,7 +70,7 @@ function SubmitReviewPage() {
 
     if (reviewId) {
       updateMutation.mutate(
-        { reviewId: +reviewId, answers },
+        { reviewId: Number(reviewId), answers },
         {
           onSuccess: () => {
             addSnackbar({
@@ -80,7 +78,9 @@ function SubmitReviewPage() {
               title: '작성하신 회고가 수정되었습니다.',
               description: '작성한 회고는 마이페이지를 통해 모아볼 수 있습니다.',
             });
-            navigate(getRedirectUrl(), { replace: true });
+            navigate(redirectUrl, {
+              replace: true,
+            });
           },
           onError: ({ message }) => {
             alert(message);
@@ -89,6 +89,7 @@ function SubmitReviewPage() {
       );
       return;
     }
+
     createMutation.mutate(
       { reviewFormCode, answers },
       {
@@ -98,7 +99,10 @@ function SubmitReviewPage() {
             title: '작성하신 회고가 기록되었습니다.',
             description: '작성한 회고는 마이페이지를 통해 모아볼 수 있습니다.',
           });
-          navigate(getRedirectUrl(), { replace: true });
+
+          navigate(redirectUrl, {
+            replace: true,
+          });
         },
         onError: ({ message }) => {
           alert(message);
@@ -125,7 +129,7 @@ function SubmitReviewPage() {
 
   if (getReviewFormQuery.isError) {
     alert('찾을 수 없는 참여 코드입니다.');
-    return <Navigate to={getRedirectUrl()} replace={true} />;
+    return <Navigate to={redirectUrl} replace={true} />;
   }
 
   return (

@@ -141,7 +141,7 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
         </Text>
         <div className={styles.participantListContainer}>
           {reviews.map((review) => (
-            <a className={styles.hashLink} href={`#${review.reviewId}`} key={review.reviewId}>
+            <a href={`#${review.reviewId}`} key={review.reviewId}>
               <div className={styles.listItemContainer} role="button" tabIndex={0}>
                 <div
                   className={styles.profile}
