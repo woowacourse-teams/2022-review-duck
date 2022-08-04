@@ -5,6 +5,8 @@ import cn from 'classnames';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
+import { getElapsedTimeText } from 'service/@shared/utils';
+
 import { Button, Icon, Text, TextBox } from 'common/components';
 
 import styles from '../styles.module.scss';
@@ -76,7 +78,7 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
               업데이트
             </Text>
             <Text className={styles.text} size={14} weight="lighter">
-              {reviewForm?.updatedAt}일 전 업데이트 됨
+              {getElapsedTimeText(reviewForm?.updatedAt)} 업데이트 됨
             </Text>
           </div>
         </div>
@@ -149,10 +151,9 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
                   <Text className={styles.nickname} size={14} weight="bold">
                     {review.participant.nickname}
                   </Text>
-                  <Text
-                    className={styles.update}
-                    size={12}
-                  >{`${review.updatedAt} 전 업데이트함`}</Text>
+                  <Text className={styles.update} size={12}>{`${getElapsedTimeText(
+                    reviewForm?.updatedAt,
+                  )} 업데이트함`}</Text>
                 </div>
               </div>
             </a>

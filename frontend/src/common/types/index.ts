@@ -1,5 +1,10 @@
 import { SnackbarProps } from 'common/components/Snackbar';
 
-export interface SnackbarAtom extends SnackbarProps {
-  id: number;
+interface snackbarStackAtom extends SnackbarProps {
+  key: number;
+}
+
+export interface SnackbarAtom {
+  uniqueKey: number;
+  stack: snackbarStackAtom[];
 }

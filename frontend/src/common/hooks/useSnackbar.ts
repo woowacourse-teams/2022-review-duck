@@ -10,21 +10,22 @@ function useSnackbar() {
   const resetSnackbar = useResetRecoilState(snackbarStackAtom);
   const setSnackbarStack = useSetRecoilState(snackbarStackAtom);
 
-  const snackbarUniqueId = useRef(0);
-
   const addSnackbar = (options: SnackbarProps) => {
-    setSnackbarStack((currentValue) => {
-      const newStack = [...currentValue];
+    setSnackbarStack(({ uniqueKey, stack }) => {
+      const newStack = [...stack];
 
-      newStack.push({ ...options, id: snackbarUniqueId.current });
-      snackbarUniqueId.current += 1;
+      newStack.push({ ...options, key: uniqueKey });
 
-      return newStack;
+      return { uniqueKey: uniqueKey + 1, stack: newStack };
     });
   };
 
   const removeSnackbar = (targetId: number) => {
-    setSnackbarStack((currentValue) => [...currentValue].filter(({ id }) => id !== targetId));
+    setSnackbarStack(({ uniqueKey, stack }) => {
+      const newStack = [...stack].filter(({ key }) => key !== targetId);
+
+      return { uniqueKey, stack: newStack };
+    });
   };
 
   return { addSnackbar, removeSnackbar, resetSnackbar };
