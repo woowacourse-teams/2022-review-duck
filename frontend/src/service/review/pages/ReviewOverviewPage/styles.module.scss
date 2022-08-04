@@ -93,6 +93,11 @@
       flex-direction: column;
       margin-top: 0.5rem;
 
+      min-height: 9.375rem;
+      height: 17.1875rem;
+      content-visibility: auto;
+      overflow: scroll;
+
       .list-item-container {
         display: flex;
         padding: 0.5rem;
