@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useAuth from 'service/@shared/hooks/useAuth';
@@ -7,11 +7,14 @@ import useAuth from 'service/@shared/hooks/useAuth';
 import { PAGE_LIST } from 'service/@shared/constants';
 
 function Logout() {
+  const navigate = useNavigate();
+
   const { addSnackbar } = useSnackbar();
   const { deleteRefreshToken } = useAuth();
 
   useEffect(() => {
     deleteRefreshToken.mutate(null, {
+      onSettled: () => navigate(PAGE_LIST.HOME),
       onSuccess: () => {
         addSnackbar({
           icon: 'exit_to_app',
@@ -19,10 +22,18 @@ function Logout() {
           description: '회고덕에서 로그아웃 되었습니다.',
         });
       },
+      onError: ({ message }) => {
+        addSnackbar({
+          theme: 'warning',
+          icon: 'exit_to_app',
+          title: '로그아웃에 실패하였습니다.',
+          description: message,
+        });
+      },
     });
   }, []);
 
-  return deleteRefreshToken.isSuccess ? <Navigate to={PAGE_LIST.HOME} /> : <></>;
+  return <></>;
 }
 
 export default Logout;
