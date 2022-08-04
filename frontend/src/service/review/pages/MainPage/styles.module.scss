@@ -1,0 +1,20 @@
+@import 'styles/@global.scss';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.title {
+  margin-bottom: 1.5rem;
+  word-break: keep-all;
+  line-height: 140%;
+  color: $THEME_COLOR_STATUS_PRIMARY_600;
+}
+
+.subtitle {
+  color: $THEME_COLOR_THEME_TEXT_400;
+  line-height: 2rem;
+  word-break: keep-all;
+}

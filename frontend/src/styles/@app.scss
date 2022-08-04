@@ -1,0 +1,73 @@
+@import './@global.scss';
+@import './resetCss.css';
+@import './fontFace.scss';
+@import './theme.scss';
+@import './globalStyles.scss';
+
+@import 'material-icons/iconfont/material-icons.css';
+
+:root {
+  font-size: 16px;
+  line-height: 100%;
+}
+
+html,
+body,
+button,
+input,
+textarea {
+  font-family: 'NanumBarunGothic', sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+}
+
+a {
+  display: contents;
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+}
+
+h1 {
+  font-size: 36px;
+}
+
+h2 {
+  font-size: 32px;
+}
+
+h3 {
+  font-size: 28px;
+}
+
+h4 {
+  font-size: 24px;
+}
+
+h5 {
+  font-size: 20px;
+}
+
+h6 {
+  font-size: 16px;
+}
+
+hr {
+  border: none;
+  border-bottom: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
+}

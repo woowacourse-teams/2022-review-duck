@@ -1,0 +1,42 @@
+plugins {
+	id 'org.springframework.boot' version '2.6.9'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'com'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'mysql:mysql-connector-java'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.rest-assured:rest-assured:4.4.0'
+	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'io.springfox:springfox-boot-starter:3.0.0'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation 'org.flywaydb:flyway-core:5.2.4'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+	implementation 'com.navercorp.lucy:lucy-xss-servlet:2.0.1'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
