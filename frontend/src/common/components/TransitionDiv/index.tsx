@@ -106,7 +106,7 @@ TransitionDiv.defaultProps = {
   appear: 'unset',
   disappear: 'unset',
   direction: 'down',
-  duration: 1000,
+  duration: 500,
   isVisible: true,
 };
 

@@ -16,10 +16,11 @@
 
 .container {
   position: relative;
-  width: 36rem;
+  width: 32.5rem;
   min-height: 10rem;
   margin: 0 auto;
-  padding: 1.5rem;
+  padding: 2rem;
+  overflow-x: hidden;
 
   background-color: $THEME_COLOR_THEME_BACKGROUND_100;
   box-shadow: 0 0 10rem 0.5rem $GLOBAL_COLOR_BLACK_500;
