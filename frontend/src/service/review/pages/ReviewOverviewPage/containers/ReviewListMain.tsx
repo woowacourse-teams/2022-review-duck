@@ -39,6 +39,7 @@ function ReviewListMain({ reviewFormCode }: Record<'reviewFormCode', string>) {
         <section
           className={cn(styles.articleContainer, styles.postContainer)}
           key={review.reviewId}
+          id={String(review.reviewId)}
         >
           <Profile
             key={review.reviewId}

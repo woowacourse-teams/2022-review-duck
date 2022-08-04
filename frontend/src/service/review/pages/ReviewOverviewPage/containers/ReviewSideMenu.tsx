@@ -137,6 +137,27 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
         <Text size={20} weight="bold">
           작성된 회고 목록
         </Text>
+        <div className={styles.participantListContainer}>
+          {reviews.map((review) => (
+            <a className={styles.hashLink} href={`#${review.reviewId}`} key={review.reviewId}>
+              <div className={styles.listItemContainer} role="button" tabIndex={0}>
+                <div
+                  className={styles.profile}
+                  style={{ backgroundImage: `url(${review.participant.profileUrl})` }}
+                />
+                <div className={styles.userInfoContainer}>
+                  <Text className={styles.nickname} size={14} weight="bold">
+                    {review.participant.nickname}
+                  </Text>
+                  <Text
+                    className={styles.update}
+                    size={12}
+                  >{`${review.updatedAt} 전 업데이트함`}</Text>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
       </div>
     </aside>
   );

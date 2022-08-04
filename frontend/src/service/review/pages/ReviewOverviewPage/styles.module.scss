@@ -87,6 +87,59 @@
 
       margin-bottom: 1.5rem;
     }
+
+    .participant-list-container {
+      display: flex;
+      flex-direction: column;
+      margin-top: 0.5rem;
+      padding: 0.5rem 0;
+
+      min-height: 9.375rem;
+      height: 22vh;
+      max-height: 18.75rem;
+      overflow: scroll;
+
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .list-item-container {
+        display: flex;
+        padding: 0.5rem 0.25rem;
+        border-radius: $GLOBAL_BORDERRADIUS_MEDIUM;
+        transition: background-color 0.2s ease;
+
+        &:hover {
+          cursor: pointer;
+          background-color: $THEME_COLOR_THEME_BACKGROUND_200;
+        }
+
+        .profile {
+          width: 2.5rem;
+          height: 2.5rem;
+          background-position: center;
+          background-size: cover;
+          border-radius: $GLOBAL_BORDERRADIUS_MAX;
+        }
+
+        .user-info-container {
+          display: flex;
+          flex-direction: column;
+          justify-content: space-around;
+          margin-left: 0.5rem;
+
+          .nickname {
+            color: $THEME_COLOR_THEME_TEXT_800;
+          }
+
+          .update {
+            color: $THEME_COLOR_THEME_TEXT_400;
+          }
+        }
+      }
+    }
   }
 }
 
@@ -113,7 +166,7 @@
     & > .profile {
       width: 4.375rem;
       height: 6rem;
-      border-radius: 999px;
+      border-radius: $GLOBAL_BORDERRADIUS_MAX;
       background-color: #000;
     }
 
@@ -167,7 +220,7 @@
     position: relative;
     margin-top: 0.5rem;
     overflow: hidden;
-    border-radius: 999px;
+    border-radius: $GLOBAL_BORDERRADIUS_MAX;
 
     & > .input {
       position: relative;
