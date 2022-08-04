@@ -6,6 +6,7 @@ import RequireAuth from 'service/@shared/components/RequireAuth';
 
 import { PAGE_LIST } from 'service/@shared/constants';
 import Authorize from 'service/@shared/pages/Authorize';
+import Logout from 'service/@shared/pages/Logout';
 import CommunityLayout from 'service/community/layout/CommunityLayout';
 import MyPage from 'service/community/pages/MyPage';
 import ReviewLayout from 'service/review/layout/ReviewLayout';
@@ -57,6 +58,7 @@ function PageRoutes() {
       </Route>
 
       <Route path={PAGE_LIST.AUTHORIZE} element={<Authorize />} />
+      <Route path={PAGE_LIST.LOGOUT} element={<Logout />} />
     </Routes>
   );
 }

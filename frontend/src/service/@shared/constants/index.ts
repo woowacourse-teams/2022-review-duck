@@ -6,6 +6,7 @@ const PAGE_LIST = {
   REVIEW_OVERVIEW: '/overview',
   AUTHORIZE: '/authorize',
   MY_PAGE: '/mypage',
+  LOGOUT: '/logout',
 };
 
 const MODAL_LIST = {
