@@ -71,15 +71,16 @@ public class AuthController {
     }
 
     @Operation(summary = "로그아웃을 시도한다.")
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     @ResponseStatus(HttpStatus.OK)
     public void logout(@CookieValue(value = "refreshToken", required = false) Cookie cookie,
         HttpServletResponse response) {
 
-        info("/api/login", "POST", "");
+        info("/api/logout", "POST", "");
 
         if (!Objects.isNull(cookie)) {
             cookie.setMaxAge(0);
+            cookie.setPath("/");
             response.addCookie(cookie);
         }
     }
