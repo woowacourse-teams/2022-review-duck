@@ -1,5 +1,5 @@
 import { Suspense, useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -18,6 +18,7 @@ import { PAGE_LIST } from 'service/@shared/constants';
 
 function ReviewOverviewPage() {
   const { reviewFormCode = '' } = useParams();
+  const naviagte = useNavigate();
 
   const [isSheetEnabled, setSheetEnabled] = useState(false);
 
@@ -32,6 +33,7 @@ function ReviewOverviewPage() {
   useEffect(() => {
     if (isError) {
       alert(error?.message);
+      naviagte(-1);
     }
   }, [isError, error]);
 
