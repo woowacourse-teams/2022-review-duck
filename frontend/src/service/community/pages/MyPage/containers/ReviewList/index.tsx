@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 
+import useSnackbar from 'common/hooks/useSnackbar';
+
 import { Text, Icon } from 'common/components';
 
 import QuestionContent from 'service/@shared/components/QuestionContent';
@@ -12,29 +14,42 @@ import { PAGE_LIST, MYPAGE_TAB } from 'service/@shared/constants';
 
 function ReviewList({ filter }: Record<'filter', string>) {
   const { myReviews, myReviewForms } = useMyPageQueries();
+  const { addSnackbar } = useSnackbar();
 
   const { deleteReviewMutation, deleteReviewFormMutation } = useMyPageQueries();
 
   const onDeleteReview = (reviewId: number) => () => {
-    deleteReviewMutation.mutate(reviewId, {
-      onSuccess: () => {
-        alert('회고를 삭제했습니다.');
-      },
-      onError: ({ message }) => {
-        alert(message);
-      },
-    });
+    if (confirm('정말 회고를 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) {
+      deleteReviewMutation.mutate(reviewId, {
+        onSuccess: () => {
+          addSnackbar({
+            icon: 'delete',
+            title: '작성한 회고가 삭제되었습니다.',
+            description: '이제 누구도 해당 회고를 볼 수 없습니다.',
+          });
+        },
+        onError: ({ message }) => {
+          alert(message);
+        },
+      });
+    }
   };
 
   const onDeleteReviewForm = (reviewFormCode: string) => () => {
-    deleteReviewFormMutation.mutate(reviewFormCode, {
-      onSuccess: () => {
-        alert('회고폼을 삭제했습니다.');
-      },
-      onError: ({ message }) => {
-        alert(message);
-      },
-    });
+    if (confirm('정말 회고를 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) {
+      deleteReviewFormMutation.mutate(reviewFormCode, {
+        onSuccess: () => {
+          addSnackbar({
+            icon: 'delete',
+            title: '생성한 회고가 삭제되었습니다.',
+            description: '이제 누구도 해당 회고를 볼 수 없습니다.',
+          });
+        },
+        onError: ({ message }) => {
+          alert(message);
+        },
+      });
+    }
   };
 
   return (

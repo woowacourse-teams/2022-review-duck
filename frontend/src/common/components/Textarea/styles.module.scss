@@ -8,9 +8,11 @@
   background-color: $THEME_COLOR_THEME_BACKGROUND_200;
   line-height: 1rem;
   overflow: hidden;
+  border: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
+
   &:focus {
     outline: none;
-    border: 1px solid $THEME_COLOR_STATUS_PRIMARY_200;
+    border: 1px solid $THEME_COLOR_STATUS_PRIMARY_100;
   }
 }
 
