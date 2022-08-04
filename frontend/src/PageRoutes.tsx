@@ -8,9 +8,9 @@ import { PAGE_LIST } from 'service/@shared/constants';
 import Authorize from 'service/@shared/pages/Authorize';
 import Logout from 'service/@shared/pages/Logout';
 import CommunityLayout from 'service/community/layout/CommunityLayout';
+import MainPage from 'service/community/pages/MainPage';
 import MyPage from 'service/community/pages/MyPage';
 import ReviewLayout from 'service/review/layout/ReviewLayout';
-import MainPage from 'service/review/pages/MainPage';
 import Playground from 'service/review/pages/Playground';
 import ReviewFormPage from 'service/review/pages/ReviewFormPage';
 import ReviewJoinPage from 'service/review/pages/ReviewJoinPage';
@@ -23,8 +23,6 @@ function PageRoutes() {
   return (
     <Routes>
       <Route element={<ReviewLayout />}>
-        <Route index element={<MainPage />} />
-
         <Route element={<RequireAuth />}>
           <Route>
             <Route path={PAGE_LIST.REVIEW_JOIN} element={<ReviewJoinPage />} />
@@ -48,6 +46,7 @@ function PageRoutes() {
         </Route>
 
         <Route path="playground" element={<Playground />} />
+        <Route index element={<MainPage />} />
       </Route>
 
       <Route path={PAGE_LIST.REVIEW_OVERVIEW}>

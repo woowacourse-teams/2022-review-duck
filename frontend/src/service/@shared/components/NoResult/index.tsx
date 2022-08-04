@@ -9,15 +9,15 @@ const propSizeType = ['small', 'medium', 'large'] as const;
 
 interface Props {
   className?: string;
-  size?: typeof propSizeType[number];
-  title?: string;
+  size: typeof propSizeType[number];
+  children: string;
 }
 
-function NoResult({ className, size = 'medium', title = '결과가 없습니다.' }: Props) {
+function NoResult({ className, size, children }: Props) {
   return (
     <div className={cn(className, styles.container)}>
       <Logo className={styles.logo} theme="border" size={size} weight="normal" />
-      <span className={cn(styles[size], styles.title)}>{title}</span>
+      <span className={cn(styles[size], styles.title)}>{children}</span>
     </div>
   );
 }
@@ -25,12 +25,12 @@ function NoResult({ className, size = 'medium', title = '결과가 없습니다.
 NoResult.propTypes = {
   className: PropTypes.string,
   size: PropTypes.oneOf(propSizeType),
-  title: PropTypes.string.isRequired,
+  children: PropTypes.string.isRequired,
 };
 
 NoResult.defaultProps = {
   size: 'medium',
-  title: '결과가 없습니다.',
+  children: '결과가 없습니다.',
 };
 
 export default NoResult;
