@@ -56,6 +56,10 @@ public class Review extends BaseDate {
         return member.equals(this.member);
     }
 
+    public void renewUpdatedAt(){
+        super.renewUpdatedAt();
+    }
+
     private void sortQuestionAnswers(List<QuestionAnswer> questionAnswers) {
         int index = 0;
         for (QuestionAnswer questionAnswer : questionAnswers) {
