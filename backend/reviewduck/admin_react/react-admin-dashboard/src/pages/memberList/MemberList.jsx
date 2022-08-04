@@ -4,6 +4,7 @@ import './memberList.css'
 import axios from "axios"
 
 import { DataGrid } from '@mui/x-data-grid'
+import { DeleteOutline } from '@mui/icons-material'
 
 import {Link} from 'react-router-dom'
 
@@ -37,14 +38,26 @@ renderCell:(params)=>{
   
   { field: 'createdAt', headerName: '가입일', width: 250 },
   { field: 'updatedAt', headerName: '닉네임 변경일', width: 250 },
+  { field: 'action', headerName: 'Action', width: 150, 
+  renderCell: (params)=>{
+    return (
+      <>
+        <DeleteOutline 
+        className='memberListDelete' 
+        onClick={()=>axios.delete(`http://localhost:8080/api/admin/members/${params.row.id}`)}
+        />
+      </>
+    )
+  },
+},
 ]
 
 
 export default function MemberList(){
     const [memberRows, setMemberRows] = useState([])
-    
+
     useEffect(() => {
-        axios.get("http://localhost:8080/api/admin/members").then((res)=>{
+        axios.get(`http://localhost:8080/api/admin/members`).then((res)=>{
           if(res.data){
             console.log(res.data);
             setMemberRows(res.data.members);
@@ -58,6 +71,7 @@ export default function MemberList(){
         <div className="memberList">
             <DataGrid
                 rows={memberRows}
+                disableSelectionOnClick
                 columns={columns}
                 pageSize={10}
                 rowsPerPageOptions={[5]}

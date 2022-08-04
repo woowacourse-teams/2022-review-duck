@@ -22,7 +22,7 @@ public class Member extends BaseDate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     private String socialId;
 
@@ -53,11 +53,11 @@ public class Member extends BaseDate {
         if (o == null || getClass() != o.getClass())
             return false;
         Member member = (Member)o;
-        return Objects.equals(Id, member.Id);
+        return Objects.equals(id, member.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Id);
+        return Objects.hash(id);
     }
 }
