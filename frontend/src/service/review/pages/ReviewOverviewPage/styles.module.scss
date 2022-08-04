@@ -302,6 +302,11 @@
     line-height: 160%;
   }
 
+  .answer {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
   & tbody tr:hover {
     background-color: $THEME_COLOR_THEME_BACKGROUND_200;
   }
