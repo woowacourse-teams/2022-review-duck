@@ -11,7 +11,7 @@ const createRefreshToken = async (
 };
 
 const deleteRefreshToken = async (): Promise<null> => {
-  const { data } = await axiosInstance.get('/api/logout');
+  const { data } = await axiosInstance.post('/api/logout');
 
   return data;
 };
