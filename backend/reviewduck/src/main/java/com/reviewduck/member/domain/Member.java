@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.exception.MemberException;
 
 import lombok.Getter;
@@ -17,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class Member {
+public class Member extends BaseDate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

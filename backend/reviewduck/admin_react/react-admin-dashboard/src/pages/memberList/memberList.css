@@ -1,0 +1,16 @@
+.memberList {
+    flex: 4;
+}
+
+.memberListMember {
+    display: flex;
+    align-items: center;
+}
+
+.memberListImg {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
