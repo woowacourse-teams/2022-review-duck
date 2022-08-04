@@ -66,6 +66,7 @@ public class ReviewService {
             Answer answer = answerService.findById(answerRequest.getAnswerId());
             answer.update(answerRequest.getAnswerValue());
         }
+        review.renewUpdatedAt();
 
         return review;
     }
