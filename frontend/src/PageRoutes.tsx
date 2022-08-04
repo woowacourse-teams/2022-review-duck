@@ -58,6 +58,7 @@ function PageRoutes() {
       </Route>
 
       <Route path={PAGE_LIST.AUTHORIZE} element={<Authorize />} />
+      <Route path={PAGE_LIST.LOGOUT} element={<Logout />} />
     </Routes>
   );
 }
