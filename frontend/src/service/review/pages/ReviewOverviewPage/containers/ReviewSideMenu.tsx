@@ -86,7 +86,6 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
           to={`${PAGE_LIST.REVIEW}/${reviewFormCode}${
             getMyReviewId() >= 0 ? `/${getMyReviewId()}` : ''
           }`}
-          state={{ redirect: `${PAGE_LIST.REVIEW_OVERVIEW}` }}
         >
           <Button className={styles.joinButton} theme="outlined">
             <Icon code="group_add" />이 회고에 참여하기
@@ -116,10 +115,7 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
             </Text>
 
             <div className={styles.buttonContainer}>
-              <Link
-                to={`${PAGE_LIST.REVIEW_FORM}/${reviewFormCode}`}
-                state={{ redirect: `${PAGE_LIST.REVIEW_OVERVIEW}` }}
-              >
+              <Link to={`${PAGE_LIST.REVIEW_FORM}/${reviewFormCode}`}>
                 <Button size="small">
                   <Icon code="edit_note" />
                   질문 수정

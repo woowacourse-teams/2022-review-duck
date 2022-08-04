@@ -29,7 +29,7 @@ function SubmitReviewPage() {
   const { addSnackbar } = useSnackbar();
 
   const location = useLocation();
-  const { redirect = '' } = location.state as RedirectState;
+  const { redirect = '' } = (location.state as RedirectState) || {};
 
   const { getReviewFormQuery, reviewForm, review, createMutation, updateMutation } =
     useReviewQueries(reviewFormCode, reviewId);
