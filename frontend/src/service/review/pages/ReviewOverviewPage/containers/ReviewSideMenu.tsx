@@ -151,10 +151,9 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
                   <Text className={styles.nickname} size={14} weight="bold">
                     {review.participant.nickname}
                   </Text>
-                  <Text
-                    className={styles.update}
-                    size={12}
-                  >{`${review.updatedAt} 전 업데이트함`}</Text>
+                  <Text className={styles.update} size={12}>{`${getElapsedTimeText(
+                    reviewForm?.updatedAt,
+                  )} 업데이트함`}</Text>
                 </div>
               </div>
             </a>
