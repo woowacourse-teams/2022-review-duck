@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
 
+import useSnackbar from 'common/hooks/useSnackbar';
+
 import { getElapsedTimeText } from 'service/@shared/utils';
 
 import { Button, Icon, Text, TextBox } from 'common/components';
@@ -13,10 +15,11 @@ import { PAGE_LIST } from 'service/@shared/constants';
 
 function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
   const { reviewForm, reviews: myReviews } = useOverviewQueries(reviewFormCode);
-
-  const { reviews = [] } = myReviews || {};
+  const { addSnackbar } = useSnackbar();
 
   const linkInputBox = useRef<HTMLInputElement>(null);
+
+  const { reviews = [] } = myReviews || {};
 
   const getMyReviewId = () => {
     const index = reviews.findIndex((review) => review.isMine === true);
@@ -34,7 +37,11 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
 
     try {
       await navigator.clipboard.writeText($copyLink.value);
-      alert('링크를 클립보드에 복사했습니다.');
+      addSnackbar({
+        icon: 'done',
+        title: '참여 링크를 클립보드에 복사했습니다.',
+        description: '함께 회고할 팀원들에게 공유해주세요.',
+      });
     } catch (e) {
       alert('링크 복사에 실패했습니다.');
     }
@@ -132,6 +139,27 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
         <Text size={20} weight="bold">
           작성된 회고 목록
         </Text>
+        <div className={styles.participantListContainer}>
+          {reviews.map((review) => (
+            <a className={styles.hashLink} href={`#${review.reviewId}`} key={review.reviewId}>
+              <div className={styles.listItemContainer} role="button" tabIndex={0}>
+                <div
+                  className={styles.profile}
+                  style={{ backgroundImage: `url(${review.participant.profileUrl})` }}
+                />
+                <div className={styles.userInfoContainer}>
+                  <Text className={styles.nickname} size={14} weight="bold">
+                    {review.participant.nickname}
+                  </Text>
+                  <Text
+                    className={styles.update}
+                    size={12}
+                  >{`${review.updatedAt} 전 업데이트함`}</Text>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
       </div>
     </aside>
   );

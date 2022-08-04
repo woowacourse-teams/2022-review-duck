@@ -4,6 +4,7 @@ import { Review } from 'service/review/types';
 
 import { getElapsedTimeText } from 'service/@shared/utils';
 
+import NoResult from 'service/@shared/components/NoResult';
 import QuestionContent from 'service/@shared/components/QuestionContent';
 import Profile from 'service/review/components/Profile';
 import Reaction from 'service/review/components/Reaction';
@@ -34,11 +35,13 @@ function ReviewListMain({ reviewFormCode }: Record<'reviewFormCode', string>) {
           ))}
         </div>
       </section>
+      {reviews.length === 0 && <NoResult size="medium" title="제출된 회고가 없습니다." />}
 
       {reviews.map((review: Review) => (
         <section
           className={cn(styles.articleContainer, styles.postContainer)}
           key={review.reviewId}
+          id={String(review.reviewId)}
         >
           <Profile
             key={review.reviewId}

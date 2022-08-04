@@ -9,6 +9,11 @@ const PAGE_LIST = {
   LOGOUT: '/logout',
 };
 
+const MODAL_LIST = {
+  REVIEW_START: 'ModalReviewStart',
+  REVIEW_JOIN: 'ModalReviewJoin',
+};
+
 const QUERY_KEY = {
   DATA: {
     USER: 'user',
@@ -55,8 +60,11 @@ const MYPAGE_TAB = {
   MY_REVIEW_FORMS: 'my-review-forms',
 };
 
+const REVIEW_FORM_CODE_LENGTH = 8;
+
 export {
   PAGE_LIST,
+  MODAL_LIST,
   QUERY_KEY,
   GITHUB_OAUTH_LOGIN_URL,
   GITHUB_PROFILE_URL,
@@ -66,4 +74,5 @@ export {
   ACCESS_TOKEN_REFRESH_TIME,
   MYPAGE_TAB,
   PERMISSION_VALID_TIME,
+  REVIEW_FORM_CODE_LENGTH,
 };

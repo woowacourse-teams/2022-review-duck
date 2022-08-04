@@ -1,7 +1,7 @@
 import QuestionContent from '.';
 
 export default {
-  title: 'review/components/QuestionContent',
+  title: 'shared/components/QuestionContent',
   component: QuestionContent,
 };
 

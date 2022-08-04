@@ -10,14 +10,14 @@ const createRefreshToken = async (
   return data;
 };
 
-const getRefreshedAccessToken = async (): Promise<CreateRefreshResponse> => {
-  const { data } = await axiosInstance.get('/api/login/refresh');
+const deleteRefreshToken = async (): Promise<null> => {
+  const { data } = await axiosInstance.post('/api/logout');
 
   return data;
 };
 
-const getDestroyRefreshToken = async (): Promise<null> => {
-  const { data } = await axiosInstance.get('/api/logout');
+const getRefreshedAccessToken = async (): Promise<CreateRefreshResponse> => {
+  const { data } = await axiosInstance.get('/api/login/refresh');
 
   return data;
 };
@@ -28,6 +28,6 @@ const getProfile = async (): Promise<UserProfileResponse> => {
   return data;
 };
 
-const userAPI = { createRefreshToken, getDestroyRefreshToken, getRefreshedAccessToken, getProfile };
+const userAPI = { createRefreshToken, deleteRefreshToken, getRefreshedAccessToken, getProfile };
 
 export { userAPI };

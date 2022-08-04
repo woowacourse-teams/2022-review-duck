@@ -6,8 +6,9 @@ import useUpdateReview from 'service/review/hooks/queries/useUpdateReview';
 function useReviewQueries(reviewFormCode: string, reviewId: string) {
   const getReviewFormQuery = useGetReviewForm(reviewFormCode);
 
-  /* 회고에 첫 답변을 할 때 reviewId가 0이 돼서 에러가 발생한다 */
-  const getReviewQuery = useGetReview(+reviewId);
+  const getReviewQuery = useGetReview(+reviewId, {
+    enabled: !!reviewId,
+  });
 
   const createMutation = useCreateReviewAnswer();
 
