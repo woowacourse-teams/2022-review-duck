@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent, useState } from 'react';
 import { Navigate, useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 
 import cn from 'classnames';
@@ -9,7 +9,7 @@ import { RedirectState } from 'service/review/types';
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/review/hooks/useQuestions';
 
-import { Logo, ProgressBar, FieldSet, Text, Button, Icon, TextBox } from 'common/components';
+import { Logo, ProgressBar, FieldSet, Text, Button, Icon, Textarea } from 'common/components';
 
 import styles from './styles.module.scss';
 
@@ -186,11 +186,14 @@ function SubmitReviewPage() {
                 title={question.questionValue || ''}
                 description={question.questionDescription}
               >
-                <TextBox
-                  value={questions[index].answerValue || ''}
-                  onFocus={onUpdateCurrentQuestion(index)}
-                  onChange={onUpdateAnswer(index)}
-                />
+                <>
+                  <Textarea
+                    size="large"
+                    value={questions[index].answerValue || ''}
+                    onFocus={onUpdateCurrentQuestion(index)}
+                    onChange={onUpdateAnswer(index)}
+                  />
+                </>
               </FieldSet>
             </div>
           ))}
