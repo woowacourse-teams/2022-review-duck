@@ -25,7 +25,9 @@ function ReviewSheetView({ reviewFormCode }: Record<'reviewFormCode', string>) {
       <tbody>
         {reviews.map(({ answers, participant, reviewId }: Review) => {
           const answersTable = answers.map((answer: Answer) => (
-            <td key={reviewId}>{answer.answerValue}</td>
+            <td className={styles.answer} key={reviewId}>
+              {answer.answerValue}
+            </td>
           ));
 
           return (
