@@ -58,6 +58,9 @@ function SubmitReviewPage() {
   const isSubmitDisabled =
     answeredCount !== questions.length || createMutation.isLoading || updateMutation.isLoading;
 
+  const getRedirectUrl = () =>
+    `${redirectUrl}${redirectUrl !== PAGE_LIST.MY_PAGE ? `/${reviewFormCode}` : ''}`;
+
   const onSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -66,9 +69,6 @@ function SubmitReviewPage() {
       answerId,
       answerValue,
     }));
-
-    const getRedirectUrl = () =>
-      `${redirectUrl}${redirectUrl !== PAGE_LIST.MY_PAGE ? `/${reviewFormCode}` : ''}`;
 
     if (reviewId) {
       updateMutation.mutate(
@@ -125,7 +125,7 @@ function SubmitReviewPage() {
 
   if (getReviewFormQuery.isError) {
     alert('찾을 수 없는 참여 코드입니다.');
-    return <Navigate to={'/'} replace={true} />;
+    return <Navigate to={getRedirectUrl()} replace={true} />;
   }
 
   return (
