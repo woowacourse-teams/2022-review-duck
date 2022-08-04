@@ -40,9 +40,7 @@ function CreateReviewFormPage() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const state = location.state as RedirectState;
-
-  const redirectUrl = (state && state.redirect) || '';
+  const { redirect = '' } = (location.state as RedirectState) || {};
 
   const { reviewFormMutation, getReviewFormQuery, initReviewFormData } =
     useReviewFormQueries(reviewFormCode);
@@ -120,10 +118,7 @@ function CreateReviewFormPage() {
       { reviewTitle, reviewFormCode, questions: removeListKey },
       {
         onSuccess: ({ reviewFormCode }) => {
-          navigate(
-            `${redirectUrl}${redirectUrl !== PAGE_LIST.MY_PAGE ? `/${reviewFormCode}` : ''}`,
-            { replace: true },
-          );
+          navigate(redirect || `${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`, { replace: true });
           addSnackbar({
             title: isEditMode ? '회고가 수정되었습니다.' : '회고가 생성되었습니다.',
             description: '회고 참여코드를 공유하여, 회고를 시작할 수 있습니다.',

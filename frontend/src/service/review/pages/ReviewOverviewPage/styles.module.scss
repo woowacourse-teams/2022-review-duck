@@ -148,6 +148,12 @@
   flex-direction: row;
   gap: 0.5rem;
   overflow: scroll hidden;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .post-container {
@@ -300,6 +306,11 @@
     padding: 0.75rem;
     min-width: 10vw;
     line-height: 160%;
+  }
+
+  .answer {
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 
   & tbody tr:hover {
