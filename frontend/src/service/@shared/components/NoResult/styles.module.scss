@@ -10,19 +10,23 @@
   .title {
     color: $THEME_COLOR_THEME_TEXT_600;
   }
+
+  .logo {
+    fill: $THEME_COLOR_THEME_TEXT_400;
+  }
 }
 
 .small {
-  font-size: 1rem;
+  font-size: 0.75rem;
   padding: 1rem;
 }
 
 .medium {
-  font-size: 1.3rem;
+  font-size: 1rem;
   padding: 1.3rem;
 }
 
 .large {
-  font-size: 2rem;
+  font-size: 1.25rem;
   padding: 2rem;
 }

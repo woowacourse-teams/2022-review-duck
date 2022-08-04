@@ -16,7 +16,7 @@ interface Props {
 function NoResult({ className, size = 'medium', title = '결과가 없습니다.' }: Props) {
   return (
     <div className={cn(className, styles.container)}>
-      <Logo theme="border" size={size} />
+      <Logo className={styles.logo} theme="border" size={size} weight="normal" />
       <span className={cn(styles[size], styles.title)}>{title}</span>
     </div>
   );
