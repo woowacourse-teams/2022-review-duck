@@ -1,10 +1,10 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import useAuth from 'service/@shared/hooks/useAuth';
 
 import RequireAuth from 'service/@shared/components/RequireAuth';
 
-import { ACCESS_PERMISSION, PAGE_LIST } from 'service/@shared/constants';
+import { PAGE_LIST } from 'service/@shared/constants';
 import Authorize from 'service/@shared/pages/Authorize';
 import Logout from 'service/@shared/pages/Logout';
 import CommunityLayout from 'service/community/layout/CommunityLayout';
@@ -18,52 +18,47 @@ import ReviewOverviewPage from 'service/review/pages/ReviewOverviewPage';
 import ReviewPage from 'service/review/pages/ReviewPage';
 
 function PageRoutes() {
-  const { isLogin } = useAuth();
+  useAuth();
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route element={<ReviewLayout />}>
-          <Route index element={<MainPage />} />
+    <Routes>
+      <Route element={<ReviewLayout />}>
+        <Route index element={<MainPage />} />
 
-          <Route element={<RequireAuth />}>
-            <Route>
-              <Route path={PAGE_LIST.REVIEW_JOIN} element={<ReviewJoinPage />} />
-              <Route path={PAGE_LIST.REVIEW}>
-                <Route index element={<ReviewPage />} />
-                <Route path=":reviewFormCode" element={<ReviewPage />} />
-                <Route path=":reviewFormCode/:reviewId" element={<ReviewPage />} />
-              </Route>
-            </Route>
-
-            <Route path={PAGE_LIST.REVIEW_FORM}>
-              <Route index element={<ReviewFormPage />} />
-              <Route path={':reviewFormCode'} element={<ReviewFormPage />} />
+        <Route element={<RequireAuth />}>
+          <Route>
+            <Route path={PAGE_LIST.REVIEW_JOIN} element={<ReviewJoinPage />} />
+            <Route path={PAGE_LIST.REVIEW}>
+              <Route index element={<ReviewPage />} />
+              <Route path=":reviewFormCode" element={<ReviewPage />} />
+              <Route path=":reviewFormCode/:reviewId" element={<ReviewPage />} />
             </Route>
           </Route>
-        </Route>
 
-        <Route element={<CommunityLayout />}>
-          <Route element={<RequireAuth />}>
-            <Route path={PAGE_LIST.MY_PAGE} element={<MyPage />} />
-          </Route>
-
-          <Route path="playground" element={<Playground />} />
-        </Route>
-
-        <Route path={PAGE_LIST.REVIEW_OVERVIEW}>
-          <Route element={<RequireAuth />}>
-            <Route index element={<ReviewOverviewPage />} />
-            <Route path=":reviewFormCode" element={<ReviewOverviewPage />} />
+          <Route path={PAGE_LIST.REVIEW_FORM}>
+            <Route index element={<ReviewFormPage />} />
+            <Route path={':reviewFormCode'} element={<ReviewFormPage />} />
           </Route>
         </Route>
+      </Route>
 
-        {/*  TODO: ErrorBoundary 구현 후 권한에 따라 로그인/로그아웃 분기 해주기. */}
+      <Route element={<CommunityLayout />}>
+        <Route element={<RequireAuth />}>
+          <Route path={PAGE_LIST.MY_PAGE} element={<MyPage />} />
+        </Route>
 
-        <Route path={PAGE_LIST.AUTHORIZE} element={<Authorize />} />
-        <Route path={PAGE_LIST.LOGOUT} element={<Logout />} />
-      </Routes>
-    </BrowserRouter>
+        <Route path="playground" element={<Playground />} />
+      </Route>
+
+      <Route path={PAGE_LIST.REVIEW_OVERVIEW}>
+        <Route element={<RequireAuth />}>
+          <Route index element={<ReviewOverviewPage />} />
+          <Route path=":reviewFormCode" element={<ReviewOverviewPage />} />
+        </Route>
+      </Route>
+
+      <Route path={PAGE_LIST.AUTHORIZE} element={<Authorize />} />
+    </Routes>
   );
 }
 

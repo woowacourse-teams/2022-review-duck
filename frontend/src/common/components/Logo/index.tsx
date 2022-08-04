@@ -29,12 +29,12 @@ const LOGO_LIST = {
   },
 };
 
-function Logo({ theme, weight, size, ...rest }: Props) {
+function Logo({ className, theme, weight, size, ...rest }: Props) {
   const TargetLogo = LOGO_LIST[theme][weight];
 
   return (
     <div className={cn(styles[size])} {...rest}>
-      <TargetLogo className={cn(styles.logo)} />
+      <TargetLogo className={cn(styles.logo, className)} />
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
 
+import useModal from 'common/hooks/useModal';
 import useAuth from 'service/@shared/hooks/useAuth';
 
 import { Button, Icon, Logo, Text, TextBox, PopupBox } from 'common/components';
@@ -10,12 +11,17 @@ import imageDefaultProfile from 'assets/images/profile.png';
 
 import styles from './styles.module.scss';
 
-import { GITHUB_OAUTH_LOGIN_URL, PAGE_LIST } from 'service/@shared/constants';
+import { GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST } from 'service/@shared/constants';
 
 function Header() {
   const { isLogin, getUserProfileQuery } = useAuth();
+  const { showModal } = useModal();
 
   const { profileUrl: profileImage = imageDefaultProfile } = getUserProfileQuery.data || {};
+
+  const onClickReviewStart = () => {
+    showModal(MODAL_LIST.REVIEW_START);
+  };
 
   return (
     <header className={styles.header}>
@@ -38,7 +44,7 @@ function Header() {
         </ul>
 
         <div className={cn(styles.navItemContainer, styles.quickMenuContainer)}>
-          <Button theme="outlined" size="small">
+          <Button theme="outlined" size="small" onClick={onClickReviewStart}>
             <Icon code="flag" type="outlined" />
             <span>회고 시작하기</span>
           </Button>
