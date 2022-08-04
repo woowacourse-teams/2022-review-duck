@@ -2,6 +2,7 @@
 
 .layout {
   min-height: 100vh;
+  background-color: #fbfbfb;
 }
 
 .container {
@@ -31,7 +32,7 @@
 
 .navbar {
   display: grid;
-  grid-template-columns: 4% 25% 45% 20%;
+  grid-template-columns: 4% 25% 43% 22%;
   gap: 2%;
 }
 
