@@ -4,5 +4,5 @@ import snackbarStackAtom from './atom';
 
 export const snackbarStackWithActive = selector({
   key: 'snackbarStackWithActive',
-  get: ({ get }) => [...get(snackbarStackAtom)].splice(0, 3),
+  get: ({ get }) => [...get(snackbarStackAtom).stack].splice(0, 3),
 });
