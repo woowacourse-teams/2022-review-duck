@@ -18,6 +18,7 @@
     }
 
     & > .answer-content {
+      white-space: pre;
       font-size: 1rem;
       color: $THEME_COLOR_THEME_TEXT_800;
       line-height: 140%;

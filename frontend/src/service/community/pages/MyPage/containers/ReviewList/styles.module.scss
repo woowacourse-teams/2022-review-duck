@@ -15,16 +15,21 @@
 
     .title {
       color: $THEME_COLOR_STATUS_PRIMARY_600;
+      transition: color ease 0.3s;
+
+      &:hover {
+        color: $THEME_COLOR_STATUS_PRIMARY_400;
+      }
     }
 
     .button-container {
       display: flex;
       flex-direction: row;
       gap: 0.25rem;
-      color: $THEME_COLOR_THEME_TEXT_150;
       font-size: 1.125rem;
 
       .icon {
+        color: $THEME_COLOR_THEME_TEXT_150;
         cursor: pointer;
         padding: 0.25rem;
         transition: color ease 0.3s;
