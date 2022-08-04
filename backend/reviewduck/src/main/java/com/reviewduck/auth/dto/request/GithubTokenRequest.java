@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 public class GithubTokenRequest {
 
     @JsonProperty("client_id")
-    private String cliendId;
+    private String clientId;
 
     @JsonProperty("client_secret")
     private String clientSecret;

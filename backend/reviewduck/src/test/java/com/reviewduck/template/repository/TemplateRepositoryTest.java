@@ -21,20 +21,20 @@ import com.reviewduck.template.domain.Template;
 @DataJpaTest
 public class TemplateRepositoryTest {
 
-    private static Member member1;
-    private static Member member2;
-
     @Autowired
     private TemplateRepository templateRepository;
     @Autowired
     private MemberRepository memberRepository;
 
+    private Member member1;
+    private Member member2;
+
     @BeforeEach
     void createAndSaveMember() {
-        Member tempMember1 = new Member("1","panda", "제이슨", "testUrl1");
+        Member tempMember1 = new Member("1", "panda", "제이슨", "testUrl1");
         member1 = memberRepository.save(tempMember1);
 
-        Member tempMember2 = new Member("2","ariari", "브리", "testUrl2");
+        Member tempMember2 = new Member("2", "ariari", "브리", "testUrl2");
         member2 = memberRepository.save(tempMember2);
     }
 

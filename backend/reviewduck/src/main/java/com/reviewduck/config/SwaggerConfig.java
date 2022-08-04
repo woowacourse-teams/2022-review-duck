@@ -30,6 +30,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
 public class SwaggerConfig {
+
     private static final String API_NAME = "회고덕 API";
     private static final String API_VERSION = "0.0.1";
     private static final String API_DESCRIPTION = "회고를 회고하는 회고덕 서비스를 위한 API";

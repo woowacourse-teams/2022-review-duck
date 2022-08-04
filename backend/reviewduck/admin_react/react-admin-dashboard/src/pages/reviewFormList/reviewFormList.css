@@ -14,3 +14,8 @@
     object-fit: cover;
     margin-right: 10px;
 }
+
+.reviewFormListDelete {
+    color: red;
+    cursor: pointer;
+}

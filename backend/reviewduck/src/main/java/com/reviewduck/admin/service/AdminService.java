@@ -31,8 +31,21 @@ public class AdminService {
         return memberRepository.findAll();
     }
 
+    @Transactional
+    public void deleteMemberById(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(()->new NotFoundException("존재하지 않는 사용자입니다."));
+
+        member.deleteAllInfo();
+    }
+
     public List<ReviewForm> findAllReviewForms() {
         return reviewFormRepository.findAll();
+    }
+
+    @Transactional
+    public void deleteReviewFormById(Long reviewFormId) {
+        reviewFormRepository.delete(reviewFormId);
     }
 
     public List<Review> findAllReviews() {
@@ -40,8 +53,7 @@ public class AdminService {
     }
 
     @Transactional
-    public void deleteMemberById(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-            .orElseThrow(()->new NotFoundException("존재하지 않는 사용자입니다."));
+    public void deleteReviewById(Long reviewId) {
+        memberRepository.deleteById(reviewId);
     }
 }

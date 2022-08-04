@@ -1,47 +1,95 @@
-import { ChangeEvent, useState } from 'react';
-import { Navigate, useParams, useNavigate, Link } from 'react-router-dom';
+import React, { ChangeEvent, useState } from 'react';
+import { Navigate, useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 
 import cn from 'classnames';
 
 import { Question } from 'service/review/types';
+import { RedirectState } from 'service/review/types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/review/hooks/useQuestions';
 
-import { Logo, ProgressBar, FieldSet, Text, Button, Icon, TextBox } from 'common/components';
+import { Logo, ProgressBar, FieldSet, Text, Button, Icon, Textarea } from 'common/components';
 
 import styles from './styles.module.scss';
 
 import useReviewQueries from './useReviewQueries';
 import { PAGE_LIST } from 'service/@shared/constants';
 
+/**
+ * @author 돔하디 <zuzudnf@gmail.com>
+ * @comment 이 페이지로 라우팅을 할 때는 state로 { redirect : <redirect할 path>: string }
+ *          의 형태로 넣어줘야 합니다. 이 페이지 안에서 redirect할 때 state.redirect 값을 사용해서
+ *          리다이렉트를 해줍니다.
+ */
 function SubmitReviewPage() {
-  const { reviewFormCode = '' } = useParams();
+  const { reviewFormCode = '', reviewId = '' } = useParams();
   const navigate = useNavigate();
   const { addSnackbar } = useSnackbar();
+  const location = useLocation();
 
-  const { getQuestionsQuery, reviewForm, reviewMutation } = useReviewQueries(reviewFormCode);
-  const { questions, updateQuestion } = useQuestions(reviewForm.questions);
-
+  const { getReviewFormQuery, reviewForm, review, createMutation, updateMutation } =
+    useReviewQueries(reviewFormCode, reviewId);
   const [currentQuestion, setCurrentQuestion] = useState<Question>(reviewForm.questions[0] || {});
   const [reviewTitle] = useState<string>(reviewForm.reviewTitle);
+
+  let initQuestions = [...reviewForm.questions];
+
+  if (reviewId) {
+    initQuestions = initQuestions.map((question, index) => {
+      return {
+        ...review.answers[index],
+        ...question,
+      };
+    });
+  }
+
+  const { questions, updateQuestion } = useQuestions(initQuestions);
+
+  const state = location.state as RedirectState;
+
+  const redirectUrl = (state && state.redirect) || '';
 
   const answeredCount = questions.reduce(
     (prev, current) => (current.answerValue ? prev + 1 : prev),
     0,
   );
 
+  const isSubmitDisabled =
+    answeredCount !== questions.length || createMutation.isLoading || updateMutation.isLoading;
+
   const onSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const answers = questions.map((question) => {
-      return {
-        answerValue: question.answerValue || '',
-        questionId: question.questionId,
-      };
-    });
+    const answers = questions.map(({ questionId, answerId, answerValue = '' }) => ({
+      questionId,
+      answerId,
+      answerValue,
+    }));
 
-    reviewMutation.mutate(
+    const getRedirectUrl = () =>
+      `${redirectUrl}${redirectUrl !== PAGE_LIST.MY_PAGE ? `/${reviewFormCode}` : ''}`;
+
+    if (reviewId) {
+      updateMutation.mutate(
+        { reviewId: +reviewId, answers },
+        {
+          onSuccess: () => {
+            addSnackbar({
+              icon: 'rate_review',
+              title: '작성하신 회고가 수정되었습니다.',
+              description: '작성한 회고는 마이페이지를 통해 모아볼 수 있습니다.',
+            });
+            navigate(getRedirectUrl(), { replace: true });
+          },
+          onError: ({ message }) => {
+            alert(message);
+          },
+        },
+      );
+      return;
+    }
+    createMutation.mutate(
       { reviewFormCode, answers },
       {
         onSuccess: () => {
@@ -50,7 +98,7 @@ function SubmitReviewPage() {
             title: '작성하신 회고가 기록되었습니다.',
             description: '작성한 회고는 마이페이지를 통해 모아볼 수 있습니다.',
           });
-          navigate(`${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`, { replace: true });
+          navigate(getRedirectUrl(), { replace: true });
         },
         onError: ({ message }) => {
           alert(message);
@@ -75,7 +123,7 @@ function SubmitReviewPage() {
     navigate(-1);
   };
 
-  if (getQuestionsQuery.isError) {
+  if (getReviewFormQuery.isError) {
     alert('찾을 수 없는 참여 코드입니다.');
     return <Navigate to={'/'} replace={true} />;
   }
@@ -138,11 +186,14 @@ function SubmitReviewPage() {
                 title={question.questionValue || ''}
                 description={question.questionDescription}
               >
-                <TextBox
-                  value={questions[index].answerValue || ''}
-                  onFocus={onUpdateCurrentQuestion(index)}
-                  onChange={onUpdateAnswer(index)}
-                />
+                <>
+                  <Textarea
+                    size="large"
+                    value={questions[index].answerValue || ''}
+                    onFocus={onUpdateCurrentQuestion(index)}
+                    onChange={onUpdateAnswer(index)}
+                  />
+                </>
               </FieldSet>
             </div>
           ))}
@@ -152,11 +203,7 @@ function SubmitReviewPage() {
               <span>취소하기</span>
             </Button>
 
-            <Button
-              type="submit"
-              onClick={onSubmitReviewForm}
-              disabled={answeredCount !== questions.length || reviewMutation.isLoading}
-            >
+            <Button type="submit" onClick={onSubmitReviewForm} disabled={isSubmitDisabled}>
               <Icon code="send" />
               <span>제출하기</span>
             </Button>

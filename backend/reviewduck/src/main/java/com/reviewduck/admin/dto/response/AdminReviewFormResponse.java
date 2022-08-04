@@ -17,12 +17,13 @@ public class AdminReviewFormResponse {
     private String memberNickname;
     private String code;
     private String reviewTitle;
+    private boolean isActive;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     public static AdminReviewFormResponse from(ReviewForm reviewForm) {
         return new AdminReviewFormResponse(reviewForm.getId(), reviewForm.getMember().getId(),
             reviewForm.getMember().getProfileUrl(), reviewForm.getMember().getNickname(), reviewForm.getCode(),
-            reviewForm.getReviewTitle(), reviewForm.getCreatedAt(), reviewForm.getUpdatedAt());
+            reviewForm.getReviewTitle(), reviewForm.isActive(), reviewForm.getCreatedAt(), reviewForm.getUpdatedAt());
     }
 }

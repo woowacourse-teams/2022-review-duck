@@ -1,11 +1,13 @@
 import { ReactNode, Suspense } from 'react';
 import { QueryClientProvider, QueryClient } from 'react-query';
+import { BrowserRouter } from 'react-router-dom';
 
 import PageRoutes from 'PageRoutes';
 import { RecoilRoot } from 'recoil';
 
-import { ErrorBoundary, SnackbarContainer } from 'common/components';
+import { ErrorBoundary, ModalProvider, SnackbarProvider } from 'common/components';
 
+import * as modalContentList from 'service/@shared/pages/modals';
 import 'styles/@app.scss';
 
 const queryClient = new QueryClient({
@@ -22,7 +24,9 @@ const queryClient = new QueryClient({
 function ContextWrapper({ children }: { children: ReactNode }) {
   return (
     <RecoilRoot>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <BrowserRouter>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      </BrowserRouter>
     </RecoilRoot>
   );
 }
@@ -33,7 +37,8 @@ function App() {
     <ContextWrapper>
       <Suspense>
         <ErrorBoundary>
-          <SnackbarContainer />
+          <SnackbarProvider />
+          <ModalProvider contentList={modalContentList} />
           <PageRoutes />
         </ErrorBoundary>
       </Suspense>

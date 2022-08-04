@@ -4,8 +4,9 @@ import { ErrorResponse } from 'service/@shared/types';
 
 export interface Question {
   questionId?: number | null;
-  questionValue: string;
+  questionValue?: string;
   questionDescription?: string;
+  answerId?: number;
   answerValue?: string;
   listKey?: string | undefined;
 }
@@ -17,6 +18,7 @@ export interface ReviewForm {
 
 export interface Answer {
   questionValue: string;
+  answerId?: number;
   answerValue: string;
 }
 
@@ -46,6 +48,10 @@ export interface GetReviewsResponse {
   reviews: Review[];
 }
 
+export interface GetReviewResponse {
+  answers: Answer[];
+}
+
 export interface UpdateReviewFormRequest extends ReviewForm {
   reviewFormCode?: string | null;
 }
@@ -64,6 +70,11 @@ export interface SubmitAnswerRequest {
     answerValue: string;
     questionId: number | null | undefined;
   }[];
+}
+
+export interface UpdateReviewRequest {
+  reviewId: number;
+  answers: Question[];
 }
 
 export type UseCustomMutationOptions<TData = unknown> = UseMutationOptions<

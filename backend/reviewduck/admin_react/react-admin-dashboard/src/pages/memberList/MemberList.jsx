@@ -17,23 +17,23 @@ renderCell:(params)=>{
 }},
   { field: 'socialId', headerName: 'Social Id', width: 130 },
   { field: 'socialNickname', headerName: 'Social Nickname', width: 130 },
-  {
-    field: 'nickname',
-    headerName: 'Nickname',
-    width: 90,
-  },
+
   {
     field: 'profileUrl',
     headerName: 'Profile',
-    width: 160,
+    width: 70,
     renderCell: (params) => {
         return (
             <div className="memberListMember">
                 <img className="memberListImg" src={params.row.profileUrl} alt="" />
-                {params.row.nickname}
             </div>
         )
     },
+  },
+  {
+    field: 'nickname',
+    headerName: 'Nickname',
+    width: 150,
   },
   
   { field: 'createdAt', headerName: '가입일', width: 250 },
@@ -71,7 +71,6 @@ export default function MemberList(){
         <div className="memberList">
             <DataGrid
                 rows={memberRows}
-                disableSelectionOnClick
                 columns={columns}
                 pageSize={10}
                 rowsPerPageOptions={[5]}

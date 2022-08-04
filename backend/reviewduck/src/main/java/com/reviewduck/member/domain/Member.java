@@ -46,6 +46,18 @@ public class Member extends BaseDate {
         }
     }
 
+    public void updateNickname(String nickname) {
+        validate(nickname);
+        this.nickname = nickname;
+    }
+
+    public void deleteAllInfo() {
+        this.socialId = "-";
+        this.socialNickname = "-";
+        this.nickname = "탈퇴한 회원입니다";
+        this.profileUrl = "-";
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)

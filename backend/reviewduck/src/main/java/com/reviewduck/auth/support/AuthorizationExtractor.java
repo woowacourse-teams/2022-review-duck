@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import com.reviewduck.auth.exception.AuthorizationException;
 
 public class AuthorizationExtractor {
+
     private static final String BEARER_TYPE = "Bearer";
 
     public static String extract(HttpServletRequest request) {

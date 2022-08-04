@@ -6,6 +6,12 @@ const PAGE_LIST = {
   REVIEW_OVERVIEW: '/overview',
   AUTHORIZE: '/authorize',
   MY_PAGE: '/mypage',
+  LOGOUT: '/logout',
+};
+
+const MODAL_LIST = {
+  REVIEW_START: 'ModalReviewStart',
+  REVIEW_JOIN: 'ModalReviewJoin',
 };
 
 const QUERY_KEY = {
@@ -20,6 +26,7 @@ const QUERY_KEY = {
     GET_USER_PROFILE: 'getUserProfile',
 
     GET_REVIEWS: 'getReviews',
+    GET_REVIEW: 'getReview',
     GET_REVIEW_FORM: 'getReviewForm',
 
     GET_MY_REVIEWS: 'getMyReviews',
@@ -53,8 +60,11 @@ const MYPAGE_TAB = {
   MY_REVIEW_FORMS: 'my-review-forms',
 };
 
+const REVIEW_FORM_CODE_LENGTH = 8;
+
 export {
   PAGE_LIST,
+  MODAL_LIST,
   QUERY_KEY,
   GITHUB_OAUTH_LOGIN_URL,
   GITHUB_PROFILE_URL,
@@ -64,4 +74,5 @@ export {
   ACCESS_TOKEN_REFRESH_TIME,
   MYPAGE_TAB,
   PERMISSION_VALID_TIME,
+  REVIEW_FORM_CODE_LENGTH,
 };

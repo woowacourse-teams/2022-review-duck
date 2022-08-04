@@ -1,6 +1,7 @@
 package com.reviewduck.admin.dto.response;
 
-import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.reviewduck.review.domain.Review;
 
@@ -11,18 +12,16 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class AdminReviewResponse {
-    private Long id;
-    private Long memberId;
-    private String memberProfileUrl;
-    private String memberNickname;
-    private String reviewFormCode;
-    private String reviewFormTitle;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+
+    AdminReviewInfoResponse reviewInfo;
+    List<AdminQuestionAnswerResponse> questionAnswers;
 
     public static AdminReviewResponse from(Review review) {
-        return new AdminReviewResponse(review.getId(), review.getMember().getId(),
-            review.getMember().getProfileUrl(), review.getMember().getNickname(), review.getReviewForm().getCode(),
-            review.getReviewForm().getReviewTitle(), review.getCreatedAt(), review.getUpdatedAt());
+        AdminReviewInfoResponse reviewInfoResponse = AdminReviewInfoResponse.from(review);
+        List<AdminQuestionAnswerResponse> questionAnswerResponses = review.getQuestionAnswers().stream()
+            .map(AdminQuestionAnswerResponse::of)
+            .collect(Collectors.toList());
+
+        return new AdminReviewResponse(reviewInfoResponse, questionAnswerResponses);
     }
 }

@@ -17,7 +17,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
 import org.apache.commons.lang3.RandomStringUtils;
-import org.hibernate.annotations.SQLDelete;
 
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.domain.Member;
@@ -29,7 +28,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@SQLDelete(sql = "UPDATE review_form SET is_active = false WHERE id=?")
 @Getter
 public class ReviewForm extends BaseDate {
 

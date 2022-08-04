@@ -70,7 +70,6 @@
 .profile-container {
   display: flex;
   flex-direction: column;
-  width: 5.9375rem;
   gap: 1.8rem;
 }
 
@@ -86,7 +85,7 @@
 
 .creator-name {
   margin-top: 1rem;
-  letter-spacing: 0.25rem;
+  letter-spacing: 0.1rem;
   color: $THEME_COLOR_STATUS_PRIMARY_600;
 }
 
