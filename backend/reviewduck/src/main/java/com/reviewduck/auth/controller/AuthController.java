@@ -45,7 +45,7 @@ public class AuthController {
 
         TokensDto tokensDto = authService.createTokens(request);
 
-        ResponseCookie cookie = createRefreshToken(tokensDto);
+        ResponseCookie cookie = createRefreshTokenCookie(tokensDto.getRefreshToken(), SEVEN_DAYS);
         response.setHeader("Set-Cookie", cookie.toString());
 
         return new TokenResponse(tokensDto.getAccessToken());
@@ -64,7 +64,7 @@ public class AuthController {
         String refreshToken = cookie.getValue();
         TokensDto tokensDto = authService.regenerateTokens(refreshToken);
 
-        ResponseCookie refreshTokenCookie = createRefreshToken(tokensDto);
+        ResponseCookie refreshTokenCookie = createRefreshTokenCookie(tokensDto.getRefreshToken(), SEVEN_DAYS);
         response.setHeader("Set-Cookie", refreshTokenCookie.toString());
 
         return new TokenResponse(tokensDto.getAccessToken());
@@ -73,16 +73,13 @@ public class AuthController {
     @Operation(summary = "로그아웃을 시도한다.")
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.OK)
-    public void logout(@CookieValue(value = "refreshToken", required = false) Cookie cookie,
-        HttpServletResponse response) {
+    public void logout(HttpServletResponse response) {
 
         info("/api/logout", "POST", "");
 
-        if (!Objects.isNull(cookie)) {
-            cookie.setMaxAge(0);
-            cookie.setPath("/");
-            response.addCookie(cookie);
-        }
+        ResponseCookie cookie = createRefreshTokenCookie("", 0);
+
+        response.setHeader("Set-Cookie", cookie.toString());
     }
 
     private void validateCookie(Cookie cookie) {
@@ -91,9 +88,9 @@ public class AuthController {
         }
     }
 
-    private ResponseCookie createRefreshToken(TokensDto tokensDto) {
-        return ResponseCookie.from("refreshToken", tokensDto.getRefreshToken())
-            .maxAge(SEVEN_DAYS)
+    private ResponseCookie createRefreshTokenCookie(String value, int maxAge) {
+        return ResponseCookie.from("refreshToken", value)
+            .maxAge(maxAge)
             .path("/")
             .secure(true)
             .sameSite("None")
