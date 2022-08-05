@@ -36,7 +36,7 @@
   position: relative;
   border-radius: $GLOBAL_BORDERRADIUS_MEDIUM;
   background-color: $THEME_COLOR_THEME_BACKGROUND_100;
-  box-shadow: 0 0 10px 10px $GLOBAL_COLOR_BLACK_50, 0 0 5px 5px $GLOBAL_COLOR_BLACK_20;
+  box-shadow: 0 0 25px 5px $GLOBAL_COLOR_BLACK_50;
 
   transition: transform 0.2s ease;
   transform: translateX(-50%) translateY(0%) scale(0.7);
