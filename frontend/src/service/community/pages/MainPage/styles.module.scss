@@ -14,16 +14,13 @@
     #f5f5f5;
 
   .intro-container {
-    width: 1056px;
-    margin: 0 auto;
     display: grid;
     grid-template-columns: 29% 65%;
     gap: 13%;
     padding: 2rem 0;
+    overflow: hidden;
 
     .left-container {
-      min-width: 280px;
-      width: 30%;
       word-break: keep-all;
       line-height: 3.5rem;
 
@@ -33,6 +30,7 @@
 
       .bold {
         font-weight: bold;
+        color: $THEME_COLOR_STATUS_PRIMARY_500;
       }
 
       .sub-title {
@@ -46,26 +44,46 @@
     }
 
     .right-container {
-      max-width: 430px;
       position: relative;
 
-      .question {
-        box-shadow: 0px 15px 50px $GLOBAL_COLOR_BLACK_100;
-      }
-
-      .second-question {
+      .decorative {
         position: absolute;
-        min-width: 430px;
-        top: 7.0625rem;
-        left: 9.8125rem;
-        z-index: 2;
-      }
+        width: 400px;
 
-      .third-question {
-        position: absolute;
-        top: 12.875rem;
-        left: 2.4375rem;
-        min-width: 430px;
+        &:nth-child(1) {
+          top: -0.9rem;
+        }
+
+        &:nth-child(2) {
+          min-width: 430px;
+          top: 4.0625rem;
+          left: 9.52rem;
+          z-index: 2;
+        }
+
+        &:nth-child(3) {
+          position: absolute;
+          top: 9rem;
+          left: 2.4375rem;
+          min-width: 430px;
+        }
+
+        .question {
+          box-shadow: 0px 15px 50px $GLOBAL_COLOR_BLACK_100;
+          animation: unset;
+
+          &.small {
+            transform: scale(0.9);
+          }
+
+          &.medium {
+            transform: scale(0.95);
+          }
+
+          &.large {
+            transform: scale(1);
+          }
+        }
       }
     }
   }
