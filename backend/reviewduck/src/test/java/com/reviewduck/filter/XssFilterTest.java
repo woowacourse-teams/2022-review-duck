@@ -33,7 +33,7 @@ public class XssFilterTest extends AcceptanceTest {
         Member savedMember = memberService.save(member);
         String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
 
-        String XssQuestionValue = "<script>alert(\"xss\")</script>";
+        String XssQuestionValue = "<script>alert(\"xss\")</script>; 👍";
         List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest(XssQuestionValue),
             new ReviewFormQuestionRequest("question2"));
         ReviewFormCreateRequest request = new ReviewFormCreateRequest("title", questions);
