@@ -28,6 +28,8 @@ jobs:
     if: needs.label-check.outputs.status == 'true'
     steps:
       - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.DEVELOP_PUSH_KEY }}
 
       - name: Github 회원 정보 설정
         env:

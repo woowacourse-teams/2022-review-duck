@@ -82,7 +82,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         //when, then
         ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
+            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"), new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
 
         put("/api/reviews/" + reviewId, editRequest, accessToken1)
             .statusCode(HttpStatus.NO_CONTENT.value());
@@ -95,7 +95,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         //when, then
         ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
+            List.of(new AnswerUpdateRequest(1L,1L, "editedAnswer1"), new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
 
         put("/api/reviews/" + reviewId, editRequest)
             .statusCode(HttpStatus.UNAUTHORIZED.value());
@@ -106,7 +106,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     void failToEditReview() {
         // when, then
         ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
+            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"), new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
 
         put("/api/reviews/" + invalidReviewId, editRequest, accessToken1)
             .statusCode(HttpStatus.NOT_FOUND.value());
@@ -119,7 +119,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         //when, then
         ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
+            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"), new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
 
         put("/api/reviews/" + reviewId, editRequest, accessToken2)
             .statusCode(HttpStatus.UNAUTHORIZED.value());
