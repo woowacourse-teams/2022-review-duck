@@ -3,7 +3,6 @@ package com.reviewduck.review.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.repository.AnswerRepository;
 
@@ -18,6 +17,6 @@ public class AnswerService {
 
     public Answer findById(long answerId) {
         return answerRepository.findById(answerId)
-            .orElseThrow(() -> new NotFoundException("존재하지 않는 답변입니다."));
+            .orElseGet(() -> answerRepository.save(new Answer("")));
     }
 }
