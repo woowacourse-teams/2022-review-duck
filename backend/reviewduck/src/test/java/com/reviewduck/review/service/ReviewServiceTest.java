@@ -174,7 +174,8 @@ public class ReviewServiceTest {
 
         // when
         ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
+            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
+                new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
         Review updatedReview = reviewService.update(member1, savedReview.getId(), editRequest);
 
         // then
@@ -194,7 +195,8 @@ public class ReviewServiceTest {
 
         // when
         ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
+            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
+                new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
 
         // then
         assertThatThrownBy(() -> reviewService.update(member2, savedReview.getId(), editRequest))
@@ -207,7 +209,8 @@ public class ReviewServiceTest {
     void updateInvalidReview() {
         // given
         ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, "editedAnswer1"), new AnswerUpdateRequest(2L, "editedAnswer2")));
+            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
+                new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
 
         // when, then
         assertThatThrownBy(() -> reviewService.update(member1, 99999L, editRequest))

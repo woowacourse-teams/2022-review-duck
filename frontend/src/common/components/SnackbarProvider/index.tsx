@@ -16,8 +16,8 @@ function SnackbarProvider() {
 
   return (
     <div id="snackbar-container">
-      {snackbarActivityStack.map(({ id, ...rest }) => (
-        <Snackbar key={id} {...rest} onDisappear={onSnackbarDisappear(id)} />
+      {snackbarActivityStack.map(({ key, ...rest }) => (
+        <Snackbar key={key} {...rest} onDisappear={onSnackbarDisappear(key)} />
       ))}
     </div>
   );

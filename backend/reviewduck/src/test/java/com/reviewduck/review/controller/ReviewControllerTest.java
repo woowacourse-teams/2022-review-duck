@@ -52,23 +52,11 @@ public class ReviewControllerTest {
 
     @ParameterizedTest
     @NullSource
-    @DisplayName("회고 수정 시 답변 번호에 null 값이 들어갈 경우 예외가 발생한다.")
-    void nullQuestionIdRequestInEditing(Long answerId) throws Exception {
-        // given
-        ReviewUpdateRequest request = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(answerId, "editedAnswer1")));
-
-        // when, then
-        assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "답변 번호는 비어있을 수 없습니다.");
-    }
-
-    @ParameterizedTest
-    @NullSource
     @DisplayName("회고 수정 시 답변에 null 값이 들어갈 경우 예외가 발생한다.")
     void nullAnswerRequestInEditing(String answer) throws Exception {
         // given
         ReviewUpdateRequest request = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, answer)));
+            List.of(new AnswerUpdateRequest(1L, 1L, answer)));
 
         // when, then
         assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "답변은 비어있을 수 없습니다.");

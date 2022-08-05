@@ -16,8 +16,7 @@ public class AnswerService {
 
     private final AnswerRepository answerRepository;
 
-    public Answer findById(long answerId) {
-        return answerRepository.findById(answerId)
-            .orElseThrow(() -> new NotFoundException("존재하지 않는 답변입니다."));
+    public Answer saveNewAnswer() {
+        return answerRepository.save(new Answer(""));
     }
 }
