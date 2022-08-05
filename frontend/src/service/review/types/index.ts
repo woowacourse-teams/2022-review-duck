@@ -6,7 +6,7 @@ export interface Question {
   questionId?: number | null;
   questionValue?: string;
   questionDescription?: string;
-  answerId?: number;
+  answerId?: number | null;
   answerValue?: string;
   listKey?: string | undefined;
 }

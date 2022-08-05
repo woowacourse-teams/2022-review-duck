@@ -35,7 +35,8 @@ function ReviewListMain({ reviewFormCode }: Record<'reviewFormCode', string>) {
           ))}
         </div>
       </section>
-      {reviews.length === 0 && <NoResult size="medium" title="제출된 회고가 없습니다." />}
+
+      {reviews.length === 0 && <NoResult size="medium">제출된 회고가 없습니다.</NoResult>}
 
       {reviews.map((review: Review) => (
         <section

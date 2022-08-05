@@ -49,15 +49,13 @@ public class Review extends BaseDate {
     }
 
     public void update(List<QuestionAnswer> questionAnswers) {
+        sortQuestionAnswers(questionAnswers);
         this.questionAnswers = questionAnswers;
+        super.renewUpdatedAt();
     }
 
     public boolean isMine(Member member) {
         return member.equals(this.member);
-    }
-
-    public void renewUpdatedAt(){
-        super.renewUpdatedAt();
     }
 
     private void sortQuestionAnswers(List<QuestionAnswer> questionAnswers) {

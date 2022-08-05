@@ -1,0 +1,71 @@
+# Front-End
+# 회고덕 프론트엔드 팀의 PR을 통한 버전 관리 자동화 액션입니다.
+# develop 브랜치에 merge가 될 시, Label 값에 따라 package.json의 버전을 관리하여줍니다.
+
+name: FrontEnd Semantic Versioning
+on:
+  pull_request:
+    types: [closed]
+jobs:
+  label-check:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && github.base_ref == 'develop'
+    outputs:
+      status: ${{ steps.frontend.outputs.status }}
+    steps:
+      - name: PR Label 확인
+        id: pr-labels
+        uses: joerick/pr-labels-action@v1.0.6
+
+      - name: 프론트엔드 Label 체크
+        id: frontend
+        if: contains(steps.pr-labels.outputs.labels, ' front-end ')
+        run: echo "::set-output name=status::true"
+
+  version-update:
+    runs-on: ubuntu-latest
+    needs: label-check
+    if: needs.label-check.outputs.status == 'true'
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.DEVELOP_PUSH_KEY }}
+
+      - name: Github 회원 정보 설정
+        env:
+          MY_EMAIL: wearereviewduck@gmail.com
+          MY_NAME: ReviewDuck
+        run: |
+          git config --global user.email $MY_EMAIL
+          git config --global user.name $MY_NAME
+
+      - name: Node.js 설치
+        uses: actions/setup-node@v3
+        with:
+          node-version: 17.x
+
+      - name: PR Label 확인
+        id: pr-labels
+        uses: joerick/pr-labels-action@v1.0.6
+
+      - name: 버전 업데이트 체크 (마이너 - 기능)
+        if: |
+          contains(steps.pr-labels.outputs.labels, ' 기능 ')
+        run: |
+          yarn version --minor
+        working-directory: ./frontend
+
+      - name: 버전 업데이트 체크 (패치 - 리팩토링, 버그, 설정, 핫픽스)
+        if: |
+          contains(steps.pr-labels.outputs.labels, ' 리팩토링 ') ||
+          contains(steps.pr-labels.outputs.labels, ' 버그 ') ||
+          contains(steps.pr-labels.outputs.labels, ' 설정 ') ||
+          contains(steps.pr-labels.outputs.labels, ' 핫픽스 ')
+        run: |
+          yarn version --patch
+        working-directory: ./frontend
+
+      - name: Develop Push
+        uses: ad-m/github-push-action@master
+        with:
+          branch: "develop"

@@ -58,11 +58,11 @@ function ReviewList({ filter }: Record<'filter', string>) {
     filter === MYPAGE_TAB.MY_REVIEW_FORMS && myReviewForms.reviewForms.length === 0;
 
   if (noResultInMyReview) {
-    return <NoResult className={styles.noResult} title="작성한 회고가 없습니다." />;
+    return <NoResult className={styles.noResult}>작성한 회고가 없습니다.</NoResult>;
   }
 
   if (noResultInMyReviewForm) {
-    return <NoResult className={styles.noResult} title="생성한 회고가 없습니다." />;
+    return <NoResult className={styles.noResult}>생성한 회고가 없습니다.</NoResult>;
   }
 
   return (

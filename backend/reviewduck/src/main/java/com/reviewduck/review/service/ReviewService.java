@@ -2,6 +2,9 @@ package com.reviewduck.review.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,12 +65,25 @@ public class ReviewService {
         Review review = findById(id);
         validateMyReview(member, review, "본인이 생성한 회고가 아니면 수정할 수 없습니다.");
 
-        for (AnswerUpdateRequest answerRequest : request.getAnswers()) {
-            Answer answer = answerService.findById(answerRequest.getAnswerId());
-            answer.update(answerRequest.getAnswerValue());
-        }
-        review.renewUpdatedAt();
+        ReviewForm reviewForm = review.getReviewForm();
+        Map<Long, ReviewFormQuestion> questionMap = reviewForm.getReviewFormQuestions().stream()
+            .collect(Collectors.toUnmodifiableMap(ReviewFormQuestion::getId, Function.identity()));
 
+        Map<ReviewFormQuestion, QuestionAnswer> questionAnswerMap = review.getQuestionAnswers().stream()
+            .collect(Collectors.toUnmodifiableMap(QuestionAnswer::getReviewFormQuestion, Function.identity()));
+
+        List<QuestionAnswer> updateQuestionAnswers = new ArrayList<>();
+
+        for (AnswerUpdateRequest answerRequest : request.getAnswers()) {
+            ReviewFormQuestion reviewFormQuestion = questionMap.get(answerRequest.getQuestionId());
+
+            QuestionAnswer questionAnswer = questionAnswerMap
+                .getOrDefault(reviewFormQuestion, new QuestionAnswer(reviewFormQuestion, answerService.saveNewAnswer()));
+
+            questionAnswer.getAnswer().update(answerRequest.getAnswerValue());
+            updateQuestionAnswers.add(questionAnswer);
+        }
+        review.update(updateQuestionAnswers);
         return review;
     }
 
