@@ -16,7 +16,11 @@ function RequireAuth({
   const { isLogin } = useAuth();
 
   if (isLogin !== permission) {
-    alert(isLogin ? '이미 로그인하였습니다.' : '권한이 없습니다. 로그인을 해주세요.');
+    alert(
+      isLogin
+        ? '이미 로그인하였습니다.'
+        : `권한이 없습니다. 로그인을 해주세요.\n(로그인 후 리다이렉트 처리 예정입니다.)`,
+    );
     return <Navigate to={PAGE_LIST.HOME} />;
   }
 
