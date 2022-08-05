@@ -1,5 +1,8 @@
 function getElapsedTimeText(timestamp: number) {
   const elapsed = Math.round((Date.now() - timestamp) / 1000);
+
+  if (elapsed < 0) return '0초 전';
+
   const timeUnitRange = [
     { limit: 60, text: '초 전' },
     { limit: 60 * 60, text: '분 전' },
