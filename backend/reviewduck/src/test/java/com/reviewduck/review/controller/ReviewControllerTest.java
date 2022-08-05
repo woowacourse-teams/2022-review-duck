@@ -56,7 +56,7 @@ public class ReviewControllerTest {
     void nullQuestionIdRequestInEditing(Long answerId) throws Exception {
         // given
         ReviewUpdateRequest request = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(answerId, "editedAnswer1")));
+            List.of(new AnswerUpdateRequest(1L, answerId, "editedAnswer1")));
 
         // when, then
         assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "답변 번호는 비어있을 수 없습니다.");
@@ -68,7 +68,7 @@ public class ReviewControllerTest {
     void nullAnswerRequestInEditing(String answer) throws Exception {
         // given
         ReviewUpdateRequest request = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, answer)));
+            List.of(new AnswerUpdateRequest(1L, 1L, answer)));
 
         // when, then
         assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "답변은 비어있을 수 없습니다.");

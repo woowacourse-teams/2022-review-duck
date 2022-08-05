@@ -78,8 +78,7 @@ public class ReviewService {
             ReviewFormQuestion reviewFormQuestion = questionMap.get(answerRequest.getQuestionId());
 
             QuestionAnswer questionAnswer = questionAnswerMap
-                .computeIfAbsent(reviewFormQuestion,
-                    none -> new QuestionAnswer(reviewFormQuestion, answerService.saveNewAnswer()));
+                .getOrDefault(reviewFormQuestion, new QuestionAnswer(reviewFormQuestion, answerService.saveNewAnswer()));
 
             questionAnswer.getAnswer().update(answerRequest.getAnswerValue());
             updateQuestionAnswers.add(questionAnswer);
