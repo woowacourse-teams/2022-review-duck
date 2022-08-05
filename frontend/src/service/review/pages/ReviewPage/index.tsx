@@ -62,7 +62,7 @@ function SubmitReviewPage() {
   const onSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const answers = questions.map(({ questionId, answerId, answerValue = '' }) => ({
+    const answers = questions.map(({ questionId, answerId = null, answerValue = '' }) => ({
       questionId,
       answerId,
       answerValue,
