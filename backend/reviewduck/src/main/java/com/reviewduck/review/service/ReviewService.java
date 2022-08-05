@@ -85,8 +85,6 @@ public class ReviewService {
             updateQuestionAnswers.add(questionAnswer);
         }
         review.update(updateQuestionAnswers);
-        review.renewUpdatedAt();
-
         return review;
     }
 
