@@ -1,7 +1,7 @@
 import Textarea from '.';
 
 export default {
-  title: 'Common/Components/Textarea',
+  title: 'common/components/Textarea',
   component: Textarea,
 };
 
