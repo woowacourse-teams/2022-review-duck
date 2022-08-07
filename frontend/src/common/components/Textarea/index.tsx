@@ -1,6 +1,7 @@
-import React from 'react';
+import { useEffect, useRef } from 'react';
 
 import cn from 'classnames';
+import PropTypes from 'prop-types';
 
 import styles from './styles.module.scss';
 
@@ -11,24 +12,28 @@ interface Props extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 
   size?: typeof propSizeType[number];
 }
 
-function Textarea({ className, size = 'medium', ...rest }: Props) {
-  const onResize = ({ key, target }: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (key !== 'Enter' && key !== 'Backspace') return;
+function Textarea({ className, size = 'medium', value, ...rest }: Props) {
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
-    const lineCount = target.value.split('\n').length;
+  useEffect(() => {
+    if (!textareaRef.current) return;
 
-    target.setAttribute('rows', String(lineCount && lineCount + 1) || '2');
-  };
+    textareaRef.current.style.height = '0px';
+    textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+  }, [value]);
 
   return (
     <textarea
-      rows={2}
-      spellCheck={false}
+      ref={textareaRef}
       className={cn(className, styles.textarea, styles[`size-${size}`])}
-      onKeyDown={onResize}
+      value={value}
       {...rest}
     />
   );
 }
+
+Textarea.propTypes = {
+  size: PropTypes.oneOf(propSizeType),
+};
 
 export default Textarea;
