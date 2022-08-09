@@ -1,4 +1,4 @@
-import { GetMyReviewsResponse, GetMyReviewFormsResponse } from '../types/profile';
+import { GetMyReviewsResponse, GetMyReviewFormsResponse } from '../types';
 
 import axiosInstance from 'service/@shared/api/config/axiosInstance';
 

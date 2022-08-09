@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-import { UpdateReviewFormResponse, UseCustomMutationOptions } from 'service/@shared/types/review';
+import { UpdateReviewFormResponse, UseCustomMutationOptions } from 'service/@shared/types';
 
 import reviewAPI from 'service/@shared/api/review';
 import { QUERY_KEY } from 'service/@shared/constants';

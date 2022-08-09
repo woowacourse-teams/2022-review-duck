@@ -1,4 +1,4 @@
-import { ReviewForm } from 'service/@shared/types/review';
+import { ReviewForm } from 'service/@shared/types';
 
 import {
   useCreateReviewForm,

@@ -5,7 +5,7 @@ import {
   GetReviewFormResponse,
   GetReviewResponse,
   GetReviewsResponse,
-} from 'service/@shared/types/review';
+} from 'service/@shared/types';
 
 import reviewAPI from 'service/@shared/api/review';
 import { QUERY_KEY } from 'service/@shared/constants';

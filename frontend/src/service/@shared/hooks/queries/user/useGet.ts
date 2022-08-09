@@ -1,7 +1,10 @@
 import { useQuery, UseQueryOptions } from 'react-query';
 
-import { ErrorResponse } from 'service/@shared/types/index';
-import { GetMyReviewFormsResponse, GetMyReviewsResponse } from 'service/@shared/types/profile';
+import {
+  GetMyReviewFormsResponse,
+  GetMyReviewsResponse,
+  ErrorResponse,
+} from 'service/@shared/types';
 
 import userAPI from 'service/@shared/api/user';
 import { QUERY_KEY } from 'service/@shared/constants';

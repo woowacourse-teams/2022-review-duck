@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 
-import { Question } from '../../@shared/types/review';
+import { Question } from 'service/@shared/types';
 
 function useQuestions(initState?: Question[]) {
   const [questions, setQuestions] = useState<Question[]>(initState || []);
