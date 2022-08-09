@@ -24,7 +24,7 @@ public abstract class BaseDate {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public void renewUpdatedAt(){
+    public void renewUpdatedAt() {
         updatedAt = LocalDateTime.now();
     }
 

@@ -29,7 +29,7 @@ public class HTMLCharacterEscapes extends CharacterEscapes {
 
     @Override
     public SerializableString getEscapeSequence(int ch) {
-        char charAt = (char) ch;
+        char charAt = (char)ch;
         //emoji jackson parse 오류에 따른 예외 처리
         if (Character.isHighSurrogate(charAt) || Character.isLowSurrogate(charAt)) {
             String convertedEmoji = "\\u" + String.format("%04x", ch);
