@@ -26,7 +26,7 @@ class App extends Component{
 
   async getToken(code) {
 
-    const getToken = await axios.post('http://localhost:8080/api/login', 
+    const getToken = await axios.post(process.env.REACT_APP_BACK_BASE_URL + '/api/login', 
     { code: code })
     
     this.setState ({
@@ -46,7 +46,8 @@ class App extends Component{
 
   render() {
     const {isLogin, accessToken} = this.state;
-    const API_URI = "http://localhost:8080/api/admin"
+    const API_URI = process.env.REACT_APP_BACK_BASE_URL+"/api/admin"
+    
     return (
       <Router>
         <Topbar />

@@ -9,7 +9,7 @@ const headers= {
 
 
 function socialLoginHandler(){
-  window.location.assign(`https://github.com/login/oauth/authorize?client_id=24e1a1f66eeab14f6ee0`, headers)
+  window.location.assign(`https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}`, headers)
 }
 
 export default function Home(){
