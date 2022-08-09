@@ -9,14 +9,9 @@ import { rest } from 'msw';
 import { reviewduckAPI } from 'mocks/hosts';
 
 const conventionHandlers = [
-  rest.post(reviewduckAPI('/example'), (req, res, ctx) => {
-    const { userId, password } = req.body;
-
-    return res(
-      ctx.status(200),
-      ctx.json({ accessToken: `msw_mocking_token_${userId}_${password}` }),
-    );
-  }),
+  rest.post(reviewduckAPI('/example'), (req, res, ctx) =>
+    res(ctx.status(200), ctx.json({ title: '콤피입니더' })),
+  ),
 ];
 
 export default conventionHandlers;
