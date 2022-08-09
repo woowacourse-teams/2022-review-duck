@@ -14,9 +14,9 @@ const getMyReviewForms = async (): Promise<GetMyReviewFormsResponse> => {
   return data;
 };
 
-const myReviewAPI = {
+const userAPI = {
   getMyReviews,
   getMyReviewForms,
 };
 
-export default myReviewAPI;
+export default userAPI;
