@@ -1,6 +1,6 @@
 import { CreateRefreshTokenRequest, CreateRefreshResponse, UserProfileResponse } from '../types';
 
-import axiosInstance from './axiosInstance';
+import axiosInstance from './config/axiosInstance';
 
 const createRefreshToken = async (
   query: CreateRefreshTokenRequest,

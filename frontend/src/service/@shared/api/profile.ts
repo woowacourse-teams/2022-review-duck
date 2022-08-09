@@ -1,6 +1,6 @@
 import { GetMyReviewsResponse, GetMyReviewFormsResponse } from '../types/profile';
 
-import axiosInstance from 'service/@shared/api/axiosInstance';
+import axiosInstance from 'service/@shared/api/config/axiosInstance';
 
 const getMyReviews = async (): Promise<GetMyReviewsResponse> => {
   const { data } = await axiosInstance.get('/api/reviews/me');
