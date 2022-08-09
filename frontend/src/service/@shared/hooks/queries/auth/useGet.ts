@@ -1,12 +1,13 @@
 import { useQuery, UseQueryOptions } from 'react-query';
 
-import { CreateRefreshResponse } from 'service/@shared/types';
+import { UserProfileResponse, CreateRefreshResponse } from 'service/@shared/types';
 import { ErrorResponse } from 'service/@shared/types';
 
 import authAPI from 'service/@shared/api/auth';
 import {
   ACCESS_TOKEN_EXPIRE_TIME,
   ACCESS_TOKEN_REFRESH_TIME,
+  PERMISSION_VALID_TIME,
   QUERY_KEY,
 } from 'service/@shared/constants';
 
@@ -25,4 +26,17 @@ function useGetAccessToken(queryOptions?: UseQueryOptions<CreateRefreshResponse,
   );
 }
 
-export default useGetAccessToken;
+function useGetUserInfo(queryOptions?: UseQueryOptions<UserProfileResponse, ErrorResponse>) {
+  return useQuery<UserProfileResponse, ErrorResponse>(
+    [QUERY_KEY.DATA.USER, QUERY_KEY.API.GET_USER_PROFILE],
+    () => authAPI.getProfile(),
+    {
+      suspense: true,
+      useErrorBoundary: false,
+      staleTime: PERMISSION_VALID_TIME,
+      ...queryOptions,
+    },
+  );
+}
+
+export { useGetAccessToken, useGetUserInfo };

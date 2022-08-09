@@ -1,20 +1,19 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-import { CreateRefreshResponse } from 'service/@shared/types';
 import { UseCustomMutationOptions } from 'service/@shared/types/review';
 
 import authAPI from 'service/@shared/api/auth';
 import { QUERY_KEY } from 'service/@shared/constants';
 
-function useCreateRefreshToken(mutationOptions?: UseCustomMutationOptions<CreateRefreshResponse>) {
+function useDeleteRefreshToken(mutationOptions?: UseCustomMutationOptions<null>) {
   const queryClient = useQueryClient();
 
-  return useMutation(authAPI.createRefreshToken, {
+  return useMutation(authAPI.deleteRefreshToken, {
     onSettled: () => {
-      queryClient.refetchQueries([QUERY_KEY.DATA.USER, QUERY_KEY.API.GET_ACCESS_TOKEN]);
+      queryClient.refetchQueries([QUERY_KEY.DATA.USER]);
     },
     ...mutationOptions,
   });
 }
 
-export default useCreateRefreshToken;
+export { useDeleteRefreshToken };
