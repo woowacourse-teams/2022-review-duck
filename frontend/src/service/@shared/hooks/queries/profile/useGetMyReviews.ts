@@ -3,7 +3,7 @@ import { useQuery, UseQueryOptions } from 'react-query';
 import { ErrorResponse } from 'service/@shared/types/index';
 import { GetMyReviewsResponse } from 'service/@shared/types/profile';
 
-import myReviewAPI from 'service/@shared/api/profile';
+import myReviewAPI from 'service/@shared/api/user';
 import { QUERY_KEY } from 'service/@shared/constants';
 
 function useGetMyReviews(queryOptions?: UseQueryOptions<GetMyReviewsResponse, ErrorResponse>) {
