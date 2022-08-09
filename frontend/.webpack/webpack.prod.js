@@ -8,7 +8,7 @@ module.exports = (env, options) =>
     devtool: 'hidden-source-map',
     output: {
       path: path.join(__dirname, '../build'),
-      publicPath: '/',
+      publicPath: process.env.PUBLIC_PATH,
       filename: `bundle.${Date.now()}.js`,
     },
   });
