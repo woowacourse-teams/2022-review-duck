@@ -1,6 +1,8 @@
 package com.reviewduck.review.acceptance;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
@@ -18,9 +20,13 @@ import com.reviewduck.review.dto.request.AnswerRequest;
 import com.reviewduck.review.dto.request.AnswerUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
+import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
+import com.reviewduck.review.dto.request.ReviewQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
+import com.reviewduck.review.dto.response.QuestionAnswerResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
+import com.reviewduck.review.dto.response.ReviewSummaryResponse;
 import com.reviewduck.review.dto.response.ReviewsResponse;
 
 public class ReviewAcceptanceTest extends AcceptanceTest {
@@ -76,13 +82,73 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("최신화된 회고폼과 동기화하여 특정 회고를 조회한다.")
+    void findSynchronizedReview() {
+        // save reviewForm
+        String reviewTitle = "title";
+        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
+            new ReviewFormQuestionRequest("question2"),
+            new ReviewFormQuestionRequest("question3"));
+        String code = createReviewFormAndGetCode(accessToken1, reviewTitle, questions);
+
+        // save review
+        ReviewRequest createRequest = new ReviewRequest(
+            List.of(new AnswerRequest(1L, "answer1"),
+                new AnswerRequest(2L, "answer2"),
+                new AnswerRequest(3L, "answer3")));
+        post("/api/review-forms/" + code, createRequest, accessToken2);
+
+        // delete question3 of reviewForm
+        List<ReviewQuestionUpdateRequest> updateQuestions = List.of(
+            new ReviewQuestionUpdateRequest(1L, "new question1"),
+            new ReviewQuestionUpdateRequest(3L, "new question3"));
+        ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateQuestions);
+        put("/api/review-forms/" + code, updateRequest, accessToken1);
+
+        //when
+        List<QuestionAnswerResponse> actual = get("/api/reviews/1/synchronized", accessToken1)
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .as(ReviewSummaryResponse.class)
+            .getAnswers();
+
+        // then
+        assertAll(
+            () -> assertThat(actual.size()).isEqualTo(2),
+            () -> assertThat(actual.get(0).getQuestionValue()).isEqualTo("new question1"),
+            () -> assertThat(actual.get(0).getAnswerId()).isEqualTo(1L),
+            () -> assertThat(actual.get(1).getQuestionValue()).isEqualTo("new question3"),
+            () -> assertThat(actual.get(1).getAnswerId()).isEqualTo(3L)
+        );
+    }
+
+    @Test
+    @DisplayName("로그인하지 않은 상태로 최신화된 회고폼과 동기화하여 특정 회고를 조회할 수 없다")
+    void failToFindSynchronizedReviewWithoutLogin() {
+        Long reviewId = saveReviewAndGetId(accessToken1);
+
+        //when, then
+        get("/api/reviews/" + reviewId + "/synchronized")
+            .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 회고를 최신화된 회고폼과 동기화하여 조회할 수 없다.")
+    void failToFindSynchronizedReview() {
+        // when, then
+        get("/api/reviews/999999/synchronized", accessToken1)
+            .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
     @DisplayName("회고를 수정한다.")
     void editReview() {
         Long reviewId = saveReviewAndGetId(accessToken1);
 
         //when, then
         ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"), new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
+            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
+                new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
 
         put("/api/reviews/" + reviewId, editRequest, accessToken1)
             .statusCode(HttpStatus.NO_CONTENT.value());
@@ -95,7 +161,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         //when, then
         ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L,1L, "editedAnswer1"), new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
+            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
+                new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
 
         put("/api/reviews/" + reviewId, editRequest)
             .statusCode(HttpStatus.UNAUTHORIZED.value());
@@ -106,7 +173,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     void failToEditReview() {
         // when, then
         ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"), new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
+            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
+                new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
 
         put("/api/reviews/" + invalidReviewId, editRequest, accessToken1)
             .statusCode(HttpStatus.NOT_FOUND.value());
@@ -119,7 +187,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         //when, then
         ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"), new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
+            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
+                new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
 
         put("/api/reviews/" + reviewId, editRequest, accessToken2)
             .statusCode(HttpStatus.UNAUTHORIZED.value());
