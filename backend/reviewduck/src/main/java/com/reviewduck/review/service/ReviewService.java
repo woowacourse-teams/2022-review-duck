@@ -91,7 +91,7 @@ public class ReviewService {
     @Transactional
     public void delete(Member member, Long id) {
         Review review = findById(id);
-        validateMyReview(member, review, "본인이 생성한 회고가 아니면 삭제할 x수 없습니다.");
+        validateMyReview(member, review, "본인이 생성한 회고가 아니면 삭제할 수 없습니다.");
 
         reviewRepository.deleteById(id);
     }
