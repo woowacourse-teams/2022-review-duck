@@ -44,6 +44,17 @@ public class ReviewController {
         return ReviewSummaryResponse.from(reviewService.findById(reviewId));
     }
 
+    @Operation(summary = "특정한 회고 답변 수정시 최신화된 회고폼을 반영하기 위하여 동기화된 회고 답변을 조회한다.")
+    @GetMapping("/{reviewId}/synchronized")
+    @ResponseStatus(HttpStatus.OK)
+    public ReviewSummaryResponse synchronizedFindById(@AuthenticationPrincipal Member member,
+        @PathVariable Long reviewId) {
+
+        info("/api/reviews/" + reviewId + "/synchronize", "GET", "");
+
+        return ReviewSummaryResponse.synchronizedWithReviewForm(reviewService.findById(reviewId));
+    }
+
     @Operation(summary = "회고 답변을 수정한다.")
     @PutMapping("/{reviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
