@@ -48,7 +48,12 @@ function PageRoutes() {
 
         <Route path="playground" element={<Playground />} />
         <Route index element={<MainPage />} />
-        <Route path={PAGE_LIST.TEMPLATE_SOTRE} element={<TemplateStorePage />} />
+
+        <Route path={PAGE_LIST.TEMPLATE_STORE} element={<TemplateStorePage />} />
+        <Route
+          path={`${PAGE_LIST.TEMPLATE_STORE}${PAGE_LIST.TEMPLATE_RECENT}`}
+          element={<TemplateStorePage />}
+        />
       </Route>
 
       <Route path={PAGE_LIST.REVIEW_OVERVIEW}>
