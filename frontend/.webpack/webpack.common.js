@@ -15,6 +15,8 @@ module.exports = (env = {}, options = {}) => {
     path: `./env/${mode || 'development'}.env`,
   });
 
+  const parsedEnv = { ...process.env, ...env };
+
   return {
     entry: './src/index.tsx',
     resolve: {
@@ -69,7 +71,9 @@ module.exports = (env = {}, options = {}) => {
       ],
     },
     plugins: [
-      new webpack.EnvironmentPlugin(process.env),
+      new webpack.DefinePlugin({
+        'process.env': JSON.stringify(parsedEnv),
+      }),
       new webpack.LoaderOptionsPlugin({
         options: {
           postcss: [autoprefixer()],
