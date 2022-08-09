@@ -1,14 +1,14 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-import { UseCustomMutationOptions } from 'service/review/types';
+import { UseCustomMutationOptions } from 'service/@shared/types';
 
-import { userAPI } from 'service/@shared/api';
+import authAPI from 'service/@shared/api/auth';
 import { QUERY_KEY } from 'service/@shared/constants';
 
 function useDeleteRefreshToken(mutationOptions?: UseCustomMutationOptions<null>) {
   const queryClient = useQueryClient();
 
-  return useMutation(userAPI.deleteRefreshToken, {
+  return useMutation(authAPI.deleteRefreshToken, {
     onSettled: () => {
       queryClient.refetchQueries([QUERY_KEY.DATA.USER]);
     },
@@ -16,4 +16,4 @@ function useDeleteRefreshToken(mutationOptions?: UseCustomMutationOptions<null>)
   });
 }
 
-export default useDeleteRefreshToken;
+export { useDeleteRefreshToken };

@@ -1,6 +1,6 @@
 import { GetMyReviewsResponse, GetMyReviewFormsResponse } from '../types';
 
-import axiosInstance from 'service/@shared/api/axiosInstance';
+import axiosInstance from 'service/@shared/api/config/axiosInstance';
 
 const getMyReviews = async (): Promise<GetMyReviewsResponse> => {
   const { data } = await axiosInstance.get('/api/reviews/me');
@@ -14,9 +14,9 @@ const getMyReviewForms = async (): Promise<GetMyReviewFormsResponse> => {
   return data;
 };
 
-const myReviewAPI = {
+const userAPI = {
   getMyReviews,
   getMyReviewForms,
 };
 
-export default myReviewAPI;
+export default userAPI;

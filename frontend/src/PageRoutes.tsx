@@ -5,17 +5,17 @@ import useAuth from 'service/@shared/hooks/useAuth';
 import RequireAuth from 'service/@shared/components/RequireAuth';
 
 import { PAGE_LIST } from 'service/@shared/constants';
-import Authorize from 'service/@shared/pages/Authorize';
-import Logout from 'service/@shared/pages/Logout';
-import CommunityLayout from 'service/community/layout/CommunityLayout';
-import MainPage from 'service/community/pages/MainPage';
-import MyPage from 'service/community/pages/MyPage';
 import ReviewLayout from 'service/review/layout/ReviewLayout';
 import Playground from 'service/review/pages/Playground';
 import ReviewFormPage from 'service/review/pages/ReviewFormPage';
 import ReviewJoinPage from 'service/review/pages/ReviewJoinPage';
 import ReviewOverviewPage from 'service/review/pages/ReviewOverviewPage';
 import ReviewPage from 'service/review/pages/ReviewPage';
+import CommunityLayout from 'service/user/layout/CommunityLayout';
+import Authorize from 'service/user/pages/Authorize';
+import Logout from 'service/user/pages/Logout';
+import MainPage from 'service/user/pages/MainPage';
+import MyPage from 'service/user/pages/MyPage';
 
 function PageRoutes() {
   useAuth();
