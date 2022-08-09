@@ -1,10 +1,10 @@
 import { useQuery, UseQueryOptions } from 'react-query';
 
 import { ErrorResponse } from 'service/@shared/types';
-import { GetReviewFormResponse } from 'service/review/types';
+import { GetReviewFormResponse } from 'service/@shared/types/review';
 
+import reviewAPI from 'service/@shared/api/review';
 import { QUERY_KEY } from 'service/@shared/constants';
-import reviewAPI from 'service/review/api';
 
 function useGetReviewForm(
   reviewFormCode: string,

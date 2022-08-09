@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Question, Review, Answer } from 'service/review/types';
+import { Question, Review, Answer } from 'service/@shared/types/review';
 
 import styles from '../styles.module.scss';
 import useOverviewQueries from '../useOverviewQueries';

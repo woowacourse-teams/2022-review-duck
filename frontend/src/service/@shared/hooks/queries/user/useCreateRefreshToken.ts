@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from 'react-query';
 
 import { CreateRefreshResponse } from 'service/@shared/types';
-import { UseCustomMutationOptions } from 'service/review/types';
+import { UseCustomMutationOptions } from 'service/@shared/types/review';
 
 import { userAPI } from 'service/@shared/api';
 import { QUERY_KEY } from 'service/@shared/constants';

@@ -1,10 +1,10 @@
-import { ReviewForm } from 'service/review/types';
+import { ReviewForm } from 'service/@shared/types/review';
 
 import {
   useCreateReviewForm,
   useGetReviewForm,
   useUpdateReviewForm,
-} from 'service/review/hooks/queries';
+} from 'service/@shared/hooks/queries/review';
 
 function useReviewFormQueries(reviewFormCode = '') {
   const createMutation = useCreateReviewForm();

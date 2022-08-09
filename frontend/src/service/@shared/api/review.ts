@@ -6,7 +6,7 @@ import {
   GetReviewsResponse,
   GetReviewResponse,
   UpdateReviewRequest,
-} from '../types';
+} from '../types/review';
 
 import axiosInstance from 'service/@shared/api/axiosInstance';
 

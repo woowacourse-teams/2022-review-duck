@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-import { Question } from 'service/review/types';
+import { Question } from 'service/@shared/types/review';
 
 import { Text } from 'common/components';
 

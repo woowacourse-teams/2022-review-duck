@@ -1,8 +1,8 @@
+import useGetMyReviewForms from 'service/@shared/hooks/queries/profile/useGetMyReviewForms';
+import useGetMyReviews from 'service/@shared/hooks/queries/profile/useGetMyReviews';
+import useDeleteReview from 'service/@shared/hooks/queries/review/useDeleteReview';
+import useDeleteReviewForm from 'service/@shared/hooks/queries/review/useDeleteReviewForm';
 import useGetUserProfile from 'service/@shared/hooks/queries/user/useGetUserProfile';
-import useGetMyReviewForms from 'service/community/hooks/queries/useGetMyReviewForms';
-import useGetMyReviews from 'service/community/hooks/queries/useGetMyReviews';
-import useDeleteReview from 'service/review/hooks/queries/useDeleteReview';
-import useDeleteReviewForm from 'service/review/hooks/queries/useDeleteReviewForm';
 
 function useMyPageQueries() {
   const getMyReviewsQuery = useGetMyReviews();

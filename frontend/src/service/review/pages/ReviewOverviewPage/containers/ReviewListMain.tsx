@@ -1,6 +1,6 @@
 import cn from 'classnames';
 
-import { Review } from 'service/review/types';
+import { Review } from 'service/@shared/types/review';
 
 import { getElapsedTimeText } from 'service/@shared/utils';
 

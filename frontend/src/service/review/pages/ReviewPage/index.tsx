@@ -3,8 +3,8 @@ import { Navigate, useParams, useNavigate, Link, useLocation } from 'react-route
 
 import cn from 'classnames';
 
-import { Question } from 'service/review/types';
-import { RedirectState } from 'service/review/types';
+import { Question } from 'service/@shared/types/review';
+import { RedirectState } from 'service/@shared/types/review';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/review/hooks/useQuestions';
