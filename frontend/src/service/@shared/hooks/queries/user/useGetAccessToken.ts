@@ -3,7 +3,7 @@ import { useQuery, UseQueryOptions } from 'react-query';
 import { CreateRefreshResponse } from 'service/@shared/types';
 import { ErrorResponse } from 'service/@shared/types';
 
-import { userAPI } from 'service/@shared/api/auth';
+import authAPI from 'service/@shared/api/auth';
 import {
   ACCESS_TOKEN_EXPIRE_TIME,
   ACCESS_TOKEN_REFRESH_TIME,
@@ -13,7 +13,7 @@ import {
 function useGetAccessToken(queryOptions?: UseQueryOptions<CreateRefreshResponse, ErrorResponse>) {
   return useQuery<CreateRefreshResponse, ErrorResponse>(
     [QUERY_KEY.DATA.USER, QUERY_KEY.API.GET_ACCESS_TOKEN],
-    () => userAPI.getRefreshedAccessToken(),
+    () => authAPI.getRefreshedAccessToken(),
     {
       suspense: true,
       useErrorBoundary: false,

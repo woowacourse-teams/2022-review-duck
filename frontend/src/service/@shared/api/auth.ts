@@ -28,6 +28,6 @@ const getProfile = async (): Promise<UserProfileResponse> => {
   return data;
 };
 
-const userAPI = { createRefreshToken, deleteRefreshToken, getRefreshedAccessToken, getProfile };
+const authAPI = { createRefreshToken, deleteRefreshToken, getRefreshedAccessToken, getProfile };
 
-export { userAPI };
+export default authAPI;
