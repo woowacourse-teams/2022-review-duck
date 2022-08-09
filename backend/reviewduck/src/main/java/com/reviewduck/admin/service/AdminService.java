@@ -12,7 +12,6 @@ import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.repository.ReviewFormRepository;
 import com.reviewduck.review.repository.ReviewRepository;
-import com.reviewduck.template.repository.TemplateRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -24,8 +23,6 @@ public class AdminService {
     private MemberRepository memberRepository;
     private ReviewFormRepository reviewFormRepository;
     private ReviewRepository reviewRepository;
-    private TemplateRepository templateRepository;
-
 
     public List<Member> findAllMembers() {
         return memberRepository.findAll();
@@ -34,7 +31,7 @@ public class AdminService {
     @Transactional
     public void deleteMemberById(Long memberId) {
         Member member = memberRepository.findById(memberId)
-            .orElseThrow(()->new NotFoundException("존재하지 않는 사용자입니다."));
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
 
         member.deleteAllInfo();
     }
@@ -54,6 +51,7 @@ public class AdminService {
 
     @Transactional
     public void deleteReviewById(Long reviewId) {
-        memberRepository.deleteById(reviewId);
+        reviewRepository.deleteById(reviewId);
     }
+
 }

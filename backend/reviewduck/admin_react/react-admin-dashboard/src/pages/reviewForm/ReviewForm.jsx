@@ -7,7 +7,9 @@ import {Link} from 'react-router-dom'
 import { DataGrid } from '@mui/x-data-grid'
 import { DeleteOutline } from '@mui/icons-material'
 
-const columns = [
+
+export default function ReviewForm(props) {
+  const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'memberId', headerName: 'Member Id', width: 130,
     renderCell:(params)=>{
@@ -45,7 +47,7 @@ const columns = [
         <>
           <DeleteOutline 
           className='reviewListDelete' 
-          onClick={()=>axios.delete(`http://localhost:8080/api/admin/reviews/${params.row.id}`)}
+          onClick={()=>axios.delete(`${props.API_URI}/reviews/${params.row.id}`, headers)}
           />
         </>
       )
@@ -53,12 +55,16 @@ const columns = [
   },
   ]
 
-export default function ReviewForm() {
     const params = useParams();
     const [reviewRows, setReviewRows] = useState([])
+    const headers = {
+      headers: {
+        Authorization: 'Bearer ' + props.accessToken 
+      }}
+
     
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/admin/review-forms/${params.reviewFormCode}/reviews`).then((res)=>{
+        axios.get(`${props.API_URI}/review-forms/${params.reviewFormCode}/reviews`, headers).then((res)=>{
           if(res.data){
             console.log(res.data);
             setReviewRows(res.data.reviews);

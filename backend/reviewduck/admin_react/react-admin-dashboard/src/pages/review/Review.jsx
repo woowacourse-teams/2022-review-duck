@@ -13,13 +13,16 @@ const columns = [
     { field: 'answerValue', headerName: 'Answer Value', width: 250 },
   ]
 
-export default function Review() {
+export default function Review(props) {
     const params = useParams();
     const [reviewInfo, setReviewInfoRow] = useState([])
     const [questionAnswerRows, setQuestionAnswerRows] = useState([])
-    
+    const headers = {
+        headers: {
+          Authorization: 'Bearer ' + props.accessToken 
+        }}
     useEffect(() => {
-        axios.get(`http://localhost:8080/api/admin/reviews/${params.reviewId}`).then((res)=>{
+        axios.get(`${props.API_URI}/reviews/${params.reviewId}`, headers).then((res)=>{
           if(res.data){
             console.log(res.data);
             setReviewInfoRow(res.data.reviewInfo);

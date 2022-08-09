@@ -1,17 +1,25 @@
 import React from "react";
-import FeaturedInfo from "../../components/featuredInfo/FeaturedInfo";
 import './home.css'
-import WidgetSm from '../../components/widgetSm/WidgetSm'
-import WidgetLg from '../../components/widgetLg/WidgetLg'
+
+const headers= {
+  headers: {
+    "Access-Control-Allow-Origin": "*"
+  }
+}
+
+
+function socialLoginHandler(){
+  window.location.assign(`https://github.com/login/oauth/authorize?client_id=24e1a1f66eeab14f6ee0`, headers)
+}
 
 export default function Home(){
     return (
         <div className="home">
-            <FeaturedInfo />
-            <div className="homeWidgets">
-                <WidgetSm />
-                <WidgetLg />
-            </div>
+            <button 
+                className='socialLoginButton' 
+                onClick={socialLoginHandler}
+            >Admin Login
+            </button>
         </div>
     )
 }

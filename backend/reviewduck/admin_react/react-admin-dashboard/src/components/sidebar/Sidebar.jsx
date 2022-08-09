@@ -6,7 +6,9 @@ import MonetizationOnIcon from '@mui/icons-material/MonetizationOn'
 
 import {Link} from 'react-router-dom'
 
-export default function sidebar(){
+export default function sidebar(props){
+    const isLogin = props.isLogin;
+
     return (
         <div className="sidebar">
             <div className="sidebarWrapper">
@@ -14,8 +16,10 @@ export default function sidebar(){
                     <h3 className='sidebarTitle'>Dashboard</h3>
                     <ul className='sidebarList'>
                         <li className='sidebarListItem'>
-                            <HomeWorkIcon />
-                            Home
+                            <Link to="/">
+                                <HomeWorkIcon />
+                                Home
+                            </Link>
                         </li>
                         <li className='sidebarListItem'>
                             <TrendingUpIcon />
@@ -31,28 +35,56 @@ export default function sidebar(){
                     <h3 className='sidebarTitle'>Quick</h3>
                     <ul className='sidebarList'>
                         <li className='sidebarListItem'>
-                            <Link to="/members">
-                                <HomeWorkIcon />
-                                Member
-                            </Link>
+                            {isLogin? (
+                                <Link to="/members">
+                                    <HomeWorkIcon />
+                                    Member
+                                </Link> ) : (
+                                    <Link to="/">
+                                        <HomeWorkIcon />
+                                        로그인 필요
+                                    </Link>
+                                )
+                            }                        
                         </li>
                         <li className='sidebarListItem'>
-                            <Link to="/reviews">
-                                <TrendingUpIcon />
-                                Review
-                            </Link>
+                            {isLogin? (
+                                <Link to="/reviews">
+                                    <TrendingUpIcon />
+                                    Review
+                                </Link>
+                            ) : (
+                                <Link to="/">
+                                    <TrendingUpIcon />
+                                    로그인 필요
+                                </Link>
+                            )}
                         </li>
                         <li className='sidebarListItem'>
-                            <Link to="/review-forms">
-                                <MonetizationOnIcon />
-                                ReviewForm
-                            </Link>
+                            {isLogin? (
+                                <Link to="/review-forms">
+                                    <MonetizationOnIcon />
+                                    ReviewForm
+                                </Link>
+                            ) : (
+                                <Link to="/">
+                                    <MonetizationOnIcon />
+                                    로그인 필요
+                                </Link>
+                            )}                    
                         </li>
                         <li className='sidebarListItem'>
-                            <Link to="/templates">
-                                <MonetizationOnIcon />
-                                Template
-                            </Link>
+                            {isLogin? (
+                                <Link to="/templates">
+                                    <MonetizationOnIcon />
+                                    Template
+                                </Link>
+                            ) : (
+                                <Link to="/">
+                                    <MonetizationOnIcon />
+                                    로그인 필요
+                                </Link>
+                            )}          
                         </li>
                     </ul>
                 </div>

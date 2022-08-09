@@ -32,12 +32,15 @@ public class Member extends BaseDate {
 
     private String profileUrl;
 
+    private boolean isAdmin;
+
     public Member(String socialId, String socialNickname, String nickname, String profileUrl) {
         validate(nickname);
         this.socialId = socialId;
         this.socialNickname = socialNickname;
         this.nickname = nickname;
         this.profileUrl = profileUrl;
+        this.isAdmin = false;
     }
 
     private void validate(String nickname) {
@@ -71,5 +74,9 @@ public class Member extends BaseDate {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public boolean isAdmin() {
+        return this.isAdmin;
     }
 }
