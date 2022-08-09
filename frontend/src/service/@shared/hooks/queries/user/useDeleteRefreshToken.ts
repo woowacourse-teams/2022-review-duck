@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from 'react-query';
 
 import { UseCustomMutationOptions } from 'service/@shared/types/review';
 
-import { userAPI } from 'service/@shared/api';
+import { userAPI } from 'service/@shared/api/auth';
 import { QUERY_KEY } from 'service/@shared/constants';
 
 function useDeleteRefreshToken(mutationOptions?: UseCustomMutationOptions<null>) {

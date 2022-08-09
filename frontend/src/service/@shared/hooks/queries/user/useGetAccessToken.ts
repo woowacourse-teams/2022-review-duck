@@ -3,7 +3,7 @@ import { useQuery, UseQueryOptions } from 'react-query';
 import { CreateRefreshResponse } from 'service/@shared/types';
 import { ErrorResponse } from 'service/@shared/types';
 
-import { userAPI } from 'service/@shared/api';
+import { userAPI } from 'service/@shared/api/auth';
 import {
   ACCESS_TOKEN_EXPIRE_TIME,
   ACCESS_TOKEN_REFRESH_TIME,
