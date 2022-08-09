@@ -1,3 +1,4 @@
 import convention from './convention';
+import template from './template';
 
-export const handlers = [...convention];
+export const handlers = [...convention, ...template];
