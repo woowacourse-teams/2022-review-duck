@@ -13,14 +13,14 @@ import lombok.Getter;
 @Getter
 public class AdminReviewResponse {
 
-    AdminReviewInfoResponse reviewInfo;
-    List<AdminQuestionAnswerResponse> questionAnswers;
+    private AdminReviewInfoResponse reviewInfo;
+    private List<AdminQuestionAnswerResponse> questionAnswers;
 
     public static AdminReviewResponse from(Review review) {
         AdminReviewInfoResponse reviewInfoResponse = AdminReviewInfoResponse.from(review);
         List<AdminQuestionAnswerResponse> questionAnswerResponses = review.getQuestionAnswers().stream()
-            .map(AdminQuestionAnswerResponse::of)
-            .collect(Collectors.toList());
+            .map(AdminQuestionAnswerResponse::from)
+            .collect(Collectors.toUnmodifiableList());
 
         return new AdminReviewResponse(reviewInfoResponse, questionAnswerResponses);
     }

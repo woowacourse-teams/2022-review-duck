@@ -11,6 +11,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class AdminReviewInfoResponse {
+
     private Long id;
     private Long memberId;
     private String memberProfileUrl;

@@ -20,7 +20,7 @@ public class AdminQuestionAnswerResponse {
     private Long answerId;
     private String answerValue;
 
-    public static AdminQuestionAnswerResponse of(QuestionAnswer questionAnswer) {
+    public static AdminQuestionAnswerResponse from(QuestionAnswer questionAnswer) {
         ReviewFormQuestion question = questionAnswer.getReviewFormQuestion();
         Answer answer = questionAnswer.getAnswer();
         return new AdminQuestionAnswerResponse(question.getId(), question.getId(), question.getValue(),

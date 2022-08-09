@@ -11,6 +11,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class AdminMemberResponse {
+
     private Long id;
     private String socialId;
     private String socialNickname;
@@ -21,7 +22,6 @@ public class AdminMemberResponse {
 
     public static AdminMemberResponse from(Member member) {
         return new AdminMemberResponse(member.getId(), member.getSocialId(), member.getSocialNickname(),
-            member.getNickname(),
-            member.getProfileUrl(), member.getCreatedAt(), member.getUpdatedAt());
+            member.getNickname(), member.getProfileUrl(), member.getCreatedAt(), member.getUpdatedAt());
     }
 }

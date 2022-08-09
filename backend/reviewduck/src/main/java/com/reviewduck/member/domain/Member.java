@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.hibernate.Hibernate;
+
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.exception.MemberException;
 
@@ -65,7 +67,7 @@ public class Member extends BaseDate {
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o))
             return false;
         Member member = (Member)o;
         return Objects.equals(id, member.id);

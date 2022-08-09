@@ -12,12 +12,13 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class AdminReviewsResponse {
+
     private List<AdminReviewInfoResponse> reviews;
 
     public static AdminReviewsResponse from(List<Review> reviews) {
         List<AdminReviewInfoResponse> reviewResponses = reviews.stream()
             .map(AdminReviewInfoResponse::from)
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
         return new AdminReviewsResponse(reviewResponses);
     }
