@@ -6,6 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const path = require('path');
+const package = require('../package.json');
 const dotenv = require('dotenv');
 
 module.exports = (env = {}, options = {}) => {
@@ -84,7 +85,7 @@ module.exports = (env = {}, options = {}) => {
         favicon: './public/favicon.ico',
       }),
       new CleanWebpackPlugin(),
-      new MiniCssExtractPlugin({ linkType: false, filename: 'css/[name].[contenthash].css' }),
+      new MiniCssExtractPlugin({ linkType: false, filename: `css/[name].${package.version}.css` }),
     ],
   };
 };
