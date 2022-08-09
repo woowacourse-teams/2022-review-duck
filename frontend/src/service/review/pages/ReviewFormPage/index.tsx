@@ -11,7 +11,7 @@ import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 
 import cn from 'classnames';
 
-import { RedirectState } from 'service/review/types';
+import { RedirectState } from 'service/@shared/types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/review/hooks/useQuestions';

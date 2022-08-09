@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-import { UpdateReviewFormResponse, UseCustomMutationOptions } from 'service/review/types';
+import { UpdateReviewFormResponse, UseCustomMutationOptions } from 'service/@shared/types';
 
+import reviewAPI from 'service/@shared/api/review';
 import { QUERY_KEY } from 'service/@shared/constants';
-import reviewAPI from 'service/review/api';
 
 function useUpdateReviewForm(mutationOptions?: UseCustomMutationOptions<UpdateReviewFormResponse>) {
   const queryClient = useQueryClient();
@@ -17,4 +17,15 @@ function useUpdateReviewForm(mutationOptions?: UseCustomMutationOptions<UpdateRe
   });
 }
 
-export default useUpdateReviewForm;
+function useUpdateReview(mutationOptions?: UseCustomMutationOptions<null>) {
+  const queryClient = useQueryClient();
+
+  return useMutation(reviewAPI.updateReview, {
+    onSuccess: () => {
+      queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
+    },
+    ...mutationOptions,
+  });
+}
+
+export { useUpdateReviewForm, useUpdateReview };

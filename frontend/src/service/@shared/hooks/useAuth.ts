@@ -1,10 +1,11 @@
-import useGetAccessToken from 'service/@shared/hooks/queries/user/useGetAccessToken';
-
 import { axiosInstanceUtils } from '../utils';
 
-import useCreateRefreshToken from './queries/user/useCreateRefreshToken';
-import useDeleteRefreshToken from './queries/user/useDeleteRefreshToken';
-import useGetUserProfile from './queries/user/useGetUserProfile';
+import {
+  useGetAccessToken,
+  useGetUserInfo,
+  useCreateRefreshToken,
+  useDeleteRefreshToken,
+} from './queries/auth';
 
 function useAuth() {
   const createRefreshToken = useCreateRefreshToken();
@@ -24,7 +25,7 @@ function useAuth() {
     },
   });
 
-  const getUserProfileQuery = useGetUserProfile({
+  const getUserProfileQuery = useGetUserInfo({
     enabled: getAccessTokenQuery.isSuccess,
   });
   const isLogin = getUserProfileQuery.isSuccess;

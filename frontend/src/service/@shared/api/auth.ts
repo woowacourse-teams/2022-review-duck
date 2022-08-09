@@ -1,6 +1,6 @@
 import { CreateRefreshTokenRequest, CreateRefreshResponse, UserProfileResponse } from '../types';
 
-import axiosInstance from './axiosInstance';
+import axiosInstance from './config/axiosInstance';
 
 const createRefreshToken = async (
   query: CreateRefreshTokenRequest,
@@ -28,6 +28,6 @@ const getProfile = async (): Promise<UserProfileResponse> => {
   return data;
 };
 
-const userAPI = { createRefreshToken, deleteRefreshToken, getRefreshedAccessToken, getProfile };
+const authAPI = { createRefreshToken, deleteRefreshToken, getRefreshedAccessToken, getProfile };
 
-export { userAPI };
+export default authAPI;
