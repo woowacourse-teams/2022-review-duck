@@ -57,10 +57,11 @@
   justify-content: right;
   text-align: center;
 
-  > li {
+  .menu-item {
     cursor: pointer;
     position: relative;
-    display: block;
+    display: flex;
+    align-items: center;
     letter-spacing: 1px;
     padding: 2.3125rem 5%;
     margin: 0 0.2%;

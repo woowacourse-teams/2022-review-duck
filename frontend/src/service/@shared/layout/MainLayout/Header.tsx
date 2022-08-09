@@ -38,9 +38,11 @@ function Header() {
         </div>
 
         <ul className={styles.menuList}>
-          <li>회고덕 소개</li>
-          <li>템플릿 탐색</li>
-          <li>타임라인</li>
+          <li className={styles.menuItem}>회고덕 소개</li>
+          <Link to={PAGE_LIST.TEMPLATE_SOTRE}>
+            <li className={styles.menuItem}>템플릿 탐색</li>
+          </Link>
+          <li className={styles.menuItem}>타임라인</li>
         </ul>
 
         <div className={cn(styles.navItemContainer, styles.quickMenuContainer)}>

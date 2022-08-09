@@ -7,6 +7,7 @@ const PAGE_LIST = {
   AUTHORIZE: '/authorize',
   MY_PAGE: '/mypage',
   LOGOUT: '/logout',
+  TEMPLATE_SOTRE: '/template-store',
 };
 
 const MODAL_LIST = {
