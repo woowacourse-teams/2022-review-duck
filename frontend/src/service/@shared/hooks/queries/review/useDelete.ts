@@ -17,4 +17,16 @@ function useDeleteReviewForm(mutationOptions?: UseCustomMutationOptions<null>) {
   });
 }
 
-export default useDeleteReviewForm;
+function useDeleteReview(mutationOptions?: UseCustomMutationOptions<null>) {
+  const queryClient = useQueryClient();
+
+  return useMutation(reviewAPI.deleteReview, {
+    onSuccess: () => {
+      queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
+      queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW_FORM]);
+    },
+    ...mutationOptions,
+  });
+}
+
+export { useDeleteReviewForm, useDeleteReview };
