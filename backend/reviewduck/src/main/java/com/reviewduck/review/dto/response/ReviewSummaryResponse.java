@@ -37,7 +37,7 @@ public class ReviewSummaryResponse {
             .collect(Collectors.toUnmodifiableMap(QuestionAnswer::getReviewFormQuestion, QuestionAnswer::getAnswer));
 
         List<QuestionAnswerResponse> answers = reviewForm.getReviewFormQuestions().stream()
-            .map(question -> QuestionAnswerResponse.of(question, reviewMap.get(question)))
+            .map(question -> QuestionAnswerResponse.of(question, reviewMap.getOrDefault(question, null)))
             .collect(Collectors.toUnmodifiableList());
 
         return new ReviewSummaryResponse(answers);

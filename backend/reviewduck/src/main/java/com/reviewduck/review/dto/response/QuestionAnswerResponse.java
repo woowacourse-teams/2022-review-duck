@@ -1,5 +1,7 @@
 package com.reviewduck.review.dto.response;
 
+import java.util.Objects;
+
 import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.domain.QuestionAnswer;
 import com.reviewduck.review.domain.ReviewFormQuestion;
@@ -25,6 +27,11 @@ public class QuestionAnswerResponse {
     }
 
     public static QuestionAnswerResponse of(ReviewFormQuestion question, Answer answer) {
+
+        if (Objects.isNull(answer)) {
+            return new QuestionAnswerResponse(question.getValue(), null, null);
+        }
+
         return new QuestionAnswerResponse(
             question.getValue(),
             answer.getId(),

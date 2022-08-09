@@ -98,10 +98,11 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 new AnswerRequest(3L, "answer3")));
         post("/api/review-forms/" + code, createRequest, accessToken2);
 
-        // delete question3 of reviewForm
+        // delete question2 and add question4 of reviewForm
         List<ReviewQuestionUpdateRequest> updateQuestions = List.of(
             new ReviewQuestionUpdateRequest(1L, "new question1"),
-            new ReviewQuestionUpdateRequest(3L, "new question3"));
+            new ReviewQuestionUpdateRequest(3L, "new question3"),
+            new ReviewQuestionUpdateRequest(null, "new question4"));
         ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateQuestions);
         put("/api/review-forms/" + code, updateRequest, accessToken1);
 
@@ -114,11 +115,13 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         // then
         assertAll(
-            () -> assertThat(actual.size()).isEqualTo(2),
+            () -> assertThat(actual.size()).isEqualTo(3),
             () -> assertThat(actual.get(0).getQuestionValue()).isEqualTo("new question1"),
             () -> assertThat(actual.get(0).getAnswerId()).isEqualTo(1L),
             () -> assertThat(actual.get(1).getQuestionValue()).isEqualTo("new question3"),
-            () -> assertThat(actual.get(1).getAnswerId()).isEqualTo(3L)
+            () -> assertThat(actual.get(1).getAnswerId()).isEqualTo(3L),
+            () -> assertThat(actual.get(2).getQuestionValue()).isEqualTo("new question4"),
+            () -> assertThat(actual.get(2).getAnswerId()).isEqualTo(null)
         );
     }
 
