@@ -50,12 +50,6 @@ function ReviewFormEditorPage() {
     }
   }, []);
 
-  const handleUpdateQuestion = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedQuestion = { questionValue: event.target.value };
-
-    updateQuestion(index, updatedQuestion);
-  };
-
   const handleAddQuestion = ({
     currentTarget: $inputTarget,
   }: React.MouseEvent | React.KeyboardEvent) => {
@@ -68,6 +62,12 @@ function ReviewFormEditorPage() {
     if (questionIndex === null) return;
 
     setFormFocus($inputTarget as HTMLInputElement, questionIndex);
+  };
+
+  const handleUpdateQuestion = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedQuestion = { questionValue: event.target.value };
+
+    updateQuestion(index, updatedQuestion);
   };
 
   const handleDeleteQuestion =
