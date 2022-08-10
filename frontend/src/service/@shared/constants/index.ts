@@ -7,10 +7,10 @@ const PAGE_LIST = {
   AUTHORIZE: '/authorize',
   MY_PAGE: '/mypage',
   LOGOUT: '/logout',
-  TEMPLATE_STORE: '/template/list',
+  TEMPLATE_LIST: '/template/list',
   TEMPLATE_RECENT: '/recent',
-  TEMPLATE_DETAIL: 'template/view',
-  TEMPLATE_EDIT: 'template/edit',
+  TEMPLATE_DETAIL: '/template/view',
+  TEMPLATE_EDIT: '/template/edit',
 };
 
 const MODAL_LIST = {
@@ -39,6 +39,7 @@ const QUERY_KEY = {
     GET_MY_REVIEW_FORMS: 'getMyReviewForms',
 
     GET_TEMPLATES: 'getTemplates',
+    GET_TEMPLATE: 'getTemplate',
   },
 };
 
