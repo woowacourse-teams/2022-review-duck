@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import useSnackbar from 'common/hooks/useSnackbar';
+
 import { getElapsedTimeText } from 'service/@shared/utils';
 
 import { Text } from 'common/components';
@@ -10,8 +12,10 @@ import useTemplateDetailQueries from './useTemplateDetailQueries';
 const TemplateDetailPage = () => {
   const { templateId } = useParams();
   const navigate = useNavigate();
+  const { showSnackbar } = useSnackbar();
 
-  const { template, isError, error } = useTemplateDetailQueries(Number(templateId));
+  const { template, isError, error, createFormMutation, updateMutation, deleteMutation } =
+    useTemplateDetailQueries(Number(templateId));
 
   useEffect(() => {
     if (isError) {
@@ -19,6 +23,29 @@ const TemplateDetailPage = () => {
       navigate(-1);
     }
   }, [isError, error]);
+
+  const handleDeleteTemplate = (templateId: number) => {
+    deleteMutation.mutate(templateId, {
+      onSuccess: () => {
+        navigate(-1);
+        showSnackbar({
+          title: '템플릿이 삭제되었습니다.',
+          description: '사람들과 공유할 새로운 템플릿을 만들어보세요.',
+        });
+      },
+      onError: ({ message }) => {
+        alert(message);
+      },
+    });
+  };
+
+  const handleEditTemplate = (templateId: number) => {
+    /* TODO: reviewForm 수정 페이지로 라우팅 */
+  };
+
+  const handleCreateTemplate = (templateId: number) => {
+    /* TODO: reviewForm 수정 페지이로 라우팅 */
+  };
 
   return (
     <div>
