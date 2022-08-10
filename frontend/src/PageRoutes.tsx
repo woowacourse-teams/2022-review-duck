@@ -12,7 +12,8 @@ import ReviewFormPage from 'service/review/pages/ReviewFormPage';
 import ReviewJoinPage from 'service/review/pages/ReviewJoinPage';
 import ReviewOverviewPage from 'service/review/pages/ReviewOverviewPage';
 import ReviewPage from 'service/review/pages/ReviewPage';
-import TemplateStorePage from 'service/template/pages/TemplateStorePage';
+import TemplateDetailPage from 'service/template/pages/TemplateDetailPage';
+import TemplateListPage from 'service/template/pages/TemplateListPage';
 import Authorize from 'service/user/pages/Authorize';
 import Logout from 'service/user/pages/Logout';
 import MainPage from 'service/user/pages/MainPage';
@@ -30,11 +31,9 @@ function PageRoutes() {
           <Route path={PAGE_LIST.MY_PAGE} element={<MyPage />} />
         </Route>
 
-        <Route path={PAGE_LIST.TEMPLATE_STORE} element={<TemplateStorePage />} />
-        <Route
-          path={`${PAGE_LIST.TEMPLATE_STORE}${PAGE_LIST.TEMPLATE_RECENT}`}
-          element={<TemplateStorePage />}
-        />
+        <Route path={`${PAGE_LIST.TEMPLATE_LIST}/*`} element={<TemplateListPage />} />
+
+        <Route path={`${PAGE_LIST.TEMPLATE_DETAIL}/:templateId`} element={<TemplateDetailPage />} />
         <Route path="playground" element={<Playground />} />
       </Route>
 
