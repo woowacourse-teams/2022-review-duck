@@ -9,7 +9,6 @@ import MainLayout from 'service/@shared/layout/MainLayout';
 import ReviewLayout from 'service/review/layout/ReviewLayout';
 import Playground from 'service/review/pages/Playground';
 import ReviewFormPage from 'service/review/pages/ReviewFormPage';
-import ReviewJoinPage from 'service/review/pages/ReviewJoinPage';
 import ReviewOverviewPage from 'service/review/pages/ReviewOverviewPage';
 import ReviewPage from 'service/review/pages/ReviewPage';
 import TemplateStorePage from 'service/template/pages/TemplateStorePage';
@@ -41,7 +40,6 @@ function PageRoutes() {
       <Route element={<ReviewLayout />}>
         <Route element={<RequireAuth />}>
           <Route>
-            <Route path={PAGE_LIST.REVIEW_JOIN} element={<ReviewJoinPage />} />
             <Route path={PAGE_LIST.REVIEW}>
               <Route index element={<ReviewPage />} />
               <Route path=":reviewFormCode" element={<ReviewPage />} />
