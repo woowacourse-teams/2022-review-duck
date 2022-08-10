@@ -23,6 +23,21 @@ function PageRoutes() {
 
   return (
     <Routes>
+      <Route element={<MainLayout />}>
+        <Route index element={<MainPage />} />
+
+        <Route element={<RequireAuth />}>
+          <Route path={PAGE_LIST.MY_PAGE} element={<MyPage />} />
+        </Route>
+
+        <Route path={PAGE_LIST.TEMPLATE_STORE} element={<TemplateStorePage />} />
+        <Route
+          path={`${PAGE_LIST.TEMPLATE_STORE}${PAGE_LIST.TEMPLATE_RECENT}`}
+          element={<TemplateStorePage />}
+        />
+        <Route path="playground" element={<Playground />} />
+      </Route>
+
       <Route element={<ReviewLayout />}>
         <Route element={<RequireAuth />}>
           <Route>
@@ -39,21 +54,6 @@ function PageRoutes() {
             <Route path=":reviewFormCode" element={<ReviewFormPage />} />
           </Route>
         </Route>
-      </Route>
-
-      <Route element={<MainLayout />}>
-        <Route element={<RequireAuth />}>
-          <Route path={PAGE_LIST.MY_PAGE} element={<MyPage />} />
-        </Route>
-
-        <Route path="playground" element={<Playground />} />
-        <Route index element={<MainPage />} />
-
-        <Route path={PAGE_LIST.TEMPLATE_STORE} element={<TemplateStorePage />} />
-        <Route
-          path={`${PAGE_LIST.TEMPLATE_STORE}${PAGE_LIST.TEMPLATE_RECENT}`}
-          element={<TemplateStorePage />}
-        />
       </Route>
 
       <Route path={PAGE_LIST.REVIEW_OVERVIEW}>
