@@ -85,7 +85,7 @@ function ReviewFormEditorPage() {
     setReviewTitle(target.value);
   };
 
-  const handleCreateReviewForm = (event: React.FormEvent) => {
+  const handleSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
 
     const submitQuestions = trimQuestions(questions);
@@ -175,7 +175,7 @@ function ReviewFormEditorPage() {
               <span>취소하기</span>
             </Button>
 
-            <Button type="button" onClick={handleCreateReviewForm} disabled={isSubmitLoading}>
+            <Button type="button" onClick={handleSubmitReviewForm} disabled={isSubmitLoading}>
               <Icon code="drive_file_rename_outline" />
               <span>{isNewReviewForm ? '생성하기' : '수정하기'}</span>
             </Button>
