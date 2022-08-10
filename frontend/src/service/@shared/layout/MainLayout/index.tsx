@@ -4,7 +4,7 @@ import styles from './styles.module.scss';
 
 import Header from './Header';
 
-function CommunityLayout() {
+function MainLayout() {
   return (
     <div className={styles.layout}>
       <Header />
@@ -18,4 +18,4 @@ function CommunityLayout() {
   );
 }
 
-export default CommunityLayout;
+export default MainLayout;
