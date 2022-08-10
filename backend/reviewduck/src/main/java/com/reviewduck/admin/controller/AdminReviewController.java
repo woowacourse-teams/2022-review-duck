@@ -28,7 +28,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
-@RequestMapping("/api/admin/reviews")
+@RequestMapping("/api/admin")
 @AllArgsConstructor
 @Slf4j
 public class AdminReviewController {

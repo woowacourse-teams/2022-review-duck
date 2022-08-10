@@ -1,21 +1,21 @@
 .memberList {
-    flex: 4;
+  flex: 4;
 }
 
 .memberListMember {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .memberListImg {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
 }
 
 .memberListDelete {
-    color: red;
-    cursor: pointer;
+  color: red;
+  cursor: pointer;
 }
