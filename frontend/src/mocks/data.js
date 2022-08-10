@@ -76,3 +76,5 @@ export const dummyTemplate = {
     },
   ],
 };
+
+export const dummyFormcode = '1324ABCD';
