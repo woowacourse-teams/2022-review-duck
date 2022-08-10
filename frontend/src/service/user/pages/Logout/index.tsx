@@ -9,21 +9,21 @@ import { PAGE_LIST } from 'service/@shared/constants';
 function Logout() {
   const navigate = useNavigate();
 
-  const { addSnackbar } = useSnackbar();
+  const { showSnackbar } = useSnackbar();
   const { deleteRefreshToken } = useAuth();
 
   useEffect(() => {
     deleteRefreshToken.mutate(null, {
       onSettled: () => navigate(PAGE_LIST.HOME),
       onSuccess: () => {
-        addSnackbar({
+        showSnackbar({
           icon: 'exit_to_app',
           title: '로그아웃이 완료되었습니다.',
           description: '회고덕에서 로그아웃 되었습니다.',
         });
       },
       onError: ({ message }) => {
-        addSnackbar({
+        showSnackbar({
           theme: 'warning',
           icon: 'exit_to_app',
           title: '로그아웃에 실패하였습니다.',
