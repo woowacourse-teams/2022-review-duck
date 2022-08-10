@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,8 +20,8 @@ import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.request.AnswerRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
 import com.reviewduck.review.dto.response.MyReviewFormsResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
@@ -56,132 +57,153 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember2.getId()));
     }
 
-    @Test
-    @DisplayName("회고 폼을 생성한다.")
-    void createReviewForm() {
-        // given
-        ReviewFormCreateRequest request = new ReviewFormCreateRequest(title, createQuestions);
+    @Nested
+    @DisplayName("회고 폼 생성")
+    class createReviewForm {
 
-        // when, then
-        post("/api/review-forms", request, accessToken1)
-            .statusCode(HttpStatus.CREATED.value())
-            .assertThat().body("reviewFormCode", notNullValue());
+        @Test
+        @DisplayName("회고 폼을 생성한다.")
+        void createReviewForm() {
+            // given
+            ReviewFormCreateRequest request = new ReviewFormCreateRequest(title, createQuestions);
+
+            // when, then
+            post("/api/review-forms", request, accessToken1)
+                .statusCode(HttpStatus.CREATED.value())
+                .assertThat().body("reviewFormCode", notNullValue());
+        }
+
+        @Test
+        @DisplayName("로그인하지 않은 상태로 생성할 수 없다.")
+        void failToCreateReviewFormWithoutLogin() {
+            // given
+            ReviewFormCreateRequest request = new ReviewFormCreateRequest(title, createQuestions);
+
+            // when, then
+            post("/api/review-forms", request).statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
+
     }
 
-    @Test
-    @DisplayName("로그인하지 않은 상태로 회고 폼을 생성할 수 없다.")
-    void failToCreateReviewFormWithoutLogin() {
-        // given
-        ReviewFormCreateRequest request = new ReviewFormCreateRequest(title, createQuestions);
+    @Nested
+    @DisplayName("특정 회고 폼 조회")
+    class findReviewForm {
 
-        // when, then
-        post("/api/review-forms", request).statusCode(HttpStatus.UNAUTHORIZED.value());
+        @Test
+        @DisplayName("특정 회고 폼을 조회한다.")
+        void findReviewForm() {
+            // given
+            String reviewFormCode = createReviewFormAndGetCode(accessToken1);
+
+            // when
+            ReviewFormResponse response = get("/api/review-forms/" + reviewFormCode, accessToken1)
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(ReviewFormResponse.class);
+
+            // then
+            assertAll(
+                () -> assertThat(response.getReviewTitle()).isEqualTo(title),
+                () -> assertThat(response.getQuestions()).hasSize(2)
+            );
+        }
+
+        @Test
+        @DisplayName("로그인하지 않은 상태로 회고 폼을 조회할 수 없다.")
+        void failToFindReviewFormWithoutLogin() {
+            // given
+            String reviewFormCode = createReviewFormAndGetCode(accessToken1);
+
+            get("/api/review-forms/" + reviewFormCode).statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
+
+        @Test
+        @DisplayName("특정 회고 폼 조회에 실패한다.")
+        void failToFindReviewForm() {
+            // when, then
+            get("/api/review-forms/" + "AAAAAAAA", accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
+        }
+
     }
 
-    @Test
-    @DisplayName("특정 회고 폼을 조회한다.")
-    void findReviewForm() {
-        // given
-        String reviewFormCode = createReviewFormAndGetCode(accessToken1);
+    @Nested
+    @DisplayName("회고 폼 수정")
+    class updateReviewForm {
 
-        // when
-        ReviewFormResponse response = get("/api/review-forms/" + reviewFormCode, accessToken1)
-            .statusCode(HttpStatus.OK.value())
-            .extract()
-            .as(ReviewFormResponse.class);
+        @Test
+        @DisplayName("회고 폼을 수정한다.")
+        void updateReviewForm() {
+            // given
+            String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
 
-        // then
-        assertAll(
-            () -> assertThat(response.getReviewTitle()).isEqualTo(title),
-            () -> assertThat(response.getQuestions()).hasSize(2)
-        );
-    }
+            // when, then
+            String newReviewTitle = "new title";
+            List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
+                new ReviewFormQuestionUpdateRequest(1L, "new question1"));
+            ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
 
-    @Test
-    @DisplayName("로그인하지 않은 상태로 회고 폼을 조회할 수 없다.")
-    void failToFindReviewFormWithoutLogin() {
-        // given
-        String reviewFormCode = createReviewFormAndGetCode(accessToken1);
+            put("/api/review-forms/" + createReviewFormCode, updateRequest, accessToken1)
+                .statusCode(HttpStatus.OK.value())
+                .assertThat().body("reviewFormCode", equalTo(createReviewFormCode));
 
-        get("/api/review-forms/" + reviewFormCode).statusCode(HttpStatus.UNAUTHORIZED.value());
-    }
+            ReviewFormResponse getResponse = get("/api/review-forms/" + createReviewFormCode, accessToken1)
+                .extract()
+                .as(ReviewFormResponse.class);
 
-    @Test
-    @DisplayName("특정 회고 폼 조회에 실패한다.")
-    void failToFindReviewForm() {
-        // when, then
-        get("/api/review-forms/" + "AAAAAAAA", accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
-    }
+            assertAll(
+                () -> assertThat(getResponse.getReviewTitle()).isEqualTo(newReviewTitle),
+                () -> assertThat(getResponse.getQuestions()).hasSize(1),
+                () -> assertThat(getResponse.getQuestions().get(0).getQuestionId()).isEqualTo(1L),
+                () -> assertThat(getResponse.getQuestions().get(0).getQuestionValue()).isEqualTo("new question1")
+            );
+        }
 
-    @Test
-    @DisplayName("회고 폼을 수정한다.")
-    void updateReviewForm() {
-        // given
-        String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
+        @Test
+        @DisplayName("로그인하지 않은 상태로 회고 폼을 수정할 수 없다.")
+        void failToUpdateReviewFormWithoutLogin() {
+            // given
+            String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
 
-        // when, then
-        String newReviewTitle = "new title";
-        List<ReviewQuestionUpdateRequest> updateQuestions = List.of(
-            new ReviewQuestionUpdateRequest(1L, "new question1"));
-        ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
+            // when, then
+            String newReviewTitle = "new title";
+            List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
+                new ReviewFormQuestionUpdateRequest(1L, "new question1"));
+            ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
 
-        put("/api/review-forms/" + createReviewFormCode, updateRequest, accessToken1)
-            .statusCode(HttpStatus.OK.value())
-            .assertThat().body("reviewFormCode", equalTo(createReviewFormCode));
+            put("/api/review-forms/" + createReviewFormCode, updateRequest)
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
 
-        ReviewFormResponse getResponse = get("/api/review-forms/" + createReviewFormCode, accessToken1)
-            .extract()
-            .as(ReviewFormResponse.class);
-        assertAll(
-            () -> assertThat(getResponse.getReviewTitle()).isEqualTo(newReviewTitle),
-            () -> assertThat(getResponse.getQuestions()).hasSize(1),
-            () -> assertThat(getResponse.getQuestions().get(0).getQuestionId()).isEqualTo(1L),
-            () -> assertThat(getResponse.getQuestions().get(0).getQuestionValue()).isEqualTo("new question1")
-        );
-    }
+        @Test
+        @DisplayName("존재하지 않는 회고 폼을 수정할 수 없다.")
+        void updateInvalidReviewForm() {
+            // when, then
+            String newReviewTitle = "new title";
+            List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
+                new ReviewFormQuestionUpdateRequest(1L, "new question1"));
+            ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
 
-    @Test
-    @DisplayName("로그인하지 않은 상태로 회고 폼을 수정할 수 없다.")
-    void failToUpdateReviewFormWithoutLogin() {
-        // given
-        String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
+            put("/api/review-forms/aaaaaaaa", updateRequest, accessToken1)
+                .statusCode(HttpStatus.NOT_FOUND.value());
+        }
 
-        // when, then
-        String newReviewTitle = "new title";
-        List<ReviewQuestionUpdateRequest> updateQuestions = List.of(
-            new ReviewQuestionUpdateRequest(1L, "new question1"));
-        ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
-        put("/api/review-forms/" + createReviewFormCode, updateRequest)
-            .statusCode(HttpStatus.UNAUTHORIZED.value());
-    }
+        @Test
+        @DisplayName("본인이 생성한 회고 폼이 아니면 수정할 수 없다.")
+        void failToUpdateNotMyReviewForm() {
+            // given
+            String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
 
-    @Test
-    @DisplayName("존재하지 않는 회고 폼을 수정할 수 없다.")
-    void updateInvalidReviewForm() {
-        // when, then
-        List<ReviewQuestionUpdateRequest> updateQuestions = List.of(
-            new ReviewQuestionUpdateRequest(1L, "new question1"));
-        ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest("newTitle", updateQuestions);
+            // when, then
+            String newReviewTitle = "new title";
+            List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
+                new ReviewFormQuestionUpdateRequest(1L, "new question1"));
+            ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
 
-        put("/api/review-forms/aaaaaaaa", updateRequest, accessToken1)
-            .statusCode(HttpStatus.NOT_FOUND.value());
-    }
+            // then
+            put("/api/review-forms/" + createReviewFormCode, updateRequest, accessToken2)
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
 
-    @Test
-    @DisplayName("본인이 생성한 회고 폼이 아니면 수정할 수 없다.")
-    void failToUpdateNotMyReviewForm() {
-        // given
-        String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
-
-        // when, then
-        String newReviewTitle = "new title";
-        List<ReviewQuestionUpdateRequest> updateQuestions = List.of(
-            new ReviewQuestionUpdateRequest(1L, "new question1"));
-        ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
-
-        // then
-        put("/api/review-forms/" + createReviewFormCode, updateRequest, accessToken2)
-            .statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     @Test

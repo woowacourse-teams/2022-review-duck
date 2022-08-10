@@ -24,8 +24,8 @@ import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewQuestionUpdateRequest;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionRequest;
@@ -128,14 +128,14 @@ public class ReviewFormServiceTest {
 
         // when
         String reviewTitle = "new title";
-        List<ReviewQuestionUpdateRequest> updateRequests = List.of(
-            new ReviewQuestionUpdateRequest(questionId, "new question1"),
-            new ReviewQuestionUpdateRequest(null, "new question3"));
+        List<ReviewFormQuestionUpdateRequest> updateRequests = List.of(
+            new ReviewFormQuestionUpdateRequest(questionId, "new question1"),
+            new ReviewFormQuestionUpdateRequest(null, "new question3"));
 
         ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateRequests);
 
         List<ReviewFormQuestion> expected = updateRequests.stream()
-            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
+            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue()))
             .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
@@ -169,14 +169,14 @@ public class ReviewFormServiceTest {
 
         // when
         String reviewTitle = "new title";
-        List<ReviewQuestionUpdateRequest> updateRequests = List.of(
-            new ReviewQuestionUpdateRequest(questionId, "new question1"),
-            new ReviewQuestionUpdateRequest(null, "new question3"));
+        List<ReviewFormQuestionUpdateRequest> updateRequests = List.of(
+            new ReviewFormQuestionUpdateRequest(questionId, "new question1"),
+            new ReviewFormQuestionUpdateRequest(null, "new question3"));
 
         ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateRequests);
 
         List<ReviewFormQuestion> expected = updateRequests.stream()
-            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
+            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue()))
             .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
@@ -193,10 +193,13 @@ public class ReviewFormServiceTest {
     @DisplayName("존재하지 않는 회고 폼을 수정할 수 없다.")
     void updateReviewFormByInvalidCode() {
         // when
-        List<ReviewQuestionUpdateRequest> updateRequests = List.of(new ReviewQuestionUpdateRequest(1L, "new question1"),
-            new ReviewQuestionUpdateRequest(null, "new question3"),
-            new ReviewQuestionUpdateRequest(2L, "new question2"));
+        List<ReviewFormQuestionUpdateRequest> updateRequests = List.of(
+            new ReviewFormQuestionUpdateRequest(1L, "new question1"),
+            new ReviewFormQuestionUpdateRequest(null, "new question3"),
+            new ReviewFormQuestionUpdateRequest(2L, "new question2"));
+
         ReviewFormUpdateRequest reviewFormUpdateRequest = new ReviewFormUpdateRequest("new title", updateRequests);
+
         assertThatThrownBy(() -> reviewFormService.update(member1, invalidCode, reviewFormUpdateRequest))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 회고 폼입니다.");
@@ -209,8 +212,8 @@ public class ReviewFormServiceTest {
         String code = saveReviewForm(member1).getCode();
 
         // when, then
-        List<ReviewQuestionUpdateRequest> updateRequests = List.of(
-            new ReviewQuestionUpdateRequest(9999999L, "new question"));
+        List<ReviewFormQuestionUpdateRequest> updateRequests = List.of(
+            new ReviewFormQuestionUpdateRequest(9999999L, "new question"));
 
         assertThatThrownBy(
             () -> reviewFormService.update(member1, code, new ReviewFormUpdateRequest("new title", updateRequests)))

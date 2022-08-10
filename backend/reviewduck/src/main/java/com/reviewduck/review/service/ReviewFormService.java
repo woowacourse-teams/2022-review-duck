@@ -69,13 +69,12 @@ public class ReviewFormService {
         ReviewForm reviewForm = findByCode(code);
 
         List<ReviewFormQuestion> reviewFormQuestions = updateRequest.getQuestions().stream()
-            .map(request -> reviewFormQuestionService.saveOrUpdateQuestion(request.getQuestionId(),
-                request.getQuestionValue()))
+            .map(request -> reviewFormQuestionService.saveOrUpdateQuestion(request.getId(), request.getValue()))
             .collect(Collectors.toUnmodifiableList());
 
         validateReviewFormIsMine(member, reviewForm, "본인이 생성한 회고 폼이 아니면 수정할 수 없습니다.");
 
-        reviewForm.update(updateRequest.getReviewTitle(), reviewFormQuestions);
+        reviewForm.update(updateRequest.getReviewFormTitle(), reviewFormQuestions);
 
         return reviewForm;
     }

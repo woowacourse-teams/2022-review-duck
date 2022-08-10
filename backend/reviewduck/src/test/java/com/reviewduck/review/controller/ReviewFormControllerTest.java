@@ -27,8 +27,8 @@ import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.request.AnswerRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
@@ -104,38 +104,44 @@ public class ReviewFormControllerTest {
 
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @DisplayName("회고 폼 수정시 회고 제목에 빈 값이 들어갈 경우 예외가 발생한다.")
-    void updateWithEmptyReviewTitle(String title) throws Exception {
-        // given
-        ReviewFormUpdateRequest request = new ReviewFormUpdateRequest(title, List.of());
+    @Nested
+    @DisplayName("회고 폼 수정시")
+    class updateReviewForm {
 
-        // when, then
-        assertBadRequestFromPut("/api/review-forms/aaaaaaaa", request, "회고 폼의 제목은 비어있을 수 없습니다.");
-    }
+        @ParameterizedTest
+        @NullAndEmptySource
+        @DisplayName("회고 제목에 빈 값이 들어갈 경우 예외가 발생한다.")
+        void updateWithEmptyReviewTitle(String title) throws Exception {
+            // given
+            ReviewFormUpdateRequest request = new ReviewFormUpdateRequest(title, List.of());
 
-    @ParameterizedTest
-    @NullSource
-    @DisplayName("회고 폼 수정시 질문 목록에 null 값이 들어갈 경우 예외가 발생한다.")
-    void updateWithNullQuestions(List<ReviewQuestionUpdateRequest> questions) throws Exception {
-        // given
-        ReviewFormUpdateRequest request = new ReviewFormUpdateRequest("new title", questions);
+            // when, then
+            assertBadRequestFromPut("/api/review-forms/aaaaaaaa", request, "회고 폼의 제목은 비어있을 수 없습니다.");
+        }
 
-        // when, then
-        assertBadRequestFromPut("/api/review-forms/aaaaaaaa", request, "회고 폼의 질문 목록 수정 중 오류가 발생했습니다.");
-    }
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("질문 목록에 null 값이 들어갈 경우 예외가 발생한다.")
+        void updateWithNullQuestions(List<ReviewFormQuestionUpdateRequest> questions) throws Exception {
+            // given
+            ReviewFormUpdateRequest request = new ReviewFormUpdateRequest("new title", questions);
 
-    @ParameterizedTest
-    @NullSource
-    @DisplayName("회고 폼 수정시 회고 질문에 null 값이 들어갈 경우 예외가 발생한다.")
-    void updateWithEmptyQuestionValue(String questionValue) throws Exception {
-        // given
-        ReviewFormUpdateRequest request = new ReviewFormUpdateRequest("new title",
-            List.of(new ReviewQuestionUpdateRequest(1L, questionValue)));
+            // when, then
+            assertBadRequestFromPut("/api/review-forms/aaaaaaaa", request, "회고 폼의 질문 목록 수정 중 오류가 발생했습니다.");
+        }
 
-        // when, then
-        assertBadRequestFromPut("/api/review-forms/aaaaaaaa", request, "회고 폼의 질문 수정 중 오류가 발생했습니다.");
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("질문이 비어있을 경우 예외가 발생한다.")
+        void updateWithEmptyQuestionValue(String questionValue) throws Exception {
+            // given
+            ReviewFormUpdateRequest request = new ReviewFormUpdateRequest("new title",
+                List.of(new ReviewFormQuestionUpdateRequest(1L, questionValue)));
+
+            // when, then
+            assertBadRequestFromPut("/api/review-forms/aaaaaaaa", request, "회고 폼의 질문은 비어있을 수 없습니다.");
+        }
+
     }
 
     @ParameterizedTest
