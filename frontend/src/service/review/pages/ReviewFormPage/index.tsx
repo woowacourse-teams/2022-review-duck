@@ -16,7 +16,7 @@ import { RedirectState } from 'service/@shared/types';
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/review/hooks/useQuestions';
 
-import { setFormFocus } from 'service/@shared/utils';
+import { getErrorMessage, setFormFocus } from 'service/@shared/utils';
 
 import { Button, Icon, Logo, TextBox } from 'common/components';
 
@@ -27,6 +27,7 @@ import styles from './styles.module.scss';
 
 import useReviewFormQueries from './useReviewFormQueries';
 import { PAGE_LIST } from 'service/@shared/constants';
+import { validateReviewForm } from 'service/@shared/validator';
 
 /**
  * @author 돔하디 <zuzudnf@gmail.com>
@@ -95,24 +96,21 @@ function CreateReviewFormPage() {
   const onClickCreateForm = (event: FormEvent) => {
     event.preventDefault();
 
-    // TODO: 유효성 검증 작성 컨벤션 협의 후 부분 분리
-    if (!reviewTitle) {
-      alert('회고의 제목을 입력해주세요.');
+    const validQuestions = questions.filter((question) => !!question.questionValue?.trim());
+
+    try {
+      validateReviewForm(reviewTitle, validQuestions);
+    } catch (error) {
+      alert(getErrorMessage(error));
       return;
     }
 
-    const validQuestions = questions.filter((question) => !!question.questionValue?.trim());
     const removeListKey = validQuestions.map((question) => {
       const newQuestion = { ...question };
 
       delete newQuestion.listKey;
       return question;
     });
-
-    if (validQuestions.length <= 0) {
-      alert('질문은 최소 1개 이상 입력해주세요.');
-      return;
-    }
 
     reviewFormMutation.mutate(
       { reviewTitle, reviewFormCode, questions: removeListKey },
