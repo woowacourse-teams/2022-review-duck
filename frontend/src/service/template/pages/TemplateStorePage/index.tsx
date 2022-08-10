@@ -35,24 +35,26 @@ const TemplateStorePage = () => {
         </Link>
       </div>
       <div>
-        {templates.map((template) => (
-          <div key={template.templateId}>
-            <Text>{template.templateTitle}</Text>
-            <Text>{template.templateDescription}</Text>
-            <Text>{getElapsedTimeText(template.updatedAt)}</Text>
-            <Text>{`${template.usedCount}회 사용됨`}</Text>
-            <div
-              style={{
-                backgroundImage: `url(${template.creator.profileUrl})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                height: '30px',
-                width: '30px',
-              }}
-            ></div>
-            <Text>{`by ${template.creator.nickname}`}</Text>
-          </div>
-        ))}
+        {templates.map(
+          ({ templateId, templateTitle, templateDescription, updatedAt, usedCount, creator }) => (
+            <div key={templateId}>
+              <Text>{templateTitle}</Text>
+              <Text>{templateDescription}</Text>
+              <Text>{getElapsedTimeText(updatedAt)}</Text>
+              <Text>{`${usedCount}회 사용됨`}</Text>
+              <div
+                style={{
+                  backgroundImage: `url(${creator.profileUrl})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  height: '30px',
+                  width: '30px',
+                }}
+              ></div>
+              <Text>{`by ${creator.nickname}`}</Text>
+            </div>
+          ),
+        )}
       </div>
     </div>
   );
