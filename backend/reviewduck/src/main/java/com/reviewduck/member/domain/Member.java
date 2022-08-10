@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.hibernate.Hibernate;
+
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.exception.MemberException;
 
@@ -22,7 +24,7 @@ public class Member extends BaseDate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long Id;
+    private Long id;
 
     private String socialId;
 
@@ -32,12 +34,15 @@ public class Member extends BaseDate {
 
     private String profileUrl;
 
+    private boolean isAdmin;
+
     public Member(String socialId, String socialNickname, String nickname, String profileUrl) {
         validate(nickname);
         this.socialId = socialId;
         this.socialNickname = socialNickname;
         this.nickname = nickname;
         this.profileUrl = profileUrl;
+        this.isAdmin = false;
     }
 
     private void validate(String nickname) {
@@ -51,18 +56,29 @@ public class Member extends BaseDate {
         this.nickname = nickname;
     }
 
+    public void deleteAllInfo() {
+        this.socialId = "-";
+        this.socialNickname = "-";
+        this.nickname = "탈퇴한 회원입니다";
+        this.profileUrl = "-";
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o))
             return false;
         Member member = (Member)o;
-        return Objects.equals(Id, member.Id);
+        return Objects.equals(id, member.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Id);
+        return Objects.hash(id);
+    }
+
+    public boolean isAdmin() {
+        return this.isAdmin;
     }
 }
