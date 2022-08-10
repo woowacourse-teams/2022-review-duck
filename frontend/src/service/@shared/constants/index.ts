@@ -7,8 +7,10 @@ const PAGE_LIST = {
   AUTHORIZE: '/authorize',
   MY_PAGE: '/mypage',
   LOGOUT: '/logout',
-  TEMPLATE_STORE: '/template-store',
+  TEMPLATE_STORE: '/template/list',
   TEMPLATE_RECENT: '/recent',
+  TEMPLATE_DETAIL: 'template/view',
+  TEMPLATE_EDIT: 'template/edit',
 };
 
 const MODAL_LIST = {
