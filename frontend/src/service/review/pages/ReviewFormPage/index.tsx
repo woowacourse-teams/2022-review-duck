@@ -37,7 +37,7 @@ import { validateReviewForm } from 'service/@shared/validator';
  */
 function CreateReviewFormPage() {
   const { reviewFormCode } = useParams();
-  const { addSnackbar } = useSnackbar();
+  const { showSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -117,7 +117,7 @@ function CreateReviewFormPage() {
       {
         onSuccess: ({ reviewFormCode }) => {
           navigate(redirect || `${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`, { replace: true });
-          addSnackbar({
+          showSnackbar({
             title: isEditMode ? '회고가 수정되었습니다.' : '회고가 생성되었습니다.',
             description: '회고 참여코드를 공유하여, 회고를 시작할 수 있습니다.',
           });

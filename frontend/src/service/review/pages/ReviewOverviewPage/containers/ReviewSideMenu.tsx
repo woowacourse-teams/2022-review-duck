@@ -15,7 +15,7 @@ import { PAGE_LIST } from 'service/@shared/constants';
 
 function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
   const { reviewForm, reviews: myReviews } = useOverviewQueries(reviewFormCode);
-  const { addSnackbar } = useSnackbar();
+  const { showSnackbar } = useSnackbar();
 
   const linkInputBox = useRef<HTMLInputElement>(null);
 
@@ -37,7 +37,7 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
 
     try {
       await navigator.clipboard.writeText($copyLink.value);
-      addSnackbar({
+      showSnackbar({
         icon: 'done',
         title: '참여 링크를 클립보드에 복사했습니다.',
         description: '함께 회고할 팀원들에게 공유해주세요.',

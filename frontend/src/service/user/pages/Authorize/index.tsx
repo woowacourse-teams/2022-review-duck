@@ -11,7 +11,7 @@ import { validateGithubOAuth } from 'service/@shared/validator';
 
 function Authorize() {
   const [searchParams] = useSearchParams();
-  const { addSnackbar } = useSnackbar();
+  const { showSnackbar } = useSnackbar();
 
   const { createRefreshToken } = useAuth();
 
@@ -21,7 +21,7 @@ function Authorize() {
     try {
       validateGithubOAuth(code, error);
     } catch (error) {
-      addSnackbar({
+      showSnackbar({
         theme: 'warning',
         title: 'Github 소셜 로그인에 실패하였습니다.',
         description: getErrorMessage(error),
@@ -40,7 +40,7 @@ function Authorize() {
   }, []);
 
   if (createRefreshToken.isSuccess) {
-    addSnackbar({
+    showSnackbar({
       theme: 'primary',
       title: '환영합니다! 회고덕에 로그인되었습니다.',
       description: '공용 PC에서 사용 시, 사용 후 꼭 로그아웃을 진행해주세요.',
