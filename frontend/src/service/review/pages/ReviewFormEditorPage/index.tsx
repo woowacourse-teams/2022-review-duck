@@ -50,6 +50,10 @@ function ReviewFormEditorPage() {
     }
   }, []);
 
+  const handleChangeReviewTitle = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    setReviewTitle(target.value);
+  };
+
   const handleAddQuestion = ({
     currentTarget: $inputTarget,
   }: React.MouseEvent | React.KeyboardEvent) => {
@@ -80,10 +84,6 @@ function ReviewFormEditorPage() {
       removeQuestion(index);
       setFormFocus($inputTarget as HTMLInputElement, previousInputIndex);
     };
-
-  const handleChangeReviewTitle = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-    setReviewTitle(target.value);
-  };
 
   const handleSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
