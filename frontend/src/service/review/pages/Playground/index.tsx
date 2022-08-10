@@ -5,7 +5,7 @@ import { Button } from 'common/components';
 import { SnackbarProps } from 'common/components/Snackbar';
 
 function Playground() {
-  const { addSnackbar } = useSnackbar();
+  const { showSnackbar } = useSnackbar();
   const dummyAlert: SnackbarProps[] = [
     { title: '콤피는 자유를 원해요 🦖', description: '집 보내주세요 제발' },
     { title: '하디는 운동을 해야해요 💪', description: '집 보내주세요 제발', theme: 'danger' },
@@ -15,7 +15,7 @@ function Playground() {
 
   return (
     <div style={{ height: '110vh', textAlign: 'right' }}>
-      <Button onClick={() => addSnackbar(dummyAlert.splice(0, 1)[0])}>스낵바 켜줘</Button>
+      <Button onClick={() => showSnackbar(dummyAlert.splice(0, 1)[0])}>스낵바 켜줘</Button>
     </div>
   );
 }

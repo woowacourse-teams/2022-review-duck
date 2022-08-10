@@ -25,7 +25,7 @@ function SubmitReviewPage() {
   const { reviewFormCode = '', reviewId = '' } = useParams();
 
   const navigate = useNavigate();
-  const { addSnackbar } = useSnackbar();
+  const { showSnackbar } = useSnackbar();
 
   const location = useLocation();
   const { redirect = '' } = (location.state as RedirectState) || {};
@@ -72,7 +72,7 @@ function SubmitReviewPage() {
         { reviewId: Number(reviewId), answers },
         {
           onSuccess: () => {
-            addSnackbar({
+            showSnackbar({
               icon: 'rate_review',
               title: '작성하신 회고가 수정되었습니다.',
               description: '작성한 회고는 마이페이지를 통해 모아볼 수 있습니다.',
@@ -93,7 +93,7 @@ function SubmitReviewPage() {
       { reviewFormCode, answers },
       {
         onSuccess: () => {
-          addSnackbar({
+          showSnackbar({
             icon: 'rate_review',
             title: '작성하신 회고가 기록되었습니다.',
             description: '작성한 회고는 마이페이지를 통해 모아볼 수 있습니다.',

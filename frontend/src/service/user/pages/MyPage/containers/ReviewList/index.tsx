@@ -15,7 +15,7 @@ import { PAGE_LIST, MYPAGE_TAB } from 'service/@shared/constants';
 
 function ReviewList({ filter }: Record<'filter', string>) {
   const { myReviews, myReviewForms } = useMyPageQueries();
-  const { addSnackbar } = useSnackbar();
+  const { showSnackbar } = useSnackbar();
 
   const { deleteReviewMutation, deleteReviewFormMutation } = useMyPageQueries();
 
@@ -23,7 +23,7 @@ function ReviewList({ filter }: Record<'filter', string>) {
     if (confirm('정말 회고를 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) {
       deleteReviewMutation.mutate(reviewId, {
         onSuccess: () => {
-          addSnackbar({
+          showSnackbar({
             icon: 'delete',
             title: '작성한 회고가 삭제되었습니다.',
             description: '이제 누구도 해당 회고를 볼 수 없습니다.',
@@ -40,7 +40,7 @@ function ReviewList({ filter }: Record<'filter', string>) {
     if (confirm('정말 회고를 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) {
       deleteReviewFormMutation.mutate(reviewFormCode, {
         onSuccess: () => {
-          addSnackbar({
+          showSnackbar({
             icon: 'delete',
             title: '생성한 회고가 삭제되었습니다.',
             description: '이제 누구도 해당 회고를 볼 수 없습니다.',
