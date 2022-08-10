@@ -1,4 +1,4 @@
-export interface GetTemplatesResponse {
+interface Template {
   templateId: number;
   templateTitle: string;
   templateDescription: string;
@@ -9,3 +9,5 @@ export interface GetTemplatesResponse {
   updatedAt: number;
   usedCount: number;
 }
+
+export type GetTemplatesResponse = Template[];
