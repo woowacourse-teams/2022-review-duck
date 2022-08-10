@@ -1,5 +1,3 @@
-import { useRef } from 'react';
-
 import { useResetRecoilState, useSetRecoilState } from 'recoil';
 
 import { SnackbarProps } from 'common/components/Snackbar';
@@ -10,7 +8,7 @@ function useSnackbar() {
   const resetSnackbar = useResetRecoilState(snackbarStackAtom);
   const setSnackbarStack = useSetRecoilState(snackbarStackAtom);
 
-  const addSnackbar = (options: SnackbarProps) => {
+  const showSnackbar = (options: SnackbarProps) => {
     setSnackbarStack(({ uniqueKey, stack }) => {
       const newStack = [...stack];
 
@@ -28,7 +26,7 @@ function useSnackbar() {
     });
   };
 
-  return { addSnackbar, removeSnackbar, resetSnackbar };
+  return { showSnackbar, removeSnackbar, resetSnackbar };
 }
 
 export default useSnackbar;
