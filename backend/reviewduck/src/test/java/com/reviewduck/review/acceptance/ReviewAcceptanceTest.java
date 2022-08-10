@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,8 +21,8 @@ import com.reviewduck.review.dto.request.AnswerRequest;
 import com.reviewduck.review.dto.request.AnswerUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 import com.reviewduck.review.dto.response.QuestionAnswerResponse;
@@ -53,95 +54,107 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember2.getId()));
     }
 
-    @Test
-    @DisplayName("특정 회고를 조회한다.")
-    void findReview() {
-        Long reviewId = saveReviewAndGetId(accessToken1);
+    @Nested
+    @DisplayName("특정 회고 조회")
+    class findReview {
 
-        //when, then
-        get("/api/reviews/" + reviewId, accessToken1)
-            .statusCode(HttpStatus.OK.value());
+        @Test
+        @DisplayName("특정 회고를 조회한다.")
+        void findReview() {
+            Long reviewId = saveReviewAndGetId(accessToken1);
+
+            //when, then
+            get("/api/reviews/" + reviewId, accessToken1)
+                .statusCode(HttpStatus.OK.value());
+        }
+
+        @Test
+        @DisplayName("로그인하지 않은 상태로 특정 회고를 조회할 수 없다")
+        void failToFindReviewWithoutLogin() {
+            Long reviewId = saveReviewAndGetId(accessToken1);
+
+            //when, then
+            get("/api/reviews/" + reviewId)
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 회고를 조회할 수 없다.")
+        void failToFindReview() {
+            // when, then
+            get("/api/reviews/999999", accessToken1)
+                .statusCode(HttpStatus.NOT_FOUND.value());
+        }
+
     }
 
-    @Test
-    @DisplayName("로그인하지 않은 상태로 특정 회고를 조회할 수 없다")
-    void failToFindReviewWithoutLogin() {
-        Long reviewId = saveReviewAndGetId(accessToken1);
+    @Nested
+    @DisplayName("최신화된 회고 폼과 동기화하여 특정 회고 조회")
+    class findSynchronizedReview {
 
-        //when, then
-        get("/api/reviews/" + reviewId)
-            .statusCode(HttpStatus.UNAUTHORIZED.value());
-    }
+        @Test
+        @DisplayName("최신화된 회고폼과 동기화하여 특정 회고를 조회한다.")
+        void findSynchronizedReview() {
+            // save reviewForm
+            String reviewTitle = "title";
+            List<ReviewFormQuestionCreateRequest> questions = List.of(
+                new ReviewFormQuestionCreateRequest("question1"),
+                new ReviewFormQuestionCreateRequest("question2"),
+                new ReviewFormQuestionCreateRequest("question3"));
+            String code = createReviewFormAndGetCode(accessToken1, reviewTitle, questions);
 
-    @Test
-    @DisplayName("존재하지 않는 회고를 조회할 수 없다.")
-    void failToFindReview() {
-        // when, then
-        get("/api/reviews/999999", accessToken1)
-            .statusCode(HttpStatus.NOT_FOUND.value());
-    }
+            // save review
+            ReviewRequest createRequest = new ReviewRequest(
+                List.of(new AnswerRequest(1L, "answer1"),
+                    new AnswerRequest(2L, "answer2"),
+                    new AnswerRequest(3L, "answer3")));
+            post("/api/review-forms/" + code, createRequest, accessToken2);
 
-    @Test
-    @DisplayName("최신화된 회고폼과 동기화하여 특정 회고를 조회한다.")
-    void findSynchronizedReview() {
-        // save reviewForm
-        String reviewTitle = "title";
-        List<ReviewFormQuestionCreateRequest> questions = List.of(
-            new ReviewFormQuestionCreateRequest("question1"),
-            new ReviewFormQuestionCreateRequest("question2"),
-            new ReviewFormQuestionCreateRequest("question3"));
-        String code = createReviewFormAndGetCode(accessToken1, reviewTitle, questions);
+            // delete question2 and add question4 of reviewForm
+            List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
+                new ReviewFormQuestionUpdateRequest(1L, "new question1"),
+                new ReviewFormQuestionUpdateRequest(3L, "new question3"),
+                new ReviewFormQuestionUpdateRequest(null, "new question4"));
+            ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateQuestions);
+            put("/api/review-forms/" + code, updateRequest, accessToken1);
 
-        // save review
-        ReviewRequest createRequest = new ReviewRequest(
-            List.of(new AnswerRequest(1L, "answer1"),
-                new AnswerRequest(2L, "answer2"),
-                new AnswerRequest(3L, "answer3")));
-        post("/api/review-forms/" + code, createRequest, accessToken2);
+            //when
+            List<QuestionAnswerResponse> actual = get("/api/reviews/1/synchronized", accessToken1)
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(ReviewSummaryResponse.class)
+                .getAnswers();
 
-        // delete question2 and add question4 of reviewForm
-        List<ReviewQuestionUpdateRequest> updateQuestions = List.of(
-            new ReviewQuestionUpdateRequest(1L, "new question1"),
-            new ReviewQuestionUpdateRequest(3L, "new question3"),
-            new ReviewQuestionUpdateRequest(null, "new question4"));
-        ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateQuestions);
-        put("/api/review-forms/" + code, updateRequest, accessToken1);
+            // then
+            assertAll(
+                () -> assertThat(actual.size()).isEqualTo(3),
+                () -> assertThat(actual.get(0).getQuestionValue()).isEqualTo("new question1"),
+                () -> assertThat(actual.get(0).getAnswerId()).isEqualTo(1L),
+                () -> assertThat(actual.get(1).getQuestionValue()).isEqualTo("new question3"),
+                () -> assertThat(actual.get(1).getAnswerId()).isEqualTo(3L),
+                () -> assertThat(actual.get(2).getQuestionValue()).isEqualTo("new question4"),
+                () -> assertThat(actual.get(2).getAnswerId()).isEqualTo(null)
+            );
+        }
 
-        //when
-        List<QuestionAnswerResponse> actual = get("/api/reviews/1/synchronized", accessToken1)
-            .statusCode(HttpStatus.OK.value())
-            .extract()
-            .as(ReviewSummaryResponse.class)
-            .getAnswers();
+        @Test
+        @DisplayName("로그인하지 않은 상태로 최신화된 회고폼과 동기화하여 특정 회고를 조회할 수 없다")
+        void failToFindSynchronizedReviewWithoutLogin() {
+            Long reviewId = saveReviewAndGetId(accessToken1);
 
-        // then
-        assertAll(
-            () -> assertThat(actual.size()).isEqualTo(3),
-            () -> assertThat(actual.get(0).getQuestionValue()).isEqualTo("new question1"),
-            () -> assertThat(actual.get(0).getAnswerId()).isEqualTo(1L),
-            () -> assertThat(actual.get(1).getQuestionValue()).isEqualTo("new question3"),
-            () -> assertThat(actual.get(1).getAnswerId()).isEqualTo(3L),
-            () -> assertThat(actual.get(2).getQuestionValue()).isEqualTo("new question4"),
-            () -> assertThat(actual.get(2).getAnswerId()).isEqualTo(null)
-        );
-    }
+            //when, then
+            get("/api/reviews/" + reviewId + "/synchronized")
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
 
-    @Test
-    @DisplayName("로그인하지 않은 상태로 최신화된 회고폼과 동기화하여 특정 회고를 조회할 수 없다")
-    void failToFindSynchronizedReviewWithoutLogin() {
-        Long reviewId = saveReviewAndGetId(accessToken1);
+        @Test
+        @DisplayName("존재하지 않는 회고를 최신화된 회고폼과 동기화하여 조회할 수 없다.")
+        void failToFindSynchronizedReview() {
+            // when, then
+            get("/api/reviews/999999/synchronized", accessToken1)
+                .statusCode(HttpStatus.NOT_FOUND.value());
+        }
 
-        //when, then
-        get("/api/reviews/" + reviewId + "/synchronized")
-            .statusCode(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 회고를 최신화된 회고폼과 동기화하여 조회할 수 없다.")
-    void failToFindSynchronizedReview() {
-        // when, then
-        get("/api/reviews/999999/synchronized", accessToken1)
-            .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
