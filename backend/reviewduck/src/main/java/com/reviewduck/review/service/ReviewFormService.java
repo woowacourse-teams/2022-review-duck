@@ -13,7 +13,7 @@ import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.repository.ReviewFormRepository;
 import com.reviewduck.template.domain.Template;
@@ -35,10 +35,10 @@ public class ReviewFormService {
     @Transactional
     public ReviewForm save(Member member, ReviewFormCreateRequest createRequest) {
         List<String> questionValues = createRequest.getQuestions().stream()
-            .map(ReviewFormQuestionRequest::getQuestionValue)
+            .map(ReviewFormQuestionCreateRequest::getValue)
             .collect(Collectors.toUnmodifiableList());
 
-        ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewTitle(), questionValues);
+        ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewFormTitle(), questionValues);
         return reviewFormRepository.save(reviewForm);
     }
 

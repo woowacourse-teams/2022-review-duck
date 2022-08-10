@@ -19,7 +19,7 @@ import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.request.AnswerRequest;
 import com.reviewduck.review.dto.request.AnswerUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
@@ -86,9 +86,10 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     void findSynchronizedReview() {
         // save reviewForm
         String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"),
-            new ReviewFormQuestionRequest("question3"));
+        List<ReviewFormQuestionCreateRequest> questions = List.of(
+            new ReviewFormQuestionCreateRequest("question1"),
+            new ReviewFormQuestionCreateRequest("question2"),
+            new ReviewFormQuestionCreateRequest("question3"));
         String code = createReviewFormAndGetCode(accessToken1, reviewTitle, questions);
 
         // save review
@@ -256,8 +257,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     void findReviewsByDeletedSpecificReviewForm() {
         // given
         // 회고 폼 등록
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
+        List<ReviewFormQuestionCreateRequest> questions = List.of(
+            new ReviewFormQuestionCreateRequest("question1"),
+            new ReviewFormQuestionCreateRequest("question2"));
         String reviewFormCode = createReviewFormAndGetCode(accessToken1, "title", questions);
 
         // 회고 등록
@@ -283,7 +285,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     private String createReviewFormAndGetCode(String accessToken, String reviewTitle,
-        List<ReviewFormQuestionRequest> questions) {
+        List<ReviewFormQuestionCreateRequest> questions) {
         // given
         ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
 
@@ -296,8 +298,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
     private Long saveReviewAndGetId(String accessToken) {
         String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
+        List<ReviewFormQuestionCreateRequest> questions = List.of(
+            new ReviewFormQuestionCreateRequest("question1"),
+            new ReviewFormQuestionCreateRequest("question2"));
         String code = createReviewFormAndGetCode(accessToken, reviewTitle, questions);
         ReviewRequest createRequest = new ReviewRequest(
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
