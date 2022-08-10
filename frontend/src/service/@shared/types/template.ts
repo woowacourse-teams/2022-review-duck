@@ -20,4 +20,8 @@ export interface GetTemplateResponse extends Template {
   }[];
 }
 
+export interface CreateFormResponse {
+  reviewFormCode: string;
+}
+
 export type GetTemplatesResponse = Template[];
