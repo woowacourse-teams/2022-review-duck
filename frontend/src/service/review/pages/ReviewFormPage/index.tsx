@@ -89,7 +89,7 @@ function CreateReviewFormPage() {
       setFormFocus($inputTarget as HTMLInputElement, previousInputIndex);
     };
 
-  const onChangeReviewTitle = ({ target }: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeReviewTitle = ({ target }: ChangeEvent<HTMLInputElement>) => {
     setReviewTitle(target.value);
   };
 
@@ -129,7 +129,7 @@ function CreateReviewFormPage() {
     );
   };
 
-  const onCancel = () => {
+  const handleCancel = () => {
     if (!confirm('회고 생성을 정말 취소하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
 
     navigate(-1);
@@ -165,7 +165,7 @@ function CreateReviewFormPage() {
             size="large"
             placeholder="회고의 제목을 입력해주세요."
             value={reviewTitle}
-            onChange={onChangeReviewTitle}
+            onChange={handleChangeReviewTitle}
           />
 
           <div className={cn(styles.itemContainer, 'flex-container column')}>
@@ -182,7 +182,7 @@ function CreateReviewFormPage() {
           </div>
 
           <div className={cn('button-container horizontal')}>
-            <Button theme="outlined" onClick={onCancel}>
+            <Button theme="outlined" onClick={handleCancel}>
               <Icon code="cancel" />
               <span>취소하기</span>
             </Button>
