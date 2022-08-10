@@ -16,11 +16,11 @@ import QuestionEditor from 'service/review/components/QuestionEditor';
 
 import styles from './styles.module.scss';
 
-import useReviewFormPage from './useReviewFormPage';
+import useReviewFormEditor from './useReviewFormEditor';
 import { PAGE_LIST } from 'service/@shared/constants';
 import { validateReviewForm } from 'service/@shared/validator';
 
-function CreateReviewFormPage() {
+function ReviewFormEditorPage() {
   const { reviewFormCode = '' } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ function CreateReviewFormPage() {
     loadError,
     trimQuestions,
     submitReviewForm,
-  } = useReviewFormPage(reviewFormCode);
+  } = useReviewFormEditor(reviewFormCode);
 
   const [reviewTitle, setReviewTitle] = useState(initialReviewForm.reviewTitle);
   const { questions, addQuestion, removeQuestion, updateQuestion } = useQuestions(
@@ -186,4 +186,4 @@ function CreateReviewFormPage() {
   );
 }
 
-export default CreateReviewFormPage;
+export default ReviewFormEditorPage;

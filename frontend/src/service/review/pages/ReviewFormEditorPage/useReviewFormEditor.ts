@@ -6,7 +6,7 @@ import {
   useUpdateReviewForm,
 } from 'service/@shared/hooks/queries/review';
 
-function useReviewFormPage(reviewFormCode: string) {
+function useReviewFormEditor(reviewFormCode: string) {
   const createMutation = useCreateReviewForm();
   const updateMutation = useUpdateReviewForm();
 
@@ -48,4 +48,4 @@ function useReviewFormPage(reviewFormCode: string) {
   };
 }
 
-export default useReviewFormPage;
+export default useReviewFormEditor;
