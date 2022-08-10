@@ -23,7 +23,7 @@ import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewQuestionUpdateRequest;
 import com.reviewduck.template.domain.Template;
@@ -64,13 +64,14 @@ public class ReviewFormServiceTest {
     void createReviewForm() {
         // given
         String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
+        List<ReviewFormQuestionCreateRequest> questions = List.of(
+            new ReviewFormQuestionCreateRequest("question1"),
+            new ReviewFormQuestionCreateRequest("question2"));
 
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
 
         List<ReviewFormQuestion> expected = questions.stream()
-            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
+            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue()))
             .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
@@ -99,12 +100,7 @@ public class ReviewFormServiceTest {
     @DisplayName("회고 폼 코드로 회고 폼을 조회한다.")
     void findReviewForm() {
         // given
-        String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
-        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
-
-        ReviewForm expected = reviewFormService.save(member1, createRequest);
+        ReviewForm expected = saveReviewForm(member1);
 
         // when
         ReviewForm actual = reviewFormService.findByCode(expected.getCode());
@@ -307,19 +303,21 @@ public class ReviewFormServiceTest {
     @DisplayName("개인이 작성한 회고를 조회한다.")
     void findMyReviewForms() {
         String reviewTitle1 = "title1";
-        List<ReviewFormQuestionRequest> questions1 = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
+        List<ReviewFormQuestionCreateRequest> questions1 = List.of(
+            new ReviewFormQuestionCreateRequest("question1"),
+            new ReviewFormQuestionCreateRequest("question2"));
 
         ReviewFormCreateRequest createRequest1 = new ReviewFormCreateRequest(reviewTitle1, questions1);
 
         String reviewTitle2 = "title2";
-        List<ReviewFormQuestionRequest> questions2 = List.of(new ReviewFormQuestionRequest("question3"),
-            new ReviewFormQuestionRequest("question4"));
+        List<ReviewFormQuestionCreateRequest> questions2 = List.of(
+            new ReviewFormQuestionCreateRequest("question3"),
+            new ReviewFormQuestionCreateRequest("question4"));
 
         ReviewFormCreateRequest createRequest2 = new ReviewFormCreateRequest(reviewTitle2, questions2);
 
         List<ReviewFormQuestion> expected = questions1.stream()
-            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
+            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue()))
             .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
@@ -349,8 +347,10 @@ public class ReviewFormServiceTest {
     }
 
     private ReviewForm saveReviewForm(Member member) {
-        List<ReviewFormQuestionRequest> createRequests = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
+        List<ReviewFormQuestionCreateRequest> createRequests = List.of(
+            new ReviewFormQuestionCreateRequest("question1"),
+            new ReviewFormQuestionCreateRequest("question2"));
+
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest("title", createRequests);
 
         return reviewFormService.save(member, createRequest);

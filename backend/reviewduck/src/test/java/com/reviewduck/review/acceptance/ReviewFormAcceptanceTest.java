@@ -18,7 +18,7 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.request.AnswerRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
@@ -31,6 +31,10 @@ import com.reviewduck.review.dto.response.ReviewsResponse;
 public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
     private static final String invalidCode = "aaaaaaaa";
+    private static final String title = "title";
+    private static final List<ReviewFormQuestionCreateRequest> createQuestions = List.of(
+        new ReviewFormQuestionCreateRequest("question1"),
+        new ReviewFormQuestionCreateRequest("question2"));
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -56,13 +60,11 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     @DisplayName("회고 폼을 생성한다.")
     void createReviewForm() {
         // given
-        String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
-        ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
+        ReviewFormCreateRequest request = new ReviewFormCreateRequest(title, createQuestions);
 
         // when, then
-        post("/api/review-forms", request, accessToken1).statusCode(HttpStatus.CREATED.value())
+        post("/api/review-forms", request, accessToken1)
+            .statusCode(HttpStatus.CREATED.value())
             .assertThat().body("reviewFormCode", notNullValue());
     }
 
@@ -70,10 +72,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인하지 않은 상태로 회고 폼을 생성할 수 없다.")
     void failToCreateReviewFormWithoutLogin() {
         // given
-        String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
-        ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
+        ReviewFormCreateRequest request = new ReviewFormCreateRequest(title, createQuestions);
 
         // when, then
         post("/api/review-forms", request).statusCode(HttpStatus.UNAUTHORIZED.value());
@@ -83,10 +82,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     @DisplayName("특정 회고 폼을 조회한다.")
     void findReviewForm() {
         // given
-        String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
-        String reviewFormCode = createReviewFormAndGetCode(reviewTitle, questions, accessToken1);
+        String reviewFormCode = createReviewFormAndGetCode(accessToken1);
 
         // when
         ReviewFormResponse response = get("/api/review-forms/" + reviewFormCode, accessToken1)
@@ -96,7 +92,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
         // then
         assertAll(
-            () -> assertThat(response.getReviewTitle()).isEqualTo(reviewTitle),
+            () -> assertThat(response.getReviewTitle()).isEqualTo(title),
             () -> assertThat(response.getQuestions()).hasSize(2)
         );
     }
@@ -105,10 +101,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인하지 않은 상태로 회고 폼을 조회할 수 없다.")
     void failToFindReviewFormWithoutLogin() {
         // given
-        String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
-        String reviewFormCode = createReviewFormAndGetCode(reviewTitle, questions, accessToken1);
+        String reviewFormCode = createReviewFormAndGetCode(accessToken1);
 
         get("/api/review-forms/" + reviewFormCode).statusCode(HttpStatus.UNAUTHORIZED.value());
     }
@@ -124,15 +117,14 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     @DisplayName("회고 폼을 수정한다.")
     void updateReviewForm() {
         // given
-        List<ReviewFormQuestionRequest> createQuestions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
-        String createReviewFormCode = createReviewFormAndGetCode("title", createQuestions, accessToken1);
+        String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
 
         // when, then
         String newReviewTitle = "new title";
         List<ReviewQuestionUpdateRequest> updateQuestions = List.of(
             new ReviewQuestionUpdateRequest(1L, "new question1"));
         ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
+
         put("/api/review-forms/" + createReviewFormCode, updateRequest, accessToken1)
             .statusCode(HttpStatus.OK.value())
             .assertThat().body("reviewFormCode", equalTo(createReviewFormCode));
@@ -152,9 +144,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인하지 않은 상태로 회고 폼을 수정할 수 없다.")
     void failToUpdateReviewFormWithoutLogin() {
         // given
-        List<ReviewFormQuestionRequest> createQuestions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
-        String createReviewFormCode = createReviewFormAndGetCode("title", createQuestions, accessToken1);
+        String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
 
         // when, then
         String newReviewTitle = "new title";
@@ -181,9 +171,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     @DisplayName("본인이 생성한 회고 폼이 아니면 수정할 수 없다.")
     void failToUpdateNotMyReviewForm() {
         // given
-        List<ReviewFormQuestionRequest> createQuestions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
-        String createReviewFormCode = createReviewFormAndGetCode("title", createQuestions, accessToken1);
+        String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
 
         // when, then
         String newReviewTitle = "new title";
@@ -200,9 +188,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     @DisplayName("회고 폼을 삭제한다.")
     void deleteReviewForm() {
         // given
-        List<ReviewFormQuestionRequest> createQuestions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
-        String createReviewFormCode = createReviewFormAndGetCode("title", createQuestions, accessToken1);
+        String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
 
         // when, then
         delete("/api/review-forms/" + createReviewFormCode, accessToken1)
@@ -216,9 +202,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인하지 않은 상태로 회고 폼을 삭제할 수 없다.")
     void failToDeleteReviewFormWithoutLogin() {
         // given
-        List<ReviewFormQuestionRequest> createQuestions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
-        String createReviewFormCode = createReviewFormAndGetCode("title", createQuestions, accessToken1);
+        String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
 
         // when, then
         delete("/api/review-forms/" + createReviewFormCode)
@@ -237,9 +221,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     @DisplayName("본인이 생성한 회고 폼이 아니면 삭제할 수 없다.")
     void failToDeleteNotMyReviewForm() {
         // given
-        List<ReviewFormQuestionRequest> createQuestions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
-        String createReviewFormCode = createReviewFormAndGetCode("title", createQuestions, accessToken1);
+        String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
 
         // when, then
         delete("/api/review-forms/" + createReviewFormCode, accessToken2)
@@ -250,14 +232,11 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     @DisplayName("회고 답변을 생성한다.")
     void createReview() {
         // given
-        String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
-        String code = createReviewFormAndGetCode(reviewTitle, questions, accessToken1);
+        String code = createReviewFormAndGetCode(accessToken1);
 
         // when, then
         // 질문조회
-        assertReviewTitleFromFoundReviewForm(code, reviewTitle, accessToken1);
+        assertReviewTitleFromFoundReviewForm(code, title, accessToken1);
 
         // 리뷰생성
         ReviewRequest createRequest = new ReviewRequest(
@@ -271,10 +250,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인하지 않은 상태로 회고 답변을 생성할 수 없다.")
     void failToCreateReviewWithoutLogin() {
         // given
-        String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
-        String code = createReviewFormAndGetCode(reviewTitle, questions, accessToken1);
+        String code = createReviewFormAndGetCode(accessToken1);
 
         // 리뷰생성
         ReviewRequest createRequest = new ReviewRequest(
@@ -288,17 +264,15 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     @DisplayName("존재하지 않는 질문에 대해 답변을 작성하면 회고 작성에 실패한다.")
     void failToCreateReview() {
         // given
-        String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"));
-        String code = createReviewFormAndGetCode(reviewTitle, questions, accessToken1);
+        String code = createReviewFormAndGetCode(accessToken1);
 
         // when, then
         // 질문조회
-        assertReviewTitleFromFoundReviewForm(code, reviewTitle, accessToken1);
+        assertReviewTitleFromFoundReviewForm(code, title, accessToken1);
 
         // 리뷰생성
         ReviewRequest createRequest = new ReviewRequest(
-            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
+            List.of(new AnswerRequest(999L, "answer1"), new AnswerRequest(9999L, "answer2")));
         post("/api/review-forms/" + code, createRequest, accessToken1)
             .statusCode(HttpStatus.NOT_FOUND.value());
     }
@@ -307,10 +281,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     @DisplayName("특정 회고 폼에 속한 회고 답변 전체를 조회한다.")
     void findReviews() {
         // given
-        String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
-        String code = createReviewFormAndGetCode(reviewTitle, questions, accessToken1);
+        String code = createReviewFormAndGetCode(accessToken1);
 
         ReviewRequest createRequest = new ReviewRequest(
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
@@ -333,10 +304,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인하지 않은 상태로 특정 회고 폼에 속한 회고 답변 전체를 조회할 수 없다.")
     void failToFindReviewsWithoutLogin() {
         // given
-        String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
-        String code = createReviewFormAndGetCode(reviewTitle, questions, accessToken1);
+        String code = createReviewFormAndGetCode(accessToken1);
 
         ReviewRequest createRequest = new ReviewRequest(
             List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
@@ -360,13 +328,15 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     void findAllMyReviewForms() {
         // given
         String reviewTitle1 = "title1";
-        List<ReviewFormQuestionRequest> questions1 = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
+        List<ReviewFormQuestionCreateRequest> questions1 = List.of(
+            new ReviewFormQuestionCreateRequest("question1"),
+            new ReviewFormQuestionCreateRequest("question2"));
         String reviewFormCode1 = createReviewFormAndGetCode(reviewTitle1, questions1, accessToken1);
 
         String reviewTitle2 = "title2";
-        List<ReviewFormQuestionRequest> questions2 = List.of(new ReviewFormQuestionRequest("question3"),
-            new ReviewFormQuestionRequest("question4"));
+        List<ReviewFormQuestionCreateRequest> questions2 = List.of(
+            new ReviewFormQuestionCreateRequest("question3"),
+            new ReviewFormQuestionCreateRequest("question4"));
         String reviewFormCode2 = createReviewFormAndGetCode(reviewTitle2, questions2, accessToken2);
 
         // when
@@ -390,9 +360,19 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         get("/api/review-forms/me").statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
-    private String createReviewFormAndGetCode(String reviewTitle, List<ReviewFormQuestionRequest> questions,
+    private String createReviewFormAndGetCode(String reviewTitle,
+        List<ReviewFormQuestionCreateRequest> questions,
         String accessToken) {
         ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
+
+        return post("/api/review-forms", request, accessToken)
+            .extract()
+            .as(ReviewFormCodeResponse.class)
+            .getReviewFormCode();
+    }
+
+    private String createReviewFormAndGetCode(String accessToken) {
+        ReviewFormCreateRequest request = new ReviewFormCreateRequest(title, createQuestions);
 
         return post("/api/review-forms", request, accessToken)
             .extract()

@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
@@ -25,7 +26,7 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.request.AnswerRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
@@ -63,26 +64,44 @@ public class ReviewFormControllerTest {
         given(memberService.findById(any())).willReturn(member);
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @DisplayName("회고 폼 생성시 회고 제목에 빈 값이 들어갈 경우 예외가 발생한다.")
-    void createWithEmptyReviewTitle(String title) throws Exception {
-        // given
-        ReviewFormCreateRequest request = new ReviewFormCreateRequest(title, List.of());
+    @Nested
+    @DisplayName("회고 폼 생성시")
+    class createReviewForm {
 
-        // when, then
-        assertBadRequestFromPost("/api/review-forms", request, "회고 폼의 제목은 비어있을 수 없습니다.");
-    }
+        @ParameterizedTest
+        @NullAndEmptySource
+        @DisplayName("회고 제목에 빈 값이 들어갈 경우 예외가 발생한다.")
+        void createWithEmptyReviewTitle(String title) throws Exception {
+            // given
+            ReviewFormCreateRequest request = new ReviewFormCreateRequest(title, List.of());
 
-    @ParameterizedTest
-    @NullSource
-    @DisplayName("회고 폼 생성시 회고 질문 목록에 null 값이 들어갈 경우 예외가 발생한다.")
-    void createWithNullQuestionList(List<ReviewFormQuestionRequest> questions) throws Exception {
-        // given
-        ReviewFormCreateRequest request = new ReviewFormCreateRequest("title", questions);
+            // when, then
+            assertBadRequestFromPost("/api/review-forms", request, "회고 폼의 제목은 비어있을 수 없습니다.");
+        }
 
-        // when, then
-        assertBadRequestFromPost("/api/review-forms", request, "회고 폼의 질문 목록 생성 중 오류가 발생했습니다.");
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("질문 목록에 null 값이 들어갈 경우 예외가 발생한다.")
+        void createWithNullQuestionList(List<ReviewFormQuestionCreateRequest> questions) throws Exception {
+            // given
+            ReviewFormCreateRequest request = new ReviewFormCreateRequest("title", questions);
+
+            // when, then
+            assertBadRequestFromPost("/api/review-forms", request, "회고 폼의 질문 목록 생성 중 오류가 발생했습니다.");
+        }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        @DisplayName("회고 질문에 빈 값이 들어갈 경우 예외가 발생한다.")
+        void createWithEmptyQuestion(String question) throws Exception {
+            // given
+            ReviewFormCreateRequest request = new ReviewFormCreateRequest("title",
+                List.of(new ReviewFormQuestionCreateRequest(question)));
+
+            // when, then
+            assertBadRequestFromPost("/api/review-forms", request, "회고 폼의 질문은 비어있을 수 없습니다.");
+        }
+
     }
 
     @ParameterizedTest

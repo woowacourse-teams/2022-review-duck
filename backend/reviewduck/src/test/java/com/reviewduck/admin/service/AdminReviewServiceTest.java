@@ -21,7 +21,7 @@ import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.request.AnswerRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.request.ReviewRequest;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
@@ -56,8 +56,9 @@ public class AdminReviewServiceTest {
         member2 = memberService.save(tempMember2);
 
         String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
+        List<ReviewFormQuestionCreateRequest> questions = List.of(
+            new ReviewFormQuestionCreateRequest("question1"),
+            new ReviewFormQuestionCreateRequest("question2"));
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
 
         this.reviewForm = reviewFormService.save(member1, createRequest);
