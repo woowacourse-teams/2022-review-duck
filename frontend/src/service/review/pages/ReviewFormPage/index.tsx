@@ -16,7 +16,7 @@ import { RedirectState } from 'service/@shared/types';
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/review/hooks/useQuestions';
 
-import { setFormFocus } from 'service/@shared/utils';
+import { getErrorMessage, setFormFocus } from 'service/@shared/utils';
 
 import { Button, Icon, Logo, TextBox } from 'common/components';
 
@@ -27,6 +27,7 @@ import styles from './styles.module.scss';
 
 import useReviewFormQueries from './useReviewFormQueries';
 import { PAGE_LIST } from 'service/@shared/constants';
+import { validateReviewForm } from 'service/@shared/validator';
 
 /**
  * @author 돔하디 <zuzudnf@gmail.com>
@@ -88,31 +89,28 @@ function CreateReviewFormPage() {
       setFormFocus($inputTarget as HTMLInputElement, previousInputIndex);
     };
 
-  const onChangeReviewTitle = ({ target }: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeReviewTitle = ({ target }: ChangeEvent<HTMLInputElement>) => {
     setReviewTitle(target.value);
   };
 
   const onClickCreateForm = (event: FormEvent) => {
     event.preventDefault();
 
-    // TODO: 유효성 검증 작성 컨벤션 협의 후 부분 분리
-    if (!reviewTitle) {
-      alert('회고의 제목을 입력해주세요.');
+    const validQuestions = questions.filter((question) => !!question.questionValue?.trim());
+
+    try {
+      validateReviewForm(reviewTitle, validQuestions);
+    } catch (error) {
+      alert(getErrorMessage(error));
       return;
     }
 
-    const validQuestions = questions.filter((question) => !!question.questionValue?.trim());
     const removeListKey = validQuestions.map((question) => {
       const newQuestion = { ...question };
 
       delete newQuestion.listKey;
       return question;
     });
-
-    if (validQuestions.length <= 0) {
-      alert('질문은 최소 1개 이상 입력해주세요.');
-      return;
-    }
 
     reviewFormMutation.mutate(
       { reviewTitle, reviewFormCode, questions: removeListKey },
@@ -131,7 +129,7 @@ function CreateReviewFormPage() {
     );
   };
 
-  const onCancel = () => {
+  const handleCancel = () => {
     if (!confirm('회고 생성을 정말 취소하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
 
     navigate(-1);
@@ -167,7 +165,7 @@ function CreateReviewFormPage() {
             size="large"
             placeholder="회고의 제목을 입력해주세요."
             value={reviewTitle}
-            onChange={onChangeReviewTitle}
+            onChange={handleChangeReviewTitle}
           />
 
           <div className={cn(styles.itemContainer, 'flex-container column')}>
@@ -184,7 +182,7 @@ function CreateReviewFormPage() {
           </div>
 
           <div className={cn('button-container horizontal')}>
-            <Button theme="outlined" onClick={onCancel}>
+            <Button theme="outlined" onClick={handleCancel}>
               <Icon code="cancel" />
               <span>취소하기</span>
             </Button>

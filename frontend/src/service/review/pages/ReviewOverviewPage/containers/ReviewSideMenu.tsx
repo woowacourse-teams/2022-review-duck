@@ -30,7 +30,7 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
     return -1;
   };
 
-  const onClickCopyLink = async () => {
+  const handleCopyInviteLink = async () => {
     const $copyLink = linkInputBox.current;
 
     if (!$copyLink) return;
@@ -103,7 +103,7 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
             readOnly
           />
 
-          <Text size={12} className={styles.button} onClick={onClickCopyLink}>
+          <Text size={12} className={styles.button} onClick={handleCopyInviteLink}>
             복사
           </Text>
         </div>
