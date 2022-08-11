@@ -7,7 +7,7 @@ import {
   GetReviewsResponse,
 } from 'service/@shared/types';
 
-import reviewAPI from 'service/@shared/api/review';
+import { reviewAPI } from 'service/@shared/api';
 import { QUERY_KEY } from 'service/@shared/constants';
 
 function useGetReviewForm(
