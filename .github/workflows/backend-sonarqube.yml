@@ -10,7 +10,7 @@ on:
     branches:
       - develop
     # PR 이 생성 되었을 때(opend), PR branch 에 새로운 commit 이 push 되었을 때(synchronize) 실행한다는 설정
-    types: [opened, synchronize]
+    types: [ opened, synchronize ]
 
 # job 의 공통된 옵션
 defaults:
@@ -36,9 +36,16 @@ jobs:
     runs-on: ubuntu-latest
     # 현재 Job에서 사용할 환경변수, repository setting secrets 에서 설정한 환경변수 사용
     env:
+      #테스트용 환경변수
+      clientId: ${{ secrets.CLIENTID }}
+      clientSecret: ${{ secrets.CLIENTSECRET }}
+      jwtKey: ${{ secrets.JWTKEY }}
+      jwtExpireLength: ${{ secrets.JWTEXPIRELENGTH }}
+      jwtRefreshExpireLength: ${{ secrets.JWTREFRESHEXPIRELENGTH }}
+      #소나큐브용 환경변수
       SONARQUBE_PROJECT_KEY: reviewDuck
       SONARQUBE_URL: ${{ secrets.SONARQUBE_URL }}
-      SONARQUBE_TOKEN : ${{ secrets.SONARQUBE_TOKEN }}
+      SONARQUBE_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
     # analysis job 의 세부 단계 설정
     steps:
@@ -51,7 +58,7 @@ jobs:
         run: sudo chmod 755 gradlew
 
       # Gralde 의 Scanner 발동, 위의 env 에서 선언한 환경변수와 함께 발동
-      - name: Sonaqube Analysis
+      - name: Sonarqube Analysis
         run: ./gradlew test sonarqube
           -Dsonar.host.url=${{ env.SONARQUBE_URL }}
           -Dsonar.projectKey=${{ env.SONARQUBE_PROJECT_KEY }}
