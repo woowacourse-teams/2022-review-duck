@@ -52,7 +52,7 @@ jobs:
       - name: gradlew permission change
         run: sudo chmod 755 gradlew
 
-      # 파일 딜드
+      # 파일 빌드
       - name: Build with Gradle
         run: ./gradlew build
         env:
