@@ -2,9 +2,6 @@ package com.reviewduck.review.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,8 +14,8 @@ import com.reviewduck.review.domain.QuestionAnswer;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
-import com.reviewduck.review.dto.request.AnswerUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewContentCreateRequest;
+import com.reviewduck.review.dto.request.ReviewContentUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 import com.reviewduck.review.repository.ReviewRepository;
@@ -65,25 +62,18 @@ public class ReviewService {
         Review review = findById(id);
         validateMyReview(member, review, "본인이 생성한 회고가 아니면 수정할 수 없습니다.");
 
-        ReviewForm reviewForm = review.getReviewForm();
-        Map<Long, ReviewFormQuestion> questionMap = reviewForm.getReviewFormQuestions().stream()
-            .collect(Collectors.toUnmodifiableMap(ReviewFormQuestion::getId, Function.identity()));
-
-        Map<ReviewFormQuestion, QuestionAnswer> questionAnswerMap = review.getQuestionAnswers().stream()
-            .collect(Collectors.toUnmodifiableMap(QuestionAnswer::getReviewFormQuestion, Function.identity()));
-
         List<QuestionAnswer> updateQuestionAnswers = new ArrayList<>();
 
-        for (AnswerUpdateRequest answerRequest : request.getAnswers()) {
-            ReviewFormQuestion reviewFormQuestion = questionMap.get(answerRequest.getQuestionId());
+        for (ReviewContentUpdateRequest content : request.getContents()) {
 
-            QuestionAnswer questionAnswer = questionAnswerMap
-                .getOrDefault(reviewFormQuestion,
-                    new QuestionAnswer(reviewFormQuestion, answerService.saveNewAnswer()));
+            ReviewFormQuestion question = reviewFormQuestionService.findById(content.getQuestionId());
 
-            questionAnswer.getAnswer().update(answerRequest.getAnswerValue());
-            updateQuestionAnswers.add(questionAnswer);
+            Answer answer = answerService.findOrCreateAnswer(content.getAnswer().getId());
+            answer.update(content.getAnswer().getValue());
+
+            updateQuestionAnswers.add(new QuestionAnswer(question, answer));
         }
+
         review.update(updateQuestionAnswers);
         return review;
     }

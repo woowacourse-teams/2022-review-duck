@@ -12,11 +12,8 @@ import lombok.NoArgsConstructor;
 @Getter
 public class AnswerUpdateRequest {
 
-    @NotNull(message = "질문 번호는 비어있을 수 없습니다.")
-    private Long questionId;
-
-    private Long answerId;
+    private Long id;
 
     @NotNull(message = "답변은 비어있을 수 없습니다.")
-    private String answerValue;
+    private String value;
 }
