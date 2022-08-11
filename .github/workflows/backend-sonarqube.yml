@@ -37,8 +37,8 @@ jobs:
     # 현재 Job에서 사용할 환경변수, repository setting secrets 에서 설정한 환경변수 사용
     env:
       SONARQUBE_PROJECT_KEY: reviewDuck
-      SONARQUBE_URL: ${{ secrets.SONARQUBE_URL }}
-      SONARQUBE_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
+      SONARQUBE_URL: ${{ secrets.SONAR_HOST_URL }}
+      SONARQUBE_TOKEN: ${{ secrets.SONAR_TOKEN }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
     # analysis job 의 세부 단계 설정
     steps:
@@ -53,10 +53,10 @@ jobs:
       # Gralde 의 Scanner 발동, 위의 env 에서 선언한 환경변수와 함께 발동
       - name: Sonarqube Analysis
         run: ./gradlew test sonarqube
-          -Dsonar.host.url=${{ env.SONAR_HOST_URL }}
+          -Dsonar.host.url=${{ env.SONARQUBE_URL }}
           -Dsonar.projectKey=${{ env.SONARQUBE_PROJECT_KEY }}
           -Dsonar.projectName=${{ env.SONARQUBE_PROJECT_KEY }}-${{ env.PR_NUMBER }}
-          -Dsonar.login=${{ env.SONAR_TOKEN }}
+          -Dsonar.login=${{ env.SONARQUBE_TOKEN }}
         env:
           #테스트용 환경변수
           clientId: ${{ secrets.CLIENTID }}
