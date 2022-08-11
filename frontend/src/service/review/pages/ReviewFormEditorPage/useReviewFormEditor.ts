@@ -44,7 +44,7 @@ function useReviewFormEditor(reviewFormCode: string) {
     loadError: getReviewFormQuery.error,
     isSubmitLoading: submitMutation.isLoading,
     trimQuestions,
-    submitReviewForm: submitMutation.mutate,
+    submitReviewForm: submitMutation,
   };
 }
 
