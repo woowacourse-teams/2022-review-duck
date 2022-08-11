@@ -75,7 +75,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
         @Test
         @DisplayName("로그인하지 않은 상태로 생성할 수 없다.")
-        void failToCreateReviewFormWithoutLogin() {
+        void withoutLogin() {
             // given
             ReviewFormCreateRequest request = new ReviewFormCreateRequest(title, createQuestions);
 
@@ -109,8 +109,8 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("로그인하지 않은 상태로 회고 폼을 조회할 수 없다.")
-        void failToFindReviewFormWithoutLogin() {
+        @DisplayName("로그인하지 않은 상태로 조회할 수 없다.")
+        void withoutLogin() {
             // given
             String reviewFormCode = createReviewFormAndGetCode(accessToken1);
 
@@ -118,8 +118,8 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("특정 회고 폼 조회에 실패한다.")
-        void failToFindReviewForm() {
+        @DisplayName("회고 폼이 존재하지 않는 경우 조회할 수 없다.")
+        void invalidReviewForm() {
             // when, then
             get("/api/review-forms/" + "AAAAAAAA", accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
         }
@@ -160,7 +160,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
         @Test
         @DisplayName("로그인하지 않은 상태로 회고 폼을 수정할 수 없다.")
-        void failToUpdateReviewFormWithoutLogin() {
+        void withoutLogin() {
             // given
             String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
 
@@ -176,7 +176,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
         @Test
         @DisplayName("존재하지 않는 회고 폼을 수정할 수 없다.")
-        void updateInvalidReviewForm() {
+        void invalidReviewForm() {
             // when, then
             String newReviewTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
@@ -189,7 +189,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
         @Test
         @DisplayName("본인이 생성한 회고 폼이 아니면 수정할 수 없다.")
-        void failToUpdateNotMyReviewForm() {
+        void notMine() {
             // given
             String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
 
@@ -206,48 +206,54 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
     }
 
-    @Test
-    @DisplayName("회고 폼을 삭제한다.")
-    void deleteReviewForm() {
-        // given
-        String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
+    @Nested
+    @DisplayName("회고 폼 삭제")
+    class deleteReviewForm {
 
-        // when, then
-        delete("/api/review-forms/" + createReviewFormCode, accessToken1)
-            .statusCode(HttpStatus.NO_CONTENT.value());
+        @Test
+        @DisplayName("회고 폼을 삭제한다.")
+        void deleteReviewForm() {
+            // given
+            String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
 
-        get("/api/review-forms/" + createReviewFormCode, accessToken1)
-            .statusCode(HttpStatus.NOT_FOUND.value());
-    }
+            // when, then
+            delete("/api/review-forms/" + createReviewFormCode, accessToken1)
+                .statusCode(HttpStatus.NO_CONTENT.value());
 
-    @Test
-    @DisplayName("로그인하지 않은 상태로 회고 폼을 삭제할 수 없다.")
-    void failToDeleteReviewFormWithoutLogin() {
-        // given
-        String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
+            get("/api/review-forms/" + createReviewFormCode, accessToken1)
+                .statusCode(HttpStatus.NOT_FOUND.value());
+        }
 
-        // when, then
-        delete("/api/review-forms/" + createReviewFormCode)
-            .statusCode(HttpStatus.UNAUTHORIZED.value());
-    }
+        @Test
+        @DisplayName("로그인하지 않은 상태로 회고 폼을 삭제할 수 없다.")
+        void withoutLogin() {
+            // given
+            String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
 
-    @Test
-    @DisplayName("존재하지 않는 회고 폼을 삭제할 수 없다.")
-    void deleteInvalidReviewForm() {
-        // when, then
-        delete("/api/review-forms/aaaaaaaa", accessToken1)
-            .statusCode(HttpStatus.NOT_FOUND.value());
-    }
+            // when, then
+            delete("/api/review-forms/" + createReviewFormCode)
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
 
-    @Test
-    @DisplayName("본인이 생성한 회고 폼이 아니면 삭제할 수 없다.")
-    void failToDeleteNotMyReviewForm() {
-        // given
-        String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
+        @Test
+        @DisplayName("존재하지 않는 회고 폼을 삭제할 수 없다.")
+        void invalidReviewForm() {
+            // when, then
+            delete("/api/review-forms/aaaaaaaa", accessToken1)
+                .statusCode(HttpStatus.NOT_FOUND.value());
+        }
 
-        // when, then
-        delete("/api/review-forms/" + createReviewFormCode, accessToken2)
-            .statusCode(HttpStatus.UNAUTHORIZED.value());
+        @Test
+        @DisplayName("본인이 생성한 회고 폼이 아니면 삭제할 수 없다.")
+        void noeMine() {
+            // given
+            String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
+
+            // when, then
+            delete("/api/review-forms/" + createReviewFormCode, accessToken2)
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
+
     }
 
     @Test
