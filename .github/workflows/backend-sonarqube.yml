@@ -4,9 +4,9 @@ name: backend-sonarqube
 # develop 브랜치에 대한 pr 이벤트가 일어났을 때 실행한다는 설정
 on:
   push:
-    branches: [ "develop", "main" ]
+    branches: [ "develop", "main", "feature-sonarqube-final-test"]
   pull_request:
-    branches: [ "develop", "main" , "feature-sonarqube-final"]
+    branches: [ "develop", "main", "feature-sonarqube-final"]
 
 # job 의 공통된 옵션
 defaults:
