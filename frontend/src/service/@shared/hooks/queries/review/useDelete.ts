@@ -17,7 +17,7 @@ function useDeleteReviewForm(mutationOptions?: UseCustomMutationOptions<null>) {
   });
 }
 
-function useDeleteReview(mutationOptions?: UseCustomMutationOptions<null>) {
+function useDeleteReviewAnswer(mutationOptions?: UseCustomMutationOptions<null>) {
   const queryClient = useQueryClient();
 
   return useMutation(reviewAPI.deleteAnswer, {
@@ -29,4 +29,4 @@ function useDeleteReview(mutationOptions?: UseCustomMutationOptions<null>) {
   });
 }
 
-export { useDeleteReviewForm, useDeleteReview };
+export { useDeleteReviewForm, useDeleteReviewAnswer };

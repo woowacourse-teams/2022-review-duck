@@ -25,7 +25,7 @@ function useGetReviewForm(
   );
 }
 
-function useGetReviews(
+function useGetReviewFormAnswer(
   reviewFormCode: string,
   queryOptions?: UseQueryOptions<GetReviewsResponse, ErrorResponse>,
 ) {
@@ -40,7 +40,7 @@ function useGetReviews(
   );
 }
 
-function useGetReview(
+function useGetReviewAnswer(
   reviewId: number,
   queryOptions?: UseQueryOptions<GetReviewResponse, ErrorResponse>,
 ) {
@@ -55,4 +55,4 @@ function useGetReview(
   );
 }
 
-export { useGetReviewForm, useGetReviews, useGetReview };
+export { useGetReviewForm, useGetReviewFormAnswer, useGetReviewAnswer };

@@ -1,14 +1,14 @@
 import {
   useGetReviewForm,
   useCreateReviewAnswer,
-  useGetReview,
+  useGetReviewAnswer,
   useUpdateReview,
 } from 'service/@shared/hooks/queries/review';
 
 function useReviewQueries(reviewFormCode: string, reviewId: string) {
   const getReviewFormQuery = useGetReviewForm(reviewFormCode);
 
-  const getReviewQuery = useGetReview(+reviewId, {
+  const getReviewQuery = useGetReviewAnswer(+reviewId, {
     enabled: !!reviewId,
   });
 
