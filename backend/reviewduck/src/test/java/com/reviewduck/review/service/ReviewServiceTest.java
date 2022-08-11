@@ -20,11 +20,12 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.dto.request.AnswerRequest;
+import com.reviewduck.review.dto.request.AnswerCreateRequest;
 import com.reviewduck.review.dto.request.AnswerUpdateRequest;
+import com.reviewduck.review.dto.request.ReviewContentCreateRequest;
+import com.reviewduck.review.dto.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
-import com.reviewduck.review.dto.request.ReviewRequest;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 
 @SpringBootTest
@@ -68,8 +69,11 @@ public class ReviewServiceTest {
         // given
         long questionId1 = reviewForm.getReviewFormQuestions().get(0).getId();
         long questionId2 = reviewForm.getReviewFormQuestions().get(1).getId();
-        ReviewRequest reviewCreateRequest = new ReviewRequest(
-            List.of(new AnswerRequest(questionId1, "answer1"), new AnswerRequest(questionId2, "answer2")));
+
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(List.of(
+            new ReviewContentCreateRequest(questionId1, new AnswerCreateRequest("answer1")),
+            new ReviewContentCreateRequest(questionId2, new AnswerCreateRequest("answer2"))
+        ));
 
         // when
         Review savedReview = reviewService.save(member1, reviewForm.getCode(), reviewCreateRequest);
@@ -89,8 +93,10 @@ public class ReviewServiceTest {
     @DisplayName("유효하지 않은 입장 코드로 회고를 저장할 수 없다.")
     void saveReviewWithInvalidCode() {
         // given
-        ReviewRequest reviewCreateRequest = new ReviewRequest(
-            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(List.of(
+            new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+            new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+        ));
 
         // when, then
         assertThatThrownBy(() -> reviewService.save(member1, invalidCode, reviewCreateRequest))
@@ -102,9 +108,10 @@ public class ReviewServiceTest {
     @DisplayName("유효하지 않은 질문 번호로 회고를 저장할 수 없다.")
     void saveReviewWithInvalidQuestionId() {
         //given
-        ReviewRequest reviewCreateRequest = new ReviewRequest(
-            List.of(new AnswerRequest(123445L, "answer1"),
-                new AnswerRequest(2L, "answer2")));
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(List.of(
+            new ReviewContentCreateRequest(9999L, new AnswerCreateRequest("answer1")),
+            new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+        ));
 
         // when, then
         assertThatThrownBy(() -> reviewService.save(member1, reviewForm.getCode(), reviewCreateRequest))
@@ -272,9 +279,16 @@ public class ReviewServiceTest {
     }
 
     private Review saveReview(Member member) {
-        ReviewRequest reviewCreateRequest = new ReviewRequest(
-            List.of(new AnswerRequest(reviewForm.getReviewFormQuestions().get(0).getId(), "answer1")
-                , new AnswerRequest(reviewForm.getReviewFormQuestions().get(1).getId(), "answer2")));
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(List.of(
+            new ReviewContentCreateRequest(
+                reviewForm.getReviewFormQuestions().get(0).getId(),
+                new AnswerCreateRequest("answer1")
+            ),
+            new ReviewContentCreateRequest(
+                reviewForm.getReviewFormQuestions().get(1).getId(),
+                new AnswerCreateRequest("answer2")
+            )
+        ));
 
         return reviewService.save(member, reviewForm.getCode(), reviewCreateRequest);
     }

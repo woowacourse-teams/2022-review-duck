@@ -17,13 +17,14 @@ import com.reviewduck.acceptance.AcceptanceTest;
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
-import com.reviewduck.review.dto.request.AnswerRequest;
+import com.reviewduck.review.dto.request.AnswerCreateRequest;
 import com.reviewduck.review.dto.request.AnswerUpdateRequest;
+import com.reviewduck.review.dto.request.ReviewContentCreateRequest;
+import com.reviewduck.review.dto.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewRequest;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 import com.reviewduck.review.dto.response.QuestionAnswerResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
@@ -104,10 +105,12 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             String code = createReviewFormAndGetCode(accessToken1, reviewTitle, questions);
 
             // save review
-            ReviewRequest createRequest = new ReviewRequest(
-                List.of(new AnswerRequest(1L, "answer1"),
-                    new AnswerRequest(2L, "answer2"),
-                    new AnswerRequest(3L, "answer3")));
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2")),
+                new ReviewContentCreateRequest(3L, new AnswerCreateRequest("answer3"))
+            ));
+
             post("/api/review-forms/" + code, createRequest, accessToken2);
 
             // delete question2 and add question4 of reviewForm
@@ -186,8 +189,10 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             String reviewFormCode = createReviewFormAndGetCode(accessToken1, "title", questions);
 
             // 회고 등록
-            ReviewRequest createRequest = new ReviewRequest(
-                List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+            ));
             post("/api/review-forms/" + reviewFormCode, createRequest, accessToken1);
 
             // when
@@ -328,13 +333,19 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     private Long saveReviewAndGetId(String accessToken) {
+        // save ReviewForm
         String reviewTitle = "title";
         List<ReviewFormQuestionCreateRequest> questions = List.of(
             new ReviewFormQuestionCreateRequest("question1"),
             new ReviewFormQuestionCreateRequest("question2"));
         String code = createReviewFormAndGetCode(accessToken, reviewTitle, questions);
-        ReviewRequest createRequest = new ReviewRequest(
-            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
+
+        // save Review
+        ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+            new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+            new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+        ));
+
         post("/api/review-forms/" + code, createRequest, accessToken);
 
         return get("/api/review-forms/" + code + "/reviews", accessToken)
