@@ -114,8 +114,9 @@ function ReviewList({ filter }: Record<'filter', string>) {
                 </Link>
                 <div className={styles.buttonContainer}>
                   <Link
-                    to={`${PAGE_LIST.REVIEW_FORM}/${reviewForm.code}`}
-                    state={{ redirect: `${PAGE_LIST.MY_PAGE}` }}
+                    to={`${PAGE_LIST.REVIEW_FORM}/${reviewForm.code}?redirect=${encodeURIComponent(
+                      PAGE_LIST.MY_PAGE,
+                    )}`}
                   >
                     <Icon className={styles.icon} code="edit"></Icon>
                   </Link>

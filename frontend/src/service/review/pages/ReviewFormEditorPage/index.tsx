@@ -1,17 +1,8 @@
-import React, {
-  useState,
-  ChangeEvent,
-  MouseEvent,
-  KeyboardEvent,
-  FormEvent,
-  useEffect,
-} from 'react';
+import { useState, useEffect } from 'react';
 import { flushSync } from 'react-dom';
-import { useNavigate, useParams, Link, useLocation } from 'react-router-dom';
+import { useNavigate, useParams, Link, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
-
-import { RedirectState } from 'service/@shared/types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/review/hooks/useQuestions';
@@ -25,48 +16,47 @@ import QuestionEditor from 'service/review/components/QuestionEditor';
 
 import styles from './styles.module.scss';
 
-import useReviewFormQueries from './useReviewFormQueries';
+import useReviewFormEditor from './useReviewFormEditor';
 import { PAGE_LIST } from 'service/@shared/constants';
 import { validateReviewForm } from 'service/@shared/validator';
 
-/**
- * @author 돔하디 <zuzudnf@gmail.com>
- * @comment 이 페이지로 라우팅을 할 때는 state로 { redirect : <redirect할 path>: string }
- *          의 형태로 넣어줘야 합니다. 이 페이지 안에서 redirect할 때 state.redirect 값을 사용해서
- *          리다이렉트를 해줍니다.
- */
-function CreateReviewFormPage() {
-  const { reviewFormCode } = useParams();
-  const { showSnackbar } = useSnackbar();
+function ReviewFormEditorPage() {
+  const { reviewFormCode = '' } = useParams();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const location = useLocation();
 
-  const { redirect = '' } = (location.state as RedirectState) || {};
+  const {
+    initialReviewForm,
+    isNewReviewForm,
+    isSubmitLoading,
+    isLoadError,
+    loadError,
+    trimQuestions,
+    submitReviewForm,
+  } = useReviewFormEditor(reviewFormCode);
 
-  const { reviewFormMutation, getReviewFormQuery, initReviewFormData } =
-    useReviewFormQueries(reviewFormCode);
-
-  const [reviewTitle, setReviewTitle] = useState(initReviewFormData.reviewTitle);
+  const [reviewTitle, setReviewTitle] = useState(initialReviewForm.reviewTitle);
   const { questions, addQuestion, removeQuestion, updateQuestion } = useQuestions(
-    initReviewFormData.questions,
+    initialReviewForm.questions,
   );
 
-  const isEditMode = !!reviewFormCode;
+  const { showSnackbar } = useSnackbar();
+  const redirectUri = searchParams.get('redirect');
 
   useEffect(() => {
-    if (getReviewFormQuery.isError) {
-      alert('존재하지 않는 회고 폼입니다.');
-      navigate(PAGE_LIST.HOME);
+    if (isLoadError) {
+      alert(loadError?.message);
+      navigate(redirectUri || PAGE_LIST.HOME);
     }
   }, []);
 
-  const handleUpdateQuestion = (index: number) => (event: ChangeEvent<HTMLInputElement>) => {
-    const updatedQuestion = { questionValue: event.target.value };
-
-    updateQuestion(index, updatedQuestion);
+  const handleChangeReviewTitle = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    setReviewTitle(target.value);
   };
 
-  const handleAddQuestion = ({ currentTarget: $inputTarget }: MouseEvent | KeyboardEvent) => {
+  const handleAddQuestion = ({
+    currentTarget: $inputTarget,
+  }: React.MouseEvent | React.KeyboardEvent) => {
     let questionIndex = null;
 
     flushSync(() => {
@@ -78,9 +68,15 @@ function CreateReviewFormPage() {
     setFormFocus($inputTarget as HTMLInputElement, questionIndex);
   };
 
+  const handleUpdateQuestion = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+    const updatedQuestion = { questionValue: event.target.value };
+
+    updateQuestion(index, updatedQuestion);
+  };
+
   const handleDeleteQuestion =
     (index: number) =>
-    ({ currentTarget: $inputTarget }: MouseEvent | KeyboardEvent) => {
+    ({ currentTarget: $inputTarget }: React.MouseEvent | React.KeyboardEvent) => {
       if (questions.length <= 1) return;
 
       const previousInputIndex = index - 1;
@@ -89,37 +85,29 @@ function CreateReviewFormPage() {
       setFormFocus($inputTarget as HTMLInputElement, previousInputIndex);
     };
 
-  const handleChangeReviewTitle = ({ target }: ChangeEvent<HTMLInputElement>) => {
-    setReviewTitle(target.value);
-  };
-
-  const onClickCreateForm = (event: FormEvent) => {
+  const handleSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const validQuestions = questions.filter((question) => !!question.questionValue?.trim());
+    const submitQuestions = trimQuestions(questions);
 
     try {
-      validateReviewForm(reviewTitle, validQuestions);
+      validateReviewForm(reviewTitle, submitQuestions);
     } catch (error) {
       alert(getErrorMessage(error));
       return;
     }
 
-    const removeListKey = validQuestions.map((question) => {
-      const newQuestion = { ...question };
-
-      delete newQuestion.listKey;
-      return question;
-    });
-
-    reviewFormMutation.mutate(
-      { reviewTitle, reviewFormCode, questions: removeListKey },
+    submitReviewForm.mutate(
+      { reviewTitle, reviewFormCode, questions: submitQuestions },
       {
         onSuccess: ({ reviewFormCode }) => {
-          navigate(redirect || `${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`, { replace: true });
           showSnackbar({
-            title: isEditMode ? '회고가 수정되었습니다.' : '회고가 생성되었습니다.',
+            title: isNewReviewForm ? '회고가 생성되었습니다.' : '회고가 수정되었습니다.',
             description: '회고 참여코드를 공유하여, 회고를 시작할 수 있습니다.',
+          });
+
+          navigate(redirectUri || `${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`, {
+            replace: true,
           });
         },
         onError: ({ message }) => {
@@ -187,13 +175,9 @@ function CreateReviewFormPage() {
               <span>취소하기</span>
             </Button>
 
-            <Button
-              type="button"
-              onClick={onClickCreateForm}
-              disabled={reviewFormMutation.isLoading}
-            >
+            <Button type="button" onClick={handleSubmitReviewForm} disabled={isSubmitLoading}>
               <Icon code="drive_file_rename_outline" />
-              <span>{isEditMode ? '수정하기' : '생성하기'}</span>
+              <span>{isNewReviewForm ? '생성하기' : '수정하기'}</span>
             </Button>
           </div>
         </form>
@@ -202,4 +186,4 @@ function CreateReviewFormPage() {
   );
 }
 
-export default CreateReviewFormPage;
+export default ReviewFormEditorPage;
