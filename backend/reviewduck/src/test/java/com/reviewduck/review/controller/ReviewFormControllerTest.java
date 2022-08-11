@@ -105,6 +105,45 @@ public class ReviewFormControllerTest {
     }
 
     @Nested
+    @DisplayName("회고 답변 생성시")
+    class createReview {
+
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("회고 생성 시 질문 번호에 null 값이 들어갈 경우 예외가 발생한다.")
+        void nullQuestionId(Long questionId) throws Exception {
+            // given
+            ReviewRequest request = new ReviewRequest(List.of(new AnswerRequest(questionId, "answer")));
+
+            // when, then
+            assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "질문 번호는 비어있을 수 없습니다.");
+        }
+
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("회고 생성 시 답변 목록에 null 값이 들어갈 경우 예외가 발생한다.")
+        void nullAnswers(List<AnswerRequest> answers) throws Exception {
+            // given
+            ReviewRequest request = new ReviewRequest(answers);
+
+            // when, then
+            assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "회고 답변 관련 오류가 발생했습니다.");
+        }
+
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("회고 생성 시 답변에 null 값이 들어갈 경우 예외가 발생한다.")
+        void nullAnswer(String answer) throws Exception {
+            // given
+            ReviewRequest request = new ReviewRequest(List.of(new AnswerRequest(1L, answer)));
+
+            // when, then
+            assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "답변은 비어있을 수 없습니다.");
+        }
+
+    }
+
+    @Nested
     @DisplayName("회고 폼 수정시")
     class updateReviewForm {
 
@@ -142,39 +181,6 @@ public class ReviewFormControllerTest {
             assertBadRequestFromPut("/api/review-forms/aaaaaaaa", request, "회고 폼의 질문은 비어있을 수 없습니다.");
         }
 
-    }
-
-    @ParameterizedTest
-    @NullSource
-    @DisplayName("회고 생성 시 질문 번호에 null 값이 들어갈 경우 예외가 발생한다.")
-    void nullQuestionIdRequestInCreation(Long questionId) throws Exception {
-        // given
-        ReviewRequest request = new ReviewRequest(List.of(new AnswerRequest(questionId, "answer")));
-
-        // when, then
-        assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "질문 번호는 비어있을 수 없습니다.");
-    }
-
-    @ParameterizedTest
-    @NullSource
-    @DisplayName("회고 생성 시 답변에 null 값이 들어갈 경우 예외가 발생한다.")
-    void nullAnswerRequestInCreation(String answer) throws Exception {
-        // given
-        ReviewRequest request = new ReviewRequest(List.of(new AnswerRequest(1L, answer)));
-
-        // when, then
-        assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "답변은 비어있을 수 없습니다.");
-    }
-
-    @ParameterizedTest
-    @NullSource
-    @DisplayName("회고 생성 시 답변 목록에 null 값이 들어갈 경우 예외가 발생한다.")
-    void nullAnswerRequestsInCreation(List<AnswerRequest> answers) throws Exception {
-        // given
-        ReviewRequest request = new ReviewRequest(answers);
-
-        // when, then
-        assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "회고 답변 관련 오류가 발생했습니다.");
     }
 
     private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {

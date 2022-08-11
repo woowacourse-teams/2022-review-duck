@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,27 +51,33 @@ public class ReviewControllerTest {
         given(memberService.findById(any())).willReturn(member);
     }
 
-    @ParameterizedTest
-    @NullSource
-    @DisplayName("회고 수정 시 답변에 null 값이 들어갈 경우 예외가 발생한다.")
-    void nullAnswerRequestInEditing(String answer) throws Exception {
-        // given
-        ReviewUpdateRequest request = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, 1L, answer)));
+    @Nested
+    @DisplayName("회고 수정 시")
+    class updateReview {
 
-        // when, then
-        assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "답변은 비어있을 수 없습니다.");
-    }
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("답변 목록에 null 값이 들어갈 경우 예외가 발생한다.")
+        void nullAnswers(List<AnswerUpdateRequest> answers) throws Exception {
+            // given
+            ReviewUpdateRequest request = new ReviewUpdateRequest(answers);
 
-    @ParameterizedTest
-    @NullSource
-    @DisplayName("회고 수정 시 답변 목록에 null 값이 들어갈 경우 예외가 발생한다.")
-    void nullAnswerRequestsInEditing(List<AnswerUpdateRequest> answers) throws Exception {
-        // given
-        ReviewUpdateRequest request = new ReviewUpdateRequest(answers);
+            // when, then
+            assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "회고 답변 관련 오류가 발생했습니다.");
+        }
 
-        // when, then
-        assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "회고 답변 관련 오류가 발생했습니다.");
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("답변에 null 값이 들어갈 경우 예외가 발생한다.")
+        void nullAnswer(String answer) throws Exception {
+            // given
+            ReviewUpdateRequest request = new ReviewUpdateRequest(
+                List.of(new AnswerUpdateRequest(1L, 1L, answer)));
+
+            // when, then
+            assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "답변은 비어있을 수 없습니다.");
+        }
+
     }
 
     private void assertBadRequestFromPut(String uri, Object request, String errorMessage) throws Exception {
