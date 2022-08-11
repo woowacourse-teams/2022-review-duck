@@ -2,7 +2,7 @@ import {
   useGetReviewForm,
   useCreateReviewAnswer,
   useGetReviewAnswer,
-  useUpdateReview,
+  useUpdateReviewAnswer,
 } from 'service/@shared/hooks/queries/review';
 
 function useReviewQueries(reviewFormCode: string, reviewId: string) {
@@ -14,7 +14,7 @@ function useReviewQueries(reviewFormCode: string, reviewId: string) {
 
   const createMutation = useCreateReviewAnswer();
 
-  const updateMutation = useUpdateReview();
+  const updateMutation = useUpdateReviewAnswer();
 
   const reviewForm = getReviewFormQuery.data || {
     reviewTitle: '',

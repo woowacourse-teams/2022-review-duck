@@ -1,11 +1,12 @@
 import { useQuery, UseQueryOptions } from 'react-query';
 
-import { ErrorResponse } from 'service/@shared/types';
 import {
+  ErrorResponse,
+  GetReviewAnswerResponse,
+  GetReviewFormAnswerResponse,
   GetReviewFormResponse,
-  GetReviewResponse,
-  GetReviewsResponse,
 } from 'service/@shared/types';
+import 'service/@shared/types';
 
 import { reviewAPI } from 'service/@shared/api';
 import { QUERY_KEY } from 'service/@shared/constants';
@@ -27,9 +28,9 @@ function useGetReviewForm(
 
 function useGetReviewFormAnswer(
   reviewFormCode: string,
-  queryOptions?: UseQueryOptions<GetReviewsResponse, ErrorResponse>,
+  queryOptions?: UseQueryOptions<GetReviewFormAnswerResponse, ErrorResponse>,
 ) {
-  return useQuery<GetReviewsResponse, ErrorResponse>(
+  return useQuery<GetReviewFormAnswerResponse, ErrorResponse>(
     [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEWS, { reviewFormCode }],
     () => reviewAPI.getFormAnswer(reviewFormCode),
     {
@@ -42,9 +43,9 @@ function useGetReviewFormAnswer(
 
 function useGetReviewAnswer(
   reviewId: number,
-  queryOptions?: UseQueryOptions<GetReviewResponse, ErrorResponse>,
+  queryOptions?: UseQueryOptions<GetReviewAnswerResponse, ErrorResponse>,
 ) {
-  return useQuery<GetReviewResponse, ErrorResponse>(
+  return useQuery<GetReviewAnswerResponse, ErrorResponse>(
     [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEW, { reviewId }],
     () => reviewAPI.getAnswer(reviewId),
     {

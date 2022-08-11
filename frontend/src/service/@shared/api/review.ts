@@ -1,37 +1,31 @@
-import {
-  UpdateReviewFormRequest,
-  SubmitAnswerRequest,
-  GetReviewFormResponse,
-  UpdateReviewFormResponse,
-  GetReviewsResponse,
-  GetReviewResponse,
-  UpdateReviewRequest,
-} from '../types';
+import * as ReviewType from '../types/review';
 
 import { API_URI } from '../constants';
 import axiosInstance from 'service/@shared/api/config/axiosInstance';
 
-export const getForm = async (reviewFormCode = ''): Promise<GetReviewFormResponse> => {
+export const getForm = async (reviewFormCode = ''): Promise<ReviewType.GetReviewFormResponse> => {
   const { data } = await axiosInstance.get(API_URI.REVIEW.GET_FORM(reviewFormCode));
 
   return data;
 };
 
-export const getAnswer = async (reviewId: number): Promise<GetReviewResponse> => {
+export const getAnswer = async (reviewId: number): Promise<ReviewType.GetReviewAnswerResponse> => {
   const { data } = await axiosInstance.get(API_URI.REVIEW.GET_ANSWER(reviewId));
 
   return data;
 };
 
-export const getFormAnswer = async (reviewFormCode = ''): Promise<GetReviewsResponse> => {
+export const getFormAnswer = async (
+  reviewFormCode = '',
+): Promise<ReviewType.GetReviewFormAnswerResponse> => {
   const { data } = await axiosInstance.get(API_URI.REVIEW.GET_FORM_ANSWER(reviewFormCode));
 
   return data;
 };
 
 export const createForm = async (
-  query: UpdateReviewFormRequest,
-): Promise<UpdateReviewFormResponse> => {
+  query: ReviewType.CreateReviewFormRequest,
+): Promise<ReviewType.CreateReviewFormResponse> => {
   const { data } = await axiosInstance.post(API_URI.REVIEW.CREATE_FORM, query);
 
   return data;
@@ -39,10 +33,10 @@ export const createForm = async (
 
 export const createAnswer = async ({
   reviewFormCode,
-  answers,
-}: SubmitAnswerRequest): Promise<null> => {
+  contents,
+}: ReviewType.CreateReviewAnswerRequest): Promise<ReviewType.CreateReviewAnswerResponse> => {
   const { data } = await axiosInstance.post(API_URI.REVIEW.CREATE_ANSWER(reviewFormCode), {
-    answers,
+    contents,
   });
 
   return data;
@@ -50,32 +44,39 @@ export const createAnswer = async ({
 
 export const updateForm = async ({
   reviewFormCode,
-  reviewTitle,
+  reviewFormTitle,
   questions,
-}: UpdateReviewFormRequest): Promise<UpdateReviewFormResponse> => {
+}: ReviewType.UpdateReviewFormRequest): Promise<ReviewType.UpdateReviewFormResponse> => {
   const { data } = await axiosInstance.put(API_URI.REVIEW.UPDATE_FORM(reviewFormCode), {
-    reviewTitle,
+    reviewFormTitle,
     questions,
   });
 
   return data;
 };
 
-export const updateAnswer = async ({ reviewId, answers }: UpdateReviewRequest): Promise<null> => {
+export const updateAnswer = async ({
+  reviewId,
+  contents,
+}: ReviewType.UpdateReviewAnswerRequest): Promise<ReviewType.UpdateReviewAnswerResponse> => {
   const { data } = await axiosInstance.put(API_URI.REVIEW.UPDATE_ANSWER(reviewId), {
-    answers: answers,
+    contents,
   });
 
   return data;
 };
 
-export const deleteForm = async (reviewFormCode = ''): Promise<null> => {
+export const deleteForm = async (
+  reviewFormCode = '',
+): Promise<ReviewType.DeleteReviewFormResponse> => {
   const { data } = await axiosInstance.delete(API_URI.REVIEW.DELETE_FORM(reviewFormCode));
 
   return data;
 };
 
-export const deleteAnswer = async (reviewId: number): Promise<null> => {
+export const deleteAnswer = async (
+  reviewId: number,
+): Promise<ReviewType.DeleteReviewAnswerResponse> => {
   const { data } = await axiosInstance.delete(API_URI.REVIEW.DELETE_ANSWER(reviewId));
 
   return data;

@@ -1,11 +1,15 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-import { UseCustomMutationOptions } from 'service/@shared/types';
+import {
+  DeleteReviewAnswerResponse,
+  DeleteReviewFormResponse,
+  UseCustomMutationOptions,
+} from 'service/@shared/types';
 
 import { reviewAPI } from 'service/@shared/api';
 import { QUERY_KEY } from 'service/@shared/constants';
 
-function useDeleteReviewForm(mutationOptions?: UseCustomMutationOptions<null>) {
+function useDeleteReviewForm(mutationOptions?: UseCustomMutationOptions<DeleteReviewFormResponse>) {
   const queryClient = useQueryClient();
 
   return useMutation(reviewAPI.deleteForm, {
@@ -17,7 +21,9 @@ function useDeleteReviewForm(mutationOptions?: UseCustomMutationOptions<null>) {
   });
 }
 
-function useDeleteReviewAnswer(mutationOptions?: UseCustomMutationOptions<null>) {
+function useDeleteReviewAnswer(
+  mutationOptions?: UseCustomMutationOptions<DeleteReviewAnswerResponse>,
+) {
   const queryClient = useQueryClient();
 
   return useMutation(reviewAPI.deleteAnswer, {

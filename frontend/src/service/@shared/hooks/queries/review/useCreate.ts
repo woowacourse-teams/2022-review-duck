@@ -1,6 +1,10 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-import { UpdateReviewFormResponse, UseCustomMutationOptions } from 'service/@shared/types';
+import {
+  UpdateReviewAnswerResponse,
+  UpdateReviewFormResponse,
+  UseCustomMutationOptions,
+} from 'service/@shared/types';
 
 import { reviewAPI } from 'service/@shared/api';
 import { QUERY_KEY } from 'service/@shared/constants';
@@ -16,7 +20,9 @@ function useCreateReviewForm(mutationOptions?: UseCustomMutationOptions<UpdateRe
   });
 }
 
-function useCreateReviewAnswer(mutationOptions?: UseCustomMutationOptions<null>) {
+function useCreateReviewAnswer(
+  mutationOptions?: UseCustomMutationOptions<UpdateReviewAnswerResponse>,
+) {
   const queryClient = useQueryClient();
 
   return useMutation(reviewAPI.createAnswer, {
