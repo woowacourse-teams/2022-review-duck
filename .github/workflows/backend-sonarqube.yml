@@ -40,6 +40,13 @@ jobs:
       SONARQUBE_URL: ${{ secrets.SONAR_HOST_URL }}
       SONARQUBE_TOKEN: ${{ secrets.SONAR_TOKEN }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
+      #테스트용 환경변수
+      clientId: ${{ secrets.CLIENTID }}
+      clientSecret: ${{ secrets.CLIENTSECRET }}
+      jwtKey: ${{ secrets.JWTKEY }}
+      jwtExpireLength: ${{ secrets.JWTEXPIRELENGTH }}
+      jwtRefreshExpireLength: ${{ secrets.JWTREFRESHEXPIRELENGTH }}
+
     # analysis job 의 세부 단계 설정
     steps:
       # 소스코드 체크아웃 수행
@@ -57,13 +64,7 @@ jobs:
           -Dsonar.projectKey=${{ env.SONARQUBE_PROJECT_KEY }}
           -Dsonar.projectName=${{ env.SONARQUBE_PROJECT_KEY }}-${{ env.PR_NUMBER }}
           -Dsonar.login=${{ env.SONARQUBE_TOKEN }}
-        env:
-          #테스트용 환경변수
-          clientId: ${{ secrets.CLIENTID }}
-          clientSecret: ${{ secrets.CLIENTSECRET }}
-          jwtKey: ${{ secrets.JWTKEY }}
-          jwtExpireLength: ${{ secrets.JWTEXPIRELENGTH }}
-          jwtRefreshExpireLength: ${{ secrets.JWTREFRESHEXPIRELENGTH }}
+
       # PR 에 Comment 를 달아주는 스크립트 실행
       - name: Comment Sonarqube URL
         uses: actions/github-script@v4
