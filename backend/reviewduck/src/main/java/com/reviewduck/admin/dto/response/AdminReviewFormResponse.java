@@ -25,6 +25,6 @@ public class AdminReviewFormResponse {
     public static AdminReviewFormResponse from(ReviewForm reviewForm) {
         return new AdminReviewFormResponse(reviewForm.getId(), reviewForm.getMember().getId(),
             reviewForm.getMember().getProfileUrl(), reviewForm.getMember().getNickname(), reviewForm.getCode(),
-            reviewForm.getReviewTitle(), reviewForm.isActive(), reviewForm.getCreatedAt(), reviewForm.getUpdatedAt());
+            reviewForm.getTitle(), reviewForm.isActive(), reviewForm.getCreatedAt(), reviewForm.getUpdatedAt());
     }
 }

@@ -103,7 +103,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // then
             assertAll(
-                () -> assertThat(response.getReviewTitle()).isEqualTo(title),
+                () -> assertThat(response.getReviewFormTitle()).isEqualTo(title),
                 () -> assertThat(response.getQuestions()).hasSize(2)
             );
         }
@@ -151,10 +151,10 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
                 .as(ReviewFormResponse.class);
 
             assertAll(
-                () -> assertThat(getResponse.getReviewTitle()).isEqualTo(newReviewTitle),
+                () -> assertThat(getResponse.getReviewFormTitle()).isEqualTo(newReviewTitle),
                 () -> assertThat(getResponse.getQuestions()).hasSize(1),
-                () -> assertThat(getResponse.getQuestions().get(0).getQuestionId()).isEqualTo(1L),
-                () -> assertThat(getResponse.getQuestions().get(0).getQuestionValue()).isEqualTo("new question1")
+                () -> assertThat(getResponse.getQuestions().get(0).getId()).isEqualTo(1L),
+                () -> assertThat(getResponse.getQuestions().get(0).getValue()).isEqualTo("new question1")
             );
         }
 
@@ -413,6 +413,6 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             .statusCode(HttpStatus.OK.value())
             .extract()
             .as(ReviewFormResponse.class);
-        assertThat(reviewFormResponse.getReviewTitle()).isEqualTo(reviewTitle);
+        assertThat(reviewFormResponse.getReviewFormTitle()).isEqualTo(reviewTitle);
     }
 }

@@ -43,7 +43,7 @@ public class ReviewForm extends BaseDate {
     private String code;
 
     @Column(nullable = false)
-    private String reviewTitle;
+    private String title;
 
     @JoinColumn(name = "review_form_id")
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -53,18 +53,18 @@ public class ReviewForm extends BaseDate {
     @Column(nullable = false)
     private boolean isActive = true;
 
-    public ReviewForm(Member member, String reviewTitle, List<String> questionValues) {
-        validate(reviewTitle, member, questionValues);
-        this.reviewTitle = reviewTitle;
+    public ReviewForm(Member member, String title, List<String> questionValues) {
+        validate(title, member, questionValues);
+        this.title = title;
         this.member = member;
         this.reviewFormQuestions = setReviewFormQuestions(questionValues);
         this.code = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
     }
 
-    public void update(String reviewTitle, List<ReviewFormQuestion> reviewFormQuestions) {
-        validateTitleLength(reviewTitle);
-        validateBlankTitle(reviewTitle);
-        this.reviewTitle = reviewTitle;
+    public void update(String title, List<ReviewFormQuestion> reviewFormQuestions) {
+        validateTitleLength(title);
+        validateBlankTitle(title);
+        this.title = title;
         sortQuestions(reviewFormQuestions);
         this.reviewFormQuestions = reviewFormQuestions;
     }
@@ -88,9 +88,9 @@ public class ReviewForm extends BaseDate {
         }
     }
 
-    private void validate(String reviewTitle, Member member, List<String> questionValues) {
-        validateBlankTitle(reviewTitle);
-        validateTitleLength(reviewTitle);
+    private void validate(String title, Member member, List<String> questionValues) {
+        validateBlankTitle(title);
+        validateTitleLength(title);
         validateNullMember(member);
         validateNullQuestions(questionValues);
     }
@@ -107,14 +107,14 @@ public class ReviewForm extends BaseDate {
         }
     }
 
-    private void validateTitleLength(String reviewTitle) {
-        if (reviewTitle.length() > 100) {
+    private void validateTitleLength(String title) {
+        if (title.length() > 100) {
             throw new ReviewFormException("회고 폼의 제목은 100자를 넘을 수 없습니다.");
         }
     }
 
-    private void validateBlankTitle(String reviewTitle) {
-        if (Objects.isNull(reviewTitle) || reviewTitle.isBlank()) {
+    private void validateBlankTitle(String title) {
+        if (Objects.isNull(title) || title.isBlank()) {
             throw new ReviewFormException("회고 폼의 제목은 비어있을 수 없습니다.");
         }
     }

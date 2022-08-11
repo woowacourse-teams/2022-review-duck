@@ -16,6 +16,6 @@ public class MyReviewReviewFormResponse {
 
     public static MyReviewReviewFormResponse from(ReviewForm reviewForm) {
         CreatorResponse creator = CreatorResponse.from(reviewForm.getMember());
-        return new MyReviewReviewFormResponse(reviewForm.getReviewTitle(), reviewForm.getCode(), creator);
+        return new MyReviewReviewFormResponse(reviewForm.getTitle(), reviewForm.getCode(), creator);
     }
 }
