@@ -7,6 +7,10 @@ const PAGE_LIST = {
   AUTHORIZE: '/authorize',
   MY_PAGE: '/mypage',
   LOGOUT: '/logout',
+  TEMPLATE_STORE: '/template/list',
+  TEMPLATE_RECENT: '/recent',
+  TEMPLATE_DETAIL: 'template/view',
+  TEMPLATE_EDIT: 'template/edit',
 };
 
 const MODAL_LIST = {
@@ -20,6 +24,8 @@ const QUERY_KEY = {
 
     REVIEW: 'review',
     REVIEW_FORM: 'review-form',
+
+    TEMPLATE: 'template',
   },
   API: {
     GET_ACCESS_TOKEN: 'getRefreshedAccessToken',
@@ -31,6 +37,8 @@ const QUERY_KEY = {
 
     GET_MY_REVIEWS: 'getMyReviews',
     GET_MY_REVIEW_FORMS: 'getMyReviewForms',
+
+    GET_TEMPLATES: 'getTemplates',
   },
 };
 
@@ -60,7 +68,11 @@ const MYPAGE_TAB = {
   MY_REVIEW_FORMS: 'my-review-forms',
 };
 
+const REVIEW_FORM_TITLE_LENGTH = 100;
+
 const REVIEW_FORM_CODE_LENGTH = 8;
+
+const REVIEW_FORM_CODE_REGEX = `(?=.*[A-Za-z])(?=.*[0-9])[a-zA-Z0-9]{${REVIEW_FORM_CODE_LENGTH}}$`;
 
 export {
   PAGE_LIST,
@@ -74,5 +86,7 @@ export {
   ACCESS_TOKEN_REFRESH_TIME,
   MYPAGE_TAB,
   PERMISSION_VALID_TIME,
+  REVIEW_FORM_TITLE_LENGTH,
   REVIEW_FORM_CODE_LENGTH,
+  REVIEW_FORM_CODE_REGEX,
 };

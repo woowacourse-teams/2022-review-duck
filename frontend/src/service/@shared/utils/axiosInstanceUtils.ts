@@ -1,4 +1,4 @@
-import axiosInstance from 'service/@shared/api/axiosInstance';
+import axiosInstance from 'service/@shared/api/config/axiosInstance';
 
 const getHeader = (key: string) => {
   return axiosInstance.defaults.headers.common[key];

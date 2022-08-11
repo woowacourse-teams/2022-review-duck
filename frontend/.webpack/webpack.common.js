@@ -6,6 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const path = require('path');
+const package = require('../package.json');
 const dotenv = require('dotenv');
 
 module.exports = (env = {}, options = {}) => {
@@ -14,6 +15,8 @@ module.exports = (env = {}, options = {}) => {
   dotenv.config({
     path: `./env/${mode || 'development'}.env`,
   });
+
+  const parsedEnv = { ...process.env, ...env };
 
   return {
     entry: './src/index.tsx',
@@ -69,7 +72,9 @@ module.exports = (env = {}, options = {}) => {
       ],
     },
     plugins: [
-      new webpack.EnvironmentPlugin(process.env),
+      new webpack.DefinePlugin({
+        'process.env': JSON.stringify(parsedEnv),
+      }),
       new webpack.LoaderOptionsPlugin({
         options: {
           postcss: [autoprefixer()],
@@ -77,9 +82,10 @@ module.exports = (env = {}, options = {}) => {
       }),
       new HtmlWebpackPlugin({
         template: './public/index.html',
+        favicon: './public/favicon.ico',
       }),
       new CleanWebpackPlugin(),
-      new MiniCssExtractPlugin({ linkType: false, filename: 'css/[name].[contenthash].css' }),
+      new MiniCssExtractPlugin({ linkType: false, filename: `css/[name].${package.version}.css` }),
     ],
   };
 };

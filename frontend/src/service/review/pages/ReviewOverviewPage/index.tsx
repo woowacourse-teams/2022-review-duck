@@ -18,13 +18,13 @@ import { PAGE_LIST } from 'service/@shared/constants';
 
 function ReviewOverviewPage() {
   const { reviewFormCode = '' } = useParams();
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
 
   const [isSheetEnabled, setSheetEnabled] = useState(false);
 
   const { isError, error } = useOverviewQueries(reviewFormCode);
 
-  const onClickModeChange = (isEnabled: boolean) => () => {
+  const handleModeChange = (isEnabled: boolean) => () => {
     if (isEnabled === isSheetEnabled) return;
 
     setSheetEnabled(isEnabled);
@@ -33,7 +33,7 @@ function ReviewOverviewPage() {
   useEffect(() => {
     if (isError) {
       alert(error?.message);
-      naviagte(-1);
+      navigate(-1);
     }
   }, [isError, error]);
 
@@ -54,7 +54,7 @@ function ReviewOverviewPage() {
           <div className={styles.rightContainer}>
             <Button
               theme={!isSheetEnabled ? 'default' : 'outlined'}
-              onClick={onClickModeChange(false)}
+              onClick={handleModeChange(false)}
             >
               <Icon code="list" />
               <span>목록형 보기</span>
@@ -62,7 +62,7 @@ function ReviewOverviewPage() {
 
             <Button
               theme={isSheetEnabled ? 'default' : 'outlined'}
-              onClick={onClickModeChange(true)}
+              onClick={handleModeChange(true)}
             >
               <Icon code="table_view" />
               <span>시트형 보기</span>

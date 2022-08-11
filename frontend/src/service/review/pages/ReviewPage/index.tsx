@@ -3,8 +3,7 @@ import { Navigate, useParams, useNavigate, Link, useLocation } from 'react-route
 
 import cn from 'classnames';
 
-import { Question } from 'service/review/types';
-import { RedirectState } from 'service/review/types';
+import { Question, RedirectState } from 'service/@shared/types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/review/hooks/useQuestions';
@@ -26,7 +25,7 @@ function SubmitReviewPage() {
   const { reviewFormCode = '', reviewId = '' } = useParams();
 
   const navigate = useNavigate();
-  const { addSnackbar } = useSnackbar();
+  const { showSnackbar } = useSnackbar();
 
   const location = useLocation();
   const { redirect = '' } = (location.state as RedirectState) || {};
@@ -59,7 +58,7 @@ function SubmitReviewPage() {
 
   const redirectUrl = redirect || `${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`;
 
-  const onSubmitReviewForm = (event: React.FormEvent) => {
+  const handleSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
 
     const answers = questions.map(({ questionId, answerId = null, answerValue = '' }) => ({
@@ -73,7 +72,7 @@ function SubmitReviewPage() {
         { reviewId: Number(reviewId), answers },
         {
           onSuccess: () => {
-            addSnackbar({
+            showSnackbar({
               icon: 'rate_review',
               title: '작성하신 회고가 수정되었습니다.',
               description: '작성한 회고는 마이페이지를 통해 모아볼 수 있습니다.',
@@ -94,7 +93,7 @@ function SubmitReviewPage() {
       { reviewFormCode, answers },
       {
         onSuccess: () => {
-          addSnackbar({
+          showSnackbar({
             icon: 'rate_review',
             title: '작성하신 회고가 기록되었습니다.',
             description: '작성한 회고는 마이페이지를 통해 모아볼 수 있습니다.',
@@ -111,17 +110,17 @@ function SubmitReviewPage() {
     );
   };
 
-  const onUpdateCurrentQuestion = (index: number) => () => {
+  const handleUpdateCurrentQuestion = (index: number) => () => {
     setCurrentQuestion(questions[index]);
   };
 
-  const onUpdateAnswer = (index: number) => (event: ChangeEvent) => {
+  const handleUpdateAnswer = (index: number) => (event: ChangeEvent) => {
     const $inputTarget = event.target as HTMLInputElement;
 
     updateQuestion(index, { answerValue: $inputTarget.value });
   };
 
-  const onCancel = () => {
+  const handleCancel = () => {
     if (!confirm('회고 작성을 정말 취소하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
 
     navigate(-1);
@@ -178,7 +177,7 @@ function SubmitReviewPage() {
       </div>
 
       <div className={cn(styles.container)}>
-        <form onSubmit={onSubmitReviewForm}>
+        <form onSubmit={handleSubmitReviewForm}>
           <Text className={cn(styles.reviewTitle)} size={24} weight="bold">
             {reviewTitle}
           </Text>
@@ -194,20 +193,20 @@ function SubmitReviewPage() {
                   <Textarea
                     size="large"
                     value={questions[index].answerValue || ''}
-                    onFocus={onUpdateCurrentQuestion(index)}
-                    onChange={onUpdateAnswer(index)}
+                    onFocus={handleUpdateCurrentQuestion(index)}
+                    onChange={handleUpdateAnswer(index)}
                   />
                 </>
               </FieldSet>
             </div>
           ))}
           <div className={cn('button-container horizontal')}>
-            <Button theme="outlined" onClick={onCancel}>
+            <Button theme="outlined" onClick={handleCancel}>
               <Icon code="cancel" />
               <span>취소하기</span>
             </Button>
 
-            <Button type="submit" onClick={onSubmitReviewForm} disabled={isSubmitDisabled}>
+            <Button type="submit" onClick={handleSubmitReviewForm} disabled={isSubmitDisabled}>
               <Icon code="send" />
               <span>제출하기</span>
             </Button>
