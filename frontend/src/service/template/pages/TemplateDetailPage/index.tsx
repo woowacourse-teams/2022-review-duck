@@ -27,11 +27,11 @@ const TemplateDetailPage = () => {
   const handleDeleteTemplate = (templateId: number) => {
     deleteMutation.mutate(templateId, {
       onSuccess: () => {
-        navigate(-1);
         showSnackbar({
           title: '템플릿이 삭제되었습니다.',
           description: '사람들과 공유할 새로운 템플릿을 만들어보세요.',
         });
+        navigate(-1);
       },
       onError: ({ message }) => {
         alert(message);
