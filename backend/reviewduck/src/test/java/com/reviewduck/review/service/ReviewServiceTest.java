@@ -23,6 +23,7 @@ import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.request.AnswerCreateRequest;
 import com.reviewduck.review.dto.request.AnswerUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewContentCreateRequest;
+import com.reviewduck.review.dto.request.ReviewContentUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
@@ -181,10 +182,12 @@ public class ReviewServiceTest {
         Review savedReview = saveReview(member1);
 
         // when
-        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
-                new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
-        Review updatedReview = reviewService.update(member1, savedReview.getId(), editRequest);
+        ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(List.of(
+            new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
+            new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
+        ));
+
+        Review updatedReview = reviewService.update(member1, savedReview.getId(), updateRequest);
 
         // then
         assertAll(
@@ -202,12 +205,13 @@ public class ReviewServiceTest {
         Review savedReview = saveReview(member1);
 
         // when
-        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
-                new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
+        ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(List.of(
+            new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
+            new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
+        ));
 
         // then
-        assertThatThrownBy(() -> reviewService.update(member2, savedReview.getId(), editRequest))
+        assertThatThrownBy(() -> reviewService.update(member2, savedReview.getId(), updateRequest))
             .isInstanceOf(AuthorizationException.class)
             .hasMessageContaining("본인이 생성한 회고가 아니면 수정할 수 없습니다.");
     }
@@ -216,12 +220,13 @@ public class ReviewServiceTest {
     @DisplayName("존재하지 않는 회고는 수정할 수 없다.")
     void updateInvalidReview() {
         // given
-        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
-                new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
+        ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(List.of(
+            new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
+            new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
+        ));
 
         // when, then
-        assertThatThrownBy(() -> reviewService.update(member1, 99999L, editRequest))
+        assertThatThrownBy(() -> reviewService.update(member1, 99999L, updateRequest))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 회고입니다.");
     }
