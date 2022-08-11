@@ -13,11 +13,11 @@ export interface Template {
 }
 
 export interface GetTemplateResponse extends Template {
-  questions: {
+  questions: Array<{
     id: number;
     value: string;
     description: string;
-  }[];
+  }>;
 }
 
 export interface CreateFormResponse {

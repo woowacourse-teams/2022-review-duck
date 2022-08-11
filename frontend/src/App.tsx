@@ -25,13 +25,13 @@ function App() {
   // TODO: 전역 페이지 로딩 화면 구현하기, 페이지 단위로 lazy 로드 처리
   return (
     <ContextWrapper>
-      <Suspense>
-        <ErrorBoundary>
-          <SnackbarProvider />
+      <ErrorBoundary>
+        <SnackbarProvider />
+        <Suspense>
           <ModalProvider contentList={modalContentList} />
           <PageRoutes />
-        </ErrorBoundary>
-      </Suspense>
+        </Suspense>
+      </ErrorBoundary>
     </ContextWrapper>
   );
 }

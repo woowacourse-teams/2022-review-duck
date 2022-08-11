@@ -9,7 +9,14 @@ import { DeleteOutline } from '@mui/icons-material';
 
 export default function ReviewForm(props) {
   const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
+    {
+      field: 'id',
+      headerName: 'ID',
+      width: 70,
+      renderCell: (params) => {
+        return <Link to={`/reviews/${params.row.id}`}>{params.row.id}</Link>;
+      },
+    },
     {
       field: 'memberId',
       headerName: 'Member Id',
