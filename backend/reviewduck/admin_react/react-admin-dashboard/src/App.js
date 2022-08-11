@@ -4,7 +4,7 @@ import Topbar from './components/topbar/Topbar';
 import Sidebar from './components/sidebar/Sidebar';
 import Home from './pages/home/Home';
 
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
 import MemberList from './pages/memberList/MemberList';
 import Member from './pages/member/Member';
 import ReviewFormList from './pages/reviewFormList/ReviewFormList';
@@ -24,9 +24,9 @@ class App extends Component {
     this.getToken = this.getToken.bind(this);
   }
 
-  async getToken(code) {
-    const getToken = await axios.post(process.env.REACT_APP_BACK_BASE_URL + '/api/login', {
-      code: code,
+  async getToken() {
+    const getToken = await axios.get(process.env.REACT_APP_BACK_BASE_URL + '/api/login/refresh', {
+      withCredentials: true,
     });
 
     this.setState({
@@ -36,12 +36,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const url = new URL(window.location.href);
-    const authorizationCode = url.searchParams.get('code');
-    if (authorizationCode) {
-      this.getToken(authorizationCode);
-      console.log(authorizationCode);
-    }
+    this.getToken();
   }
 
   render() {
@@ -49,7 +44,7 @@ class App extends Component {
     const API_URI = process.env.REACT_APP_BACK_BASE_URL + '/api/admin';
 
     return (
-      <Router>
+      <BrowserRouter basename="/admin">
         <Topbar />
         <div className="container">
           <Sidebar isLogin={isLogin} />
@@ -81,7 +76,7 @@ class App extends Component {
             />
           </Routes>
         </div>
-      </Router>
+      </BrowserRouter>
     );
   }
 }
