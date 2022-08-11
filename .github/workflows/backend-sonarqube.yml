@@ -8,7 +8,7 @@ on:
       - feature-sonarqube3
   pull_request:
     branches:
-      - develop
+      - feature-sonarqube3
     # PR 이 생성 되었을 때(opend), PR branch 에 새로운 commit 이 push 되었을 때(synchronize) 실행한다는 설정
     types: [ opened, synchronize ]
 
@@ -39,7 +39,7 @@ jobs:
       SONARQUBE_PROJECT_KEY: reviewDuck
       SONARQUBE_URL: ${{ secrets.SONAR_HOST_URL }}
       SONARQUBE_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      PR_NUMBER: ${{ github.event.number }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
       clientId: ${{ secrets.CLIENTID }}
       clientSecret: ${{ secrets.CLIENTSECRET }}
       jwtKey: ${{ secrets.JWTKEY }}
