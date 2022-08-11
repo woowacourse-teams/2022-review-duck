@@ -46,7 +46,7 @@ function ReviewFormEditorPage() {
   useEffect(() => {
     if (isLoadError) {
       alert(loadError?.message);
-      navigate(PAGE_LIST.HOME);
+      navigate(redirectUri || PAGE_LIST.HOME);
     }
   }, []);
 
