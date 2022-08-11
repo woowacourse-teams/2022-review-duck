@@ -5,7 +5,7 @@ name: backend-sonarqube
 on:
   push:
     branches:
-      - feature-sonarqube3, develop
+      - feature-sonarqube3
   pull_request:
     branches:
       - develop
