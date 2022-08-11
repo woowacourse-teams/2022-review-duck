@@ -45,10 +45,10 @@ tasks.named('test') {
 
 sonarqube {
     properties {
-        property "sonar.host.url", "${url}"
-        property "sonar.login", "${login}"
-        property "sonar.projectKey", "${projectKey}"
-        property "sonar.projectName", "${projectName}"
+        property "sonar.host.url", "${sonar.host.url}"
+        property "sonar.login", "${sonar.login}"
+        property "sonar.projectKey", "${sonar.projectKey}"
+        property "sonar.projectName", "${sonar.projectName}"
         property "sonar.sources", "src" // 소스 경로
         property "sonar.language", "java" // 언어
         property "sonar.sourceEncoding", "UTF-8"
