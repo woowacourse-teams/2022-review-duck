@@ -17,9 +17,9 @@ import com.reviewduck.review.domain.QuestionAnswer;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
-import com.reviewduck.review.dto.request.AnswerRequest;
 import com.reviewduck.review.dto.request.AnswerUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewRequest;
+import com.reviewduck.review.dto.request.ReviewContentCreateRequest;
+import com.reviewduck.review.dto.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 import com.reviewduck.review.repository.ReviewRepository;
 
@@ -37,10 +37,10 @@ public class ReviewService {
     private final AnswerService answerService;
 
     @Transactional
-    public Review save(Member member, String code, ReviewRequest request) {
+    public Review save(Member member, String code, ReviewCreateRequest request) {
         ReviewForm reviewForm = reviewFormService.findByCode(code);
 
-        List<QuestionAnswer> questionAnswers = convertToQuestionAnswers(request.getAnswers());
+        List<QuestionAnswer> questionAnswers = convertToQuestionAnswers(request.getContents());
 
         Review review = new Review(member, reviewForm, questionAnswers);
         return reviewRepository.save(review);
@@ -96,11 +96,12 @@ public class ReviewService {
         reviewRepository.deleteById(id);
     }
 
-    private List<QuestionAnswer> convertToQuestionAnswers(List<AnswerRequest> answerRequests) {
+    private List<QuestionAnswer> convertToQuestionAnswers(List<ReviewContentCreateRequest> contents) {
         List<QuestionAnswer> questionAnswers = new ArrayList<>();
-        for (AnswerRequest answerRequest : answerRequests) {
-            ReviewFormQuestion reviewFormQuestion = reviewFormQuestionService.findById(answerRequest.getQuestionId());
-            questionAnswers.add(new QuestionAnswer(reviewFormQuestion, new Answer(answerRequest.getAnswerValue())));
+
+        for (ReviewContentCreateRequest request : contents) {
+            ReviewFormQuestion reviewFormQuestion = reviewFormQuestionService.findById(request.getQuestionId());
+            questionAnswers.add(new QuestionAnswer(reviewFormQuestion, new Answer(request.getAnswer().getValue())));
         }
 
         return questionAnswers;

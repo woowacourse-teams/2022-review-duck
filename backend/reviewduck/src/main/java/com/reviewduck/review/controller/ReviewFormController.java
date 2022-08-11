@@ -21,9 +21,9 @@ import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
+import com.reviewduck.review.dto.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewRequest;
 import com.reviewduck.review.dto.response.MyReviewFormsResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
@@ -61,7 +61,7 @@ public class ReviewFormController {
     @PostMapping("/{reviewFormCode}")
     @ResponseStatus(HttpStatus.CREATED)
     public void createReview(@AuthenticationPrincipal Member member, @PathVariable String reviewFormCode,
-        @RequestBody @Valid ReviewRequest request) {
+        @RequestBody @Valid ReviewCreateRequest request) {
 
         info("/api/review-forms/" + reviewFormCode, "POST", request.toString());
 
@@ -71,7 +71,8 @@ public class ReviewFormController {
     @Operation(summary = "특정 회고 폼의 정보를 조회한다.")
     @GetMapping("/{reviewFormCode}")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewFormResponse findReviewForm(@AuthenticationPrincipal Member member, @PathVariable String reviewFormCode) {
+    public ReviewFormResponse findReviewForm(@AuthenticationPrincipal Member member,
+        @PathVariable String reviewFormCode) {
 
         info("/api/review-forms/" + reviewFormCode, "GET", "");
 
@@ -108,7 +109,8 @@ public class ReviewFormController {
     @Operation(summary = "회고 폼을 수정한다.")
     @PutMapping("/{reviewFormCode}")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewFormCodeResponse updateReviewForm(@AuthenticationPrincipal Member member, @PathVariable String reviewFormCode,
+    public ReviewFormCodeResponse updateReviewForm(@AuthenticationPrincipal Member member,
+        @PathVariable String reviewFormCode,
         @RequestBody @Valid ReviewFormUpdateRequest request) {
 
         info("/api/review-forms/" + reviewFormCode, "PUT", request.toString());
