@@ -157,144 +157,162 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
     }
 
-    @Test
-    @DisplayName("회고를 수정한다.")
-    void editReview() {
-        Long reviewId = saveReviewAndGetId(accessToken1);
+    @Nested
+    @DisplayName("자신이 작성한 회고 조회")
+    class findMyReview {
 
-        //when, then
-        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
-                new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
+        @Test
+        @DisplayName("자신이 작성한 회고를 모두 조회한다.")
+        void findAllMyReviews() {
+            // given
+            saveReviewAndGetId(accessToken1);
+            saveReviewAndGetId(accessToken2);
 
-        put("/api/reviews/" + reviewId, editRequest, accessToken1)
-            .statusCode(HttpStatus.NO_CONTENT.value());
+            get("/api/reviews/me", accessToken1)
+                .statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .body("reviews", hasSize(1))
+                .body("numberOfReviews", equalTo(1));
+        }
+
+        @Test
+        @DisplayName("특정 회고 폼을 삭제해도 자신이 작성한 회고를 조회할 수 있다.")
+        void findReviewsByDeletedSpecificReviewForm() {
+            // given
+            // 회고 폼 등록
+            List<ReviewFormQuestionCreateRequest> questions = List.of(
+                new ReviewFormQuestionCreateRequest("question1"),
+                new ReviewFormQuestionCreateRequest("question2"));
+            String reviewFormCode = createReviewFormAndGetCode(accessToken1, "title", questions);
+
+            // 회고 등록
+            ReviewRequest createRequest = new ReviewRequest(
+                List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
+            post("/api/review-forms/" + reviewFormCode, createRequest, accessToken1);
+
+            // when
+            delete("/api/review-forms/" + reviewFormCode, accessToken1);
+
+            // then
+            get("/api/reviews/me", accessToken1)
+                .statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .body("reviews", hasSize(1))
+                .body("numberOfReviews", equalTo(1));
+        }
+
+        @Test
+        @DisplayName("로그인하지 않은 상태로 내가 작성한 회고를 모두 조회할 수 없다")
+        void withoutLogin() {
+            get("/api/reviews/me").statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
+
     }
 
-    @Test
-    @DisplayName("로그인하지 않은 상태로 회고를 수정할 수 없다")
-    void failToEditReviewWithoutLogin() {
-        Long reviewId = saveReviewAndGetId(accessToken1);
+    @Nested
+    @DisplayName("회고 수정")
+    class updateReview {
 
-        //when, then
-        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
-                new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
+        @Test
+        @DisplayName("회고를 수정한다.")
+        void updateReview() {
+            Long reviewId = saveReviewAndGetId(accessToken1);
 
-        put("/api/reviews/" + reviewId, editRequest)
-            .statusCode(HttpStatus.UNAUTHORIZED.value());
+            //when, then
+            ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
+                List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
+                    new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
+
+            put("/api/reviews/" + reviewId, editRequest, accessToken1)
+                .statusCode(HttpStatus.NO_CONTENT.value());
+        }
+
+        @Test
+        @DisplayName("로그인하지 않은 상태로 회고를 수정할 수 없다")
+        void withoutLogin() {
+            Long reviewId = saveReviewAndGetId(accessToken1);
+
+            //when, then
+            ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
+                List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
+                    new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
+
+            put("/api/reviews/" + reviewId, editRequest)
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 회고를 수정할 수 없다.")
+        void invalidReviewId() {
+            // when, then
+            ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
+                List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
+                    new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
+
+            put("/api/reviews/" + invalidReviewId, editRequest, accessToken1)
+                .statusCode(HttpStatus.NOT_FOUND.value());
+        }
+
+        @Test
+        @DisplayName("본인이 생성한 회고가 아니면 수정할 수 없다.")
+        void notMine() {
+            Long reviewId = saveReviewAndGetId(accessToken1);
+
+            //when, then
+            ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
+                List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
+                    new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
+
+            put("/api/reviews/" + reviewId, editRequest, accessToken2)
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
+
     }
 
-    @Test
-    @DisplayName("존재하지 않는 회고를 수정할 수 없다.")
-    void failToEditReview() {
-        // when, then
-        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
-                new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
+    @Nested
+    @DisplayName("회고 삭제")
+    class deleteReview {
 
-        put("/api/reviews/" + invalidReviewId, editRequest, accessToken1)
-            .statusCode(HttpStatus.NOT_FOUND.value());
-    }
+        @Test
+        @DisplayName("회고를 삭제한다.")
+        void deleteReview() {
+            Long reviewId = saveReviewAndGetId(accessToken1);
 
-    @Test
-    @DisplayName("본인이 생성한 회고가 아니면 수정할 수 없다.")
-    void failToEditNotMyReview() {
-        Long reviewId = saveReviewAndGetId(accessToken1);
+            //when, then
+            delete("/api/reviews/" + reviewId, accessToken1)
+                .statusCode(HttpStatus.NO_CONTENT.value());
+        }
 
-        //when, then
-        ReviewUpdateRequest editRequest = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, 1L, "editedAnswer1"),
-                new AnswerUpdateRequest(2L, 2L, "editedAnswer2")));
+        @Test
+        @DisplayName("로그인하지 않은 상태로 회고를 삭제할 수 없다")
+        void withoutLogin() {
+            // given
+            Long reviewId = saveReviewAndGetId(accessToken1);
 
-        put("/api/reviews/" + reviewId, editRequest, accessToken2)
-            .statusCode(HttpStatus.UNAUTHORIZED.value());
-    }
+            //when, then
+            delete("/api/reviews/" + reviewId)
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
 
-    @Test
-    @DisplayName("회고를 삭제한다.")
-    void deleteReview() {
-        Long reviewId = saveReviewAndGetId(accessToken1);
+        @Test
+        @DisplayName("존재하지 않는 회고를 삭제할 수 없다.")
+        void invalidReviewId() {
+            // when, then
+            delete("/api/reviews/" + invalidReviewId, accessToken1)
+                .statusCode(HttpStatus.NOT_FOUND.value());
+        }
 
-        //when, then
-        delete("/api/reviews/" + reviewId, accessToken1)
-            .statusCode(HttpStatus.NO_CONTENT.value());
-    }
+        @Test
+        @DisplayName("본인이 생성한 회고가 아니면 삭제할 수 없다.")
+        void notMine() {
+            // given
+            Long reviewId = saveReviewAndGetId(accessToken1);
 
-    @Test
-    @DisplayName("로그인하지 않은 상태로 회고를 삭제할 수 없다")
-    void failToDeleteReviewWithoutLogin() {
-        // given
-        Long reviewId = saveReviewAndGetId(accessToken1);
+            //when, then
+            delete("/api/reviews/" + reviewId, accessToken2)
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
 
-        //when, then
-        delete("/api/reviews/" + reviewId)
-            .statusCode(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 회고를 삭제할 수 없다.")
-    void failToDeleteReview() {
-        // when, then
-        delete("/api/reviews/" + invalidReviewId, accessToken1)
-            .statusCode(HttpStatus.NOT_FOUND.value());
-    }
-
-    @Test
-    @DisplayName("본인이 생성한 회고가 아니면 삭제할 수 없다.")
-    void failToDeleteNotMyReview() {
-        // given
-        Long reviewId = saveReviewAndGetId(accessToken1);
-
-        //when, then
-        delete("/api/reviews/" + reviewId, accessToken2)
-            .statusCode(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    @Test
-    @DisplayName("내가 작성한 회고를 모두 조회한다.")
-    void findAllMyReviews() {
-        // given
-        saveReviewAndGetId(accessToken1);
-        saveReviewAndGetId(accessToken2);
-
-        get("/api/reviews/me", accessToken1)
-            .statusCode(HttpStatus.OK.value())
-            .assertThat()
-            .body("reviews", hasSize(1))
-            .body("numberOfReviews", equalTo(1));
-    }
-
-    @Test
-    @DisplayName("특정 회고 폼을 삭제해도 본인이 작성한 회고를 조회할 수 있다.")
-    void findReviewsByDeletedSpecificReviewForm() {
-        // given
-        // 회고 폼 등록
-        List<ReviewFormQuestionCreateRequest> questions = List.of(
-            new ReviewFormQuestionCreateRequest("question1"),
-            new ReviewFormQuestionCreateRequest("question2"));
-        String reviewFormCode = createReviewFormAndGetCode(accessToken1, "title", questions);
-
-        // 회고 등록
-        ReviewRequest createRequest = new ReviewRequest(
-            List.of(new AnswerRequest(1L, "answer1"), new AnswerRequest(2L, "answer2")));
-        post("/api/review-forms/" + reviewFormCode, createRequest, accessToken1);
-
-        // when
-        delete("/api/review-forms/" + reviewFormCode, accessToken1);
-
-        // then
-        get("/api/reviews/me", accessToken1)
-            .statusCode(HttpStatus.OK.value())
-            .assertThat()
-            .body("reviews", hasSize(1))
-            .body("numberOfReviews", equalTo(1));
-    }
-
-    @Test
-    @DisplayName("로그인하지 않은 상태로 내가 작성한 회고를 모두 조회할 수 없다")
-    void failToFindAllMyReviewsWithoutLogin() {
-        get("/api/reviews/me").statusCode(HttpStatus.UNAUTHORIZED.value());
     }
 
     private String createReviewFormAndGetCode(String accessToken, String reviewTitle,

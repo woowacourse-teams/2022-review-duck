@@ -55,6 +55,17 @@ public class ReviewController {
         return ReviewSummaryResponse.synchronizedWithReviewForm(reviewService.findById(reviewId));
     }
 
+    @Operation(summary = "자신이 작성한 회고 답변을 모두 조회한다.")
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public MyReviewsResponse findByMember(@AuthenticationPrincipal Member member) {
+        List<Review> reviews = reviewService.findByMember(member);
+
+        info("/api/reviews/me", "GET", "");
+
+        return MyReviewsResponse.from(reviews);
+    }
+
     @Operation(summary = "회고 답변을 수정한다.")
     @PutMapping("/{reviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -74,16 +85,5 @@ public class ReviewController {
         info("/api/reviews/" + reviewId, "DELETE", "");
 
         reviewService.delete(member, reviewId);
-    }
-
-    @Operation(summary = "내가 작성한 회고 답변을 모두 조회한다.")
-    @GetMapping("/me")
-    @ResponseStatus(HttpStatus.OK)
-    public MyReviewsResponse findByMember(@AuthenticationPrincipal Member member) {
-        List<Review> reviews = reviewService.findByMember(member);
-
-        info("/api/reviews/me", "GET", "");
-
-        return MyReviewsResponse.from(reviews);
     }
 }
