@@ -19,7 +19,7 @@ function useCreateReviewForm(mutationOptions?: UseCustomMutationOptions<UpdateRe
 function useCreateReviewAnswer(mutationOptions?: UseCustomMutationOptions<null>) {
   const queryClient = useQueryClient();
 
-  return useMutation(reviewAPI.submitAnswer, {
+  return useMutation(reviewAPI.createAnswer, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
     },

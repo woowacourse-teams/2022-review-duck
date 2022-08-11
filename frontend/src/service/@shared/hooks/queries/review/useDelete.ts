@@ -8,7 +8,7 @@ import { QUERY_KEY } from 'service/@shared/constants';
 function useDeleteReviewForm(mutationOptions?: UseCustomMutationOptions<null>) {
   const queryClient = useQueryClient();
 
-  return useMutation(reviewAPI.deleteReviewForm, {
+  return useMutation(reviewAPI.deleteForm, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW_FORM]);
@@ -20,7 +20,7 @@ function useDeleteReviewForm(mutationOptions?: UseCustomMutationOptions<null>) {
 function useDeleteReview(mutationOptions?: UseCustomMutationOptions<null>) {
   const queryClient = useQueryClient();
 
-  return useMutation(reviewAPI.deleteReview, {
+  return useMutation(reviewAPI.deleteAnswer, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW_FORM]);

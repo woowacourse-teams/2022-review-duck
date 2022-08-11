@@ -31,7 +31,7 @@ function useGetReviews(
 ) {
   return useQuery<GetReviewsResponse, ErrorResponse>(
     [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEWS, { reviewFormCode }],
-    () => reviewAPI.getReviews(reviewFormCode),
+    () => reviewAPI.getFormAnswer(reviewFormCode),
     {
       suspense: true,
       useErrorBoundary: false,
@@ -46,7 +46,7 @@ function useGetReview(
 ) {
   return useQuery<GetReviewResponse, ErrorResponse>(
     [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEW, { reviewId }],
-    () => reviewAPI.getReview(reviewId),
+    () => reviewAPI.getAnswer(reviewId),
     {
       suspense: true,
       useErrorBoundary: false,
