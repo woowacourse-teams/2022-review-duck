@@ -36,13 +36,6 @@ jobs:
     runs-on: ubuntu-latest
     # 현재 Job에서 사용할 환경변수, repository setting secrets 에서 설정한 환경변수 사용
     env:
-      #테스트용 환경변수
-      clientId: ${{ secrets.CLIENTID }}
-      clientSecret: ${{ secrets.CLIENTSECRET }}
-      jwtKey: ${{ secrets.JWTKEY }}
-      jwtExpireLength: ${{ secrets.JWTEXPIRELENGTH }}
-      jwtRefreshExpireLength: ${{ secrets.JWTREFRESHEXPIRELENGTH }}
-      #소나큐브용 환경변수
       SONARQUBE_PROJECT_KEY: reviewDuck
       SONARQUBE_URL: ${{ secrets.SONARQUBE_URL }}
       SONARQUBE_TOKEN: ${{ secrets.SONARQUBE_TOKEN }}
@@ -64,6 +57,13 @@ jobs:
           -Dsonar.projectKey=${{ env.SONARQUBE_PROJECT_KEY }}
           -Dsonar.projectName=${{ env.SONARQUBE_PROJECT_KEY }}-${{ env.PR_NUMBER }}
           -Dsonar.login=${{ env.SONARQUBE_TOKEN }}
+        env:
+          #테스트용 환경변수
+          clientId: ${{ secrets.CLIENTID }}
+          clientSecret: ${{ secrets.CLIENTSECRET }}
+          jwtKey: ${{ secrets.JWTKEY }}
+          jwtExpireLength: ${{ secrets.JWTEXPIRELENGTH }}
+          jwtRefreshExpireLength: ${{ secrets.JWTREFRESHEXPIRELENGTH }}
       # PR 에 Comment 를 달아주는 스크립트 실행
       - name: Comment Sonarqube URL
         uses: actions/github-script@v4
