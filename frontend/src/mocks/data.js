@@ -78,3 +78,147 @@ export const dummyTemplate = {
 };
 
 export const dummyFormcode = '1324ABCD';
+
+export const DUMMY_REVIEW = {
+  GET_FORM: {
+    reviewFormTitle: '회고폼 제목',
+    updatedAt: 160000,
+    creator: {
+      nickname: '크리에이터',
+      profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+    },
+    isCreator: true,
+    questions: [
+      {
+        id: 1,
+        value: '질문 1',
+      },
+      {
+        id: 2,
+        value: '질문 2',
+      },
+    ],
+  },
+
+  GET_ANSWER: {
+    contents: [
+      {
+        question: {
+          id: 1,
+          value: '질문 1',
+        },
+        answer: {
+          id: 1,
+          value: '답변 1',
+        },
+      },
+
+      {
+        question: {
+          id: 2,
+          value: '질문 1',
+        },
+        answer: {
+          id: 2,
+          value: '답변 2',
+        },
+      },
+    ],
+  },
+
+  GET_FORM_ANSWER: [
+    {
+      id: 1,
+      updatedAt: 100,
+      isCreator: false,
+      creator: {
+        nickname: '유저1',
+        profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+      },
+      contents: [
+        {
+          question: {
+            id: 1,
+            value: '질문 1',
+          },
+          answer: {
+            id: 1,
+            value: '답변 1',
+          },
+        },
+
+        {
+          question: {
+            id: 2,
+            value: '질문 1',
+          },
+          answer: {
+            id: 2,
+            value: '답변 2',
+          },
+        },
+      ],
+    },
+    {
+      id: 1,
+      updatedAt: 100,
+      isCreator: false,
+      creator: {
+        nickname: '유저1',
+        profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+      },
+      contents: [
+        {
+          question: {
+            id: 1,
+            value: '질문 1',
+          },
+          answer: {
+            id: 1,
+            value: '답변 1',
+          },
+        },
+
+        {
+          question: {
+            id: 2,
+            value: '질문 1',
+          },
+          answer: {
+            id: 2,
+            value: '답변 2',
+          },
+        },
+      ],
+    },
+  ],
+
+  CREATE_FORM: {
+    reviewFormCode: '123ABC',
+  },
+
+  CREATE_ANSWER: null,
+
+  UPDATE_FORM: {
+    reviewFormCode: '123ABC',
+  },
+
+  UPDATE_ANSWER: {
+    contents: [
+      {
+        questionId: 1,
+        answer: {
+          id: 1,
+          value: '답변 1',
+        },
+      },
+      {
+        questionId: 2,
+        answer: {
+          id: 2,
+          value: '답변 2',
+        },
+      },
+    ],
+  },
+};
