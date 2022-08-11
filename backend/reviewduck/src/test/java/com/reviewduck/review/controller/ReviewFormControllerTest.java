@@ -71,7 +71,7 @@ public class ReviewFormControllerTest {
         @ParameterizedTest
         @NullAndEmptySource
         @DisplayName("회고 제목에 빈 값이 들어갈 경우 예외가 발생한다.")
-        void createWithEmptyReviewTitle(String title) throws Exception {
+        void emptyReviewTitle(String title) throws Exception {
             // given
             ReviewFormCreateRequest request = new ReviewFormCreateRequest(title, List.of());
 
@@ -82,7 +82,7 @@ public class ReviewFormControllerTest {
         @ParameterizedTest
         @NullSource
         @DisplayName("질문 목록에 null 값이 들어갈 경우 예외가 발생한다.")
-        void createWithNullQuestionList(List<ReviewFormQuestionCreateRequest> questions) throws Exception {
+        void nullQuestionList(List<ReviewFormQuestionCreateRequest> questions) throws Exception {
             // given
             ReviewFormCreateRequest request = new ReviewFormCreateRequest("title", questions);
 
@@ -93,7 +93,7 @@ public class ReviewFormControllerTest {
         @ParameterizedTest
         @NullAndEmptySource
         @DisplayName("회고 질문에 빈 값이 들어갈 경우 예외가 발생한다.")
-        void createWithEmptyQuestion(String question) throws Exception {
+        void emptyQuestionValue(String question) throws Exception {
             // given
             ReviewFormCreateRequest request = new ReviewFormCreateRequest("title",
                 List.of(new ReviewFormQuestionCreateRequest(question)));
@@ -111,7 +111,7 @@ public class ReviewFormControllerTest {
         @ParameterizedTest
         @NullAndEmptySource
         @DisplayName("회고 제목에 빈 값이 들어갈 경우 예외가 발생한다.")
-        void updateWithEmptyReviewTitle(String title) throws Exception {
+        void emptyReviewTitle(String title) throws Exception {
             // given
             ReviewFormUpdateRequest request = new ReviewFormUpdateRequest(title, List.of());
 
@@ -122,7 +122,7 @@ public class ReviewFormControllerTest {
         @ParameterizedTest
         @NullSource
         @DisplayName("질문 목록에 null 값이 들어갈 경우 예외가 발생한다.")
-        void updateWithNullQuestions(List<ReviewFormQuestionUpdateRequest> questions) throws Exception {
+        void nullQuestions(List<ReviewFormQuestionUpdateRequest> questions) throws Exception {
             // given
             ReviewFormUpdateRequest request = new ReviewFormUpdateRequest("new title", questions);
 
@@ -133,7 +133,7 @@ public class ReviewFormControllerTest {
         @ParameterizedTest
         @NullSource
         @DisplayName("질문이 비어있을 경우 예외가 발생한다.")
-        void updateWithEmptyQuestionValue(String questionValue) throws Exception {
+        void emptyQuestionValue(String questionValue) throws Exception {
             // given
             ReviewFormUpdateRequest request = new ReviewFormUpdateRequest("new title",
                 List.of(new ReviewFormQuestionUpdateRequest(1L, questionValue)));

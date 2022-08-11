@@ -50,7 +50,7 @@ public class XssFilterTest extends AcceptanceTest {
             .as(ReviewFormResponse.class)
             .getQuestions()
             .get(0)
-            .getQuestionValue();
+            .getValue();
 
         // then
         assertThat(actual).isNotEqualTo(XssQuestionValue);

@@ -88,7 +88,7 @@ public class ReviewFormServiceTest {
             () -> assertThat(reviewForm.getId()).isNotNull(),
             () -> assertThat(reviewForm.getMember().getNickname()).isEqualTo("제이슨"),
             () -> assertThat(reviewForm.getCode().length()).isEqualTo(8),
-            () -> assertThat(reviewForm.getReviewTitle()).isEqualTo(reviewTitle),
+            () -> assertThat(reviewForm.getTitle()).isEqualTo(reviewTitle),
             () -> assertThat(reviewForm.getReviewFormQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")
@@ -151,7 +151,7 @@ public class ReviewFormServiceTest {
             () -> assertThat(foundReviewForm.getId()).isNotNull(),
             () -> assertThat(foundReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
             () -> assertThat(foundReviewForm.getCode().length()).isEqualTo(8),
-            () -> assertThat(foundReviewForm.getReviewTitle()).isEqualTo(reviewTitle),
+            () -> assertThat(foundReviewForm.getTitle()).isEqualTo(reviewTitle),
             () -> assertThat(foundReviewForm.getReviewFormQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")
@@ -294,7 +294,7 @@ public class ReviewFormServiceTest {
             () -> assertThat(savedReviewForm.getId()).isNotNull(),
             () -> assertThat(savedReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
             () -> assertThat(savedReviewForm.getCode().length()).isEqualTo(8),
-            () -> assertThat(savedReviewForm.getReviewTitle()).isEqualTo(reviewFormTitle),
+            () -> assertThat(savedReviewForm.getTitle()).isEqualTo(reviewFormTitle),
             () -> assertThat(savedReviewForm.getReviewFormQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")
@@ -341,7 +341,7 @@ public class ReviewFormServiceTest {
             () -> assertThat(myReviewForms.get(0).getMember().getNickname()).isEqualTo("제이슨"),
             () -> assertThat(myReviewForms.get(0).getId()).isNotNull(),
             () -> assertThat(myReviewForms.get(0).getCode().length()).isEqualTo(8),
-            () -> assertThat(myReviewForms.get(0).getReviewTitle()).isEqualTo(reviewTitle1),
+            () -> assertThat(myReviewForms.get(0).getTitle()).isEqualTo(reviewTitle1),
             () -> assertThat(myReviewForms.get(0).getReviewFormQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")
