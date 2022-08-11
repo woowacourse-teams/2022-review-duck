@@ -5,6 +5,7 @@ import { useNavigate, useParams, Link, useSearchParams } from 'react-router-dom'
 import cn from 'classnames';
 
 import useSnackbar from 'common/hooks/useSnackbar';
+import useUniqueKey from 'common/hooks/useUniqueKey';
 import useQuestions from 'service/review/hooks/useQuestions';
 
 import { getErrorMessage, setFormFocus } from 'service/@shared/utils';
@@ -35,10 +36,11 @@ function ReviewFormEditorPage() {
     submitReviewForm,
   } = useReviewFormEditor(reviewFormCode);
 
-  const [reviewTitle, setReviewTitle] = useState(initialReviewForm.reviewTitle);
+  const [reviewFormTitle, setReviewTitle] = useState(initialReviewForm.reviewFormTitle);
   const { questions, addQuestion, removeQuestion, updateQuestion } = useQuestions(
     initialReviewForm.questions,
   );
+  const getUniqueListKey = useUniqueKey();
 
   const { showSnackbar } = useSnackbar();
   const redirectUri = searchParams.get('redirect');
@@ -60,7 +62,7 @@ function ReviewFormEditorPage() {
     let questionIndex = null;
 
     flushSync(() => {
-      questionIndex = addQuestion({ questionValue: '' });
+      questionIndex = addQuestion({ value: '' });
     });
 
     if (questionIndex === null) return;
@@ -69,7 +71,7 @@ function ReviewFormEditorPage() {
   };
 
   const handleUpdateQuestion = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedQuestion = { questionValue: event.target.value };
+    const updatedQuestion = { value: event.target.value };
 
     updateQuestion(index, updatedQuestion);
   };
@@ -91,14 +93,14 @@ function ReviewFormEditorPage() {
     const submitQuestions = trimQuestions(questions);
 
     try {
-      validateReviewForm(reviewTitle, submitQuestions);
+      validateReviewForm(reviewFormTitle, submitQuestions);
     } catch (error) {
       alert(getErrorMessage(error));
       return;
     }
 
     submitReviewForm.mutate(
-      { reviewTitle, reviewFormCode, questions: submitQuestions },
+      { reviewFormTitle, reviewFormCode, questions: submitQuestions },
       {
         onSuccess: ({ reviewFormCode }) => {
           showSnackbar({
@@ -132,13 +134,13 @@ function ReviewFormEditorPage() {
 
         <div className={cn(styles.previewContainer, 'flex-container column')}>
           {questions.map(
-            ({ questionValue, questionId, listKey }, index) =>
-              questionValue && (
+            (question, index) =>
+              question.value && (
                 <QuestionCard
-                  key={questionId || listKey}
+                  key={question.id || getUniqueListKey()}
                   numbering={index + 1}
                   type="text"
-                  title={questionValue}
+                  title={question.value}
                   description="질문 설명이 이곳에 표기됩니다."
                 />
               ),
@@ -152,16 +154,16 @@ function ReviewFormEditorPage() {
             theme="underline"
             size="large"
             placeholder="회고의 제목을 입력해주세요."
-            value={reviewTitle}
+            value={reviewFormTitle}
             onChange={handleChangeReviewTitle}
           />
 
           <div className={cn(styles.itemContainer, 'flex-container column')}>
-            {questions.map(({ questionId, listKey, questionValue }, index) => (
+            {questions.map((question, index) => (
               <QuestionEditor
-                key={questionId || listKey}
+                key={question.id || getUniqueListKey()}
                 numbering={index + 1}
-                value={questionValue}
+                value={question.value}
                 onChange={handleUpdateQuestion(index)}
                 onAddQuestion={handleAddQuestion}
                 onDeleteQuestion={handleDeleteQuestion(index)}

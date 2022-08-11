@@ -11,8 +11,6 @@ function useQuestions(initState?: Question[]) {
     const newQuestionIndex =
       copiedQuestions.push({
         ...insertValue,
-        questionId: null,
-        listKey: `list-${listKey.current}`,
       }) - 1;
 
     listKey.current += 1;
