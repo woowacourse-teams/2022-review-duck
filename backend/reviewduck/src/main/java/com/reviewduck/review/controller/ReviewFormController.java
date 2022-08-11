@@ -3,6 +3,7 @@ package com.reviewduck.review.controller;
 import static com.reviewduck.common.util.Logging.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -27,7 +28,7 @@ import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.dto.response.MyReviewFormsResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
-import com.reviewduck.review.dto.response.ReviewsResponse;
+import com.reviewduck.review.dto.response.ReviewResponse;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
@@ -96,14 +97,16 @@ public class ReviewFormController {
     @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 모두 조회한다.")
     @GetMapping("/{reviewFormCode}/reviews")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewsResponse findReviewsByCode(@AuthenticationPrincipal Member member,
+    public List<ReviewResponse> findReviewsByCode(@AuthenticationPrincipal Member member,
         @PathVariable String reviewFormCode) {
 
         info("/api/review-forms/" + reviewFormCode + "/reviews", "GET", "");
 
         List<Review> reviews = reviewService.findAllByCode(reviewFormCode);
 
-        return ReviewsResponse.of(member, reviews);
+        return reviews.stream()
+            .map((review) -> ReviewResponse.of(member, review))
+            .collect(Collectors.toUnmodifiableList());
     }
 
     @Operation(summary = "회고 폼을 수정한다.")

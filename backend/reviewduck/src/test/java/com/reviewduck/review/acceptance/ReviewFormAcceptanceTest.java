@@ -28,7 +28,6 @@ import com.reviewduck.review.dto.response.MyReviewFormsResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
 import com.reviewduck.review.dto.response.ReviewResponse;
-import com.reviewduck.review.dto.response.ReviewsResponse;
 
 public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
@@ -250,13 +249,13 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             List<ReviewResponse> response = get("/api/review-forms/" + code + "/reviews", accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .extract()
-                .as(ReviewsResponse.class)
-                .getReviews();
+                .body()
+                .jsonPath().getList(".", ReviewResponse.class);
 
             ReviewResponse reviewResponse = response.get(0);
 
             // then
-            assertThat(reviewResponse.getAnswers()).hasSize(2);
+            assertThat(reviewResponse.getContents()).hasSize(2);
         }
 
         @Test

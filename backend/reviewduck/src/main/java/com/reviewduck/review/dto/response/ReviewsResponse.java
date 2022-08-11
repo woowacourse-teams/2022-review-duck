@@ -3,7 +3,6 @@ package com.reviewduck.review.dto.response;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
 
 import lombok.AccessLevel;
@@ -16,13 +15,14 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ReviewsResponse {
 
-    private List<ReviewResponse> reviews;
+    private int numberOfReviews;
+    private List<ReviewSummaryResponse> reviews;
 
-    public static ReviewsResponse of(Member member, List<Review> reviews) {
-        List<ReviewResponse> reviewResponses = reviews.stream()
-            .map(review -> ReviewResponse.of(member, review))
+    public static ReviewsResponse from(List<Review> reviews) {
+        List<ReviewSummaryResponse> reviewResponses = reviews.stream()
+            .map(ReviewSummaryResponse::from)
             .collect(Collectors.toUnmodifiableList());
 
-        return new ReviewsResponse(reviewResponses);
+        return new ReviewsResponse(reviews.size(), reviewResponses);
     }
 }

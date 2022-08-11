@@ -15,16 +15,15 @@ import lombok.Getter;
 @Getter
 public class ReviewResponse {
 
-    private Long reviewId;
+    private Long id;
     private long updatedAt;
-    private boolean isMine;
-    private CreatorResponse participant;
-    private List<AnswerResponse> answers;
+    private boolean isCreator;
+    private CreatorResponse creator;
+    private List<ReviewContentResponse> contents;
 
     public static ReviewResponse of(Member member, Review review) {
-        List<AnswerResponse> answerResponses = review.getQuestionAnswers().stream()
-            .map(
-                questionAnswer -> AnswerResponse.of(questionAnswer.getReviewFormQuestion(), questionAnswer.getAnswer()))
+        List<ReviewContentResponse> contents = review.getQuestionAnswers().stream()
+            .map(ReviewContentResponse::from)
             .collect(Collectors.toUnmodifiableList());
 
         return new ReviewResponse(
@@ -32,11 +31,11 @@ public class ReviewResponse {
             Timestamp.valueOf(review.getUpdatedAt()).getTime(),
             review.isMine(member),
             CreatorResponse.from(review.getMember()),
-            answerResponses
+            contents
         );
     }
 
-    public boolean getIsMine() {
-        return isMine;
+    public boolean getIsCreator() {
+        return isCreator;
     }
 }
