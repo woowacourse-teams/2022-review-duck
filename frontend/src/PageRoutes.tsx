@@ -8,7 +8,7 @@ import { PAGE_LIST } from 'service/@shared/constants';
 import MainLayout from 'service/@shared/layout/MainLayout';
 import ReviewLayout from 'service/review/layout/ReviewLayout';
 import Playground from 'service/review/pages/Playground';
-import ReviewFormPage from 'service/review/pages/ReviewFormPage';
+import ReviewFormEditorPage from 'service/review/pages/ReviewFormEditorPage';
 import ReviewOverviewPage from 'service/review/pages/ReviewOverviewPage';
 import ReviewPage from 'service/review/pages/ReviewPage';
 import TemplateStorePage from 'service/template/pages/TemplateStorePage';
@@ -48,8 +48,8 @@ function PageRoutes() {
           </Route>
 
           <Route path={PAGE_LIST.REVIEW_FORM}>
-            <Route index element={<ReviewFormPage />} />
-            <Route path=":reviewFormCode" element={<ReviewFormPage />} />
+            <Route index element={<ReviewFormEditorPage />} />
+            <Route path=":reviewFormCode" element={<ReviewFormEditorPage />} />
           </Route>
         </Route>
       </Route>
