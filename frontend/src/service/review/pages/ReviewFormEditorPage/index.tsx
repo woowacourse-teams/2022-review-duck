@@ -97,7 +97,7 @@ function ReviewFormEditorPage() {
       return;
     }
 
-    submitReviewForm(
+    submitReviewForm.mutate(
       { reviewTitle, reviewFormCode, questions: submitQuestions },
       {
         onSuccess: ({ reviewFormCode }) => {
