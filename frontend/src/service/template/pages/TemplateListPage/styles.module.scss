@@ -1,0 +1,8 @@
+@import 'styles/@global.scss';
+
+.container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  row-gap: 1rem;
+  gap: 1rem;
+}
