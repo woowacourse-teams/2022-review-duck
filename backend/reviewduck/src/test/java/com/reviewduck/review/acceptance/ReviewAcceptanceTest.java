@@ -70,7 +70,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         @Test
         @DisplayName("로그인하지 않은 상태로 특정 회고를 조회할 수 없다")
-        void failToFindReviewWithoutLogin() {
+        void withoutLogin() {
             Long reviewId = saveReviewAndGetId(accessToken1);
 
             //when, then
@@ -80,7 +80,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         @Test
         @DisplayName("존재하지 않는 회고를 조회할 수 없다.")
-        void failToFindReview() {
+        void invalidReview() {
             // when, then
             get("/api/reviews/999999", accessToken1)
                 .statusCode(HttpStatus.NOT_FOUND.value());
@@ -138,8 +138,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("로그인하지 않은 상태로 최신화된 회고폼과 동기화하여 특정 회고를 조회할 수 없다")
-        void failToFindSynchronizedReviewWithoutLogin() {
+        @DisplayName("로그인하지 않은 상태로 조회할 수 없다")
+        void withoutLogin() {
             Long reviewId = saveReviewAndGetId(accessToken1);
 
             //when, then
@@ -148,8 +148,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("존재하지 않는 회고를 최신화된 회고폼과 동기화하여 조회할 수 없다.")
-        void failToFindSynchronizedReview() {
+        @DisplayName("존재하지 않는 회고를 조회할 수 없다.")
+        void invalidReview() {
             // when, then
             get("/api/reviews/999999/synchronized", accessToken1)
                 .statusCode(HttpStatus.NOT_FOUND.value());
