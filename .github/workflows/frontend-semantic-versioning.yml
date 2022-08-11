@@ -48,14 +48,14 @@ jobs:
         id: pr-labels
         uses: joerick/pr-labels-action@v1.0.6
 
-      - name: 버전 업데이트 체크 (마이너 - 기능)
+      - name: 마이너 버전 업데이트 체크 (마이너 - 기능)
         if: |
           contains(steps.pr-labels.outputs.labels, ' 기능 ')
         run: |
           yarn version --minor
         working-directory: ./frontend
 
-      - name: 버전 업데이트 체크 (패치 - 리팩토링, 버그, 설정, 핫픽스)
+      - name: 패치 버전 업데이트 체크 (패치 - 리팩토링, 버그, 설정, 핫픽스)
         if: |
           contains(steps.pr-labels.outputs.labels, ' 리팩토링 ') ||
           contains(steps.pr-labels.outputs.labels, ' 버그 ') ||

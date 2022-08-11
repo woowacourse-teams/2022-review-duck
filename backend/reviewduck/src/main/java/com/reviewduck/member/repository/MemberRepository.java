@@ -8,7 +8,5 @@ import com.reviewduck.member.domain.Member;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
-    boolean existsBySocialId(String socialId);
-
     Optional<Member> findBySocialId(String socialId);
 }

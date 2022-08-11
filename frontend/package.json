@@ -1,10 +1,11 @@
 {
   "name": "review-duck-frontend",
-  "version": "0.5.3",
+  "version": "0.7.1",
   "main": "index.tsx",
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --config ./.webpack/webpack.dev.js --mode development --open --hot",
+    "start-mocking": "webpack-dev-server --config ./.webpack/webpack.dev.js --open --hot --mode development --env MOCKING",
     "build-develop": "webpack --config ./.webpack/webpack.prod.js --mode development",
     "build": "webpack --config ./.webpack/webpack.prod.js --mode production",
     "storybook": "start-storybook -p 6006 --no-manager-cache",
@@ -54,6 +55,7 @@
     "file-loader": "^6.2.0",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.6.1",
+    "msw": "^0.44.2",
     "postcss": "^8.4.14",
     "postcss-loader": "^7.0.1",
     "prettier": "^2.7.1",
@@ -67,5 +69,8 @@
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.9.2",
     "webpack-merge": "^5.8.0"
+  },
+  "msw": {
+    "workerDirectory": "public"
   }
 }

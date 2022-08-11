@@ -1,0 +1,19 @@
+.home {
+    flex: 4;
+    margin-top: 10px;
+    align-items: center;
+}
+
+.homeWidgets {
+    display : flex;
+    margin: 20px;
+}
+
+.socialLoginButton {
+    width: 200px;
+    height: 100px;
+    background-color: ivory;
+    border-radius: 10%;
+    border: black 2px thick;
+    font: green bolder large;
+}

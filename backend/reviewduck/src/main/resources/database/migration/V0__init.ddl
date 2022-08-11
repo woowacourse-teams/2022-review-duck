@@ -1,10 +1,10 @@
 create table member
 (
-    id          bigint not null auto_increment,
-    nickname    varchar(255),
+    id              bigint not null auto_increment,
+    nickname        varchar(255),
     social_nickname varchar(255),
-    profile_url varchar(255),
-    social_id   varchar(255),
+    profile_url     varchar(255),
+    social_id       varchar(255),
     primary key (id)
 );
 
