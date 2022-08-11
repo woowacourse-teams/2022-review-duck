@@ -1,7 +1,8 @@
 plugins {
-	id 'org.springframework.boot' version '2.6.9'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
+    id 'org.springframework.boot' version '2.6.9'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.sonarqube' version '3.3'
+    id 'java'
 }
 
 group = 'com'
@@ -9,34 +10,48 @@ version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '11'
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'mysql:mysql-connector-java'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'io.rest-assured:rest-assured:4.4.0'
-	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'io.springfox:springfox-boot-starter:3.0.0'
-	implementation 'io.jsonwebtoken:jjwt:0.9.1'
-	implementation 'org.flywaydb:flyway-core:5.2.4'
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'io.micrometer:micrometer-registry-prometheus'
-	implementation 'com.navercorp.lucy:lucy-xss-servlet:2.0.1'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.rest-assured:rest-assured:4.4.0'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'org.flywaydb:flyway-core:5.2.4'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
+    implementation 'com.navercorp.lucy:lucy-xss-servlet:2.0.1'
+    implementation 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.3'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
+}
+
+sonarqube {
+    properties {
+        property "sonar.sources", "src" // 소스 경로
+        property "sonar.language", "java" // 언어0
+        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.profile", "Sonar way" // SonarQube 에서 분석할 때 적용할 프로필(분석할 수준 설정)
+        property "sonar.java.binaries", "${buildDir}/classes" // 자바 클래스 파일위치
+        property "sonar.test.inclusions", "**/*Test.java" // 코드 분석에 사용할 테스트 소스
+        property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+        // jacoco 플러그인의 결과 파일
+    }
 }
