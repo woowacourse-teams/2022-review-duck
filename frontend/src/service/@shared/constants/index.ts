@@ -75,7 +75,25 @@ const REVIEW_FORM_CODE_LENGTH = 8;
 
 const REVIEW_FORM_CODE_REGEX = `(?=.*[A-Za-z])(?=.*[0-9])[a-zA-Z0-9]{${REVIEW_FORM_CODE_LENGTH}}$`;
 
+const API_URI = {
+  REVIEW: {
+    GET_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
+    GET_ANSWER: (reviewId: number) => `/api/reviews/${reviewId}`,
+    GET_FORM_ANSWER: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}/reviews`,
+
+    CREATE_FORM: '/api/review-forms',
+    CREATE_ANSWER: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
+
+    UPDATE_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
+    UPDATE_ANSWER: (reviewId: number) => `/api/reviews/${reviewId}`,
+
+    DELETE_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
+    DELETE_ANSWER: (reviewId: number) => `/api/reviews/${reviewId}`,
+  },
+};
+
 export {
+  API_URI,
   PAGE_LIST,
   MODAL_LIST,
   QUERY_KEY,

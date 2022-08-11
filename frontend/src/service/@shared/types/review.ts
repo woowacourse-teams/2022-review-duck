@@ -53,7 +53,7 @@ export interface GetReviewResponse {
 }
 
 export interface UpdateReviewFormRequest extends ReviewForm {
-  reviewFormCode?: string | null;
+  reviewFormCode: string;
 }
 
 export interface UpdateReviewFormResponse {
