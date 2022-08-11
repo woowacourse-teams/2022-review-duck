@@ -27,10 +27,10 @@ import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
-import com.reviewduck.review.dto.response.QuestionAnswerResponse;
+import com.reviewduck.review.dto.response.ReviewContentResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
-import com.reviewduck.review.dto.response.ReviewSummaryResponse;
-import com.reviewduck.review.dto.response.ReviewsResponse;
+import com.reviewduck.review.dto.response.ReviewResponse;
+import com.reviewduck.review.dto.response.ReviewSynchronizedResponse;
 
 public class ReviewAcceptanceTest extends AcceptanceTest {
 
@@ -57,46 +57,12 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("특정 회고 조회")
+    @DisplayName("최신화된 회고 폼과 동기화하여 특정 회고 조회")
     class findReview {
 
         @Test
-        @DisplayName("특정 회고를 조회한다.")
-        void findReview() {
-            Long reviewId = saveReviewAndGetId(accessToken1);
-
-            //when, then
-            get("/api/reviews/" + reviewId, accessToken1)
-                .statusCode(HttpStatus.OK.value());
-        }
-
-        @Test
-        @DisplayName("로그인하지 않은 상태로 특정 회고를 조회할 수 없다")
-        void withoutLogin() {
-            Long reviewId = saveReviewAndGetId(accessToken1);
-
-            //when, then
-            get("/api/reviews/" + reviewId)
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 회고를 조회할 수 없다.")
-        void invalidReview() {
-            // when, then
-            get("/api/reviews/999999", accessToken1)
-                .statusCode(HttpStatus.NOT_FOUND.value());
-        }
-
-    }
-
-    @Nested
-    @DisplayName("최신화된 회고 폼과 동기화하여 특정 회고 조회")
-    class findSynchronizedReview {
-
-        @Test
         @DisplayName("최신화된 회고폼과 동기화하여 특정 회고를 조회한다.")
-        void findSynchronizedReview() {
+        void findReview() {
             // save reviewForm
             String reviewTitle = "title";
             List<ReviewFormQuestionCreateRequest> questions = List.of(
@@ -123,31 +89,31 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             put("/api/review-forms/" + code, updateRequest, accessToken1);
 
             //when
-            List<QuestionAnswerResponse> actual = get("/api/reviews/1/synchronized", accessToken1)
+            List<ReviewContentResponse> actual = get("/api/reviews/1", accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .extract()
-                .as(ReviewSummaryResponse.class)
-                .getAnswers();
+                .as(ReviewSynchronizedResponse.class)
+                .getContents();
 
             // then
             assertAll(
                 () -> assertThat(actual.size()).isEqualTo(3),
-                () -> assertThat(actual.get(0).getQuestionValue()).isEqualTo("new question1"),
-                () -> assertThat(actual.get(0).getAnswerId()).isEqualTo(1L),
-                () -> assertThat(actual.get(1).getQuestionValue()).isEqualTo("new question3"),
-                () -> assertThat(actual.get(1).getAnswerId()).isEqualTo(3L),
-                () -> assertThat(actual.get(2).getQuestionValue()).isEqualTo("new question4"),
-                () -> assertThat(actual.get(2).getAnswerId()).isEqualTo(null)
+                () -> assertThat(actual.get(0).getQuestion().getValue()).isEqualTo("new question1"),
+                () -> assertThat(actual.get(0).getAnswer().getId()).isEqualTo(1L),
+                () -> assertThat(actual.get(1).getQuestion().getValue()).isEqualTo("new question3"),
+                () -> assertThat(actual.get(1).getAnswer().getId()).isEqualTo(3L),
+                () -> assertThat(actual.get(2).getQuestion().getValue()).isEqualTo("new question4"),
+                () -> assertThat(actual.get(2).getAnswer()).isEqualTo(null)
             );
         }
 
         @Test
-        @DisplayName("로그인하지 않은 상태로 조회할 수 없다")
+        @DisplayName("로그인하지 않은 상태로 특정 회고를 조회할 수 없다")
         void withoutLogin() {
             Long reviewId = saveReviewAndGetId(accessToken1);
 
             //when, then
-            get("/api/reviews/" + reviewId + "/synchronized")
+            get("/api/reviews/" + reviewId)
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
@@ -155,7 +121,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         @DisplayName("존재하지 않는 회고를 조회할 수 없다.")
         void invalidReview() {
             // when, then
-            get("/api/reviews/999999/synchronized", accessToken1)
+            get("/api/reviews/999999", accessToken1)
                 .statusCode(HttpStatus.NOT_FOUND.value());
         }
 
@@ -355,9 +321,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         return get("/api/review-forms/" + code + "/reviews", accessToken)
             .extract()
-            .as(ReviewsResponse.class)
-            .getReviews()
+            .body()
+            .jsonPath().getList(".", ReviewResponse.class)
             .get(0)
-            .getReviewId();
+            .getId();
     }
 }
