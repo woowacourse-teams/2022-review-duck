@@ -16,6 +16,7 @@ import lombok.Getter;
 public class ReviewResponse {
 
     private Long id;
+    private String reviewTitle;
     private long updatedAt;
     private boolean isCreator;
     private CreatorResponse creator;
@@ -28,14 +29,11 @@ public class ReviewResponse {
 
         return new ReviewResponse(
             review.getId(),
+            review.getTitle(),
             Timestamp.valueOf(review.getUpdatedAt()).getTime(),
             review.isMine(member),
             CreatorResponse.from(review.getMember()),
             contents
         );
-    }
-
-    public boolean getIsCreator() {
-        return isCreator;
     }
 }

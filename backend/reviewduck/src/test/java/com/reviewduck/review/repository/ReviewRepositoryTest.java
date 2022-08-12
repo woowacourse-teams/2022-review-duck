@@ -39,7 +39,7 @@ public class ReviewRepositoryTest {
         memberRepository.save(member);
         ReviewForm reviewForm = new ReviewForm(member, "title", List.of("question1", "question2"));
         this.savedReviewForm = reviewFormRepository.save(reviewForm);
-        this.review = new Review(member, savedReviewForm,
+        this.review = new Review("title", member, savedReviewForm,
             List.of(
                 new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(0), new Answer("answer1")),
                 new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(1), new Answer("answer2"))
@@ -101,7 +101,7 @@ public class ReviewRepositoryTest {
         memberRepository.save(member2);
         ReviewForm reviewForm = new ReviewForm(member2, "title", List.of("question1", "question2"));
         ReviewForm savedReviewForm = reviewFormRepository.save(reviewForm);
-        Review review2 = new Review(member2, savedReviewForm,
+        Review review2 = new Review("title", member2, savedReviewForm,
             List.of(
                 new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(0), new Answer("answer3")),
                 new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(1), new Answer("answer4"))

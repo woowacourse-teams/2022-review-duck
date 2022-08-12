@@ -8,8 +8,12 @@ import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.review.exception.ReviewException;
+import com.reviewduck.review.exception.ReviewFormException;
 
 public class ReviewTest {
 
@@ -22,6 +26,7 @@ public class ReviewTest {
     void createReview() {
         //when, then
         assertDoesNotThrow(() -> new Review(
+            "title",
             member,
             reviewForm,
             List.of(
@@ -31,11 +36,30 @@ public class ReviewTest {
             )));
     }
 
+    @ParameterizedTest
+    @NullAndEmptySource
+    @DisplayName("회고 생성 시 제목이 비어있을 수 없다.")
+    void createReview(String title) {
+        //when, then
+        assertThatThrownBy(() -> new Review(
+            title,
+            member,
+            reviewForm,
+            List.of(
+                new QuestionAnswer(new ReviewFormQuestion("question1"), new Answer("answer1")),
+                new QuestionAnswer(new ReviewFormQuestion("question2"), new Answer("answer2")),
+                new QuestionAnswer(new ReviewFormQuestion("question3"), new Answer("answer3"))
+            )))
+            .isInstanceOf(ReviewException.class)
+            .hasMessage("회고의 제목은 비어있을 수 없습니다.");
+    }
+
     @Test
     @DisplayName("질문/답변의 순서값은 0부터 순서대로 부여된다.")
     void setPositionInOrder() {
         // when
         Review review = new Review(
+            "title",
             member,
             reviewForm,
             List.of(
