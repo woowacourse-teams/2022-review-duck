@@ -4,7 +4,7 @@ import Topbar from './components/topbar/Topbar';
 import Sidebar from './components/sidebar/Sidebar';
 import Home from './pages/home/Home';
 
-import { BrowserRouter as Router, Routes, Route, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter as Routes, Route, BrowserRouter } from 'react-router-dom';
 import MemberList from './pages/memberList/MemberList';
 import Member from './pages/member/Member';
 import ReviewFormList from './pages/reviewFormList/ReviewFormList';
