@@ -13,7 +13,7 @@ import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
 
@@ -34,8 +34,9 @@ public class XssFilterTest extends AcceptanceTest {
         String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
 
         String XssQuestionValue = "<script>alert(\"xss\")</script>; 👍";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest(XssQuestionValue),
-            new ReviewFormQuestionRequest("question2"));
+        List<ReviewFormQuestionCreateRequest> questions = List.of(
+            new ReviewFormQuestionCreateRequest(XssQuestionValue),
+            new ReviewFormQuestionCreateRequest("question2"));
         ReviewFormCreateRequest request = new ReviewFormCreateRequest("title", questions);
 
         // when
@@ -49,7 +50,7 @@ public class XssFilterTest extends AcceptanceTest {
             .as(ReviewFormResponse.class)
             .getQuestions()
             .get(0)
-            .getQuestionValue();
+            .getValue();
 
         // then
         assertThat(actual).isNotEqualTo(XssQuestionValue);

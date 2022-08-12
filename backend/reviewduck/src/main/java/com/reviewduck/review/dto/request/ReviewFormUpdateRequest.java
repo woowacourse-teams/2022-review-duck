@@ -19,9 +19,9 @@ import lombok.ToString;
 public class ReviewFormUpdateRequest {
 
     @NotBlank(message = "회고 폼의 제목은 비어있을 수 없습니다.")
-    private String reviewTitle;
+    private String reviewFormTitle;
 
     @NotNull(message = "회고 폼의 질문 목록 수정 중 오류가 발생했습니다.")
     @Valid
-    private List<ReviewQuestionUpdateRequest> questions;
+    private List<ReviewFormQuestionUpdateRequest> questions;
 }

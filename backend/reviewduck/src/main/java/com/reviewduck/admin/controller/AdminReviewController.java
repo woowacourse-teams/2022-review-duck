@@ -18,6 +18,7 @@ import com.reviewduck.admin.service.AdminReviewFormService;
 import com.reviewduck.admin.service.AdminReviewService;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
+import com.reviewduck.common.util.Logging;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
@@ -42,8 +43,7 @@ public class AdminReviewController {
     @ResponseStatus(HttpStatus.OK)
     public AdminReviewFormsResponse findAllReviewForms(@AuthenticationPrincipal Member member) {
 
-        log.info("uri={}, method = {}",
-            "api/admin/review-forms", "GET");
+        Logging.info("api/admin/review-forms", "GET", "");
 
         validateAdmin(member);
         List<ReviewForm> reviewForms = adminReviewFormService.findAllReviewForms();
@@ -56,8 +56,7 @@ public class AdminReviewController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteReviewForm(@AuthenticationPrincipal Member member, @PathVariable Long reviewFormId) {
 
-        log.info("uri={}, method = {}",
-            "api/admin/review-forms/" + reviewFormId, "DELETE");
+        Logging.info("api/admin/review-forms/" + reviewFormId, "DELETE", "");
 
         validateAdmin(member);
         adminReviewFormService.deleteReviewFormById(reviewFormId);
@@ -69,8 +68,7 @@ public class AdminReviewController {
     public AdminMemberReviewsResponse findMemberReviews(@AuthenticationPrincipal Member member,
         @PathVariable String reviewFormCode) {
 
-        log.info("uri={}, method = {}",
-            "api/admin/review-forms/" + reviewFormCode + "/reviews", "GET");
+        Logging.info("api/admin/review-forms/" + reviewFormCode + "/reviews", "GET", "");
 
         validateAdmin(member);
         List<Review> reviews = reviewService.findAllByCode(reviewFormCode);
@@ -83,8 +81,7 @@ public class AdminReviewController {
     @ResponseStatus(HttpStatus.OK)
     public AdminReviewsResponse findAllReviews(@AuthenticationPrincipal Member member) {
 
-        log.info("uri={}, method = {}",
-            "api/admin/reviews", "GET");
+        Logging.info("api/admin/reviews", "GET", "");
 
         validateAdmin(member);
         List<Review> reviews = adminReviewService.findAllReviews();
@@ -97,8 +94,7 @@ public class AdminReviewController {
     @ResponseStatus(HttpStatus.OK)
     public AdminReviewResponse findReview(@AuthenticationPrincipal Member member, @PathVariable Long reviewId) {
 
-        log.info("uri={}, method = {}",
-            "api/admin/reviews/" + reviewId, "GET");
+        Logging.info("api/admin/reviews/" + reviewId, "GET", "");
 
         validateAdmin(member);
         Review review = reviewService.findById(reviewId);
@@ -111,8 +107,7 @@ public class AdminReviewController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteReview(@AuthenticationPrincipal Member member, @PathVariable Long reviewId) {
 
-        log.info("uri={}, method = {}",
-            "api/admin/reviews/" + reviewId, "DELETE");
+        Logging.info("api/admin/reviews/" + reviewId, "DELETE", "");
 
         validateAdmin(member);
         adminReviewService.deleteReviewById(reviewId);

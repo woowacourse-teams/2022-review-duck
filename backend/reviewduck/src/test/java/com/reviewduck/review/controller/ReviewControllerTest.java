@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.request.AnswerUpdateRequest;
+import com.reviewduck.review.dto.request.ReviewContentUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 import com.reviewduck.review.service.ReviewService;
 
@@ -50,27 +52,60 @@ public class ReviewControllerTest {
         given(memberService.findById(any())).willReturn(member);
     }
 
-    @ParameterizedTest
-    @NullSource
-    @DisplayName("회고 수정 시 답변에 null 값이 들어갈 경우 예외가 발생한다.")
-    void nullAnswerRequestInEditing(String answer) throws Exception {
-        // given
-        ReviewUpdateRequest request = new ReviewUpdateRequest(
-            List.of(new AnswerUpdateRequest(1L, 1L, answer)));
+    @Nested
+    @DisplayName("회고 수정 시")
+    class updateReview {
 
-        // when, then
-        assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "답변은 비어있을 수 없습니다.");
-    }
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("회고 내용에 null 값이 들어갈 경우 예외가 발생한다.")
+        void nullContent(List<ReviewContentUpdateRequest> contents) throws Exception {
+            // given
+            ReviewUpdateRequest request = new ReviewUpdateRequest(contents);
 
-    @ParameterizedTest
-    @NullSource
-    @DisplayName("회고 수정 시 답변 목록에 null 값이 들어갈 경우 예외가 발생한다.")
-    void nullAnswerRequestsInEditing(List<AnswerUpdateRequest> answers) throws Exception {
-        // given
-        ReviewUpdateRequest request = new ReviewUpdateRequest(answers);
+            // when, then
+            assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "회고 답변 관련 오류가 발생했습니다.");
+        }
 
-        // when, then
-        assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "회고 답변 관련 오류가 발생했습니다.");
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("질문 번호에 null 값이 들어갈 경우 예외가 발생한다.")
+        void nullQuestionId(Long questionId) throws Exception {
+            // given
+            ReviewUpdateRequest request = new ReviewUpdateRequest(List.of(
+                new ReviewContentUpdateRequest(questionId, new AnswerUpdateRequest(1L, "answer"))
+            ));
+
+            // when, then
+            assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "질문 번호는 비어있을 수 없습니다.");
+        }
+
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("답변에 null 값이 들어갈 경우 예외가 발생한다.")
+        void nullAnswerUpdateRequest(AnswerUpdateRequest answer) throws Exception {
+            // given
+            ReviewUpdateRequest request = new ReviewUpdateRequest(List.of(
+                new ReviewContentUpdateRequest(1L, answer)
+            ));
+
+            // when, then
+            assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "회고 답변 생성 중 오류가 발생했습니다.");
+        }
+
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("답변 값에 null 값이 들어갈 경우 예외가 발생한다.")
+        void nullAnswer(String answer) throws Exception {
+            // given
+            ReviewUpdateRequest request = new ReviewUpdateRequest(List.of(
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, answer))
+            ));
+
+            // when, then
+            assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "답변은 비어있을 수 없습니다.");
+        }
+
     }
 
     private void assertBadRequestFromPut(String uri, Object request, String errorMessage) throws Exception {

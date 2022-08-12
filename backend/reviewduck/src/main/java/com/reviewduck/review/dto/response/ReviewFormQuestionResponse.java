@@ -11,8 +11,8 @@ import lombok.Getter;
 @Getter
 public class ReviewFormQuestionResponse {
 
-    private Long questionId;
-    private String questionValue;
+    private Long id;
+    private String value;
 
     public static ReviewFormQuestionResponse from(ReviewFormQuestion reviewFormQuestion) {
         return new ReviewFormQuestionResponse(reviewFormQuestion.getId(), reviewFormQuestion.getValue());

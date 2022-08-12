@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,9 +24,9 @@ import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewQuestionUpdateRequest;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionRequest;
@@ -59,298 +60,337 @@ public class ReviewFormServiceTest {
         member2 = memberService.save(tempMember2);
     }
 
-    @Test
-    @DisplayName("회고 폼을 생성한다.")
-    void createReviewForm() {
-        // given
-        String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
+    @Nested
+    @DisplayName("회고 폼 생성")
+    class saveReviewForm {
 
-        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
+        @Test
+        @DisplayName("회고 폼을 생성한다.")
+        void saveReviewForm() {
+            // given
+            String reviewTitle = "title";
+            List<ReviewFormQuestionCreateRequest> questions = List.of(
+                new ReviewFormQuestionCreateRequest("question1"),
+                new ReviewFormQuestionCreateRequest("question2"));
 
-        List<ReviewFormQuestion> expected = questions.stream()
-            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
-            .collect(Collectors.toUnmodifiableList());
+            ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
 
-        int index = 0;
-        for (ReviewFormQuestion reviewFormQuestion : expected) {
-            reviewFormQuestion.setPosition(index++);
+            List<ReviewFormQuestion> expected = questions.stream()
+                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue()))
+                .collect(Collectors.toUnmodifiableList());
+
+            int index = 0;
+            for (ReviewFormQuestion reviewFormQuestion : expected) {
+                reviewFormQuestion.setPosition(index++);
+            }
+
+            // when
+            ReviewForm reviewForm = reviewFormService.save(member1, createRequest);
+
+            // then
+            assertAll(
+                () -> assertThat(reviewForm).isNotNull(),
+                () -> assertThat(reviewForm.getId()).isNotNull(),
+                () -> assertThat(reviewForm.getMember().getNickname()).isEqualTo("제이슨"),
+                () -> assertThat(reviewForm.getCode().length()).isEqualTo(8),
+                () -> assertThat(reviewForm.getTitle()).isEqualTo(reviewTitle),
+                () -> assertThat(reviewForm.getReviewFormQuestions())
+                    .usingRecursiveComparison()
+                    .ignoringFields("id")
+                    .isEqualTo(expected)
+            );
         }
 
-        // when
-        ReviewForm reviewForm = reviewFormService.save(member1, createRequest);
-
-        // then
-        assertAll(
-            () -> assertThat(reviewForm).isNotNull(),
-            () -> assertThat(reviewForm.getId()).isNotNull(),
-            () -> assertThat(reviewForm.getMember().getNickname()).isEqualTo("제이슨"),
-            () -> assertThat(reviewForm.getCode().length()).isEqualTo(8),
-            () -> assertThat(reviewForm.getReviewTitle()).isEqualTo(reviewTitle),
-            () -> assertThat(reviewForm.getReviewFormQuestions())
-                .usingRecursiveComparison()
-                .ignoringFields("id")
-                .isEqualTo(expected)
-        );
     }
 
-    @Test
-    @DisplayName("회고 폼 코드로 회고 폼을 조회한다.")
-    void findReviewForm() {
-        // given
-        String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
-        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
+    @Nested
+    @DisplayName("템플릿 기반 회고폼 생성")
+    class saveReviewFormFromTemplate {
 
-        ReviewForm expected = reviewFormService.save(member1, createRequest);
+        @Test
+        @DisplayName("템플릿을 기반으로 회고 폼을 생성한다.")
+        void saveReviewFormFromTemplate() {
+            // when
+            // 템플릿 생성
+            String templateTitle = "title";
+            String templateDescription = "description";
+            List<TemplateQuestionRequest> questions = List.of(new TemplateQuestionRequest("question1"),
+                new TemplateQuestionRequest("question2"));
 
-        // when
-        ReviewForm actual = reviewFormService.findByCode(expected.getCode());
+            TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
+                questions);
+            Template savedTemplate = templateService.save(member1, templateRequest);
 
-        // then
-        assertThat(expected).isSameAs(actual);
-    }
+            // 템플릿 기반 회고 폼 생성
+            String reviewFormTitle = "reviewFormTitle";
+            ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest(reviewFormTitle);
+            ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(member1, savedTemplate.getId(), request);
 
-    @Test
-    @DisplayName("존재하지 않는 코드로 조회할 수 없다.")
-    void findReviewFormByInvalidCode() {
-        // when, then
-        assertThatThrownBy(() -> reviewFormService.findByCode(invalidCode))
-            .isInstanceOf(NotFoundException.class)
-            .hasMessageContaining("존재하지 않는 회고 폼입니다.");
-    }
+            List<ReviewFormQuestion> expected = questions.stream()
+                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
+                .collect(Collectors.toUnmodifiableList());
 
-    @Test
-    @DisplayName("회고 폼을 수정한다.")
-    void updateReviewForm() {
-        // given
-        ReviewForm savedReviewForm = saveReviewForm(member1);
-        String code = savedReviewForm.getCode();
-        Long questionId = savedReviewForm.getReviewFormQuestions().get(0).getId();
+            int index = 0;
+            for (ReviewFormQuestion reviewFormQuestion : expected) {
+                reviewFormQuestion.setPosition(index++);
+            }
 
-        // when
-        String reviewTitle = "new title";
-        List<ReviewQuestionUpdateRequest> updateRequests = List.of(
-            new ReviewQuestionUpdateRequest(questionId, "new question1"),
-            new ReviewQuestionUpdateRequest(null, "new question3"));
-
-        ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateRequests);
-
-        List<ReviewFormQuestion> expected = updateRequests.stream()
-            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
-            .collect(Collectors.toUnmodifiableList());
-
-        int index = 0;
-        for (ReviewFormQuestion reviewFormQuestion : expected) {
-            reviewFormQuestion.setPosition(index++);
+            // then
+            assertAll(
+                () -> assertThat(savedReviewForm).isNotNull(),
+                () -> assertThat(savedReviewForm.getId()).isNotNull(),
+                () -> assertThat(savedReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
+                () -> assertThat(savedReviewForm.getCode().length()).isEqualTo(8),
+                () -> assertThat(savedReviewForm.getTitle()).isEqualTo(reviewFormTitle),
+                () -> assertThat(savedReviewForm.getReviewFormQuestions())
+                    .usingRecursiveComparison()
+                    .ignoringFields("id")
+                    .isEqualTo(expected)
+            );
         }
 
-        reviewFormService.update(member1, code, updateRequest);
-        ReviewForm foundReviewForm = reviewFormService.findByCode(code);
-
-        assertAll(
-            () -> assertThat(foundReviewForm).isNotNull(),
-            () -> assertThat(foundReviewForm.getId()).isNotNull(),
-            () -> assertThat(foundReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
-            () -> assertThat(foundReviewForm.getCode().length()).isEqualTo(8),
-            () -> assertThat(foundReviewForm.getReviewTitle()).isEqualTo(reviewTitle),
-            () -> assertThat(foundReviewForm.getReviewFormQuestions())
-                .usingRecursiveComparison()
-                .ignoringFields("id")
-                .isEqualTo(expected)
-        );
     }
 
-    @Test
-    @DisplayName("본인이 생성한 회고 폼이 아니면 수정할 수 없다.")
-    void updateNotMyReviewForm() {
-        // given
-        ReviewForm savedReviewForm = saveReviewForm(member1);
-        String code = savedReviewForm.getCode();
-        Long questionId = savedReviewForm.getReviewFormQuestions().get(0).getId();
+    @Nested
+    @DisplayName("회고 폼 코드로 회고 폼 조회")
+    class findByCode {
 
-        // when
-        String reviewTitle = "new title";
-        List<ReviewQuestionUpdateRequest> updateRequests = List.of(
-            new ReviewQuestionUpdateRequest(questionId, "new question1"),
-            new ReviewQuestionUpdateRequest(null, "new question3"));
+        @Test
+        @DisplayName("회고 폼 코드로 회고 폼을 조회한다.")
+        void findReviewForm() {
+            // given
+            ReviewForm expected = saveReviewForm(member1);
 
-        ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateRequests);
+            // when
+            ReviewForm actual = reviewFormService.findByCode(expected.getCode());
 
-        List<ReviewFormQuestion> expected = updateRequests.stream()
-            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
-            .collect(Collectors.toUnmodifiableList());
-
-        int index = 0;
-        for (ReviewFormQuestion reviewFormQuestion : expected) {
-            reviewFormQuestion.setPosition(index++);
+            // then
+            assertThat(expected).isSameAs(actual);
         }
 
-        assertThatThrownBy(() -> reviewFormService.update(member2, code, updateRequest))
-            .isInstanceOf(AuthorizationException.class)
-            .hasMessageContaining("본인이 생성한 회고 폼이 아니면 수정할 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 회고 폼을 수정할 수 없다.")
-    void updateReviewFormByInvalidCode() {
-        // when
-        List<ReviewQuestionUpdateRequest> updateRequests = List.of(new ReviewQuestionUpdateRequest(1L, "new question1"),
-            new ReviewQuestionUpdateRequest(null, "new question3"),
-            new ReviewQuestionUpdateRequest(2L, "new question2"));
-        ReviewFormUpdateRequest reviewFormUpdateRequest = new ReviewFormUpdateRequest("new title", updateRequests);
-        assertThatThrownBy(() -> reviewFormService.update(member1, invalidCode, reviewFormUpdateRequest))
-            .isInstanceOf(NotFoundException.class)
-            .hasMessageContaining("존재하지 않는 회고 폼입니다.");
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 질문을 수정할 수 없다.")
-    void updateReviewFormByInvalidQuestionId() {
-        // given
-        String code = saveReviewForm(member1).getCode();
-
-        // when, then
-        List<ReviewQuestionUpdateRequest> updateRequests = List.of(
-            new ReviewQuestionUpdateRequest(9999999L, "new question"));
-
-        assertThatThrownBy(
-            () -> reviewFormService.update(member1, code, new ReviewFormUpdateRequest("new title", updateRequests)))
-            .isInstanceOf(NotFoundException.class)
-            .hasMessageContaining("존재하지 않는 질문입니다.");
-
-    }
-
-    @Test
-    @DisplayName("회고 폼을 삭제한다.")
-    void deleteReviewForm() {
-        // given
-        ReviewForm savedReviewForm = saveReviewForm(member1);
-        String code = savedReviewForm.getCode();
-
-        // when
-        reviewFormService.deleteByCode(member1, code);
-
-        // then
-        assertThatThrownBy(() -> reviewFormService.findByCode(code))
-            .isInstanceOf(NotFoundException.class)
-            .hasMessageContaining("존재하지 않는 회고 폼입니다.");
-    }
-
-    @Test
-    @DisplayName("본인이 생성한 회고 폼이 아니면 삭제할 수 없다.")
-    void deleteNotMyReviewForm() {
-        // given
-        ReviewForm savedReviewForm = saveReviewForm(member1);
-        String code = savedReviewForm.getCode();
-
-        // when, then
-        assertThatThrownBy(() -> reviewFormService.deleteByCode(member2, code))
-            .isInstanceOf(AuthorizationException.class)
-            .hasMessageContaining("본인이 생성한 회고 폼이 아니면 삭제할 수 없습니다.");
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 회고 폼을 삭제할 수 없다.")
-    void deleteReviewFormByInvalidCode() {
-        // when, then
-        assertThatThrownBy(() -> reviewFormService.deleteByCode(member1, invalidCode))
-            .isInstanceOf(NotFoundException.class)
-            .hasMessageContaining("존재하지 않는 회고 폼입니다.");
-    }
-
-    @Test
-    @DisplayName("템플릿을 기반으로 회고 폼을 생성한다.")
-    void saveReviewFormFromTemplate() {
-        // when
-        // 템플릿 생성
-        String templateTitle = "title";
-        String templateDescription = "description";
-        List<TemplateQuestionRequest> questions = List.of(new TemplateQuestionRequest("question1"),
-            new TemplateQuestionRequest("question2"));
-
-        TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
-            questions);
-        Template savedTemplate = templateService.save(member1, templateRequest);
-
-        // 템플릿 기반 회고 폼 생성
-        String reviewFormTitle = "reviewFormTitle";
-        ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest(reviewFormTitle);
-        ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(member1, savedTemplate.getId(), request);
-
-        List<ReviewFormQuestion> expected = questions.stream()
-            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
-            .collect(Collectors.toUnmodifiableList());
-
-        int index = 0;
-        for (ReviewFormQuestion reviewFormQuestion : expected) {
-            reviewFormQuestion.setPosition(index++);
+        @Test
+        @DisplayName("존재하지 않는 코드로 조회할 수 없다.")
+        void findReviewFormByInvalidCode() {
+            // when, then
+            assertThatThrownBy(() -> reviewFormService.findByCode(invalidCode))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
 
-        // then
-        assertAll(
-            () -> assertThat(savedReviewForm).isNotNull(),
-            () -> assertThat(savedReviewForm.getId()).isNotNull(),
-            () -> assertThat(savedReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
-            () -> assertThat(savedReviewForm.getCode().length()).isEqualTo(8),
-            () -> assertThat(savedReviewForm.getReviewTitle()).isEqualTo(reviewFormTitle),
-            () -> assertThat(savedReviewForm.getReviewFormQuestions())
-                .usingRecursiveComparison()
-                .ignoringFields("id")
-                .isEqualTo(expected)
-        );
     }
 
-    @Test
-    @DisplayName("개인이 작성한 회고를 조회한다.")
-    void findMyReviewForms() {
-        String reviewTitle1 = "title1";
-        List<ReviewFormQuestionRequest> questions1 = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
+    @Nested
+    @DisplayName("자신이 작성한 회고 조회")
+    class findByMember {
 
-        ReviewFormCreateRequest createRequest1 = new ReviewFormCreateRequest(reviewTitle1, questions1);
+        @Test
+        @DisplayName("자신이 작성한 회고를 조회한다.")
+        void findMyReviewForms() {
+            String reviewTitle1 = "title1";
+            List<ReviewFormQuestionCreateRequest> questions1 = List.of(
+                new ReviewFormQuestionCreateRequest("question1"),
+                new ReviewFormQuestionCreateRequest("question2"));
 
-        String reviewTitle2 = "title2";
-        List<ReviewFormQuestionRequest> questions2 = List.of(new ReviewFormQuestionRequest("question3"),
-            new ReviewFormQuestionRequest("question4"));
+            ReviewFormCreateRequest createRequest1 = new ReviewFormCreateRequest(reviewTitle1, questions1);
 
-        ReviewFormCreateRequest createRequest2 = new ReviewFormCreateRequest(reviewTitle2, questions2);
+            String reviewTitle2 = "title2";
+            List<ReviewFormQuestionCreateRequest> questions2 = List.of(
+                new ReviewFormQuestionCreateRequest("question3"),
+                new ReviewFormQuestionCreateRequest("question4"));
 
-        List<ReviewFormQuestion> expected = questions1.stream()
-            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
-            .collect(Collectors.toUnmodifiableList());
+            ReviewFormCreateRequest createRequest2 = new ReviewFormCreateRequest(reviewTitle2, questions2);
 
-        int index = 0;
-        for (ReviewFormQuestion reviewFormQuestion : expected) {
-            reviewFormQuestion.setPosition(index++);
+            List<ReviewFormQuestion> expected = questions1.stream()
+                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue()))
+                .collect(Collectors.toUnmodifiableList());
+
+            int index = 0;
+            for (ReviewFormQuestion reviewFormQuestion : expected) {
+                reviewFormQuestion.setPosition(index++);
+            }
+
+            // when
+            reviewFormService.save(member1, createRequest1);
+            reviewFormService.save(member2, createRequest2);
+
+            List<ReviewForm> myReviewForms = reviewFormService.findByMember(member1);
+
+            // then
+            assertAll(
+                () -> assertThat(myReviewForms).hasSize(1),
+                () -> assertThat(myReviewForms.get(0)).isNotNull(),
+                () -> assertThat(myReviewForms.get(0).getMember().getNickname()).isEqualTo("제이슨"),
+                () -> assertThat(myReviewForms.get(0).getId()).isNotNull(),
+                () -> assertThat(myReviewForms.get(0).getCode().length()).isEqualTo(8),
+                () -> assertThat(myReviewForms.get(0).getTitle()).isEqualTo(reviewTitle1),
+                () -> assertThat(myReviewForms.get(0).getReviewFormQuestions())
+                    .usingRecursiveComparison()
+                    .ignoringFields("id")
+                    .isEqualTo(expected)
+            );
         }
 
-        // when
-        reviewFormService.save(member1, createRequest1);
-        reviewFormService.save(member2, createRequest2);
+    }
 
-        List<ReviewForm> myReviewForms = reviewFormService.findByMember(member1);
+    @Nested
+    @DisplayName("회고 폼 수정")
+    class updateReviewForm {
 
-        // then
-        assertAll(
-            () -> assertThat(myReviewForms).hasSize(1),
-            () -> assertThat(myReviewForms.get(0)).isNotNull(),
-            () -> assertThat(myReviewForms.get(0).getMember().getNickname()).isEqualTo("제이슨"),
-            () -> assertThat(myReviewForms.get(0).getId()).isNotNull(),
-            () -> assertThat(myReviewForms.get(0).getCode().length()).isEqualTo(8),
-            () -> assertThat(myReviewForms.get(0).getReviewTitle()).isEqualTo(reviewTitle1),
-            () -> assertThat(myReviewForms.get(0).getReviewFormQuestions())
-                .usingRecursiveComparison()
-                .ignoringFields("id")
-                .isEqualTo(expected)
-        );
+        @Test
+        @DisplayName("회고 폼을 수정한다.")
+        void updateReviewForm() {
+            // given
+            ReviewForm savedReviewForm = saveReviewForm(member1);
+            String code = savedReviewForm.getCode();
+            Long questionId = savedReviewForm.getReviewFormQuestions().get(0).getId();
+
+            // when
+            String reviewTitle = "new title";
+            List<ReviewFormQuestionUpdateRequest> updateRequests = List.of(
+                new ReviewFormQuestionUpdateRequest(questionId, "new question1"),
+                new ReviewFormQuestionUpdateRequest(null, "new question3"));
+
+            ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateRequests);
+
+            List<ReviewFormQuestion> expected = updateRequests.stream()
+                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue()))
+                .collect(Collectors.toUnmodifiableList());
+
+            int index = 0;
+            for (ReviewFormQuestion reviewFormQuestion : expected) {
+                reviewFormQuestion.setPosition(index++);
+            }
+
+            reviewFormService.update(member1, code, updateRequest);
+            ReviewForm foundReviewForm = reviewFormService.findByCode(code);
+
+            assertAll(
+                () -> assertThat(foundReviewForm).isNotNull(),
+                () -> assertThat(foundReviewForm.getId()).isNotNull(),
+                () -> assertThat(foundReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
+                () -> assertThat(foundReviewForm.getCode().length()).isEqualTo(8),
+                () -> assertThat(foundReviewForm.getTitle()).isEqualTo(reviewTitle),
+                () -> assertThat(foundReviewForm.getReviewFormQuestions())
+                    .usingRecursiveComparison()
+                    .ignoringFields("id")
+                    .isEqualTo(expected)
+            );
+        }
+
+        @Test
+        @DisplayName("본인이 생성한 회고 폼이 아니면 수정할 수 없다.")
+        void updateNotMyReviewForm() {
+            // given
+            ReviewForm savedReviewForm = saveReviewForm(member1);
+            String code = savedReviewForm.getCode();
+            Long questionId = savedReviewForm.getReviewFormQuestions().get(0).getId();
+
+            // when
+            String reviewTitle = "new title";
+            List<ReviewFormQuestionUpdateRequest> updateRequests = List.of(
+                new ReviewFormQuestionUpdateRequest(questionId, "new question1"),
+                new ReviewFormQuestionUpdateRequest(null, "new question3"));
+
+            ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateRequests);
+
+            List<ReviewFormQuestion> expected = updateRequests.stream()
+                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue()))
+                .collect(Collectors.toUnmodifiableList());
+
+            int index = 0;
+            for (ReviewFormQuestion reviewFormQuestion : expected) {
+                reviewFormQuestion.setPosition(index++);
+            }
+
+            assertThatThrownBy(() -> reviewFormService.update(member2, code, updateRequest))
+                .isInstanceOf(AuthorizationException.class)
+                .hasMessageContaining("본인이 생성한 회고 폼이 아니면 수정할 수 없습니다.");
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 회고 폼을 수정할 수 없다.")
+        void updateReviewFormByInvalidCode() {
+            // when
+            List<ReviewFormQuestionUpdateRequest> updateRequests = List.of(
+                new ReviewFormQuestionUpdateRequest(1L, "new question1"),
+                new ReviewFormQuestionUpdateRequest(null, "new question3"),
+                new ReviewFormQuestionUpdateRequest(2L, "new question2"));
+
+            ReviewFormUpdateRequest reviewFormUpdateRequest = new ReviewFormUpdateRequest("new title", updateRequests);
+
+            assertThatThrownBy(() -> reviewFormService.update(member1, invalidCode, reviewFormUpdateRequest))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("존재하지 않는 회고 폼입니다.");
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 질문을 수정할 수 없다.")
+        void updateReviewFormByInvalidQuestionId() {
+            // given
+            String code = saveReviewForm(member1).getCode();
+
+            // when, then
+            List<ReviewFormQuestionUpdateRequest> updateRequests = List.of(
+                new ReviewFormQuestionUpdateRequest(9999999L, "new question"));
+
+            assertThatThrownBy(
+                () -> reviewFormService.update(member1, code, new ReviewFormUpdateRequest("new title", updateRequests)))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("존재하지 않는 질문입니다.");
+
+        }
+
+    }
+
+    @Nested
+    @DisplayName("회고 폼 코드로 회고 폼 삭제")
+    class deleteByCode {
+
+        @Test
+        @DisplayName("회고 폼을 삭제한다.")
+        void deleteReviewForm() {
+            // given
+            ReviewForm savedReviewForm = saveReviewForm(member1);
+            String code = savedReviewForm.getCode();
+
+            // when
+            reviewFormService.deleteByCode(member1, code);
+
+            // then
+            assertThatThrownBy(() -> reviewFormService.findByCode(code))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("존재하지 않는 회고 폼입니다.");
+        }
+
+        @Test
+        @DisplayName("본인이 생성한 회고 폼이 아니면 삭제할 수 없다.")
+        void deleteNotMyReviewForm() {
+            // given
+            ReviewForm savedReviewForm = saveReviewForm(member1);
+            String code = savedReviewForm.getCode();
+
+            // when, then
+            assertThatThrownBy(() -> reviewFormService.deleteByCode(member2, code))
+                .isInstanceOf(AuthorizationException.class)
+                .hasMessageContaining("본인이 생성한 회고 폼이 아니면 삭제할 수 없습니다.");
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 회고 폼을 삭제할 수 없다.")
+        void deleteReviewFormByInvalidCode() {
+            // when, then
+            assertThatThrownBy(() -> reviewFormService.deleteByCode(member1, invalidCode))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("존재하지 않는 회고 폼입니다.");
+        }
+
     }
 
     private ReviewForm saveReviewForm(Member member) {
-        List<ReviewFormQuestionRequest> createRequests = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
+        List<ReviewFormQuestionCreateRequest> createRequests = List.of(
+            new ReviewFormQuestionCreateRequest("question1"),
+            new ReviewFormQuestionCreateRequest("question2"));
+
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest("title", createRequests);
 
         return reviewFormService.save(member, createRequest);
