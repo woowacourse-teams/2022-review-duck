@@ -1,7 +1,7 @@
 export const dummyTemplates = {
   templates: [
     {
-      template: {
+      info: {
         id: 0,
         title: '샬라샬라11 템플릿',
         description: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
@@ -16,7 +16,7 @@ export const dummyTemplates = {
       },
     },
     {
-      template: {
+      info: {
         id: 1,
         title: '샬라샬라22 템플릿 샬라샬라 템플릿 샬라샬라 템플릿 샬라샬라 템플릿',
         description:
@@ -32,7 +32,7 @@ export const dummyTemplates = {
       },
     },
     {
-      template: {
+      info: {
         id: 2,
         title: '샬라샬라33 템플릿',
         description: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
@@ -47,7 +47,7 @@ export const dummyTemplates = {
       },
     },
     {
-      template: {
+      info: {
         id: 3,
         title: '샬라샬라44 템플릿',
         description: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
@@ -62,7 +62,7 @@ export const dummyTemplates = {
       },
     },
     {
-      template: {
+      info: {
         id: 4,
         title: '샬라샬라55 템플릿',
         description: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
@@ -77,7 +77,7 @@ export const dummyTemplates = {
       },
     },
     {
-      template: {
+      info: {
         id: 5,
         title: '샬라샬라66 템플릿',
         description: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
@@ -92,7 +92,7 @@ export const dummyTemplates = {
       },
     },
     {
-      template: {
+      info: {
         id: 6,
         title: '샬라샬라77 템플릿',
         description: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
@@ -107,7 +107,7 @@ export const dummyTemplates = {
       },
     },
     {
-      template: {
+      info: {
         id: 7,
         title: '샬라샬라88 템플릿',
         description: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
@@ -125,7 +125,7 @@ export const dummyTemplates = {
 };
 
 export const dummyTemplate = {
-  template: {
+  info: {
     id: 2,
     title: '팀 회고덕 스프린트 회고',
     description: '우아한테크코스 회고덕팀에서 매 스프린트 종료 후 진행하는 회고 템플릿입니다.',
