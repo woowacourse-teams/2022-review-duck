@@ -14,6 +14,7 @@ import com.reviewduck.admin.dto.response.AdminMembersResponse;
 import com.reviewduck.admin.service.AdminMemberService;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
+import com.reviewduck.common.util.Logging;
 import com.reviewduck.member.domain.Member;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,8 +34,7 @@ public class AdminMemberController {
     @ResponseStatus(HttpStatus.OK)
     public AdminMembersResponse findAllMembers(@AuthenticationPrincipal Member member) {
 
-        log.info("uri={}, method = {}",
-            "api/admin/members", "GET");
+        Logging.info("api/admin/members", "GET", "");
 
         validateAdmin(member);
         List<Member> members = adminMemberService.findAllMembers();
@@ -47,8 +47,7 @@ public class AdminMemberController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteMember(@AuthenticationPrincipal Member member, @PathVariable Long memberId) {
 
-        log.info("uri={}, method = {}",
-            "api/admin/members/" + memberId, "DELETE");
+        Logging.info("api/admin/members/" + memberId, "DELETE", "");
 
         validateAdmin(member);
         adminMemberService.deleteMemberById(memberId);
