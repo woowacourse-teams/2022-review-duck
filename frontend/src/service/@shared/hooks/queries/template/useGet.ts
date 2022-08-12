@@ -1,14 +1,22 @@
 import { useQuery, UseQueryOptions } from 'react-query';
 
-import { GetTemplatesResponse, GetTemplateResponse, ErrorResponse } from 'service/@shared/types';
+import {
+  GetTemplatesResponse,
+  GetTemplateResponse,
+  ErrorResponse,
+  TemplateFilterType,
+} from 'service/@shared/types';
 
 import templateAPI from 'service/@shared/api/template';
 import { QUERY_KEY } from 'service/@shared/constants';
 
-function useGetTemplates(queryOptions?: UseQueryOptions<GetTemplatesResponse, ErrorResponse>) {
+function useGetTemplates(
+  filter: TemplateFilterType,
+  queryOptions?: UseQueryOptions<GetTemplatesResponse, ErrorResponse>,
+) {
   return useQuery<GetTemplatesResponse, ErrorResponse>(
-    [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_TEMPLATES],
-    () => templateAPI.getTemplates(),
+    [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_TEMPLATES, { filter }],
+    () => templateAPI.getTemplates(filter),
     {
       suspense: true,
       useErrorBoundary: false,
@@ -22,7 +30,7 @@ function useGetTemplate(
   queryOptions?: UseQueryOptions<GetTemplateResponse, ErrorResponse>,
 ) {
   return useQuery<GetTemplateResponse, ErrorResponse>(
-    [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_TEMPLATE],
+    [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_TEMPLATE, { templateId }],
     () => templateAPI.getTemplate(templateId),
     {
       suspense: true,
