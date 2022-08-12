@@ -45,6 +45,7 @@ public class ReviewFormService {
     @Transactional
     public ReviewForm saveFromTemplate(Member member, Long templateId, ReviewFormCreateFromTemplateRequest request) {
         Template template = templateService.findById(templateId);
+        template.increaseUsedCount();
 
         List<String> questionValues = template.getQuestions().stream()
             .map(TemplateQuestion::getValue)
