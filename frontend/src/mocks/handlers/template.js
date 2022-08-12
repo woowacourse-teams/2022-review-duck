@@ -8,7 +8,7 @@ const templateHandlers = [
     if (req.url.searchParams.get('filter') === 'trend') {
       const copyTemplates = [...dummyTemplates.templates];
       const sortedTemplates = copyTemplates.sort(
-        (first, second) => second.template.usedCount - first.template.usedCount,
+        (first, second) => second.info.usedCount - first.info.usedCount,
       );
       return res(ctx.status(200), ctx.json({ templates: sortedTemplates }));
     }
