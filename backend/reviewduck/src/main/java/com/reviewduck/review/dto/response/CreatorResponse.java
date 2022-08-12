@@ -10,10 +10,17 @@ import lombok.Getter;
 @Getter
 public class CreatorResponse {
 
+    private Long id;
     private String nickname;
+    private String socialNickname;
     private String profileUrl;
 
     public static CreatorResponse from(Member member) {
-        return new CreatorResponse(member.getNickname(), member.getProfileUrl());
+        return new CreatorResponse(
+            Long.parseLong(member.getSocialId()),
+            member.getNickname(),
+            member.getSocialNickname(),
+            member.getProfileUrl()
+        );
     }
 }
