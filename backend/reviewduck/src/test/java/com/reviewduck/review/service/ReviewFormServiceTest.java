@@ -137,6 +137,7 @@ public class ReviewFormServiceTest {
 
             // then
             assertAll(
+                // save Review Form
                 () -> assertThat(savedReviewForm).isNotNull(),
                 () -> assertThat(savedReviewForm.getId()).isNotNull(),
                 () -> assertThat(savedReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
@@ -145,8 +146,11 @@ public class ReviewFormServiceTest {
                 () -> assertThat(savedReviewForm.getReviewFormQuestions())
                     .usingRecursiveComparison()
                     .ignoringFields("id")
-                    .isEqualTo(expected)
+                    .isEqualTo(expected),
+                // template usedCount ++
+                () -> assertThat(savedTemplate.getUsedCount()).isEqualTo(1)
             );
+
         }
 
     }

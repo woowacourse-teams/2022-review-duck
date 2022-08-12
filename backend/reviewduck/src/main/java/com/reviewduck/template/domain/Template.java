@@ -48,6 +48,9 @@ public class Template extends BaseDate {
     @OrderBy("position asc")
     private List<TemplateQuestion> questions;
 
+    @Column
+    private int usedCount;
+
     public Template(Member member, String templateTitle, String templateDescription, List<String> questionValues) {
         validateWhenCreate(member, templateTitle, templateDescription, questionValues);
 
@@ -55,6 +58,7 @@ public class Template extends BaseDate {
         this.member = member;
         this.templateDescription = templateDescription;
         this.questions = setQuestions(questionValues);
+        this.usedCount = 0;
     }
 
     public void update(String templateTitle, String templateDescription, List<TemplateQuestion> questions) {
@@ -64,6 +68,10 @@ public class Template extends BaseDate {
         this.templateDescription = templateDescription;
         sortQuestions(questions);
         this.questions = questions;
+    }
+
+    public void increaseUsedCount() {
+        usedCount++;
     }
 
     public boolean isMine(Member member) {
