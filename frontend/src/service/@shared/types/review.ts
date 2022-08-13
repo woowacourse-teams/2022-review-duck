@@ -1,6 +1,7 @@
 export interface Question {
   id?: number;
   value: string;
+  description?: string;
 }
 
 export interface Answer {
@@ -8,17 +9,44 @@ export interface Answer {
   value: string;
 }
 
+export interface UserContentRequireField {
+  creator: UserProfile;
+  isSelf: boolean;
+  updateDate: string;
+}
+
 export interface ReviewForm {
+  title: string;
+  questions: Question[];
+  info: UserContentRequireField;
+}
+
+export interface ReviewAnswer {
+  id: number;
+  answers: Array<{
+    question: Required<Question>;
+    answer: Answer;
+  }>;
+  info: UserContentRequireField;
+}
+
+export type ReviewFormAnswerList = Array<{
+  id: number;
+  answers: Array<{
+    question: Required<Question>;
+    answer: Required<Answer>;
+  }>;
+  info: UserContentRequireField;
+}>;
+
+// API 관련 타입
+
+export interface ReviewFormResponse {
   reviewFormTitle: string;
   questions: Question[];
 }
 
-export interface ReviewContent {
-  question: Question;
-  answer: Answer;
-}
-
-export interface GetReviewFormResponse extends ReviewForm {
+export interface GetReviewFormResponse extends ReviewFormResponse {
   updatedAt: number;
   creator: UserProfile;
   isCreator: boolean;
@@ -29,18 +57,24 @@ export interface GetReviewAnswerResponse {
   updatedAt: number;
   creator: UserProfile;
   isCreator: boolean;
-  contents: ReviewContent[];
+  contents: Array<{
+    question: Required<Question>;
+    answer: Required<Answer>;
+  }>;
 }
 
-export interface GetReviewFormAnswerResponse {
+export type GetReviewFormAnswerResponse = Array<{
   id: number;
   updatedAt: number;
   creator: UserProfile;
   isCreator: boolean;
-  contents: ReviewContent[];
-}
+  contents: Array<{
+    question: Required<Question>;
+    answer: Required<Answer>;
+  }>;
+}>;
 
-export type CreateReviewFormRequest = ReviewForm;
+export type CreateReviewFormRequest = ReviewFormResponse;
 
 export interface CreateReviewFormResponse {
   reviewFormCode: string;
@@ -58,7 +92,7 @@ export interface CreateReviewAnswerRequest {
 
 export type CreateReviewAnswerResponse = null;
 
-export interface UpdateReviewFormRequest extends ReviewForm {
+export interface UpdateReviewFormRequest extends ReviewFormResponse {
   reviewFormCode: string;
 }
 
