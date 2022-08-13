@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 
-function useUniqueKey() {
-  const keyRef = useRef(0);
+function useUniqueKey(startKey?: number) {
+  const keyRef = useRef(startKey || 0);
 
   const getUniqueKey = () => {
     keyRef.current += 1;
