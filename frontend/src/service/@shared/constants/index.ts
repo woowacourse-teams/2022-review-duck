@@ -78,17 +78,17 @@ const REVIEW_FORM_CODE_REGEX = `(?=.*[A-Za-z])(?=.*[0-9])[a-zA-Z0-9]{${REVIEW_FO
 const API_URI = {
   REVIEW: {
     GET_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
-    GET_ANSWER: (reviewId: number) => `/api/reviews/${reviewId}`,
+    GET_ANSWER: (reviewId: numberString) => `/api/reviews/${reviewId}`,
     GET_FORM_ANSWER: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}/reviews`,
 
     CREATE_FORM: '/api/review-forms',
     CREATE_ANSWER: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
 
     UPDATE_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
-    UPDATE_ANSWER: (reviewId: number) => `/api/reviews/${reviewId}`,
+    UPDATE_ANSWER: (reviewId: numberString) => `/api/reviews/${reviewId}`,
 
     DELETE_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
-    DELETE_ANSWER: (reviewId: number) => `/api/reviews/${reviewId}`,
+    DELETE_ANSWER: (reviewId: numberString) => `/api/reviews/${reviewId}`,
   },
 };
 
