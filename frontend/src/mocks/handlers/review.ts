@@ -9,7 +9,7 @@ const reviewHandlers = [
     res(ctx.status(200), ctx.json(DUMMY_REVIEW.GET_FORM)),
   ),
 
-  rest.get(reviewduckAPI(API_URI.REVIEW.GET_ANSWER(':reviewId')), (req, res, ctx) =>
+  rest.get(reviewduckAPI(API_URI.REVIEW.GET_ANSWER(':reviewId' as numberString)), (req, res, ctx) =>
     res(ctx.status(200), ctx.json(DUMMY_REVIEW.GET_ANSWER)),
   ),
 
@@ -29,16 +29,18 @@ const reviewHandlers = [
     res(ctx.status(200), ctx.json(DUMMY_REVIEW.UPDATE_FORM)),
   ),
 
-  rest.put(reviewduckAPI(API_URI.REVIEW.UPDATE_ANSWER(':reviewId')), (req, res, ctx) =>
-    res(ctx.status(200), ctx.json(DUMMY_REVIEW.UPDATE_ANSWER)),
+  rest.put(
+    reviewduckAPI(API_URI.REVIEW.UPDATE_ANSWER(':reviewId' as numberString)),
+    (req, res, ctx) => res(ctx.status(200), ctx.json(DUMMY_REVIEW.UPDATE_ANSWER)),
   ),
 
   rest.delete(reviewduckAPI(API_URI.REVIEW.DELETE_FORM(':reviewFormCode')), (req, res, ctx) =>
     res(ctx.status(200), ctx.json(null)),
   ),
 
-  rest.delete(reviewduckAPI(API_URI.REVIEW.DELETE_ANSWER(':reviewId')), (req, res, ctx) =>
-    res(ctx.status(200), ctx.json(null)),
+  rest.delete(
+    reviewduckAPI(API_URI.REVIEW.DELETE_ANSWER(':reviewId' as numberString)),
+    (req, res, ctx) => res(ctx.status(200), ctx.json(null)),
   ),
 ];
 
