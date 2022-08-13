@@ -5,7 +5,6 @@ import { useNavigate, useParams, Link, useSearchParams } from 'react-router-dom'
 import cn from 'classnames';
 
 import useSnackbar from 'common/hooks/useSnackbar';
-import useUniqueKey from 'common/hooks/useUniqueKey';
 import useQuestions from 'service/review/hooks/useQuestions';
 
 import { getErrorMessage, setFormFocus } from 'service/@shared/utils';
@@ -32,15 +31,12 @@ function ReviewFormEditorPage() {
     isSubmitLoading,
     isLoadError,
     loadError,
-    trimQuestions,
     submitReviewForm,
   } = useReviewFormEditor(reviewFormCode);
 
-  const [reviewFormTitle, setReviewTitle] = useState(initialReviewForm.reviewFormTitle);
-  const { questions, addQuestion, removeQuestion, updateQuestion } = useQuestions(
-    initialReviewForm.questions,
-  );
-  const getUniqueListKey = useUniqueKey();
+  const [reviewFormTitle, setReviewTitle] = useState(initialReviewForm.title);
+  const { questions, addQuestion, removeQuestion, updateQuestion, removeBlankQuestions } =
+    useQuestions(initialReviewForm.questions);
 
   const { showSnackbar } = useSnackbar();
   const redirectUri = searchParams.get('redirect');
@@ -90,7 +86,7 @@ function ReviewFormEditorPage() {
   const handleSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const submitQuestions = trimQuestions(questions);
+    const submitQuestions = removeBlankQuestions(questions);
 
     try {
       validateReviewForm(reviewFormTitle, submitQuestions);
@@ -137,7 +133,7 @@ function ReviewFormEditorPage() {
             (question, index) =>
               question.value && (
                 <QuestionCard
-                  key={question.id || getUniqueListKey()}
+                  key={question.key}
                   numbering={index + 1}
                   type="text"
                   title={question.value}
@@ -161,7 +157,7 @@ function ReviewFormEditorPage() {
           <div className={cn(styles.itemContainer, 'flex-container column')}>
             {questions.map((question, index) => (
               <QuestionEditor
-                key={question.id || getUniqueListKey()}
+                key={question.key}
                 numbering={index + 1}
                 value={question.value}
                 onChange={handleUpdateQuestion(index)}

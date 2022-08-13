@@ -1,7 +1,6 @@
 import { UseMutationResult } from 'react-query';
 
 import {
-  Question,
   ReviewForm,
   CreateReviewFormRequest,
   UpdateReviewFormRequest,
@@ -31,16 +30,21 @@ function useReviewFormEditor(reviewFormCode: string) {
   });
 
   const initialReviewForm: ReviewForm = getReviewFormQuery.data || {
-    reviewFormTitle: '',
+    title: '',
     questions: [
       {
         value: '',
       },
     ],
+    info: {
+      creator: {
+        profileUrl: '',
+        nickname: '알 수 없음',
+      },
+      isSelf: false,
+      updateDate: '오류',
+    },
   };
-
-  const trimQuestions = (questions: Question[]) =>
-    questions.filter((question) => !!question.value?.trim());
 
   return {
     initialReviewForm,
@@ -48,7 +52,6 @@ function useReviewFormEditor(reviewFormCode: string) {
     isLoadError: getReviewFormQuery.isError,
     loadError: getReviewFormQuery.error,
     isSubmitLoading: submitMutation.isLoading,
-    trimQuestions,
     submitReviewForm: submitMutation as SubmitMutationResult,
   };
 }
