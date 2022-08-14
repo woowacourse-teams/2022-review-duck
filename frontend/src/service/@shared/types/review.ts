@@ -2,8 +2,13 @@ export interface Question {
   id?: number;
   value: string;
   description?: string;
+  answer?: Answer;
 }
 
+export interface AnsweredQuestion<RequiredAnswerId = true>
+  extends RequiredPartialType<Question, 'id'> {
+  answer: RequiredAnswerId extends true ? Required<Answer> : Answer;
+}
 export interface Answer {
   id?: number;
   value: string;
@@ -23,19 +28,13 @@ export interface ReviewForm {
 
 export interface ReviewAnswer {
   id: number;
-  answers: Array<{
-    question: Required<Question>;
-    answer: Answer;
-  }>;
+  questions: AnsweredQuestion<false>[];
   info: UserContentRequireField;
 }
 
 export type ReviewFormAnswerList = Array<{
   id: number;
-  answers: Array<{
-    question: Required<Question>;
-    answer: Required<Answer>;
-  }>;
+  questions: AnsweredQuestion[];
   info: UserContentRequireField;
 }>;
 
@@ -84,9 +83,7 @@ export interface CreateReviewAnswerRequest {
   reviewFormCode: string;
   contents: Array<{
     questionId: number;
-    answer: {
-      value: Answer;
-    };
+    answer: Answer;
   }>;
 }
 
