@@ -8,9 +8,9 @@ import { PAGE_LIST } from 'service/@shared/constants';
 import MainLayout from 'service/@shared/layout/MainLayout';
 import ReviewLayout from 'service/review/layout/ReviewLayout';
 import Playground from 'service/review/pages/Playground';
+import ReviewAnswerEditorPage from 'service/review/pages/ReviewAnswerEditorPage';
 import ReviewFormEditorPage from 'service/review/pages/ReviewFormEditorPage';
 import ReviewOverviewPage from 'service/review/pages/ReviewOverviewPage';
-import ReviewPage from 'service/review/pages/ReviewPage';
 import TemplateDetailPage from 'service/template/pages/TemplateDetailPage';
 import TemplateListPage from 'service/template/pages/TemplateListPage';
 import Authorize from 'service/user/pages/Authorize';
@@ -40,9 +40,9 @@ function PageRoutes() {
         <Route element={<RequireAuth />}>
           <Route>
             <Route path={PAGE_LIST.REVIEW}>
-              <Route index element={<ReviewPage />} />
-              <Route path=":reviewFormCode" element={<ReviewPage />} />
-              <Route path=":reviewFormCode/:reviewId" element={<ReviewPage />} />
+              <Route index element={<ReviewAnswerEditorPage />} />
+              <Route path=":reviewFormCode" element={<ReviewAnswerEditorPage />} />
+              <Route path=":reviewFormCode/:reviewId" element={<ReviewAnswerEditorPage />} />
             </Route>
           </Route>
 
