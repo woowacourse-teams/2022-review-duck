@@ -51,7 +51,12 @@ function useGetReviewAnswer(
 
       select: (data) => ({
         id: data.id,
-        answers: data.contents,
+        questions: data.contents.map((content) => ({
+          id: content.question.id,
+          value: content.question.value,
+          description: content.question.description,
+          answer: content.answer,
+        })),
         info: {
           creator: data.creator,
           isSelf: data.isCreator,
@@ -73,13 +78,18 @@ function useGetReviewFormAnswer(
       ...queryOptions,
 
       select: (data) =>
-        data.map((answer) => ({
-          id: answer.id,
-          answers: answer.contents,
+        data.map((review) => ({
+          id: review.id,
+          questions: review.contents.map((content) => ({
+            id: content.question.id,
+            value: content.question.value,
+            description: content.question.description,
+            answer: content.answer,
+          })),
           info: {
-            creator: answer.creator,
-            isSelf: answer.isCreator,
-            updateDate: getElapsedTimeText(answer.updatedAt),
+            creator: review.creator,
+            isSelf: review.isCreator,
+            updateDate: getElapsedTimeText(review.updatedAt),
           },
         })),
     },
