@@ -1,0 +1,18 @@
+@import 'styles/@global.scss';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 5rem 3rem;
+}
+
+.review-form-title {
+  margin-bottom: 1rem;
+}
+
+.confirm-buttons {
+  display: grid;
+  grid-template-columns: 47.5% 47.5%;
+  gap: 5%;
+}
