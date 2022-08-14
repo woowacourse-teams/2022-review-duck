@@ -25,3 +25,7 @@ declare module '*.gif' {
 */
 
 type numberString = `${number}` | number;
+
+type RequiredPartialType<Type, P extends keyof Type> = Type & {
+  [key in P]-?: Type[key];
+};
