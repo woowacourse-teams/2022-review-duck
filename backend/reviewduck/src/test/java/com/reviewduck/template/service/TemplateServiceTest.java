@@ -283,7 +283,7 @@ public class TemplateServiceTest {
         List<Template> myTemplates = templateService.findByMember(member2);
 
         List<TemplateQuestion> expectedTemplateQuestions = questions2.stream()
-            .map(questionUpdateRequest -> new TemplateQuestion(questionUpdateRequest.getQuestionValue(), ""))
+            .map(questionUpdateRequest -> new TemplateQuestion(questionUpdateRequest.getValue(), ""))
             .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
@@ -307,7 +307,7 @@ public class TemplateServiceTest {
 
     private List<TemplateQuestion> convertRequestToQuestions(List<TemplateQuestionRequest> questions) {
         List<TemplateQuestion> expected = questions.stream()
-            .map(questionRequest -> new TemplateQuestion(questionRequest.getQuestionValue(), ""))
+            .map(questionRequest -> new TemplateQuestion(questionRequest.getValue(), ""))
             .collect(Collectors.toUnmodifiableList());
 
         int index = 0;

@@ -117,8 +117,7 @@ public class ReviewFormServiceTest {
             List<TemplateQuestionRequest> questions = List.of(new TemplateQuestionRequest("question1"),
                 new TemplateQuestionRequest("question2"));
 
-            TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
-                questions);
+            TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription, questions);
             Template savedTemplate = templateService.save(member1, templateRequest);
 
             // 템플릿 기반 회고 폼 생성
@@ -127,7 +126,7 @@ public class ReviewFormServiceTest {
             ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(member1, savedTemplate.getId(), request);
 
             List<ReviewFormQuestion> expected = questions.stream()
-                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue(), ""))
+                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(), ""))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;

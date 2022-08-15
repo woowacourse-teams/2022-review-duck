@@ -30,10 +30,11 @@ public class TemplateService {
     public Template save(Member member, TemplateCreateRequest createRequest) {
 
         List<TemplateQuestion> questions = createRequest.getQuestions().stream()
-            .map(request -> templateQuestionService.save(request.getQuestionValue(), ""))
+            .map(request -> templateQuestionService.save(request.getValue(), ""))
             .collect(Collectors.toUnmodifiableList());
 
-        Template template = new Template(member, createRequest.getTemplateTitle(),
+        Template template = new Template(member,
+            createRequest.getTemplateTitle(),
             createRequest.getTemplateDescription(),
             questions);
 

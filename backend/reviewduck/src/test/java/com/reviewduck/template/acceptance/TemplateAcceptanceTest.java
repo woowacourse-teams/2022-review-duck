@@ -22,7 +22,7 @@ import com.reviewduck.template.dto.request.TemplateQuestionRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
 import com.reviewduck.template.dto.response.MyTemplatesResponse;
-import com.reviewduck.template.dto.response.TemplateCreateResponse;
+import com.reviewduck.template.dto.response.TemplateIdResponse;
 
 public class TemplateAcceptanceTest extends AcceptanceTest {
 
@@ -312,7 +312,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
         return post("/api/templates", templateCreateRequest, accessToken)
             .extract()
-            .as(TemplateCreateResponse.class)
+            .as(TemplateIdResponse.class)
             .getTemplateId();
     }
 }

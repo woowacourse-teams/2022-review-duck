@@ -27,7 +27,7 @@ import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
 import com.reviewduck.template.dto.response.MyTemplatesResponse;
-import com.reviewduck.template.dto.response.TemplateCreateResponse;
+import com.reviewduck.template.dto.response.TemplateIdResponse;
 import com.reviewduck.template.dto.response.TemplateResponse;
 import com.reviewduck.template.dto.response.TemplatesFindResponse;
 import com.reviewduck.template.service.TemplateService;
@@ -46,13 +46,13 @@ public class TemplateController {
     @Operation(summary = "템플릿을 생성한다.")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TemplateCreateResponse create(@AuthenticationPrincipal Member member,
+    public TemplateIdResponse create(@AuthenticationPrincipal Member member,
         @RequestBody @Valid TemplateCreateRequest request) {
 
         info("/api/templates", "POST", request.toString());
 
         Template template = templateService.save(member, request);
-        return TemplateCreateResponse.from(template);
+        return TemplateIdResponse.from(template);
     }
 
     @Operation(summary = "템플릿을 기반으로 회고 폼을 생성한다.")
