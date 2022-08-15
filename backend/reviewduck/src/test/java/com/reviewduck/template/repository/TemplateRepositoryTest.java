@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +16,6 @@ import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.config.JpaAuditingConfig;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
-import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.domain.TemplateQuestion;
 
@@ -164,17 +162,5 @@ public class TemplateRepositoryTest {
         Template template = new Template(member, "title", "description", questions);
 
         return templateRepository.save(template);
-    }
-
-    private List<ReviewFormQuestion> convertValuesToQuestions(List<String> questionValues) {
-        List<ReviewFormQuestion> reviewFormQuestions = questionValues.stream()
-            .map(ReviewFormQuestion::new)
-            .collect(Collectors.toUnmodifiableList());
-
-        int index = 0;
-        for (ReviewFormQuestion reviewFormQuestion : reviewFormQuestions) {
-            reviewFormQuestion.setPosition(index++);
-        }
-        return reviewFormQuestions;
     }
 }
