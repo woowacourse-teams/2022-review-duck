@@ -1,8 +1,11 @@
 package com.reviewduck.auth.controller;
 
+import java.util.Objects;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -19,6 +22,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
+    private static final Member MEMBER_NOT_LOGIN = new Member("-1", "socialNickname", "nickname", "url");
+
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
 
@@ -32,6 +37,11 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
+
+        if (isLoginRequired(request)) {
+            return MEMBER_NOT_LOGIN;
+        }
+
         String token = AuthorizationExtractor.extract(request);
 
         jwtTokenProvider.validateToken(token);
@@ -39,5 +49,17 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         Long memberId = Long.parseLong(jwtTokenProvider.getPayload(token));
 
         return memberService.findById(memberId);
+    }
+
+    private boolean isLoginRequired(HttpServletRequest request) {
+        return isTokenRequired(request) && isTokenNull(request);
+    }
+
+    private boolean isTokenRequired(HttpServletRequest request) {
+        return request.getRequestURI().matches("/api/review-forms/\\w{8}/reviews");
+    }
+
+    private boolean isTokenNull(HttpServletRequest request) {
+        return Objects.isNull(request.getHeader(HttpHeaders.AUTHORIZATION));
     }
 }

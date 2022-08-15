@@ -32,6 +32,7 @@ import com.reviewduck.review.dto.response.ReviewResponse;
 public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
     private static final String invalidCode = "aaaaaaaa";
+    private static final String invalidToken = "tokentokentoken.invalidinvalidinvalid.tokentokentoken";
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -259,7 +260,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("로그인하지 않은 상태로 조회할 수 없다.")
+        @DisplayName("로그인하지 않은 상태로 조회할 수 있다.")
         void withoutLogin() {
             // given
             String code = createReviewFormAndGetCode(accessToken1);
@@ -270,8 +271,34 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             ));
             post("/api/review-forms/" + code, createRequest, accessToken1);
 
+            // when
+            List<ReviewResponse> response = get("/api/review-forms/" + code + "/reviews")
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .body()
+                .jsonPath().getList(".", ReviewResponse.class);
+
+            ReviewResponse reviewResponse = response.get(0);
+
+            // then
+            assertThat(reviewResponse.getContents()).hasSize(2);
+        }
+
+        @Test
+        @DisplayName("잘못된 토큰 값으로 조회할 수 없다.")
+        void withInvalidMember() {
+            // given
+            String code = createReviewFormAndGetCode(accessToken1);
+
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+            ));
+            post("/api/review-forms/" + code, createRequest, accessToken1);
+            System.out.println(accessToken1);
+
             // when, then
-            get("/api/review-forms/" + code + "/reviews")
+            get("/api/review-forms/" + code + "/reviews", invalidToken)
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
@@ -282,7 +309,6 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             get("/api/review-forms/" + invalidCode + "/reviews", accessToken1)
                 .statusCode(HttpStatus.NOT_FOUND.value());
         }
-
     }
 
     @Nested
