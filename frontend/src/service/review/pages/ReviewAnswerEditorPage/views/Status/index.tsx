@@ -31,18 +31,18 @@ const LogoButton = ({ link }: LogoLinkProps) => {
 };
 
 interface FocusQuestionProps {
-  question: string;
   description: string;
+  children: string;
 }
 
-const FocusQuestion = ({ question, description }: FocusQuestionProps) => {
+const FocusQuestion = ({ description, children }: FocusQuestionProps) => {
   return (
     <FlexContainer className={styles.focusQuestion} gap="medium">
-      <Text key={`title-${question}`} element="h1" className={styles.title} size={40} weight="bold">
-        {question}
+      <Text key={`title-${children}`} element="h1" className={styles.title} size={40} weight="bold">
+        {children}
       </Text>
 
-      <Text key={`description-${question}`} element="h3" className={styles.description} size={16}>
+      <Text key={`description-${children}`} element="h3" className={styles.description} size={16}>
         {description}
       </Text>
     </FlexContainer>

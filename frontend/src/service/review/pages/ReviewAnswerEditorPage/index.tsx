@@ -12,8 +12,9 @@ import { PAGE_LIST } from 'service/@shared/constants';
 
 /*
   TODO:
-  - 상수 분리
-  - 에러 바운더리 적용
+  - [ ] 회고 수정 기능 구현
+  - [ ] 상수 분리
+  - [ ] 에러 바운더리 적용
 
 */
 
@@ -89,7 +90,9 @@ function ReviewAnswerEditorPage() {
       <Status>
         <Status.LogoButton link={PAGE_LIST.HOME} />
 
-        <Status.FocusQuestion question="유저가 포커스한 질문" description="질문에 대한 설명" />
+        <Status.FocusQuestion description="질문에 대한 설명">
+          유저가 포커스한 질문들
+        </Status.FocusQuestion>
         <Status.AnsweredState answeredCount={answeredCount} questionCount={questions.length} />
         <Status.UserProfile nickname="작성자 닉네임" profileImage="" description="유저 소개" />
       </Status>
@@ -106,7 +109,11 @@ function ReviewAnswerEditorPage() {
           />
         ))}
 
-        <Editor.ConfirmButtons submitDisabled={!isAnswerComplete} onCancel={handleCancel} />
+        <Editor.ConfirmButtons
+          submitDisabled={!isAnswerComplete}
+          onSubmit={handleSubmit}
+          onCancel={handleCancel}
+        />
       </Editor>
     </>
   );

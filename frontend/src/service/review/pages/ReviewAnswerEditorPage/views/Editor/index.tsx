@@ -1,4 +1,4 @@
-import { Text, Button, Icon, FieldSet, Textarea } from 'common/components';
+import { Text, FieldSet, Textarea, Button, Icon } from 'common/components';
 
 import styles from './styles.module.scss';
 
@@ -6,9 +6,9 @@ interface ContainerProps extends React.HTMLAttributes<HTMLFormElement> {
   children: React.ReactNode;
 }
 
-const Container = ({ onSubmit, children }: ContainerProps) => {
+const Container = ({ onSubmit, children, ...rest }: ContainerProps) => {
   return (
-    <form className={styles.container} onSubmit={onSubmit}>
+    <form className={styles.container} onSubmit={onSubmit} {...rest}>
       {children}
     </form>
   );
@@ -43,18 +43,19 @@ const AnswerField = ({ question, description, answer, onChange }: AnswerFieldPro
 
 interface ConfirmButtonsProps {
   submitDisabled: boolean;
-  onCancel: React.MouseEventHandler<HTMLButtonElement>;
+  onSubmit: React.FormEventHandler;
+  onCancel: () => void;
 }
 
-const ConfirmButtons = ({ submitDisabled, onCancel }: ConfirmButtonsProps) => {
+const ConfirmButtons = ({ submitDisabled, onSubmit, onCancel }: ConfirmButtonsProps) => {
   return (
-    <div className={styles.confirmButtons}>
+    <div className={styles.buttonContainer}>
       <Button theme="outlined" onClick={onCancel}>
         <Icon code="cancel" />
         <span>취소하기</span>
       </Button>
 
-      <Button type="submit" disabled={submitDisabled}>
+      <Button type="button" disabled={submitDisabled} onClick={onSubmit}>
         <Icon code="send" />
         <span>제출하기</span>
       </Button>
@@ -62,4 +63,8 @@ const ConfirmButtons = ({ submitDisabled, onCancel }: ConfirmButtonsProps) => {
   );
 };
 
-export const Editor = Object.assign(Container, { Title, AnswerField, ConfirmButtons });
+export const Editor = Object.assign(Container, {
+  Title,
+  AnswerField,
+  ConfirmButtons,
+});
