@@ -28,7 +28,7 @@ import com.reviewduck.template.dto.request.TemplateUpdateRequest;
 import com.reviewduck.template.dto.response.MyTemplatesResponse;
 import com.reviewduck.template.dto.response.TemplateIdResponse;
 import com.reviewduck.template.dto.response.TemplateResponse;
-import com.reviewduck.template.dto.response.TemplatesFindResponse;
+import com.reviewduck.template.dto.response.TemplatesResponse;
 import com.reviewduck.template.service.TemplateService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -80,12 +80,12 @@ public class TemplateController {
     @Operation(summary = "템플릿을 모두 조회한다.")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public TemplatesFindResponse findAll(@AuthenticationPrincipal Member member) {
+    public TemplatesResponse findAll(@AuthenticationPrincipal Member member) {
 
         info("/api/templates", "GET", "");
 
         List<Template> templates = templateService.findAll();
-        return TemplatesFindResponse.from(templates);
+        return TemplatesResponse.from(templates);
     }
 
     @Operation(summary = "템플릿을 삭제한다.")

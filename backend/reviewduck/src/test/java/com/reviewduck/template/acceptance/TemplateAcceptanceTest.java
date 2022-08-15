@@ -122,7 +122,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
     @Nested
     @DisplayName("전체 템플릿 조회")
-    class findAllTemplates{
+    class findAllTemplates {
 
         @Test
         @DisplayName("전체 템플릿을 조회한다.")
@@ -147,7 +147,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
     @Nested
     @DisplayName("특정 템플릿 조회")
-    class findTemplate{
+    class findTemplate {
 
         @Test
         @DisplayName("특정 템플릿을 조회한다.")
@@ -158,8 +158,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             // when, then
             get("/api/templates/" + templateId, accessToken1).statusCode(HttpStatus.OK.value())
                 .assertThat()
-                .body("templateId", notNullValue())
-                .body("templateTitle", equalTo("title"))
+                .body("info.id", notNullValue())
+                .body("info.title", equalTo("title"))
                 .body("questions", hasSize(2));
         }
 
@@ -180,7 +180,6 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             get("/api/templates/" + 9999L, accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
         }
 
-
     }
 
     @Nested
@@ -195,14 +194,16 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             String templateDescription1 = "test description1";
             List<TemplateQuestionRequest> questions1 = List.of(new TemplateQuestionRequest("question1"),
                 new TemplateQuestionRequest("question2"));
-            TemplateCreateRequest request1 = new TemplateCreateRequest(templateTitle1, templateDescription1, questions1);
+            TemplateCreateRequest request1 = new TemplateCreateRequest(templateTitle1, templateDescription1,
+                questions1);
             post("/api/templates", request1, accessToken1);
 
             String templateTitle2 = "title2";
             String templateDescription2 = "test description2";
             List<TemplateQuestionRequest> questions2 = List.of(new TemplateQuestionRequest("question3"),
                 new TemplateQuestionRequest("question4"));
-            TemplateCreateRequest request2 = new TemplateCreateRequest(templateTitle2, templateDescription2, questions2);
+            TemplateCreateRequest request2 = new TemplateCreateRequest(templateTitle2, templateDescription2,
+                questions2);
             post("/api/templates", request2, accessToken2);
 
             // when, then
@@ -212,9 +213,10 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
                 .as(MyTemplatesResponse.class);
 
             assertAll(
+                () -> assertThat(myTemplatesResponse.getNumberOfTemplates()).isEqualTo(1),
                 () -> assertThat(myTemplatesResponse.getTemplates()).hasSize(1),
-                () -> assertThat(myTemplatesResponse.getTemplates().get(0)).isNotNull(),
-                () -> assertThat(myTemplatesResponse.getTemplates().get(0).getTemplateTitle()).isEqualTo(templateTitle2)
+                () -> assertThat(myTemplatesResponse.getTemplates().get(0).getInfo().getTitle()).isEqualTo(
+                    templateTitle2)
             );
         }
 
@@ -228,8 +230,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
     @Nested
     @DisplayName("템플릿 수정")
-    class updateTemplate{
-
+    class updateTemplate {
 
         @Test
         @DisplayName("템플릿을 수정한다.")
@@ -305,7 +306,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
     @Nested
     @DisplayName("템플릿 삭제")
-    class deleteTemplate{
+    class deleteTemplate {
 
         @Test
         @DisplayName("템플릿을 삭제한다.")
