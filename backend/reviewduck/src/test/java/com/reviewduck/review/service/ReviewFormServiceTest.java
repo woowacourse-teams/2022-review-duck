@@ -76,7 +76,7 @@ public class ReviewFormServiceTest {
             ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
 
             List<ReviewFormQuestion> expected = questions.stream()
-                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue()))
+                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(), ""))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -127,7 +127,7 @@ public class ReviewFormServiceTest {
             ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(member1, savedTemplate.getId(), request);
 
             List<ReviewFormQuestion> expected = questions.stream()
-                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
+                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue(), ""))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -137,6 +137,7 @@ public class ReviewFormServiceTest {
 
             // then
             assertAll(
+                // save Review Form
                 () -> assertThat(savedReviewForm).isNotNull(),
                 () -> assertThat(savedReviewForm.getId()).isNotNull(),
                 () -> assertThat(savedReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
@@ -145,8 +146,11 @@ public class ReviewFormServiceTest {
                 () -> assertThat(savedReviewForm.getReviewFormQuestions())
                     .usingRecursiveComparison()
                     .ignoringFields("id")
-                    .isEqualTo(expected)
+                    .isEqualTo(expected),
+                // template usedCount ++
+                () -> assertThat(savedTemplate.getUsedCount()).isEqualTo(1)
             );
+
         }
 
     }
@@ -201,7 +205,7 @@ public class ReviewFormServiceTest {
             ReviewFormCreateRequest createRequest2 = new ReviewFormCreateRequest(reviewTitle2, questions2);
 
             List<ReviewFormQuestion> expected = questions1.stream()
-                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue()))
+                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(), ""))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -253,7 +257,7 @@ public class ReviewFormServiceTest {
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateRequests);
 
             List<ReviewFormQuestion> expected = updateRequests.stream()
-                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue()))
+                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(), ""))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -294,7 +298,7 @@ public class ReviewFormServiceTest {
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateRequests);
 
             List<ReviewFormQuestion> expected = updateRequests.stream()
-                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue()))
+                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(), ""))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;

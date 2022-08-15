@@ -19,8 +19,8 @@ import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
-import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.template.domain.Template;
+import com.reviewduck.template.domain.TemplateQuestion;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
@@ -59,7 +59,7 @@ public class TemplateServiceTest {
         List<TemplateQuestionRequest> questions = List.of(new TemplateQuestionRequest("question1"),
             new TemplateQuestionRequest("question2"));
 
-        List<ReviewFormQuestion> expected = convertRequestToQuestions(questions);
+        List<TemplateQuestion> expected = convertRequestToQuestions(questions);
 
         // when
         Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
@@ -87,7 +87,7 @@ public class TemplateServiceTest {
         List<TemplateQuestionRequest> questions = List.of(new TemplateQuestionRequest("question1"),
             new TemplateQuestionRequest("question2"));
 
-        List<ReviewFormQuestion> expected = convertRequestToQuestions(questions);
+        List<TemplateQuestion> expected = convertRequestToQuestions(questions);
         Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
 
         // when
@@ -202,12 +202,12 @@ public class TemplateServiceTest {
         templateService.update(member1, template.getId(),
             new TemplateUpdateRequest("new title", "new description", newQuestions));
 
-        List<ReviewFormQuestion> expectedReviewFormQuestions = newQuestions.stream()
-            .map(questionUpdateRequest -> new ReviewFormQuestion(questionUpdateRequest.getQuestionValue()))
+        List<TemplateQuestion> expectedTemplateQuestions = newQuestions.stream()
+            .map(questionUpdateRequest -> new TemplateQuestion(questionUpdateRequest.getQuestionValue(), ""))
             .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
-        for (ReviewFormQuestion reviewFormQuestion : expectedReviewFormQuestions) {
+        for (TemplateQuestion reviewFormQuestion : expectedTemplateQuestions) {
             reviewFormQuestion.setPosition(index++);
         }
 
@@ -222,7 +222,7 @@ public class TemplateServiceTest {
             () -> assertThat(updatedTemplate.getQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(expectedReviewFormQuestions)
+                .isEqualTo(expectedTemplateQuestions)
         );
     }
 
@@ -282,12 +282,12 @@ public class TemplateServiceTest {
         // when
         List<Template> myTemplates = templateService.findByMember(member2);
 
-        List<ReviewFormQuestion> expectedReviewFormQuestions = questions2.stream()
-            .map(questionUpdateRequest -> new ReviewFormQuestion(questionUpdateRequest.getQuestionValue()))
+        List<TemplateQuestion> expectedTemplateQuestions = questions2.stream()
+            .map(questionUpdateRequest -> new TemplateQuestion(questionUpdateRequest.getQuestionValue(), ""))
             .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
-        for (ReviewFormQuestion reviewFormQuestion : expectedReviewFormQuestions) {
+        for (TemplateQuestion reviewFormQuestion : expectedTemplateQuestions) {
             reviewFormQuestion.setPosition(index++);
         }
         // then
@@ -301,18 +301,18 @@ public class TemplateServiceTest {
             () -> assertThat(myTemplates.get(0).getQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(expectedReviewFormQuestions)
+                .isEqualTo(expectedTemplateQuestions)
         );
     }
 
-    private List<ReviewFormQuestion> convertRequestToQuestions(List<TemplateQuestionRequest> questions) {
-        List<ReviewFormQuestion> expected = questions.stream()
-            .map(questionRequest -> new ReviewFormQuestion(questionRequest.getQuestionValue()))
+    private List<TemplateQuestion> convertRequestToQuestions(List<TemplateQuestionRequest> questions) {
+        List<TemplateQuestion> expected = questions.stream()
+            .map(questionRequest -> new TemplateQuestion(questionRequest.getQuestionValue(), ""))
             .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
-        for (ReviewFormQuestion reviewFormQuestion : expected) {
-            reviewFormQuestion.setPosition(index++);
+        for (TemplateQuestion templateQuestion : expected) {
+            templateQuestion.setPosition(index++);
         }
         return expected;
     }

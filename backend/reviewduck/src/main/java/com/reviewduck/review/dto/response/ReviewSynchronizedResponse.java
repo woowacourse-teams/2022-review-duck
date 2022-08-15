@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ReviewSynchronizedResponse {
 
+    private String reviewTitle;
     private List<ReviewContentResponse> contents;
 
     public static ReviewSynchronizedResponse from(Review review) {
@@ -32,7 +33,7 @@ public class ReviewSynchronizedResponse {
             .map(question -> ReviewContentResponse.of(question, reviewMap.getOrDefault(question, null)))
             .collect(Collectors.toUnmodifiableList());
 
-        return new ReviewSynchronizedResponse(contents);
+        return new ReviewSynchronizedResponse(review.getTitle(), contents);
     }
 
 }

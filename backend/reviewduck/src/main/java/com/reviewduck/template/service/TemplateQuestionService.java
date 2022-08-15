@@ -19,13 +19,18 @@ public class TemplateQuestionService {
     private final TemplateQuestionRepository templateQuestionRepository;
 
     @Transactional
-    public TemplateQuestion saveOrUpdateQuestion(Long questionId, String questionValue) {
-        if (Objects.isNull(questionId)) {
-            return templateQuestionRepository.save(new TemplateQuestion(questionValue));
+    public TemplateQuestion save(String value, String description) {
+        return templateQuestionRepository.save(new TemplateQuestion(value, description));
+    }
+
+    @Transactional
+    public TemplateQuestion saveOrUpdateQuestion(Long id, String value, String description) {
+        if (Objects.isNull(id)) {
+            return templateQuestionRepository.save(new TemplateQuestion(value, description));
         }
 
-        TemplateQuestion question = findById(questionId);
-        question.updateValue(questionValue);
+        TemplateQuestion question = findById(id);
+        question.update(value, description);
 
         return question;
     }

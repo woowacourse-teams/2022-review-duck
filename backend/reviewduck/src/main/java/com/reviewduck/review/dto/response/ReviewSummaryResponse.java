@@ -15,6 +15,7 @@ import lombok.Getter;
 public class ReviewSummaryResponse {
 
     private Long id;
+    private String title;
     private long updatedAt;
     private List<ReviewContentResponse> contents;
     private ReviewFormSummaryResponse reviewForm;
@@ -26,6 +27,7 @@ public class ReviewSummaryResponse {
 
         return new ReviewSummaryResponse(
             review.getId(),
+            review.getTitle(),
             Timestamp.valueOf(review.getUpdatedAt()).getTime(),
             contents,
             ReviewFormSummaryResponse.from(review.getReviewForm())
