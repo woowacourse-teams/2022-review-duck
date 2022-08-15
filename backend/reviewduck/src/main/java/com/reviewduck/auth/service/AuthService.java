@@ -128,7 +128,7 @@ public class AuthService {
         }
 
         Member foundMember = member.get();
-        foundMember.updateProfileUrl(githubMemberResponse.getAvatarUrl());
+        foundMember.updateSocialInfo(githubMemberResponse.getSocialNickname(), githubMemberResponse.getAvatarUrl());
         return foundMember;
     }
 }

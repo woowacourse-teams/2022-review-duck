@@ -22,8 +22,6 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private static final Member MEMBER_NOT_LOGIN = new Member("-1", "socialNickname", "nickname", "url");
-
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberService memberService;
 
@@ -38,8 +36,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
         HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
 
-        if (isLoginRequired(request)) {
-            return MEMBER_NOT_LOGIN;
+        if (canAccessWithoutLogin(request)) {
+            return Member.getMemberNotLogin();
         }
 
         String token = AuthorizationExtractor.extract(request);
@@ -51,15 +49,8 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         return memberService.findById(memberId);
     }
 
-    private boolean isLoginRequired(HttpServletRequest request) {
-        return isTokenRequired(request) && isTokenNull(request);
-    }
-
-    private boolean isTokenRequired(HttpServletRequest request) {
-        return request.getRequestURI().matches("/api/review-forms/\\w{8}/reviews");
-    }
-
-    private boolean isTokenNull(HttpServletRequest request) {
-        return Objects.isNull(request.getHeader(HttpHeaders.AUTHORIZATION));
+    private boolean canAccessWithoutLogin(HttpServletRequest request) {
+        return request.getRequestURI().matches("/api/review-forms/\\w{8}/reviews")
+            && Objects.isNull(request.getHeader(HttpHeaders.AUTHORIZATION));
     }
 }

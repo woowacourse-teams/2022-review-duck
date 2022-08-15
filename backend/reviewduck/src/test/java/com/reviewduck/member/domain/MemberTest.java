@@ -58,16 +58,20 @@ public class MemberTest {
     }
 
     @Test
-    @DisplayName("멤버의 프로필 url을 변경한다.")
-    void updateProfileUrl() {
+    @DisplayName("멤버의 프로필 url과 소셜 닉네임을 변경한다.")
+    void updateSocialInfo() {
         // given
         Member member = new Member("1", "socialId", "original nickname", "profileUrl");
 
         // when
-        String expected = "updated profileUrl";
-        member.updateProfileUrl(expected);
+        String expectedProfileUrl = "updated profileUrl";
+        String expectedSocialNickname = "update nickname";
+        member.updateSocialInfo(expectedSocialNickname, expectedProfileUrl);
 
         // then
-        assertThat(member.getProfileUrl()).isEqualTo(expected);
+        assertAll(
+            () -> assertThat(member.getSocialNickname()).isEqualTo(expectedSocialNickname),
+            () -> assertThat(member.getProfileUrl()).isEqualTo(expectedProfileUrl)
+        );
     }
 }

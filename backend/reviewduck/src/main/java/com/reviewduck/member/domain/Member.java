@@ -22,6 +22,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 public class Member extends BaseDate {
 
+    private static final Member MEMBER_NOT_LOGIN = new Member("-1", "socialNickname", "nickname", "url");
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,12 +47,17 @@ public class Member extends BaseDate {
         this.isAdmin = false;
     }
 
+    public static Member getMemberNotLogin() {
+        return MEMBER_NOT_LOGIN;
+    }
+
     public void updateNickname(String nickname) {
         validate(nickname);
         this.nickname = nickname;
     }
 
-    public void updateProfileUrl(String profileUrl){
+    public void updateSocialInfo(String socialNickname, String profileUrl) {
+        this.socialNickname = socialNickname;
         this.profileUrl = profileUrl;
     }
 
