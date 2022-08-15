@@ -2,6 +2,7 @@ package com.reviewduck.template.dto.request;
 
 import java.util.List;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -24,5 +25,6 @@ public class TemplateCreateRequest {
     private String templateDescription;
 
     @NotNull(message = "템플릿의 질문 목록 생성 중 오류가 발생했습니다.")
+    @Valid
     private List<TemplateQuestionRequest> questions;
 }
