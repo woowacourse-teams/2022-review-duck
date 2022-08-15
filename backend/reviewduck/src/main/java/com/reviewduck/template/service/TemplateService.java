@@ -12,7 +12,6 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.domain.TemplateQuestion;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
-import com.reviewduck.template.dto.request.TemplateQuestionRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
 import com.reviewduck.template.repository.TemplateRepository;
 
@@ -29,13 +28,15 @@ public class TemplateService {
 
     @Transactional
     public Template save(Member member, TemplateCreateRequest createRequest) {
-        List<String> questionValues = createRequest.getQuestions().stream()
-            .map(TemplateQuestionRequest::getQuestionValue)
+
+        List<TemplateQuestion> questions = createRequest.getQuestions().stream()
+            .map(request -> templateQuestionService.save(request.getQuestionValue(), "-"))
             .collect(Collectors.toUnmodifiableList());
 
         Template template = new Template(member, createRequest.getTemplateTitle(),
             createRequest.getTemplateDescription(),
-            questionValues);
+            questions);
+
         return templateRepository.save(template);
     }
 
@@ -59,11 +60,14 @@ public class TemplateService {
         validateTemplateIsMine(template, member, "본인이 생성한 템플릿이 아니면 수정할 수 없습니다.");
 
         List<TemplateQuestion> questions = templateUpdateRequest.getQuestions().stream()
-            .map(request -> templateQuestionService.saveOrUpdateQuestion(request.getQuestionId(),
-                request.getQuestionValue()))
+            .map(request -> templateQuestionService.saveOrUpdateQuestion(
+                request.getQuestionId(),
+                request.getQuestionValue(),
+                "-"))
             .collect(Collectors.toUnmodifiableList());
 
-        template.update(templateUpdateRequest.getTemplateTitle(), templateUpdateRequest.getTemplateDescription(),
+        template.update(templateUpdateRequest.getTemplateTitle(),
+            templateUpdateRequest.getTemplateDescription(),
             questions);
 
         return template;

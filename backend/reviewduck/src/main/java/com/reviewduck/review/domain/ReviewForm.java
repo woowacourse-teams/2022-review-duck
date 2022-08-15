@@ -2,7 +2,6 @@ package com.reviewduck.review.domain;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -53,32 +52,28 @@ public class ReviewForm extends BaseDate {
     @Column(nullable = false)
     private boolean isActive = true;
 
-    public ReviewForm(Member member, String title, List<String> questionValues) {
-        validate(title, member, questionValues);
+    public ReviewForm(Member member, String title, List<ReviewFormQuestion> questions) {
+        validateWhenCreate(member, title, questions);
+
         this.title = title;
         this.member = member;
-        this.reviewFormQuestions = setReviewFormQuestions(questionValues);
+        this.reviewFormQuestions = questions;
         this.code = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
+
+        sortQuestions(reviewFormQuestions);
     }
 
-    public void update(String title, List<ReviewFormQuestion> reviewFormQuestions) {
-        validateTitleLength(title);
-        validateBlankTitle(title);
+    public void update(String title, List<ReviewFormQuestion> questions) {
+        validateWhenUpdate(title, questions);
+
         this.title = title;
+        this.reviewFormQuestions = questions;
+
         sortQuestions(reviewFormQuestions);
-        this.reviewFormQuestions = reviewFormQuestions;
     }
 
     public boolean isMine(Member member) {
         return member.equals(this.member);
-    }
-
-    private List<ReviewFormQuestion> setReviewFormQuestions(List<String> questionValues) {
-        List<ReviewFormQuestion> reviewFormQuestions = questionValues.stream()
-            .map(ReviewFormQuestion::new)
-            .collect(Collectors.toUnmodifiableList());
-        sortQuestions(reviewFormQuestions);
-        return reviewFormQuestions;
     }
 
     private void sortQuestions(List<ReviewFormQuestion> reviewFormQuestions) {
@@ -88,11 +83,17 @@ public class ReviewForm extends BaseDate {
         }
     }
 
-    private void validate(String title, Member member, List<String> questionValues) {
+    private void validateWhenCreate(Member member, String title, List<ReviewFormQuestion> questions) {
         validateBlankTitle(title);
         validateTitleLength(title);
         validateNullMember(member);
-        validateNullQuestions(questionValues);
+        validateNullQuestions(questions);
+    }
+
+    private void validateWhenUpdate(String title, List<ReviewFormQuestion> questions) {
+        validateBlankTitle(title);
+        validateTitleLength(title);
+        validateNullQuestions(questions);
     }
 
     private void validateNullMember(Member member) {
@@ -101,7 +102,7 @@ public class ReviewForm extends BaseDate {
         }
     }
 
-    private void validateNullQuestions(List<String> questionValues) {
+    private void validateNullQuestions(List<ReviewFormQuestion> questionValues) {
         if (Objects.isNull(questionValues)) {
             throw new ReviewFormException("회고 폼의 질문 목록 생성 중 오류가 발생했습니다.");
         }

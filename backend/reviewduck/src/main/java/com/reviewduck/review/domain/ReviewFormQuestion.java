@@ -25,7 +25,10 @@ public class ReviewFormQuestion {
     private Long id;
 
     @Column(name = "question_value", nullable = false)
-    private String value;
+    private String value = "";
+
+    @Column(nullable = false)
+    private String description = "-";
 
     @Column(nullable = false)
     private int position = -1;
@@ -35,9 +38,20 @@ public class ReviewFormQuestion {
         this.value = value;
     }
 
-    public void updateValue(String value) {
+    public ReviewFormQuestion(String value, String description) {
         validate(value);
+        validate(description);
+
         this.value = value;
+        this.description = description;
+    }
+
+    public void update(String value, String description) {
+        validate(value);
+        validate(description);
+
+        this.value = value;
+        this.description = description;
     }
 
     public void setPosition(int position) {

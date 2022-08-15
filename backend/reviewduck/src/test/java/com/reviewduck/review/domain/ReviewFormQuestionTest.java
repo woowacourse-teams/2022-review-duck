@@ -12,9 +12,18 @@ import com.reviewduck.review.exception.ReviewFormQuestionException;
 
 public class ReviewFormQuestionTest {
 
+    @Test
+    @DisplayName("입력값이 올바른 경우 객체가 생성된다.")
+    void CreateReviewFormQuestion() {
+        // when, then
+        assertDoesNotThrow(
+            () -> new ReviewFormQuestion("a".repeat(200), "a".repeat(200))
+        );
+    }
+
     @ParameterizedTest
     @NullSource
-    @DisplayName("질문 내용은 비어있을 수 없다.")
+    @DisplayName("질문은 비어있을 수 없다.")
     void notBlankQuestionValue(String value) {
         //when, then
         assertThatThrownBy(() -> new ReviewFormQuestion(value))
@@ -23,17 +32,29 @@ public class ReviewFormQuestionTest {
     }
 
     @Test
-    @DisplayName("질문의 길이는 200자 이하이어야 한다.")
-    void valueProperLength() {
-        //when, then
-        assertDoesNotThrow(() -> new ReviewFormQuestion("a".repeat(200)));
-    }
-
-    @Test
     @DisplayName("질문의 길이는 200자를 넘을 수 없다.")
     void valueOverLength() {
         //when, then
         assertThatThrownBy(() -> new ReviewFormQuestion("a".repeat(201)))
+            .isInstanceOf(ReviewFormQuestionException.class)
+            .hasMessageContaining("질문은 200자를 넘을 수 없습니다.");
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @DisplayName("질문의 설명은 비어있을 수 없다.")
+    void notBlankQuestionDescription(String description) {
+        //when, then
+        assertThatThrownBy(() -> new ReviewFormQuestion("value", description))
+            .isInstanceOf(ReviewFormQuestionException.class)
+            .hasMessageContaining("질문 내용은 비어있을 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("질문의 설명은 200자를 넘을 수 없다.")
+    void descriptionOverLength() {
+        //when, then
+        assertThatThrownBy(() -> new ReviewFormQuestion("value", "a".repeat(201)))
             .isInstanceOf(ReviewFormQuestionException.class)
             .hasMessageContaining("질문은 200자를 넘을 수 없습니다.");
     }
