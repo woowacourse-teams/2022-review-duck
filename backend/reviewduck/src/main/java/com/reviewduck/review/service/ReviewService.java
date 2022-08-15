@@ -39,7 +39,7 @@ public class ReviewService {
 
         List<QuestionAnswer> questionAnswers = convertToQuestionAnswers(request.getContents());
 
-        Review review = new Review(member, reviewForm, questionAnswers);
+        Review review = new Review("title", member, reviewForm, questionAnswers);
         return reviewRepository.save(review);
     }
 
