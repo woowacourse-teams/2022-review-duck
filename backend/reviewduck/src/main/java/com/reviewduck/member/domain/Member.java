@@ -45,15 +45,13 @@ public class Member extends BaseDate {
         this.isAdmin = false;
     }
 
-    private void validate(String nickname) {
-        if (Objects.isNull(nickname) || nickname.isBlank()) {
-            throw new MemberException("닉네임이 비어있을 수 없습니다.");
-        }
-    }
-
     public void updateNickname(String nickname) {
         validate(nickname);
         this.nickname = nickname;
+    }
+
+    public void updateProfileUrl(String profileUrl){
+        this.profileUrl = profileUrl;
     }
 
     public void deleteAllInfo() {
@@ -61,6 +59,16 @@ public class Member extends BaseDate {
         this.socialNickname = "-";
         this.nickname = "탈퇴한 회원입니다";
         this.profileUrl = "-";
+    }
+
+    public boolean isAdmin() {
+        return this.isAdmin;
+    }
+
+    private void validate(String nickname) {
+        if (Objects.isNull(nickname) || nickname.isBlank()) {
+            throw new MemberException("닉네임이 비어있을 수 없습니다.");
+        }
     }
 
     @Override
@@ -76,9 +84,5 @@ public class Member extends BaseDate {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    public boolean isAdmin() {
-        return this.isAdmin;
     }
 }
