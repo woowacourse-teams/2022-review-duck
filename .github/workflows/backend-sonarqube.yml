@@ -70,7 +70,7 @@ jobs:
           -Dsonar.projectName=${{ env.SONARQUBE_PROJECT_KEY }}-${{ env.PR_NUMBER }}
           -Dsonar.login=${{ env.SONARQUBE_TOKEN }}
 
-      # PR 에 Comment 를 달아주는 스크립트 실행 test
+      # PR 에 Comment 를 달아주는 스크립트 실행
       - name: Comment Sonarqube URL
         uses: actions/github-script@v4
         with:
