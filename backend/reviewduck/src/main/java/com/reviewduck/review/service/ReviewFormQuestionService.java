@@ -19,13 +19,18 @@ public class ReviewFormQuestionService {
     private final ReviewFormQuestionRepository reviewFormQuestionRepository;
 
     @Transactional
-    public ReviewFormQuestion saveOrUpdateQuestion(Long questionId, String questionValue) {
+    public ReviewFormQuestion save(String value, String description) {
+        return reviewFormQuestionRepository.save(new ReviewFormQuestion(value, description));
+    }
+
+    @Transactional
+    public ReviewFormQuestion saveOrUpdateQuestion(Long questionId, String value, String description) {
         if (Objects.isNull(questionId)) {
-            return reviewFormQuestionRepository.save(new ReviewFormQuestion(questionValue));
+            return reviewFormQuestionRepository.save(new ReviewFormQuestion(value));
         }
 
         ReviewFormQuestion reviewFormQuestion = findById(questionId);
-        reviewFormQuestion.updateValue(questionValue);
+        reviewFormQuestion.update(value, description);
 
         return reviewFormQuestion;
     }

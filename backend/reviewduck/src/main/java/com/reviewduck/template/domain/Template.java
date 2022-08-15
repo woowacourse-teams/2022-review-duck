@@ -2,7 +2,6 @@ package com.reviewduck.template.domain;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -51,14 +50,16 @@ public class Template extends BaseDate {
     @Column
     private int usedCount;
 
-    public Template(Member member, String templateTitle, String templateDescription, List<String> questionValues) {
-        validateWhenCreate(member, templateTitle, templateDescription, questionValues);
+    public Template(Member member, String templateTitle, String templateDescription, List<TemplateQuestion> questions) {
+        validateWhenCreate(member, templateTitle, templateDescription, questions);
 
         this.templateTitle = templateTitle;
         this.member = member;
         this.templateDescription = templateDescription;
-        this.questions = setQuestions(questionValues);
+        this.questions = questions;
         this.usedCount = 0;
+
+        sortQuestions();
     }
 
     public void update(String templateTitle, String templateDescription, List<TemplateQuestion> questions) {
@@ -66,8 +67,9 @@ public class Template extends BaseDate {
 
         this.templateTitle = templateTitle;
         this.templateDescription = templateDescription;
-        sortQuestions(questions);
         this.questions = questions;
+
+        sortQuestions();
     }
 
     public void increaseUsedCount() {
@@ -78,15 +80,7 @@ public class Template extends BaseDate {
         return member.equals(this.member);
     }
 
-    private List<TemplateQuestion> setQuestions(List<String> questionValues) {
-        List<TemplateQuestion> questions = questionValues.stream()
-            .map(TemplateQuestion::new)
-            .collect(Collectors.toUnmodifiableList());
-        sortQuestions(questions);
-        return questions;
-    }
-
-    private void sortQuestions(List<TemplateQuestion> questions) {
+    private void sortQuestions() {
         int index = 0;
         for (TemplateQuestion question : questions) {
             question.setPosition(index++);
@@ -100,12 +94,12 @@ public class Template extends BaseDate {
     }
 
     private void validateWhenCreate(Member member, String templateTitle, String templateDescription,
-        List<String> questionValues) {
+        List<TemplateQuestion> questions) {
         validateBlankTitle(templateTitle);
         validateTitleLength(templateTitle);
         validateNullMember(member);
         validateNullDescription(templateDescription);
-        validateNullQuestions(questionValues);
+        validateNullQuestions(questions);
     }
 
     private void validateNullMember(Member member) {
@@ -114,8 +108,8 @@ public class Template extends BaseDate {
         }
     }
 
-    private void validateNullQuestions(List<String> questionValues) {
-        if (Objects.isNull(questionValues)) {
+    private void validateNullQuestions(List<TemplateQuestion> questions) {
+        if (Objects.isNull(questions)) {
             throw new TemplateException("템플릿의 질문 목록 생성 중 오류가 발생했습니다.");
         }
     }

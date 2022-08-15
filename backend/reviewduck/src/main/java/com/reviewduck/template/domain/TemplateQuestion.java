@@ -30,6 +30,9 @@ public class TemplateQuestion {
     private String value;
 
     @Column(nullable = false)
+    private String description = "-";
+
+    @Column(nullable = false)
     private int position = -1;
 
     public TemplateQuestion(String value) {
@@ -37,9 +40,25 @@ public class TemplateQuestion {
         this.value = value;
     }
 
+    public TemplateQuestion(String value, String description) {
+        validate(value);
+        validate(description);
+
+        this.value = value;
+        this.description = description;
+    }
+
     public void updateValue(String value) {
         validate(value);
         this.value = value;
+    }
+
+    public void update(String value, String description) {
+        validate(value);
+        validate(description);
+
+        this.value = value;
+        this.description = description;
     }
 
     public void setPosition(int position) {
