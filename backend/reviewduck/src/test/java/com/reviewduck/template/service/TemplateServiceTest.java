@@ -203,7 +203,7 @@ public class TemplateServiceTest {
             new TemplateUpdateRequest("new title", "new description", newQuestions));
 
         List<TemplateQuestion> expectedTemplateQuestions = newQuestions.stream()
-            .map(questionUpdateRequest -> new TemplateQuestion(questionUpdateRequest.getQuestionValue(), ""))
+            .map(questionUpdateRequest -> new TemplateQuestion(questionUpdateRequest.getValue(), ""))
             .collect(Collectors.toUnmodifiableList());
 
         int index = 0;

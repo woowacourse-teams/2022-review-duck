@@ -62,8 +62,8 @@ public class TemplateService {
 
         List<TemplateQuestion> questions = templateUpdateRequest.getQuestions().stream()
             .map(request -> templateQuestionService.saveOrUpdateQuestion(
-                request.getQuestionId(),
-                request.getQuestionValue(),
+                request.getId(),
+                request.getValue(),
                 ""))
             .collect(Collectors.toUnmodifiableList());
 
