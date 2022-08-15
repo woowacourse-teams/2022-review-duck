@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.template.domain.Template;
@@ -59,12 +58,11 @@ public class TemplateController {
     @PostMapping("/{templateId}/review-forms")
     @ResponseStatus(HttpStatus.CREATED)
     public ReviewFormCodeResponse createReviewFormFromTemplate(@AuthenticationPrincipal Member member,
-        @PathVariable Long templateId,
-        @RequestBody @Valid ReviewFormCreateFromTemplateRequest request) {
+        @PathVariable Long templateId) {
 
-        info("/api/templates/" + templateId + "/review-forms", "POST", request.toString());
+        info("/api/templates/" + templateId + "/review-forms", "POST", "");
 
-        ReviewForm reviewForm = reviewFormService.saveFromTemplate(member, templateId, request);
+        ReviewForm reviewForm = reviewFormService.saveFromTemplate(member, templateId);
         return ReviewFormCodeResponse.from(reviewForm);
     }
 

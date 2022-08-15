@@ -22,7 +22,6 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
-import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionUpdateRequest;
@@ -114,19 +113,18 @@ public class ReviewFormServiceTest {
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionRequest> questions = List.of(new TemplateQuestionRequest("question1"),
+            List<TemplateQuestionRequest> questions = List.of(
+                new TemplateQuestionRequest("question1"),
                 new TemplateQuestionRequest("question2"));
 
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription, questions);
             Template savedTemplate = templateService.save(member1, templateRequest);
 
             // 템플릿 기반 회고 폼 생성
-            String reviewFormTitle = "reviewFormTitle";
-            ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest(reviewFormTitle);
-            ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(member1, savedTemplate.getId(), request);
+            ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(member1, savedTemplate.getId());
 
             List<ReviewFormQuestion> expected = questions.stream()
-                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(), ""))
+                .map(question -> new ReviewFormQuestion(question.getValue(), ""))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -141,7 +139,7 @@ public class ReviewFormServiceTest {
                 () -> assertThat(savedReviewForm.getId()).isNotNull(),
                 () -> assertThat(savedReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(savedReviewForm.getCode().length()).isEqualTo(8),
-                () -> assertThat(savedReviewForm.getTitle()).isEqualTo(reviewFormTitle),
+                () -> assertThat(savedReviewForm.getTitle()).isEqualTo(templateTitle),
                 () -> assertThat(savedReviewForm.getReviewFormQuestions())
                     .usingRecursiveComparison()
                     .ignoringFields("id")

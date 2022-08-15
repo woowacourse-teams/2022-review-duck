@@ -85,17 +85,6 @@ public class TemplateControllerTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @DisplayName("템플릿 기반으로 회고 폼 생성시 회고 폼 제목에 빈 값이 들어갈 경우 예외가 발생한다.")
-    void createFromTemplateWithEmptyReviewTitle(String title) throws Exception {
-        // given
-        ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest(title);
-
-        // when, then
-        assertBadRequestFromPost("/api/templates/9999/review-forms", request, "회고 폼의 제목은 비어있을 수 없습니다.");
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
     @DisplayName("템플릿 수정시 템플릿 제목에 빈 값이 들어갈 경우 예외가 발생한다.")
     void updateWithEmptyTemplateTitle(String title) throws Exception {
         // given
