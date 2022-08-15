@@ -6,6 +6,7 @@ export const dummyTemplates = [
     creator: {
       nickname: 'dommorello',
       profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+      socialId: 'DomMorello',
     },
     updatedAt: 1660049730600,
     usedCount: 123,
@@ -17,6 +18,7 @@ export const dummyTemplates = [
     creator: {
       nickname: 'dommorello',
       profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+      socialId: 'DomMorello',
     },
     updatedAt: 1660049730600,
     usedCount: 123,
@@ -28,6 +30,7 @@ export const dummyTemplates = [
     creator: {
       nickname: 'dommorello',
       profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+      socialId: 'DomMorello',
     },
     updatedAt: 1660049730600,
     usedCount: 123,
@@ -39,6 +42,57 @@ export const dummyTemplates = [
     creator: {
       nickname: 'dommorello',
       profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+      socialId: 'DomMorello',
+    },
+    updatedAt: 1660049730600,
+    usedCount: 123,
+  },
+  {
+    templateId: 4,
+    templateTitle:
+      '샬라샬라 템플릿 샬라샬라 템플릿 샬라샬라 템플릿템플릿 샬라샬라 템플릿템플릿 샬라샬라 템플릿',
+    templateDescription:
+      '이 템플릿을 이런저런이런저런 그런 템플릿입니다. 이 템플릿을 이런저런이런저런 그런 템플릿입니다. 이 템플릿을 이런저런이런저런 그런 템플릿입니다. 이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
+    creator: {
+      nickname: 'dommorello',
+      profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+      socialId: 'DomMorello',
+    },
+    updatedAt: 1660049730600,
+    usedCount: 123,
+  },
+  {
+    templateId: 5,
+    templateTitle: '샬라샬라 템플릿',
+    templateDescription: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
+    creator: {
+      nickname: 'dommorello',
+      profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+      socialId: 'DomMorello',
+    },
+    updatedAt: 1660049730600,
+    usedCount: 123,
+  },
+  {
+    templateId: 6,
+    templateTitle: '샬라샬라 템플릿',
+    templateDescription: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
+    creator: {
+      nickname: 'dommorello',
+      profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+      socialId: 'DomMorello',
+    },
+    updatedAt: 1660049730600,
+    usedCount: 123,
+  },
+  {
+    templateId: 7,
+    templateTitle: '샬라샬라 템플릿',
+    templateDescription: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
+    creator: {
+      nickname: 'dommorello',
+      profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+      socialId: 'DomMorello',
     },
     updatedAt: 1660049730600,
     usedCount: 123,

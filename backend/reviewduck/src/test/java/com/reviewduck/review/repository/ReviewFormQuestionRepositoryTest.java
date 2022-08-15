@@ -7,10 +7,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
+import com.reviewduck.config.JpaAuditingConfig;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 
 @DataJpaTest
+@Import(JpaAuditingConfig.class)
 public class ReviewFormQuestionRepositoryTest {
 
     @Autowired
@@ -20,7 +23,7 @@ public class ReviewFormQuestionRepositoryTest {
     @DisplayName("질문을 저장한다.")
     void saveQuestion() {
         // given
-        ReviewFormQuestion reviewFormQuestion = new ReviewFormQuestion("new question");
+        ReviewFormQuestion reviewFormQuestion = new ReviewFormQuestion("new question","description");
 
         // when
         ReviewFormQuestion savedReviewFormQuestion = reviewFormQuestionRepository.save(reviewFormQuestion);

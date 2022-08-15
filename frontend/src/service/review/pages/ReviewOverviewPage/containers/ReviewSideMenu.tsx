@@ -9,6 +9,8 @@ import { getElapsedTimeText } from 'service/@shared/utils';
 
 import { Button, Icon, Text, TextBox } from 'common/components';
 
+import SmallProfileCard from 'service/@shared/components/SmallProfileCard';
+
 import styles from '../styles.module.scss';
 import useOverviewQueries from '../useOverviewQueries';
 import { PAGE_LIST } from 'service/@shared/constants';
@@ -139,18 +141,11 @@ function ReviewSideMenu({ reviewFormCode }: Record<'reviewFormCode', string>) {
           {reviews.map((review) => (
             <a href={`#${review.reviewId}`} key={review.reviewId}>
               <div className={styles.listItemContainer} role="button" tabIndex={0}>
-                <div
-                  className={styles.profile}
-                  style={{ backgroundImage: `url(${review.participant.profileUrl})` }}
+                <SmallProfileCard
+                  profileUrl={review.participant.profileUrl}
+                  primaryText={review.participant.nickname}
+                  secondaryText={`${getElapsedTimeText(review.updatedAt)} 업데이트함`}
                 />
-                <div className={styles.userInfoContainer}>
-                  <Text className={styles.nickname} size={14} weight="bold">
-                    {review.participant.nickname}
-                  </Text>
-                  <Text className={styles.update} size={12}>{`${getElapsedTimeText(
-                    review.updatedAt,
-                  )} 업데이트함`}</Text>
-                </div>
               </div>
             </a>
           ))}

@@ -10,15 +10,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
+import com.reviewduck.config.JpaAuditingConfig;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.domain.QuestionAnswer;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
+import com.reviewduck.review.domain.ReviewFormQuestion;
 
 @DataJpaTest
+@Import(JpaAuditingConfig.class)
 public class ReviewRepositoryTest {
 
     @Autowired
@@ -31,13 +35,16 @@ public class ReviewRepositoryTest {
     private MemberRepository memberRepository;
 
     private ReviewForm savedReviewForm;
+
     private Review review;
 
     @BeforeEach
     void setUp() {
         Member member = new Member("1", "panda", "제이슨", "testUrl");
         memberRepository.save(member);
-        ReviewForm reviewForm = new ReviewForm(member, "title", List.of("question1", "question2"));
+        ReviewForm reviewForm = new ReviewForm(member, "title", List.of(
+            new ReviewFormQuestion("question1", "description1"),
+            new ReviewFormQuestion("question2", "description2")));
         this.savedReviewForm = reviewFormRepository.save(reviewForm);
         this.review = new Review("title", member, savedReviewForm,
             List.of(
@@ -99,7 +106,9 @@ public class ReviewRepositoryTest {
 
         Member member2 = new Member("1", "ariari", "브리", "testUrl2");
         memberRepository.save(member2);
-        ReviewForm reviewForm = new ReviewForm(member2, "title", List.of("question1", "question2"));
+        ReviewForm reviewForm = new ReviewForm(member2, "title", List.of(
+            new ReviewFormQuestion("question1", "description1"),
+            new ReviewFormQuestion("question2", "description2")));
         ReviewForm savedReviewForm = reviewFormRepository.save(reviewForm);
         Review review2 = new Review("title", member2, savedReviewForm,
             List.of(

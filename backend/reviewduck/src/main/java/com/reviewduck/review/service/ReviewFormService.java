@@ -13,11 +13,9 @@ import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.repository.ReviewFormRepository;
 import com.reviewduck.template.domain.Template;
-import com.reviewduck.template.domain.TemplateQuestion;
 import com.reviewduck.template.service.TemplateService;
 
 import lombok.AllArgsConstructor;
@@ -34,23 +32,24 @@ public class ReviewFormService {
 
     @Transactional
     public ReviewForm save(Member member, ReviewFormCreateRequest createRequest) {
-        List<String> questionValues = createRequest.getQuestions().stream()
-            .map(ReviewFormQuestionCreateRequest::getValue)
+        List<ReviewFormQuestion> questions = createRequest.getQuestions().stream()
+            .map(request -> reviewFormQuestionService.save(request.getValue(), ""))
             .collect(Collectors.toUnmodifiableList());
 
-        ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewFormTitle(), questionValues);
+        ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewFormTitle(), questions);
         return reviewFormRepository.save(reviewForm);
     }
 
     @Transactional
     public ReviewForm saveFromTemplate(Member member, Long templateId, ReviewFormCreateFromTemplateRequest request) {
         Template template = templateService.findById(templateId);
+        template.increaseUsedCount();
 
-        List<String> questionValues = template.getQuestions().stream()
-            .map(TemplateQuestion::getValue)
+        List<ReviewFormQuestion> questions = template.getQuestions().stream()
+            .map(question -> reviewFormQuestionService.save(question.getValue(), question.getDescription()))
             .collect(Collectors.toUnmodifiableList());
 
-        ReviewForm reviewForm = new ReviewForm(member, request.getReviewFormTitle(), questionValues);
+        ReviewForm reviewForm = new ReviewForm(member, request.getReviewFormTitle(), questions);
         return reviewFormRepository.save(reviewForm);
 
     }
@@ -67,12 +66,11 @@ public class ReviewFormService {
     @Transactional
     public ReviewForm update(Member member, String code, ReviewFormUpdateRequest updateRequest) {
         ReviewForm reviewForm = findByCode(code);
+        validateReviewFormIsMine(member, reviewForm, "본인이 생성한 회고 폼이 아니면 수정할 수 없습니다.");
 
         List<ReviewFormQuestion> reviewFormQuestions = updateRequest.getQuestions().stream()
-            .map(request -> reviewFormQuestionService.saveOrUpdateQuestion(request.getId(), request.getValue()))
+            .map(request -> reviewFormQuestionService.saveOrUpdateQuestion(request.getId(), request.getValue(), ""))
             .collect(Collectors.toUnmodifiableList());
-
-        validateReviewFormIsMine(member, reviewForm, "본인이 생성한 회고 폼이 아니면 수정할 수 없습니다.");
 
         reviewForm.update(updateRequest.getReviewFormTitle(), reviewFormQuestions);
 
