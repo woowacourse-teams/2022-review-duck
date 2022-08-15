@@ -33,7 +33,7 @@ public class ReviewFormService {
     @Transactional
     public ReviewForm save(Member member, ReviewFormCreateRequest createRequest) {
         List<ReviewFormQuestion> questions = createRequest.getQuestions().stream()
-            .map(request -> reviewFormQuestionService.save(request.getValue(), "-"))
+            .map(request -> reviewFormQuestionService.save(request.getValue(), ""))
             .collect(Collectors.toUnmodifiableList());
 
         ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewFormTitle(), questions);
@@ -46,7 +46,7 @@ public class ReviewFormService {
         template.increaseUsedCount();
 
         List<ReviewFormQuestion> questions = template.getQuestions().stream()
-            .map(t -> reviewFormQuestionService.save(t.getValue(), t.getDescription()))
+            .map(question -> reviewFormQuestionService.save(question.getValue(), question.getDescription()))
             .collect(Collectors.toUnmodifiableList());
 
         ReviewForm reviewForm = new ReviewForm(member, request.getReviewFormTitle(), questions);
@@ -69,7 +69,7 @@ public class ReviewFormService {
         validateReviewFormIsMine(member, reviewForm, "본인이 생성한 회고 폼이 아니면 수정할 수 없습니다.");
 
         List<ReviewFormQuestion> reviewFormQuestions = updateRequest.getQuestions().stream()
-            .map(request -> reviewFormQuestionService.saveOrUpdateQuestion(request.getId(), request.getValue(), "-"))
+            .map(request -> reviewFormQuestionService.saveOrUpdateQuestion(request.getId(), request.getValue(), ""))
             .collect(Collectors.toUnmodifiableList());
 
         reviewForm.update(updateRequest.getReviewFormTitle(), reviewFormQuestions);

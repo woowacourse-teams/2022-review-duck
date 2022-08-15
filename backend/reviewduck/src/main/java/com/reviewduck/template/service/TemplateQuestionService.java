@@ -30,7 +30,7 @@ public class TemplateQuestionService {
         }
 
         TemplateQuestion question = findById(id);
-        question.updateValue(value);
+        question.update(value, description);
 
         return question;
     }

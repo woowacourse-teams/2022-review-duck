@@ -26,7 +26,7 @@ public class ReviewFormQuestionService {
     @Transactional
     public ReviewFormQuestion saveOrUpdateQuestion(Long questionId, String value, String description) {
         if (Objects.isNull(questionId)) {
-            return reviewFormQuestionRepository.save(new ReviewFormQuestion(value));
+            return reviewFormQuestionRepository.save(new ReviewFormQuestion(value, description));
         }
 
         ReviewFormQuestion reviewFormQuestion = findById(questionId);
