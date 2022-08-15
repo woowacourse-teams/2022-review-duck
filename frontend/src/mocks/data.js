@@ -79,6 +79,16 @@ export const dummyTemplate = {
 
 export const dummyFormcode = '1324ABCD';
 
+export const DUMMY_AUTH = {
+  GET_ACCESS_TOKEN: { accessToken: 'dummyTokens' },
+  GET_USER_PROFILE: {
+    socialId: '94832610',
+    socialNickname: 'compy-ryu',
+    nickname: 'Ryu Hyun Seung',
+    profileUrl: 'https://avatars.githubusercontent.com/u/94832610?v=4',
+  },
+};
+
 export const DUMMY_REVIEW = {
   GET_FORM: {
     reviewFormTitle: '회고폼 제목',

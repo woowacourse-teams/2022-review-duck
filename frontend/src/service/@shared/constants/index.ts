@@ -76,6 +76,10 @@ const REVIEW_FORM_CODE_LENGTH = 8;
 const REVIEW_FORM_CODE_REGEX = `(?=.*[A-Za-z])(?=.*[0-9])[a-zA-Z0-9]{${REVIEW_FORM_CODE_LENGTH}}$`;
 
 const API_URI = {
+  AUTH: {
+    GET_ACCESS_TOKEN: '/api/login/refresh',
+    GET_USER_PROFILE: '/api/members/me',
+  },
   REVIEW: {
     GET_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
     GET_ANSWER: (reviewId: numberString) => `/api/reviews/${reviewId}`,
