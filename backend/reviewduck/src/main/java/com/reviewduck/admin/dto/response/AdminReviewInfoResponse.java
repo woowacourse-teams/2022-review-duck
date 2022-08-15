@@ -24,6 +24,6 @@ public class AdminReviewInfoResponse {
     public static AdminReviewInfoResponse from(Review review) {
         return new AdminReviewInfoResponse(review.getId(), review.getMember().getId(),
             review.getMember().getProfileUrl(), review.getMember().getNickname(), review.getReviewForm().getCode(),
-            review.getReviewForm().getReviewTitle(), review.getCreatedAt(), review.getUpdatedAt());
+            review.getReviewForm().getTitle(), review.getCreatedAt(), review.getUpdatedAt());
     }
 }

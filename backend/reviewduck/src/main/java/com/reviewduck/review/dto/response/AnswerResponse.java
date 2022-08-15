@@ -1,7 +1,6 @@
 package com.reviewduck.review.dto.response;
 
 import com.reviewduck.review.domain.Answer;
-import com.reviewduck.review.domain.ReviewFormQuestion;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,10 +10,10 @@ import lombok.Getter;
 @Getter
 public class AnswerResponse {
 
-    private String questionValue;
-    private String answerValue;
+    private Long id;
+    private String value;
 
-    public static AnswerResponse of(ReviewFormQuestion reviewFormQuestion, Answer answer) {
-        return new AnswerResponse(reviewFormQuestion.getValue(), answer.getValue());
+    public static AnswerResponse from(Answer answer) {
+        return new AnswerResponse(answer.getId(), answer.getValue());
     }
 }

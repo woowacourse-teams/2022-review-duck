@@ -12,8 +12,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
-public class ReviewFormQuestionRequest {
+public class AnswerCreateRequest {
 
-    @NotNull(message = "회고 폼의 질문 목록 생성 중 오류가 발생했습니다.")
-    private String questionValue;
+    @NotNull(message = "답변은 비어있을 수 없습니다.")
+    private String value;
 }
