@@ -19,10 +19,4 @@ public class WebRestController {
     public String getProfile() {
         return Arrays.stream(env.getActiveProfiles()).findFirst().orElse("");
     }
-
-    @Operation(summary = "요청 처리 준비 여부를 조회한다.")
-    @GetMapping("/healths")
-    public String health() {
-        return "UP";
-    }
 }
