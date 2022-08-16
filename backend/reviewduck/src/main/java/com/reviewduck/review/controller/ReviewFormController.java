@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +30,7 @@ import com.reviewduck.review.dto.response.MyReviewFormsResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
 import com.reviewduck.review.dto.response.ReviewResponse;
+import com.reviewduck.review.dto.response.ReviewSheetResponse;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
@@ -94,18 +96,33 @@ public class ReviewFormController {
         return MyReviewFormsResponse.from(reviewForms);
     }
 
-    @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 모두 조회한다.")
-    @GetMapping("/{reviewFormCode}/reviews")
+    @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 모두 조회한다. (목록형 보기)")
+    @GetMapping(value = "/{reviewFormCode}/reviews", params = "displayType=list")
     @ResponseStatus(HttpStatus.OK)
-    public List<ReviewResponse> findReviewsByCode(@AuthenticationPrincipal Member member,
-        @PathVariable String reviewFormCode) {
+    public List<ReviewResponse> findReviewsByCodeAsListDisplay(@AuthenticationPrincipal Member member,
+        @PathVariable String reviewFormCode, @RequestParam String displayType) {
 
-        info("/api/review-forms/" + reviewFormCode + "/reviews", "GET", "");
+        info("/api/review-forms/" + reviewFormCode + "/reviews?displayType=list", "GET", "");
 
         List<Review> reviews = reviewService.findAllByCode(reviewFormCode);
 
         return reviews.stream()
             .map((review) -> ReviewResponse.of(member, review))
+            .collect(Collectors.toUnmodifiableList());
+    }
+
+    @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 동기화하여 모두 조회한다. (시트형 보기)")
+    @GetMapping(value = "/{reviewFormCode}/reviews", params = "displayType=sheet")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ReviewSheetResponse> findReviewsByCodeAsSheetDisplay(@AuthenticationPrincipal Member member,
+        @PathVariable String reviewFormCode, @RequestParam String displayType) {
+
+        info("/api/review-forms/" + reviewFormCode + "/reviews?displayType=sheet", "GET", "");
+
+        List<Review> reviews = reviewService.findAllByCode(reviewFormCode);
+
+        return reviews.stream()
+            .map((review) -> ReviewSheetResponse.of(member, review))
             .collect(Collectors.toUnmodifiableList());
     }
 

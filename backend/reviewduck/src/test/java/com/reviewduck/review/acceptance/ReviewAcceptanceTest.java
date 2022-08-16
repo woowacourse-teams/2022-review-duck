@@ -319,7 +319,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         post("/api/review-forms/" + code, createRequest, accessToken);
 
-        return get("/api/review-forms/" + code + "/reviews", accessToken)
+        return get("/api/review-forms/" + code + "/reviews?displayType=list", accessToken)
             .extract()
             .body()
             .jsonPath().getList(".", ReviewResponse.class)
