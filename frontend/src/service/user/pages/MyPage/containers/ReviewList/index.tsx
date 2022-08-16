@@ -96,8 +96,8 @@ function ReviewList({ filter }: Record<'filter', string>) {
               </div>
 
               <hr />
-
-              <QuestionContent questions={review.answers}></QuestionContent>
+              {/* 
+              <QuestionContent questions={review.answers}></QuestionContent> */}
 
               <hr />
 
@@ -128,8 +128,8 @@ function ReviewList({ filter }: Record<'filter', string>) {
                 </div>
               </div>
               <hr />
-
-              <QuestionContent questions={reviewForm.questions}></QuestionContent>
+              {/* 
+              <QuestionContent questions={reviewForm.questions}></QuestionContent> */}
 
               <hr />
 
