@@ -202,7 +202,7 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("사용자 작성한 템플릿을 수정시각을 기준으로 내림차순 정렬하여 조회한다.")
-        void findBySocialId() {
+        void findBySocialIdOrderByUpdatedAt() {
             // given
             String templateTitle1 = "title1";
             String templateDescription1 = "description1";

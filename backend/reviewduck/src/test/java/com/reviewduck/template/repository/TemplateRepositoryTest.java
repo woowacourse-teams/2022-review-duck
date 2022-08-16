@@ -153,7 +153,7 @@ public class TemplateRepositoryTest {
         template2.increaseUsedCount();
 
         // when
-        List<Template> templates = templateRepository.findAllByOrderByUpdatedAtDesc();
+        List<Template> templates = templateRepository.findAllByOrderByUsedCountDesc();
 
         // then
         assertAll(
