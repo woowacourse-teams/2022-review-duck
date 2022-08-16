@@ -1,15 +1,22 @@
 export interface Template {
-  templateId: number;
-  templateTitle: string;
-  templateDescription: string;
+  info: {
+    id: number;
+    title: string;
+    description: string;
+    updatedAt: number;
+    usedCount: number;
+  };
   creator: {
+    id: number;
     nickname: string;
     profileUrl: string;
-    socialId?: string;
+    socialNickname?: string;
     bio?: string;
   };
-  updatedAt: number;
-  usedCount: number;
+}
+
+export interface GetTemplatesResponse {
+  templates: Template[];
 }
 
 export interface GetTemplateResponse extends Template {
@@ -24,4 +31,4 @@ export interface CreateFormResponse {
   reviewFormCode: string;
 }
 
-export type GetTemplatesResponse = Template[];
+export type TemplateFilterType = 'trend' | 'latest';

@@ -30,7 +30,7 @@ function PageRoutes() {
           <Route path={PAGE_LIST.MY_PAGE} element={<MyPage />} />
         </Route>
 
-        <Route path={`${PAGE_LIST.TEMPLATE_LIST}/*`} element={<TemplateListPage />} />
+        <Route path={PAGE_LIST.TEMPLATE_LIST} element={<TemplateListPage />} />
 
         <Route path={`${PAGE_LIST.TEMPLATE_DETAIL}/:templateId`} element={<TemplateDetailPage />} />
         <Route path="playground" element={<Playground />} />

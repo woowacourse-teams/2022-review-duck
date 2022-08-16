@@ -13,17 +13,19 @@ function useTemplateDetailQueries(templateId: number) {
   const deleteMutation = useDeleteTemplate();
 
   const template = data || {
-    templateId: 0,
-    templateTitle: '',
-    templateDescription: '',
+    info: {
+      id: 0,
+      title: '',
+      description: '',
+      updatedAt: 0,
+      usedCount: 0,
+    },
     creator: {
       nickname: '',
       profileUrl: '',
-      socialId: '',
+      socialNickname: '',
       bio: '',
     },
-    updatedAt: 0,
-    usedCount: 0,
     questions: [],
   };
 
