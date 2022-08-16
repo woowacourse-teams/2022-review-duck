@@ -85,11 +85,11 @@ public class Member extends BaseDate {
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o))
             return false;
         Member member = (Member)o;
-        return Objects.equals(id, member.id);
+        return id != null && Objects.equals(id, member.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return getClass().hashCode();
     }
 }

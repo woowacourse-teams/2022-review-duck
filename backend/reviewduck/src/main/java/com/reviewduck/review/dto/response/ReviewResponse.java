@@ -18,8 +18,8 @@ public class ReviewResponse {
     private Long id;
     private String reviewTitle;
     private long updatedAt;
-    private boolean isCreator;
     private CreatorResponse creator;
+    private boolean isCreator;
     private List<ReviewContentResponse> contents;
 
     public static ReviewResponse of(Member member, Review review) {
@@ -31,9 +31,13 @@ public class ReviewResponse {
             review.getId(),
             review.getTitle(),
             Timestamp.valueOf(review.getUpdatedAt()).getTime(),
-            review.isMine(member),
             CreatorResponse.from(review.getMember()),
+            review.isMine(member),
             contents
         );
+    }
+
+    public boolean getIsCreator() {
+        return isCreator;
     }
 }

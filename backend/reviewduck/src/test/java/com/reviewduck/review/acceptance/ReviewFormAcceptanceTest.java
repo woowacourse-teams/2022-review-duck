@@ -231,7 +231,34 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
     @Nested
     @DisplayName("특정 회고 폼을 기반으로 작성된 회고 조회")
-    class findReviewsByCode {
+    class findReviewsByCodeWithDisplayType {
+
+        @Test
+        @DisplayName("파라미터 값이 없으면 접근할 수 없다.")
+        void withNoParam() {
+            // given
+            String code = createReviewFormAndGetCode(accessToken1);
+
+            // when, then
+            get("/api/review-forms/" + code + "/reviews?displayType=")
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+        }
+
+        @Test
+        @DisplayName("파라미터 값이 적절하지 않으면 접근할 수 없다.")
+        void withInvalidParam() {
+            // given
+            String code = createReviewFormAndGetCode(accessToken1);
+
+            // when, then
+            get("/api/review-forms/" + code + "/reviews?displayType=invalid")
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+        }
+    }
+
+    @Nested
+    @DisplayName("특정 회고 폼을 기반으로 작성된 목록형 회고 조회")
+    class findReviewsByCodeWithListDisplay {
 
         @Test
         @DisplayName("특정 회고 폼을 기반으로 작성된 회고 답변 전체를 조회한다.")
@@ -246,8 +273,16 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             post("/api/review-forms/" + code, createRequest, accessToken1);
 
+            String newReviewTitle = "new title";
+            List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
+                new ReviewFormQuestionUpdateRequest(1L, "new question1"));
+            ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
+
+            put("/api/review-forms/" + code, updateRequest, accessToken1);
+
             // when
-            List<ReviewResponse> response = get("/api/review-forms/" + code + "/reviews", accessToken1)
+            List<ReviewResponse> response = get("/api/review-forms/" + code + "/reviews?displayType=list",
+                accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .body()
@@ -272,7 +307,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             post("/api/review-forms/" + code, createRequest, accessToken1);
 
             // when
-            List<ReviewResponse> response = get("/api/review-forms/" + code + "/reviews")
+            List<ReviewResponse> response = get("/api/review-forms/" + code + "/reviews?displayType=list")
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .body()
@@ -281,7 +316,10 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             ReviewResponse reviewResponse = response.get(0);
 
             // then
-            assertThat(reviewResponse.getContents()).hasSize(2);
+            assertAll(
+                () -> assertThat(reviewResponse.getContents()).hasSize(2),
+                () -> assertThat(reviewResponse.getIsCreator()).isFalse()
+            );
         }
 
         @Test
@@ -298,7 +336,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             System.out.println(accessToken1);
 
             // when, then
-            get("/api/review-forms/" + code + "/reviews", invalidToken)
+            get("/api/review-forms/" + code + "/reviews?displayType=list", invalidToken)
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
@@ -306,7 +344,103 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         @DisplayName("존재하지 않는 회고 폼 코드에 대해 조회할 수 없다.")
         void invalidCode() {
             // when, then
-            get("/api/review-forms/" + invalidCode + "/reviews", accessToken1)
+            get("/api/review-forms/" + invalidCode + "/reviews?displayType=list", accessToken1)
+                .statusCode(HttpStatus.NOT_FOUND.value());
+        }
+    }
+
+    @Nested
+    @DisplayName("특정 회고 폼을 기반으로 작성된 시트형 회고 조회 (동기화)")
+    class findReviewsByCodeWithSheetDisplay {
+
+        @Test
+        @DisplayName("특정 회고 폼을 기반으로 작성되고 동기화된 회고 답변 전체를 조회한다.")
+        void findReviewsByCode() {
+            // given
+            String code = createReviewFormAndGetCode(accessToken1);
+
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+            ));
+
+            post("/api/review-forms/" + code, createRequest, accessToken1);
+
+            String newReviewTitle = "new title";
+            List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
+                new ReviewFormQuestionUpdateRequest(1L, "new question1"));
+            ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
+
+            put("/api/review-forms/" + code, updateRequest, accessToken1);
+
+            // when
+            List<ReviewResponse> response = get("/api/review-forms/" + code + "/reviews?displayType=sheet",
+                accessToken2)
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .body()
+                .jsonPath().getList(".", ReviewResponse.class);
+
+            ReviewResponse reviewResponse = response.get(0);
+
+            // then
+            assertAll(
+                () -> assertThat(reviewResponse.getContents()).hasSize(1),
+                () -> assertThat(reviewResponse.getIsCreator()).isFalse()
+            );
+        }
+
+        @Test
+        @DisplayName("로그인하지 않은 상태로 조회할 수 있다.")
+        void withoutLogin() {
+            // given
+            String code = createReviewFormAndGetCode(accessToken1);
+
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+            ));
+            post("/api/review-forms/" + code, createRequest, accessToken1);
+
+            // when
+            List<ReviewResponse> response = get("/api/review-forms/" + code + "/reviews?displayType=sheet")
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .body()
+                .jsonPath().getList(".", ReviewResponse.class);
+
+            ReviewResponse reviewResponse = response.get(0);
+
+            // then
+            assertAll(
+                () -> assertThat(reviewResponse.getContents()).hasSize(2),
+                () -> assertThat(reviewResponse.getIsCreator()).isFalse()
+            );
+        }
+
+        @Test
+        @DisplayName("잘못된 토큰 값으로 조회할 수 없다.")
+        void withInvalidMember() {
+            // given
+            String code = createReviewFormAndGetCode(accessToken1);
+
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+            ));
+            post("/api/review-forms/" + code, createRequest, accessToken1);
+            System.out.println(accessToken1);
+
+            // when, then
+            get("/api/review-forms/" + code + "/reviews?displayType=sheet", invalidToken)
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 회고 폼 코드에 대해 조회할 수 없다.")
+        void invalidCode() {
+            // when, then
+            get("/api/review-forms/" + invalidCode + "/reviews?displayType=sheet", accessToken1)
                 .statusCode(HttpStatus.NOT_FOUND.value());
         }
     }
