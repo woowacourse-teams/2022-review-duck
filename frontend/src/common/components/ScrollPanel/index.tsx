@@ -61,7 +61,7 @@ function ScrollPanel({ className, children }: Props) {
         ? scrollLeft - childElementWidth.current
         : scrollLeft + childElementWidth.current;
 
-    const isMoveable = scrollWidth - clientWidth >= scrollLocation;
+    const isMoveable = scrollWidth - clientWidth + childElementWidth.current >= scrollLocation;
 
     if (!isMoveable) return;
 
