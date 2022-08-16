@@ -1,0 +1,111 @@
+@import 'styles/@global.scss';
+
+.container {
+  display: grid;
+  grid-template-columns: 63% 32%;
+  gap: 5%;
+  padding: 1.5rem 1rem;
+  min-width: 768px;
+  max-width: 1056px;
+  height: 100%;
+  margin: 0 auto;
+}
+
+.card-box {
+  width: 100%;
+  padding: 2rem;
+
+  background-color: $THEME_COLOR_THEME_BACKGROUND_100;
+  border-radius: 2rem;
+
+  .title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.participant-list {
+  overflow: scroll hidden;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.review-container {
+  & > hr {
+    margin: 1.5rem 0;
+  }
+}
+
+.side-menu {
+  align-self: start;
+  position: sticky;
+  top: 8rem;
+}
+
+.form-detail-title {
+}
+
+.info-text {
+  .name {
+    color: $THEME_COLOR_THEME_TEXT_600;
+  }
+
+  .content {
+    color: $THEME_COLOR_THEME_TEXT_400;
+  }
+}
+
+.form-copy-link {
+  .title {
+    color: $GLOBAL_COLOR_GRAY_500;
+  }
+
+  .copy-box {
+    position: relative;
+    border-radius: $GLOBAL_BORDERRADIUS_MAX;
+    overflow: hidden;
+  }
+
+  .copy-input {
+    color: $GLOBAL_COLOR_GRAY_300;
+  }
+
+  .copy-text {
+    position: absolute;
+    color: #1267e7;
+
+    display: flex;
+    padding-right: 0.8rem;
+    justify-content: right;
+    align-items: center;
+
+    position: absolute;
+    width: 25%;
+    height: 100%;
+    top: 0;
+    right: 0;
+
+    background-image: linear-gradient(90deg, transparent 0%, $THEME_COLOR_THEME_BACKGROUND_200 40%);
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.form-manage-buttons {
+  .title {
+    color: $GLOBAL_COLOR_GRAY_500;
+  }
+
+  .button-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}

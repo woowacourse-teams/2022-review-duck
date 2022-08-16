@@ -14,3 +14,4 @@ export { default as SnackbarProvider } from './SnackbarProvider';
 export { default as PopupBox } from './PopupBox';
 export { default as Modal } from './Modal';
 export { default as ModalProvider } from './ModalProvider';
+export { default as FlexContainer } from './FlexContainer';

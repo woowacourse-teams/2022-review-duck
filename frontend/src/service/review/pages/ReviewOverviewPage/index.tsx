@@ -1,97 +1,81 @@
-import { Suspense, useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-import cn from 'classnames';
+import { useGetReviewForm, useGetReviewFormAnswer } from 'service/@shared/hooks/queries/review';
 
-import { Button, Icon, Logo } from 'common/components';
+import { FlexContainer, Skeleton } from 'common/components';
 
-import Skeleton from 'common/components/Skeleton';
+import Profile from 'service/review/components/Profile';
 
 import styles from './styles.module.scss';
 
-import ReviewHeader from './containers/ReviewHeader';
-import ReviewListMain from './containers/ReviewListMain';
-import ReviewSheetView from './containers/ReviewSheetView';
-import ReviewSideMenu from './containers/ReviewSideMenu';
-import useOverviewQueries from './useOverviewQueries';
-import { PAGE_LIST } from 'service/@shared/constants';
+import { Header } from './views/Header';
+import { ListView } from './views/ListView';
 
-function ReviewOverviewPage() {
+const REVIEW_OVERVIEW_MODE = {
+  LIST_VIEW: true,
+  SHEET_VIEW: false,
+};
+
+function ReviewOverViewPage() {
   const { reviewFormCode = '' } = useParams();
-  const navigate = useNavigate();
 
-  const [isSheetEnabled, setSheetEnabled] = useState(false);
+  const reviewFormAnswerQuery = useGetReviewFormAnswer(reviewFormCode, {
+    suspense: false,
+  });
 
-  const { isError, error } = useOverviewQueries(reviewFormCode);
+  const reviewFormQuery = useGetReviewForm(reviewFormCode, {
+    suspense: false,
+  });
 
-  const handleModeChange = (isEnabled: boolean) => () => {
-    if (isEnabled === isSheetEnabled) return;
+  const reviewForm = reviewFormQuery.data;
+  const reviewAnswers = reviewFormAnswerQuery.data;
 
-    setSheetEnabled(isEnabled);
-  };
+  const isContentLoaded = reviewFormQuery.isLoading && reviewFormAnswerQuery.isLoading;
 
-  useEffect(() => {
-    if (isError) {
-      alert(error?.message);
-      navigate(-1);
-    }
-  }, [isError, error]);
+  const isViewMode = REVIEW_OVERVIEW_MODE.LIST_VIEW;
 
   return (
-    <div className={cn(styles.layout)}>
-      <header className={cn(styles.header)}>
-        <nav className={cn(styles.container, styles.menuBar)}>
-          <div className={styles.leftContainer}>
-            <Link to={PAGE_LIST.HOME}>
-              <Logo size="small" />
-            </Link>
+    <div className={styles.layout}>
+      <Header>
+        <Header.FormInformation isLoading={isContentLoaded} fallback={<Skeleton />}>
+          <Header.Title>{reviewForm?.title}</Header.Title>
+          <Header.Description>{reviewForm?.info.creator.nickname}</Header.Description>
+        </Header.FormInformation>
 
-            <Suspense fallback={<Skeleton />}>
-              <ReviewHeader reviewFormCode={reviewFormCode} />
-            </Suspense>
-          </div>
+        <Header.ViewChangeButtons viewMode={isViewMode} />
+      </Header>
 
-          <div className={styles.rightContainer}>
-            <Button
-              theme={!isSheetEnabled ? 'default' : 'outlined'}
-              onClick={handleModeChange(false)}
-            >
-              <Icon code="list" />
-              <span>목록형 보기</span>
-            </Button>
+      <ListView>
+        <ListView.Content isLoading={isContentLoaded} fallback={<Skeleton line={4} />}>
+          <ListView.ParticipantList>
+            {reviewAnswers?.map(({ id, info: { creator } }) => (
+              <Profile key={id} image={creator.profileUrl} title={creator.nickname} />
+            ))}
+          </ListView.ParticipantList>
 
-            <Button
-              theme={isSheetEnabled ? 'default' : 'outlined'}
-              onClick={handleModeChange(true)}
-            >
-              <Icon code="table_view" />
-              <span>시트형 보기</span>
-            </Button>
-          </div>
-        </nav>
-      </header>
+          {[1, 2, 3].map((value) => (
+            <ListView.Review key={value} />
+          ))}
+        </ListView.Content>
 
-      {isSheetEnabled && (
-        <Suspense fallback={<Skeleton line={4} />}>
-          <ReviewSheetView reviewFormCode={reviewFormCode} />
-        </Suspense>
-      )}
+        <ListView.SideMenu isLoading={isContentLoaded} fallback={<Skeleton line={3} />}>
+          <ListView.FormDetail>
+            <FlexContainer gap="small">
+              <ListView.InfoText name="크리에이터">닉네임</ListView.InfoText>
+              <ListView.InfoText name="회고 참여자">총 명이 참여함</ListView.InfoText>
+              <ListView.InfoText name="업데이트">0일 전</ListView.InfoText>
+            </FlexContainer>
 
-      {!isSheetEnabled && (
-        <main className={cn(styles.container, styles.content)}>
-          <Suspense fallback={<Skeleton line={4} />}>
-            <ReviewListMain reviewFormCode={reviewFormCode} />
-          </Suspense>
+            <ListView.JoinButton reviewFormCode={reviewFormCode} />
 
-          <Suspense fallback={<Skeleton line={3} />}>
-            <ReviewSideMenu reviewFormCode={reviewFormCode} />
-          </Suspense>
-        </main>
-      )}
+            <ListView.FormCopyLink reviewFormCode={reviewFormCode} />
 
-      <footer></footer>
+            <ListView.FormManageButtons reviewFormCode={reviewFormCode} />
+          </ListView.FormDetail>
+        </ListView.SideMenu>
+      </ListView>
     </div>
   );
 }
 
-export default ReviewOverviewPage;
+export default ReviewOverViewPage;

@@ -32,11 +32,13 @@ export interface ReviewAnswer {
   info: UserContentRequireField;
 }
 
-export type ReviewFormAnswerList = Array<{
+export interface ReviewFormAnswer {
   id: number;
   questions: AnsweredQuestion[];
   info: UserContentRequireField;
-}>;
+}
+
+export type ReviewFormAnswerList = ReviewFormAnswer[];
 
 // API 관련 타입
 
