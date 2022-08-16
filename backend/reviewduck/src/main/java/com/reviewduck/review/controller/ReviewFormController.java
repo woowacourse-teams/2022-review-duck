@@ -102,7 +102,7 @@ public class ReviewFormController {
     public List<ReviewResponse> findReviewsByCodeAsListDisplay(@AuthenticationPrincipal Member member,
         @PathVariable String reviewFormCode, @RequestParam String displayType) {
 
-        info("/api/review-forms/" + reviewFormCode + "/reviews", "GET", "");
+        info("/api/review-forms/" + reviewFormCode + "/reviews?displayType=list", "GET", "");
 
         List<Review> reviews = reviewService.findAllByCode(reviewFormCode);
 
@@ -117,7 +117,7 @@ public class ReviewFormController {
     public List<ReviewSheetResponse> findReviewsByCodeAsSheetDisplay(@AuthenticationPrincipal Member member,
         @PathVariable String reviewFormCode, @RequestParam String displayType) {
 
-        info("/api/review-forms/" + reviewFormCode + "/reviews", "GET", "");
+        info("/api/review-forms/" + reviewFormCode + "/reviews?displayType=sheet", "GET", "");
 
         List<Review> reviews = reviewService.findAllByCode(reviewFormCode);
 
