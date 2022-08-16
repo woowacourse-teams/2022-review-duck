@@ -1,0 +1,76 @@
+# Workflow 의 이름 설정
+name: backend-sonarqube
+
+# develop 브랜치에 대한 pr 이벤트가 일어났을 때 실행한다는 설정
+on:
+  push:
+    branches: ["develop", "main"]
+  pull_request:
+    branches: ["develop", "main"]
+
+# job 의 공통된 옵션
+defaults:
+  run:
+    # 작업을 수행할 디렉토리 설정
+    working-directory: ./backend/reviewduck/
+
+# 실행 해야 할 job 들에 대한 설정
+jobs:
+  # Job의 이름 설정, 빌드 수행, Scanner 발동
+  analysis:
+    # ubuntu 환경에서 실행, 환경은 GitHub 이 제공
+    runs-on: ubuntu-latest
+    # 현재 Job에서 사용할 환경변수, repository setting secrets 에서 설정한 환경변수 사용
+    env:
+      SONARQUBE_PROJECT_NAME: reviewDuck
+      SONARQUBE_URL: ${{ secrets.SONAR_HOST_URL }}
+      SONARQUBE_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      clientId: ${{ secrets.CLIENTID }}
+      clientSecret: ${{ secrets.CLIENTSECRET }}
+      jwtKey: ${{ secrets.JWTKEY }}
+      jwtExpireLength: ${{ secrets.JWTEXPIRELENGTH }}
+      jwtRefreshExpireLength: ${{ secrets.JWTREFRESHEXPIRELENGTH }}
+
+    # analysis job 의 세부 단계 설정
+    steps:
+      # 소스코드 체크아웃 수행
+      - name: Checkout source code
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.SECURITY_TOKEN }}
+          submodules: recursive
+
+      # gradlw 파일 권한 변경
+      - name: gradlew permission change
+        run: sudo chmod 755 gradlew
+
+      # 파일 빌드
+      - name: Build with Gradle
+        run: ./gradlew build
+        env:
+          clientId: ${{ secrets.CLIENTID }}
+          clientSecret: ${{ secrets.CLIENTSECRET }}
+          jwtKey: ${{ secrets.JWTKEY }}
+          jwtExpireLength: ${{ secrets.JWTEXPIRELENGTH }}
+          jwtRefreshExpireLength: ${{ secrets.JWTREFRESHEXPIRELENGTH }}
+
+      # Gralde 의 Scanner 발동, 위의 env 에서 선언한 환경변수와 함께 발동
+      - name: Sonarqube Analysis
+        run: ./gradlew test sonarqube
+          -Dsonar.host.url=${{ env.SONARQUBE_URL }}
+          -Dsonar.projectName=${{ env.SONARQUBE_PROJECT_NAME }}-${{ env.PR_NUMBER }}
+          -Dsonar.login=${{ env.SONARQUBE_TOKEN }} --info
+
+      # PR 에 Comment 를 달아주는 스크립트 실행
+      - name: Comment Sonarqube URL
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const { SONARQUBE_PROJECT_NAME, SONARQUBE_URL, PR_NUMBER } = process.env
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `📊 ${ SONARQUBE_PROJECT_NAME }-${ PR_NUMBER } 분석 결과 확인하기 [링크](${SONARQUBE_URL})`
+            })
