@@ -10,7 +10,7 @@ const PAGE_LIST = {
   TEMPLATE_LIST: '/template/list',
   TEMPLATE_RECENT: '/recent',
   TEMPLATE_DETAIL: '/template/view',
-  TEMPLATE_EDIT: '/template/edit',
+  TEMPLATE_FORM: '/template/review-form',
 };
 
 const MODAL_LIST = {
