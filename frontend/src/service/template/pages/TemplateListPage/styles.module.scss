@@ -3,28 +3,30 @@
 .button {
   border: none;
   background: unset;
-  color: $THEME_COLOR_THEME_TEXT_900;
+  color: $THEME_COLOR_THEME_TEXT_600;
   padding: 2rem 1rem;
   font-size: 1.25rem;
-
-  &:hover {
-    cursor: pointer;
-    color: $THEME_COLOR_THEME_TEXT_600;
-  }
 
   .button-box {
     display: flex;
     align-items: center;
+    opacity: 0.5;
+
+    &:hover {
+      cursor: pointer;
+      opacity: 1;
+    }
+  }
+
+  .focus {
+    font-weight: bold;
+    opacity: 1;
   }
 
   .icon {
     margin-right: 0.5rem;
     color: $THEME_COLOR_STATUS_PRIMARY_500;
   }
-}
-
-.focus {
-  font-weight: bold;
 }
 
 .container {
