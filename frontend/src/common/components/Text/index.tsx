@@ -9,7 +9,7 @@ const propSizeType = [12, 14, 16, 18, 20, 24, 32, 40, 48] as const;
 
 export interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
   className?: string;
-  element: 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  element: 'p' | 'span' | 'div' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   size: typeof propSizeType[number];
   weight: 'lighter' | 'normal' | 'bold' | undefined;
   children: React.ReactNode;
