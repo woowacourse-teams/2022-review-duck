@@ -1,3 +1,5 @@
+import React from 'react';
+
 import cn from 'classnames';
 import PropTypes from 'prop-types';
 
@@ -7,17 +9,17 @@ const propSizeType = [12, 14, 16, 18, 20, 24, 32, 40, 48] as const;
 
 interface Props extends React.HTMLAttributes<HTMLParagraphElement> {
   className?: string;
+  element: 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   size: typeof propSizeType[number];
   weight: 'lighter' | 'normal' | 'bold';
   children: React.ReactNode;
 }
 
-function Text({ className, size, weight, children, ...rest }: Props) {
-  return (
-    <p className={cn(className, styles[`size-${size}`], styles[`weight-${weight}`])} {...rest}>
-      {children}
-    </p>
-  );
+function Text(props: Props) {
+  const { className, element, size, weight, children, ...rest } = props;
+  const classNames = cn(className, styles[`size-${size}`], styles[`weight-${weight}`]);
+
+  return React.createElement(element, { className: classNames, ...rest }, children);
 }
 
 Text.propTypes = {
@@ -25,6 +27,7 @@ Text.propTypes = {
 };
 
 Text.defaultProps = {
+  element: 'p',
   size: 14,
   weight: 'normal',
 };

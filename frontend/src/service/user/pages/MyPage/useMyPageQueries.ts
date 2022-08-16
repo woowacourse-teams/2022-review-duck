@@ -1,12 +1,12 @@
 import { useGetUserInfo } from 'service/@shared/hooks/queries/auth';
-import { useDeleteReview, useDeleteReviewForm } from 'service/@shared/hooks/queries/review';
+import { useDeleteReviewAnswer, useDeleteReviewForm } from 'service/@shared/hooks/queries/review';
 import { useGetMyReviewForms, useGetMyReviews } from 'service/@shared/hooks/queries/user';
 
 function useMyPageQueries() {
   const getMyReviewsQuery = useGetMyReviews();
   const getMyReviewFormsQuery = useGetMyReviewForms();
   const getUserProfileQuery = useGetUserInfo();
-  const deleteReviewMutation = useDeleteReview();
+  const deleteReviewMutation = useDeleteReviewAnswer();
   const deleteReviewFormMutation = useDeleteReviewForm();
 
   const myReviews = getMyReviewsQuery.data || {

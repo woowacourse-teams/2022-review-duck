@@ -1,8 +1,8 @@
-import { useGetReviewForm, useGetReviews } from 'service/@shared/hooks/queries/review';
+import { useGetReviewForm, useGetReviewFormAnswer } from 'service/@shared/hooks/queries/review';
 
 function useOverviewQueries(reviewFormCode = '') {
   const getReviewFormQuery = useGetReviewForm(reviewFormCode);
-  const getReviewsQuery = useGetReviews(reviewFormCode);
+  const getReviewsQuery = useGetReviewFormAnswer(reviewFormCode);
 
   const reviewForm = getReviewFormQuery.data || {
     reviewTitle: '',
