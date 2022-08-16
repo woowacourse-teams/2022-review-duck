@@ -67,13 +67,18 @@ function useGetReviewAnswer(
   );
 }
 
+interface UseGetReviewFormAnswer {
+  reviewFormCode: string;
+  display?: string;
+}
+
 function useGetReviewFormAnswer(
-  reviewFormCode: string,
+  { reviewFormCode, display }: UseGetReviewFormAnswer,
   queryOptions?: UseQueryOptions<GetReviewFormAnswerResponse, ErrorResponse, ReviewFormAnswerList>,
 ) {
   return useQuery<GetReviewFormAnswerResponse, ErrorResponse, ReviewFormAnswerList>(
     [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEWS, { reviewFormCode }],
-    () => reviewAPI.getFormAnswer(reviewFormCode),
+    () => reviewAPI.getFormAnswer(reviewFormCode, display),
     {
       ...queryOptions,
 

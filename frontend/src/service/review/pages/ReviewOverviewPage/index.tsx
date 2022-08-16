@@ -19,9 +19,12 @@ const REVIEW_OVERVIEW_MODE = {
 function ReviewOverViewPage() {
   const { reviewFormCode = '' } = useParams();
 
-  const reviewFormAnswerQuery = useGetReviewFormAnswer(reviewFormCode, {
-    suspense: false,
-  });
+  const reviewFormAnswerQuery = useGetReviewFormAnswer(
+    { reviewFormCode },
+    {
+      suspense: false,
+    },
+  );
 
   const reviewFormQuery = useGetReviewForm(reviewFormCode, {
     suspense: false,
