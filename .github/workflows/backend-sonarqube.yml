@@ -47,6 +47,9 @@ jobs:
       # 소스코드 체크아웃 수행
       - name: Checkout source code
         uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.SECURITY_TOKEN }}
+          submodules: recursive
 
       # gradlw 파일 권한 변경
       - name: gradlew permission change
