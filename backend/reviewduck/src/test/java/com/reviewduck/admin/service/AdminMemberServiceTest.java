@@ -61,7 +61,7 @@ public class AdminMemberServiceTest {
 
         // then
         assertThat(members).hasSize(1);
-        assertThat(members.get(0).getNickname()).isEqualTo("탈퇴한 회원입니다");
+        assertThat(members.get(0).getNickname()).isEqualTo("탈퇴한 회원입니다.");
     }
 
     @Test
