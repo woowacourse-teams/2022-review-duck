@@ -1,5 +1,32 @@
 @import 'styles/@global.scss';
 
+.button {
+  border: none;
+  background: unset;
+  color: $THEME_COLOR_THEME_TEXT_900;
+  padding: 2rem 1rem;
+  font-size: 1.25rem;
+
+  &:hover {
+    cursor: pointer;
+    color: $THEME_COLOR_THEME_TEXT_600;
+  }
+
+  .button-box {
+    display: flex;
+    align-items: center;
+  }
+
+  .icon {
+    margin-right: 0.5rem;
+    color: $THEME_COLOR_STATUS_PRIMARY_500;
+  }
+}
+
+.focus {
+  font-weight: bold;
+}
+
 .container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

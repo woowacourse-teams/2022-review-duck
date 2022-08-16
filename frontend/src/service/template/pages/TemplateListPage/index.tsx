@@ -1,14 +1,20 @@
 import { useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
+import cn from 'classnames';
+
 import { TemplateFilterType } from 'service/@shared/types';
 
 import { useGetTemplates } from 'service/@shared/hooks/queries/template/useGet';
 
+import Icon from 'common/components/Icon';
+
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
 
+import styles from './styles.module.scss';
+
 import TemplateListContainer from './TemplateListContainer';
-import { PAGE_LIST } from 'service/@shared/constants';
+import { PAGE_LIST, TEMPLATE_TAB } from 'service/@shared/constants';
 
 function TemplateListPage() {
   const navigate = useNavigate();
@@ -30,11 +36,25 @@ function TemplateListPage() {
   return (
     <LayoutContainer>
       <div>
-        <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=trend`}>
-          <button>트랜딩</button>
+        <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${TEMPLATE_TAB.TREND}`}>
+          <button
+            className={cn(styles.button, { [styles.focus]: currentTab === TEMPLATE_TAB.TREND })}
+          >
+            <div className={styles.buttonBox}>
+              <Icon className={styles.icon} code="local_fire_department" />
+              트랜딩
+            </div>
+          </button>
         </Link>
-        <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=latest`}>
-          <button>최신</button>
+        <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${TEMPLATE_TAB.LATEST}`}>
+          <button
+            className={cn(styles.button, { [styles.focus]: currentTab === TEMPLATE_TAB.LATEST })}
+          >
+            <div className={styles.buttonBox}>
+              <Icon className={styles.icon} code="playlist_add_check_circle" />
+              최신
+            </div>
+          </button>
         </Link>
         <TemplateListContainer templates={templates} />
       </div>
