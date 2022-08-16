@@ -1,0 +1,57 @@
+@import 'styles/@global.scss';
+
+.profile-image {
+  position: relative;
+  display: block;
+
+  border-radius: $GLOBAL_BORDERRADIUS_MAX;
+
+  &.size-small {
+    width: 3rem;
+    height: 3rem;
+
+    &.theme-rectangle {
+      height: 4rem;
+    }
+  }
+
+  &.size-medium {
+    width: 4rem;
+    height: 4rem;
+
+    &.theme-rectangle {
+      height: 6rem;
+    }
+  }
+
+  &.size-large {
+    width: 6rem;
+    height: 6rem;
+
+    &.theme-rectangle {
+      height: 9rem;
+    }
+  }
+}
+
+.nickname {
+  color: $THEME_COLOR_THEME_TEXT_900;
+}
+
+.description {
+  color: $THEME_COLOR_THEME_TEXT_150;
+}
+
+.profile-container {
+  &.align-left {
+    text-align: left;
+  }
+
+  &.align-center {
+    text-align: center;
+  }
+
+  &.align-right {
+    text-align: right;
+  }
+}
