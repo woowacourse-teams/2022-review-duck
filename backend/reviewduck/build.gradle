@@ -59,6 +59,7 @@ jacocoTestReport {
 
 sonarqube {
     properties {
+        property "sonar.projectKey", "ReviewDuck_2022-review-duck_AYKkUAbhhr7kMqymgx5L"
         property "sonar.sources", "src" // 소스 경로
         property "sonar.language", "java" // 언어
         property "sonar.sourceEncoding", "UTF-8"
