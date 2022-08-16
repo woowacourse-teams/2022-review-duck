@@ -1,0 +1,36 @@
+@import 'styles/@global.scss';
+
+.inline-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 1.5rem;
+
+  .button {
+    cursor: pointer;
+    color: $THEME_COLOR_THEME_TEXT_150;
+    gap: 0.25rem;
+    padding: 0.25rem;
+
+    .icon {
+      font-size: 1.5rem;
+    }
+
+    &:hover {
+      color: $THEME_COLOR_THEME_TEXT_800;
+    }
+  }
+}
+
+.answerContainer {
+  .question {
+    color: $THEME_COLOR_STATUS_PRIMARY_700;
+  }
+
+  .description {
+    color: $THEME_COLOR_THEME_TEXT_400;
+  }
+
+  .answer {
+    color: $THEME_COLOR_THEME_TEXT_800;
+  }
+}
