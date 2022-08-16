@@ -11,13 +11,13 @@ interface Props extends React.HTMLAttributes<HTMLParagraphElement> {
   className?: string;
   element: 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   size: typeof propSizeType[number];
-  weight: 'lighter' | 'normal' | 'bold';
+  weight: 'lighter' | 'normal' | 'bold' | undefined;
   children: React.ReactNode;
 }
 
 function Text(props: Props) {
   const { className, element, size, weight, children, ...rest } = props;
-  const classNames = cn(className, styles[`size-${size}`], styles[`weight-${weight}`]);
+  const classNames = cn(className, styles.text, styles[`size-${size}`], styles[`weight-${weight}`]);
 
   return React.createElement(element, { className: classNames, ...rest }, children);
 }
@@ -29,7 +29,7 @@ Text.propTypes = {
 Text.defaultProps = {
   element: 'p',
   size: 14,
-  weight: 'normal',
+  weight: '',
 };
 
 export default Text;
