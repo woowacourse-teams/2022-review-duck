@@ -22,6 +22,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 public class Member extends BaseDate {
 
+    private static final Member MEMBER_NOT_LOGIN = new Member("-1", "socialNickname", "nickname", "url");
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,15 +47,18 @@ public class Member extends BaseDate {
         this.isAdmin = false;
     }
 
-    private void validate(String nickname) {
-        if (Objects.isNull(nickname) || nickname.isBlank()) {
-            throw new MemberException("닉네임이 비어있을 수 없습니다.");
-        }
+    public static Member getMemberNotLogin() {
+        return MEMBER_NOT_LOGIN;
     }
 
     public void updateNickname(String nickname) {
         validate(nickname);
         this.nickname = nickname;
+    }
+
+    public void updateSocialInfo(String socialNickname, String profileUrl) {
+        this.socialNickname = socialNickname;
+        this.profileUrl = profileUrl;
     }
 
     public void deleteAllInfo() {
@@ -63,6 +68,16 @@ public class Member extends BaseDate {
         this.profileUrl = "-";
     }
 
+    public boolean isAdmin() {
+        return this.isAdmin;
+    }
+
+    private void validate(String nickname) {
+        if (Objects.isNull(nickname) || nickname.isBlank()) {
+            throw new MemberException("닉네임이 비어있을 수 없습니다.");
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -70,15 +85,11 @@ public class Member extends BaseDate {
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o))
             return false;
         Member member = (Member)o;
-        return Objects.equals(id, member.id);
+        return id != null && Objects.equals(id, member.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    public boolean isAdmin() {
-        return this.isAdmin;
+        return getClass().hashCode();
     }
 }

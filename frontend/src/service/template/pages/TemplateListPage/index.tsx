@@ -3,10 +3,12 @@ import { Link, useNavigate, Routes, Route } from 'react-router-dom';
 
 import { useGetTemplates } from 'service/@shared/hooks/queries/template/useGet';
 
+import LayoutContainer from 'service/@shared/components/LayoutContainer';
+
 import TemplateListContainer from './TemplateListContainer';
 import { PAGE_LIST } from 'service/@shared/constants';
 
-const TemplateListPage = () => {
+function TemplateListPage() {
   const navigate = useNavigate();
 
   const { data, isError, error } = useGetTemplates();
@@ -21,7 +23,7 @@ const TemplateListPage = () => {
   }, [isError, error]);
 
   return (
-    <div>
+    <LayoutContainer>
       <div>
         <Link to={PAGE_LIST.TEMPLATE_LIST}>
           <button>트랜딩</button>
@@ -38,8 +40,8 @@ const TemplateListPage = () => {
           <Route path="*" element={<p>잘못된 접근입니다.</p>} />
         </Routes>
       </div>
-    </div>
+    </LayoutContainer>
   );
-};
+}
 
 export default TemplateListPage;

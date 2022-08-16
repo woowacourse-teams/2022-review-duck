@@ -1,0 +1,61 @@
+@import 'styles/@global.scss';
+
+.container {
+  height: 265px;
+  padding: 1.5rem 1rem 0.3125rem 1rem;
+  background-color: $THEME_COLOR_THEME_BACKGROUND_200;
+  border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+  transition: background-color 0.1s ease;
+
+  &:hover {
+    background-color: $THEME_COLOR_THEME_BACKGROUND_100;
+  }
+
+  .title {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    height: 20px;
+    line-height: 1.25rem;
+    color: $LIGHT_COLOR_STATUS_PRIMARY_800;
+  }
+
+  .info-container {
+    display: flex;
+    gap: 1rem;
+    margin: 0.5rem 0;
+    color: $LIGHT_COLOR_THEME_TEXT_100;
+    font-size: 0.75rem;
+
+    .info {
+      display: flex;
+      align-items: center;
+
+      .icon {
+        margin-bottom: 2px;
+      }
+
+      .text {
+        margin-left: 0.25rem;
+      }
+    }
+  }
+
+  .description {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    height: 76px;
+    padding: 1rem 0;
+    color: $THEME_COLOR_THEME_TEXT_400;
+    line-height: 1.25rem;
+  }
+
+  .line {
+    width: 2rem;
+    margin: 1rem 0;
+    border-color: $THEME_COLOR_STATUS_PRIMARY_100;
+  }
+}

@@ -9,7 +9,7 @@ import { Text } from 'common/components';
 
 import useTemplateDetailQueries from './useTemplateDetailQueries';
 
-const TemplateDetailPage = () => {
+function TemplateDetailPage() {
   const { templateId } = useParams();
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
@@ -88,6 +88,6 @@ const TemplateDetailPage = () => {
       <div>TOP 10 목록</div>
     </div>
   );
-};
+}
 
 export default TemplateDetailPage;
