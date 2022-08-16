@@ -11,7 +11,6 @@ import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
-import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.repository.ReviewFormRepository;
@@ -41,7 +40,7 @@ public class ReviewFormService {
     }
 
     @Transactional
-    public ReviewForm saveFromTemplate(Member member, Long templateId, ReviewFormCreateFromTemplateRequest request) {
+    public ReviewForm saveFromTemplate(Member member, Long templateId) {
         Template template = templateService.findById(templateId);
         template.increaseUsedCount();
 
@@ -49,7 +48,7 @@ public class ReviewFormService {
             .map(question -> reviewFormQuestionService.save(question.getValue(), question.getDescription()))
             .collect(Collectors.toUnmodifiableList());
 
-        ReviewForm reviewForm = new ReviewForm(member, request.getReviewFormTitle(), questions);
+        ReviewForm reviewForm = new ReviewForm(member, template.getTemplateTitle(), questions);
         return reviewFormRepository.save(reviewForm);
 
     }

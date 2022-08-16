@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.service.MemberService;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.domain.TemplateQuestion;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
@@ -26,14 +27,17 @@ public class TemplateService {
 
     private final TemplateQuestionService templateQuestionService;
 
+    private final MemberService memberService;
+
     @Transactional
     public Template save(Member member, TemplateCreateRequest createRequest) {
 
         List<TemplateQuestion> questions = createRequest.getQuestions().stream()
-            .map(request -> templateQuestionService.save(request.getQuestionValue(), ""))
+            .map(request -> templateQuestionService.save(request.getValue(), ""))
             .collect(Collectors.toUnmodifiableList());
 
-        Template template = new Template(member, createRequest.getTemplateTitle(),
+        Template template = new Template(member,
+            createRequest.getTemplateTitle(),
             createRequest.getTemplateDescription(),
             questions);
 
@@ -45,12 +49,18 @@ public class TemplateService {
             .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
     }
 
-    public List<Template> findByMember(Member member) {
-        return templateRepository.findByMember(member);
+    public List<Template> findBySocialId(String id) {
+        Member member = memberService.getBySocialId(id);
+
+        return templateRepository.findByMemberOrderByUpdatedAtDesc(member);
     }
 
-    public List<Template> findAll() {
-        return templateRepository.findAll();
+    public List<Template> findAllOrderByLatest() {
+        return templateRepository.findAllByOrderByUpdatedAtDesc();
+    }
+
+    public List<Template> findAllOrderByTrend() {
+        return templateRepository.findAllByOrderByUsedCountDesc();
     }
 
     @Transactional
@@ -61,8 +71,8 @@ public class TemplateService {
 
         List<TemplateQuestion> questions = templateUpdateRequest.getQuestions().stream()
             .map(request -> templateQuestionService.saveOrUpdateQuestion(
-                request.getQuestionId(),
-                request.getQuestionValue(),
+                request.getId(),
+                request.getValue(),
                 ""))
             .collect(Collectors.toUnmodifiableList());
 

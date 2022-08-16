@@ -19,3 +19,13 @@ declare module '*.gif' {
   const value: string;
   export = value;
 }
+
+/*
+  프로젝트 전반적으로 사용하는 범용 타입
+*/
+
+type numberString = `${number}` | number;
+
+type RequiredPartialType<Type, P extends keyof Type> = Type & {
+  [key in P]-?: Type[key];
+};

@@ -1,10 +1,23 @@
-import { Question, ReviewForm } from 'service/@shared/types';
+import { UseMutationResult } from 'react-query';
+
+import {
+  ReviewForm,
+  CreateReviewFormRequest,
+  UpdateReviewFormRequest,
+  ErrorResponse,
+} from 'service/@shared/types';
 
 import {
   useCreateReviewForm,
   useGetReviewForm,
   useUpdateReviewForm,
 } from 'service/@shared/hooks/queries/review';
+
+type SubmitMutationResult = UseMutationResult<
+  { reviewFormCode: string },
+  ErrorResponse,
+  CreateReviewFormRequest | UpdateReviewFormRequest
+>;
 
 function useReviewFormEditor(reviewFormCode: string) {
   const createMutation = useCreateReviewForm();
@@ -17,24 +30,20 @@ function useReviewFormEditor(reviewFormCode: string) {
   });
 
   const initialReviewForm: ReviewForm = getReviewFormQuery.data || {
-    reviewTitle: '',
+    title: '',
     questions: [
       {
-        questionValue: '',
-        listKey: 'list-0',
+        value: '',
       },
     ],
-  };
-
-  const trimQuestions = (questions: Question[]) => {
-    const updatedQuestion = questions.filter((question) => !!question.questionValue?.trim());
-
-    return updatedQuestion.map((question) => {
-      const newQuestion = { ...question };
-
-      delete newQuestion.listKey;
-      return newQuestion;
-    });
+    info: {
+      creator: {
+        profileUrl: '',
+        nickname: '알 수 없음',
+      },
+      isSelf: false,
+      updateDate: '오류',
+    },
   };
 
   return {
@@ -43,8 +52,7 @@ function useReviewFormEditor(reviewFormCode: string) {
     isLoadError: getReviewFormQuery.isError,
     loadError: getReviewFormQuery.error,
     isSubmitLoading: submitMutation.isLoading,
-    trimQuestions,
-    submitReviewForm: submitMutation,
+    submitReviewForm: submitMutation as SubmitMutationResult,
   };
 }
 

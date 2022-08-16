@@ -1,6 +1,7 @@
 package com.reviewduck.template.dto.response;
 
-import java.sql.Timestamp;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.reviewduck.template.domain.Template;
 
@@ -12,15 +13,17 @@ import lombok.Getter;
 @Getter
 public class MyTemplateResponse {
 
-    private Long templateId;
-    private long updatedAt;
-    private String templateTitle;
-    private String templateDescription;
+    private TemplateInfoResponse info;
+    private List<TemplateQuestionResponse> questions;
 
     public static MyTemplateResponse from(Template template) {
-        long updatedAt = Timestamp.valueOf(template.getUpdatedAt()).getTime();
+        List<TemplateQuestionResponse> questions = template.getQuestions().stream()
+            .map(TemplateQuestionResponse::from)
+            .collect(Collectors.toUnmodifiableList());
 
-        return new MyTemplateResponse(template.getId(), updatedAt, template.getTemplateTitle(),
-            template.getTemplateDescription());
+        return new MyTemplateResponse(
+            TemplateInfoResponse.from(template),
+            questions
+        );
     }
 }

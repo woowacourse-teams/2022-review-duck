@@ -9,5 +9,10 @@ import com.reviewduck.template.domain.Template;
 
 public interface TemplateRepository extends JpaRepository<Template, Long> {
 
-    List<Template> findByMember(Member member);
+    List<Template> findByMemberOrderByUpdatedAtDesc(Member member);
+
+    List<Template> findAllByOrderByUpdatedAtDesc();
+
+    List<Template> findAllByOrderByUsedCountDesc();
+
 }

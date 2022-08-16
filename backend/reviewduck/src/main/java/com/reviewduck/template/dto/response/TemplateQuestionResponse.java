@@ -1,6 +1,5 @@
 package com.reviewduck.template.dto.response;
 
-import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.template.domain.TemplateQuestion;
 
 import lombok.AccessLevel;
@@ -11,14 +10,14 @@ import lombok.Getter;
 @Getter
 public class TemplateQuestionResponse {
 
-    private Long questionId;
-    private String questionValue;
-
-    public static TemplateQuestionResponse from(ReviewFormQuestion reviewFormQuestion) {
-        return new TemplateQuestionResponse(reviewFormQuestion.getId(), reviewFormQuestion.getValue());
-    }
+    private Long id;
+    private String value;
+    private String description;
 
     public static TemplateQuestionResponse from(TemplateQuestion question) {
-        return new TemplateQuestionResponse(question.getId(), question.getValue());
+        return new TemplateQuestionResponse(
+            question.getId(),
+            question.getValue(),
+            question.getDescription());
     }
 }

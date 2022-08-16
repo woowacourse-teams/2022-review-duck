@@ -110,6 +110,98 @@ public class TemplateRepositoryTest {
     }
 
     @Test
+    @DisplayName("템플릿을 updatedAt 내림차순으로 정렬하여 모두 조회한다.")
+    void findAllTemplatesOrderByUpdatedAt() {
+        // given
+        List<TemplateQuestion> questions1 = List.of(
+            new TemplateQuestion("question1", "description1"),
+            new TemplateQuestion("question2", "description2")
+        );
+        List<TemplateQuestion> questions2 = List.of(
+            new TemplateQuestion("question3", "description3"),
+            new TemplateQuestion("question4", "description4")
+        );
+        Template template1 = saveTemplate(member1, questions1);
+        Template template2 = saveTemplate(member2, questions2);
+
+        // when
+        List<Template> templates = templateRepository.findAllByOrderByUpdatedAtDesc();
+
+        // then
+        assertAll(
+            () -> assertThat(templates).hasSize(2),
+            () -> assertThat(templates.get(0)).isEqualTo(template2),
+            () -> assertThat(templates.get(1)).isEqualTo(template1)
+        );
+
+    }
+
+    @Test
+    @DisplayName("템플릿을 usedCount 내림차순으로 정렬하여 모두 조회한다.")
+    void findAllTemplatesOrderByUsedCount() {
+        // given
+        List<TemplateQuestion> questions1 = List.of(
+            new TemplateQuestion("question1", "description1"),
+            new TemplateQuestion("question2", "description2")
+        );
+        List<TemplateQuestion> questions2 = List.of(
+            new TemplateQuestion("question3", "description3"),
+            new TemplateQuestion("question4", "description4")
+        );
+        Template template1 = saveTemplate(member1, questions1);
+        Template template2 = saveTemplate(member2, questions2);
+        template2.increaseUsedCount();
+
+        // when
+        List<Template> templates = templateRepository.findAllByOrderByUsedCountDesc();
+
+        // then
+        assertAll(
+            () -> assertThat(templates).hasSize(2),
+            () -> assertThat(templates.get(0)).isEqualTo(template2),
+            () -> assertThat(templates.get(1)).isEqualTo(template1)
+        );
+
+    }
+
+    @Test
+    @DisplayName("특정 사용자가 작성한 템플릿을 updatedAt 내림차순으로 정렬하여 조회한다.")
+    void findByMemberOrderByUpdatedAtDesc() {
+        // given
+        List<TemplateQuestion> questions1 = List.of(
+            new TemplateQuestion("question1", "description1"),
+            new TemplateQuestion("question2", "description2")
+        );
+        saveTemplate(member1, questions1);
+
+        List<TemplateQuestion> questions2 = List.of(
+            new TemplateQuestion("question3", "description3"),
+            new TemplateQuestion("question4", "description4")
+        );
+        saveTemplate(member2, questions2);
+
+        List<TemplateQuestion> questions3 = List.of(
+            new TemplateQuestion("question5", "description5"),
+            new TemplateQuestion("question6", "description6")
+        );
+        saveTemplate(member1, questions3);
+
+        // when
+        List<Template> myTemplates = templateRepository.findByMemberOrderByUpdatedAtDesc(member1);
+
+        // then
+        assertAll(
+            () -> assertThat(myTemplates).hasSize(2),
+            () -> assertThat(myTemplates.get(0)).isNotNull(),
+            () -> assertThat(myTemplates.get(0).getMember().getNickname()).isEqualTo("제이슨"),
+            () -> assertThat(myTemplates.get(0).getQuestions())
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(questions3)
+        );
+    }
+
+    @Test
     @DisplayName("템플릿을 삭제한다.")
     void deleteTemplate() {
         // given
@@ -125,37 +217,6 @@ public class TemplateRepositoryTest {
 
         // then
         assertThat(templateRepository.findById(templateId)).isEmpty();
-    }
-
-    @Test
-    @DisplayName("개인이 작성한 템플릿을 조회한다.")
-    void findByMember() {
-        // given
-        List<TemplateQuestion> questions1 = List.of(
-            new TemplateQuestion("question1", "description1"),
-            new TemplateQuestion("question2", "description2")
-        );
-        saveTemplate(member1, questions1);
-
-        List<TemplateQuestion> questions2 = List.of(
-            new TemplateQuestion("question3", "description3"),
-            new TemplateQuestion("question4", "description4")
-        );
-        saveTemplate(member2, questions2);
-
-        // when
-        List<Template> myTemplates = templateRepository.findByMember(member2);
-
-        // then
-        assertAll(
-            () -> assertThat(myTemplates).hasSize(1),
-            () -> assertThat(myTemplates.get(0)).isNotNull(),
-            () -> assertThat(myTemplates.get(0).getMember().getNickname()).isEqualTo("브리"),
-            () -> assertThat(myTemplates.get(0).getQuestions())
-                .usingRecursiveComparison()
-                .ignoringFields("id")
-                .isEqualTo(questions2)
-        );
     }
 
     private Template saveTemplate(Member member, List<TemplateQuestion> questions) {

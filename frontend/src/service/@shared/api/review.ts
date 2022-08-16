@@ -1,90 +1,83 @@
-import {
-  UpdateReviewFormRequest,
-  SubmitAnswerRequest,
-  GetReviewFormResponse,
-  UpdateReviewFormResponse,
-  GetReviewsResponse,
-  GetReviewResponse,
-  UpdateReviewRequest,
-} from '../types';
+import * as ReviewType from '../types/review';
 
+import { API_URI } from '../constants';
 import axiosInstance from 'service/@shared/api/config/axiosInstance';
 
-const getForm = async (reviewFormCode = ''): Promise<GetReviewFormResponse> => {
-  const { data } = await axiosInstance.get(`/api/review-forms/${reviewFormCode}`);
+export const getForm = async (reviewFormCode = ''): Promise<ReviewType.GetReviewFormResponse> => {
+  const { data } = await axiosInstance.get(API_URI.REVIEW.GET_FORM(reviewFormCode));
 
   return data;
 };
 
-const createForm = async (query: UpdateReviewFormRequest): Promise<UpdateReviewFormResponse> => {
-  const { data } = await axiosInstance.post('/api/review-forms', query);
+export const getAnswer = async (reviewId: number): Promise<ReviewType.GetReviewAnswerResponse> => {
+  const { data } = await axiosInstance.get(API_URI.REVIEW.GET_ANSWER(reviewId));
 
   return data;
 };
 
-const updateForm = async ({
+export const getFormAnswer = async (
+  reviewFormCode = '',
+): Promise<ReviewType.GetReviewFormAnswerResponse> => {
+  const { data } = await axiosInstance.get(API_URI.REVIEW.GET_FORM_ANSWER(reviewFormCode));
+
+  return data;
+};
+
+export const createForm = async (
+  query: ReviewType.CreateReviewFormRequest,
+): Promise<ReviewType.CreateReviewFormResponse> => {
+  const { data } = await axiosInstance.post(API_URI.REVIEW.CREATE_FORM, query);
+
+  return data;
+};
+
+export const createAnswer = async ({
   reviewFormCode,
-  reviewTitle,
+  contents,
+}: ReviewType.CreateReviewAnswerRequest): Promise<ReviewType.CreateReviewAnswerResponse> => {
+  const { data } = await axiosInstance.post(API_URI.REVIEW.CREATE_ANSWER(reviewFormCode), {
+    contents,
+  });
+
+  return data;
+};
+
+export const updateForm = async ({
+  reviewFormCode,
+  reviewFormTitle,
   questions,
-}: UpdateReviewFormRequest): Promise<UpdateReviewFormResponse> => {
-  const { data } = await axiosInstance.put(`/api/review-forms/${reviewFormCode}`, {
-    reviewTitle,
+}: ReviewType.UpdateReviewFormRequest): Promise<ReviewType.UpdateReviewFormResponse> => {
+  const { data } = await axiosInstance.put(API_URI.REVIEW.UPDATE_FORM(reviewFormCode), {
+    reviewFormTitle,
     questions,
   });
 
   return data;
 };
 
-const getReviews = async (reviewFormCode = ''): Promise<GetReviewsResponse> => {
-  const { data } = await axiosInstance.get(`/api/review-forms/${reviewFormCode}/reviews`);
-
-  return data;
-};
-
-const getReview = async (reviewId: number): Promise<GetReviewResponse> => {
-  const { data } = await axiosInstance.get(`/api/reviews/${reviewId}`);
-
-  return data;
-};
-
-const updateReview = async (query: UpdateReviewRequest): Promise<null> => {
-  const { data } = await axiosInstance.put(`/api/reviews/${query.reviewId}`, {
-    answers: query.answers,
+export const updateAnswer = async ({
+  reviewId,
+  contents,
+}: ReviewType.UpdateReviewAnswerRequest): Promise<ReviewType.UpdateReviewAnswerResponse> => {
+  const { data } = await axiosInstance.put(API_URI.REVIEW.UPDATE_ANSWER(reviewId), {
+    contents,
   });
 
   return data;
 };
 
-const submitAnswer = async (query: SubmitAnswerRequest): Promise<null> => {
-  const { data } = await axiosInstance.post(`/api/review-forms/${query.reviewFormCode}`, {
-    answers: query.answers,
-  });
+export const deleteForm = async (
+  reviewFormCode = '',
+): Promise<ReviewType.DeleteReviewFormResponse> => {
+  const { data } = await axiosInstance.delete(API_URI.REVIEW.DELETE_FORM(reviewFormCode));
 
   return data;
 };
 
-const deleteReview = async (reviewId: number): Promise<null> => {
-  const { data } = await axiosInstance.delete(`api/reviews/${reviewId}`);
+export const deleteAnswer = async (
+  reviewId: number,
+): Promise<ReviewType.DeleteReviewAnswerResponse> => {
+  const { data } = await axiosInstance.delete(API_URI.REVIEW.DELETE_ANSWER(reviewId));
 
   return data;
 };
-
-const deleteReviewForm = async (reviewFormCode = ''): Promise<null> => {
-  const { data } = await axiosInstance.delete(`api/review-forms/${reviewFormCode}`);
-
-  return data;
-};
-
-const reviewAPI = {
-  getForm,
-  createForm,
-  updateForm,
-  getReviews,
-  getReview,
-  updateReview,
-  submitAnswer,
-  deleteReview,
-  deleteReviewForm,
-};
-
-export default reviewAPI;

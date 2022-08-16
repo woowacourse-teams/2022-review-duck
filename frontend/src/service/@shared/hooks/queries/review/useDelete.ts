@@ -1,14 +1,18 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-import { UseCustomMutationOptions } from 'service/@shared/types';
+import {
+  DeleteReviewAnswerResponse,
+  DeleteReviewFormResponse,
+  UseCustomMutationOptions,
+} from 'service/@shared/types';
 
-import reviewAPI from 'service/@shared/api/review';
+import { reviewAPI } from 'service/@shared/api';
 import { QUERY_KEY } from 'service/@shared/constants';
 
-function useDeleteReviewForm(mutationOptions?: UseCustomMutationOptions<null>) {
+function useDeleteReviewForm(mutationOptions?: UseCustomMutationOptions<DeleteReviewFormResponse>) {
   const queryClient = useQueryClient();
 
-  return useMutation(reviewAPI.deleteReviewForm, {
+  return useMutation(reviewAPI.deleteForm, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW_FORM]);
@@ -17,10 +21,12 @@ function useDeleteReviewForm(mutationOptions?: UseCustomMutationOptions<null>) {
   });
 }
 
-function useDeleteReview(mutationOptions?: UseCustomMutationOptions<null>) {
+function useDeleteReviewAnswer(
+  mutationOptions?: UseCustomMutationOptions<DeleteReviewAnswerResponse>,
+) {
   const queryClient = useQueryClient();
 
-  return useMutation(reviewAPI.deleteReview, {
+  return useMutation(reviewAPI.deleteAnswer, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW_FORM]);
@@ -29,4 +35,4 @@ function useDeleteReview(mutationOptions?: UseCustomMutationOptions<null>) {
   });
 }
 
-export { useDeleteReviewForm, useDeleteReview };
+export { useDeleteReviewForm, useDeleteReviewAnswer };
