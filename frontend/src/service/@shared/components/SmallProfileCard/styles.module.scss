@@ -5,26 +5,60 @@
   padding: 0.5rem 0.25rem;
 
   .profile {
-    width: 2.5rem;
-    height: 2.5rem;
     background-position: center;
     background-size: cover;
     border-radius: $GLOBAL_BORDERRADIUS_MAX;
+  }
+
+  .profile-medium {
+    min-width: 2.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .profile-large {
+    min-width: 6.25rem;
+    width: 6.25rem;
+    height: 6.25rem;
   }
 
   .user-info-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 0.375rem;
-    margin-left: 0.5rem;
 
-    .nickname {
+    .primary {
       color: $THEME_COLOR_THEME_TEXT_800;
     }
 
-    .update {
+    .primary-medium {
+      font-size: 0.875rem;
+    }
+
+    .primary-large {
+      font-size: 1.5rem;
+    }
+
+    .secondary {
       color: $THEME_COLOR_THEME_TEXT_400;
     }
+
+    .secondary-medium {
+      font-size: 0.75rem;
+    }
+
+    .secondary-large {
+      font-size: 1.125rem;
+    }
+  }
+
+  .user-info-container-medium {
+    gap: 0.375rem;
+    margin-left: 0.5rem;
+  }
+
+  .user-info-container-large {
+    gap: 1rem;
+    margin-left: 1rem;
   }
 }
