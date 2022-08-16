@@ -17,4 +17,4 @@ const Template = (args) => (
   </Profile>
 );
 
-export const DefaultNoResult = Template.bind({});
+export const DefaultProfile = Template.bind({});
