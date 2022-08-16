@@ -13,8 +13,9 @@ const reviewHandlers = [
     res(ctx.status(200), ctx.json(DUMMY_REVIEW.GET_ANSWER)),
   ),
 
-  rest.get(reviewduckAPI(API_URI.REVIEW.GET_FORM_ANSWER(':reviewFormCode')), (req, res, ctx) =>
-    res(ctx.status(200), ctx.json(DUMMY_REVIEW.GET_FORM_ANSWER)),
+  rest.get(
+    reviewduckAPI(API_URI.REVIEW.GET_FORM_ANSWER(':reviewFormCode', 'list')),
+    (req, res, ctx) => res(ctx.status(200), ctx.json(DUMMY_REVIEW.GET_FORM_ANSWER)),
   ),
 
   rest.post(reviewduckAPI(API_URI.REVIEW.CREATE_FORM), (req, res, ctx) =>

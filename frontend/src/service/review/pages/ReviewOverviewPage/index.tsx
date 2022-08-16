@@ -4,6 +4,7 @@ import { useGetReviewForm, useGetReviewFormAnswer } from 'service/@shared/hooks/
 
 import { FlexContainer, Skeleton } from 'common/components';
 
+import Questions from 'service/@shared/components/Questions';
 import Profile from 'service/review/components/Profile';
 
 import styles from './styles.module.scss';
@@ -19,9 +20,12 @@ const REVIEW_OVERVIEW_MODE = {
 function ReviewOverViewPage() {
   const { reviewFormCode = '' } = useParams();
 
-  const reviewFormAnswerQuery = useGetReviewFormAnswer(reviewFormCode, {
-    suspense: false,
-  });
+  const reviewFormAnswerQuery = useGetReviewFormAnswer(
+    { reviewFormCode },
+    {
+      suspense: false,
+    },
+  );
 
   const reviewFormQuery = useGetReviewForm(reviewFormCode, {
     suspense: false,
@@ -53,9 +57,45 @@ function ReviewOverViewPage() {
             ))}
           </ListView.ParticipantList>
 
-          {[1, 2, 3].map((value) => (
-            <ListView.Review key={value} />
-          ))}
+          {reviewAnswers?.map((answerContent) => {
+            const { id, info, questions } = answerContent;
+            const { creator } = info;
+
+            return (
+              <ListView.Review key={id}>
+                <Questions>
+                  <Questions.CoverProfile
+                    image={creator.profileUrl}
+                    title={creator.nickname}
+                    description={info.updateDate}
+                  />
+
+                  <Questions.EditButtons
+                    isVisible={info.isSelf}
+                    onClickEdit={() => null}
+                    onClickDelete={() => null}
+                  ></Questions.EditButtons>
+
+                  {questions.map((question, index) => {
+                    const questionText = `${index + 1}. ${question.value}`;
+                    const { answer } = question;
+
+                    return (
+                      <Questions.Answer
+                        key={question.id}
+                        question={questionText}
+                        description={question.description}
+                      >
+                        {answer.value}
+                      </Questions.Answer>
+                    );
+                  })}
+
+                  <Questions.Reaction onClickLike={() => null} onClickBookmark={() => null} />
+                </Questions>
+              </ListView.Review>
+            );
+          })}
         </ListView.Content>
 
         <ListView.SideMenu isLoading={isContentLoaded} fallback={<Skeleton line={3} />}>

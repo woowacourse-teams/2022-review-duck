@@ -7,15 +7,15 @@ import styles from './styles.module.scss';
 
 const propSizeType = [12, 14, 16, 18, 20, 24, 32, 40, 48] as const;
 
-interface Props extends React.HTMLAttributes<HTMLParagraphElement> {
+export interface TextProps extends React.HTMLAttributes<HTMLParagraphElement> {
   className?: string;
-  element: 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  element: 'p' | 'span' | 'div' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   size: typeof propSizeType[number];
   weight: 'lighter' | 'normal' | 'bold' | undefined;
   children: React.ReactNode;
 }
 
-function Text(props: Props) {
+function Text(props: TextProps) {
   const { className, element, size, weight, children, ...rest } = props;
   const classNames = cn(className, styles.text, styles[`size-${size}`], styles[`weight-${weight}`]);
 

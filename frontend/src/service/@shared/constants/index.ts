@@ -83,7 +83,8 @@ const API_URI = {
   REVIEW: {
     GET_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
     GET_ANSWER: (reviewId: numberString) => `/api/reviews/${reviewId}`,
-    GET_FORM_ANSWER: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}/reviews`,
+    GET_FORM_ANSWER: (reviewFormCode: string, display: string) =>
+      `/api/review-forms/${reviewFormCode}/reviews?displayType=${display}`,
 
     CREATE_FORM: '/api/review-forms',
     CREATE_ANSWER: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
