@@ -136,11 +136,15 @@ public class TemplateServiceTest {
         @DisplayName("템플릿을 모두 조회한다.")
         void findAllTemplates() {
             // given
-            // 템플릿 생성
-            List<TemplateQuestionCreateRequest> questions1 = List.of(new TemplateQuestionCreateRequest("question1"),
+            // create template
+            List<TemplateQuestionCreateRequest> questions1 = List.of(
+                new TemplateQuestionCreateRequest("question1"),
                 new TemplateQuestionCreateRequest("question2"));
-            List<TemplateQuestionCreateRequest> questions2 = List.of(new TemplateQuestionCreateRequest("question3"),
+
+            List<TemplateQuestionCreateRequest> questions2 = List.of(
+                new TemplateQuestionCreateRequest("question3"),
                 new TemplateQuestionCreateRequest("question4"));
+
             saveTemplate(member1, "title1", "description1", questions1);
             saveTemplate(member1, "title2", "description2", questions2);
 
@@ -151,6 +155,74 @@ public class TemplateServiceTest {
             assertThat(templates).hasSize(2);
         }
 
+    }
+
+    @Nested
+    @DisplayName("최신순 전체 템플릿 조회")
+    class findAllOrderByLatest {
+
+        @Test
+        @DisplayName("전체 템플릿을 최신순으로 조회한다.")
+        void findAllOrderByLatest() {
+            // given
+            // create template
+            List<TemplateQuestionCreateRequest> questions1 = List.of(
+                new TemplateQuestionCreateRequest("question1"),
+                new TemplateQuestionCreateRequest("question2"));
+
+            List<TemplateQuestionCreateRequest> questions2 = List.of(
+                new TemplateQuestionCreateRequest("question3"),
+                new TemplateQuestionCreateRequest("question4"));
+
+            Template template1 = saveTemplate(member1, "title1", "description1", questions1);
+            Template template2 = saveTemplate(member1, "title2", "description2", questions2);
+
+            // when
+            List<Template> templates = templateService.findAllOrderByLatest();
+
+            // then
+            assertAll(
+                () -> assertThat(templates).hasSize(2),
+                () -> assertThat(templates.get(0)).isEqualTo(template2),
+                () -> assertThat(templates.get(1)).isEqualTo(template1)
+            );
+
+        }
+    }
+
+    @Nested
+    @DisplayName("사용순 전체 템플릿 조회")
+    class findAllOrderByTrend {
+
+        @Test
+        @DisplayName("전체 템플릿을 사용순으로 조회한다.")
+        void findAllOrderByTrend() {
+            // given
+            // create template
+            List<TemplateQuestionCreateRequest> questions1 = List.of(
+                new TemplateQuestionCreateRequest("question1"),
+                new TemplateQuestionCreateRequest("question2"));
+
+            List<TemplateQuestionCreateRequest> questions2 = List.of(
+                new TemplateQuestionCreateRequest("question3"),
+                new TemplateQuestionCreateRequest("question4"));
+
+            Template template1 = saveTemplate(member1, "title1", "description1", questions1);
+            Template template2 = saveTemplate(member1, "title2", "description2", questions2);
+
+            template2.increaseUsedCount();
+
+            // when
+            List<Template> templates = templateService.findAllOrderByTrend();
+
+            // then
+            assertAll(
+                () -> assertThat(templates).hasSize(2),
+                () -> assertThat(templates.get(0)).isEqualTo(template2),
+                () -> assertThat(templates.get(1)).isEqualTo(template1)
+            );
+
+        }
     }
 
     @Nested

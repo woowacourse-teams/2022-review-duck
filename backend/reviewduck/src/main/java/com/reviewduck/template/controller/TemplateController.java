@@ -78,6 +78,28 @@ public class TemplateController {
         return TemplateResponse.from(template);
     }
 
+    @Operation(summary = "템플릿을 최신순으로 내림차순 정렬하여 모두 조회한다.")
+    @GetMapping(params = "filter=latest")
+    @ResponseStatus(HttpStatus.OK)
+    public TemplatesResponse findAllOrderByLatest(@AuthenticationPrincipal Member member) {
+
+        info("/api/templates?filter=latest", "GET", "");
+
+        List<Template> templates = templateService.findAllOrderByLatest();
+        return TemplatesResponse.from(templates);
+    }
+
+    @Operation(summary = "템플릿을 사용 횟수를 기준으로 내림차순 정렬하여 모두 조회한다.")
+    @GetMapping(params = "filter=trend")
+    @ResponseStatus(HttpStatus.OK)
+    public TemplatesResponse findAllOrderByTrend(@AuthenticationPrincipal Member member) {
+
+        info("/api/templates?filter=trend", "GET", "");
+
+        List<Template> templates = templateService.findAllOrderByTrend();
+        return TemplatesResponse.from(templates);
+    }
+
     @Operation(summary = "템플릿을 모두 조회한다.")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)

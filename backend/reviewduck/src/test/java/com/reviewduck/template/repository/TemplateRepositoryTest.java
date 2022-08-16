@@ -110,6 +110,61 @@ public class TemplateRepositoryTest {
     }
 
     @Test
+    @DisplayName("템플릿을 updatedAt 내림차순으로 정렬하여 모두 조회한다.")
+    void findAllTemplatesOrderByUpdatedAt() {
+        // given
+        List<TemplateQuestion> questions1 = List.of(
+            new TemplateQuestion("question1", "description1"),
+            new TemplateQuestion("question2", "description2")
+        );
+        List<TemplateQuestion> questions2 = List.of(
+            new TemplateQuestion("question3", "description3"),
+            new TemplateQuestion("question4", "description4")
+        );
+        Template template1 = saveTemplate(member1, questions1);
+        Template template2 = saveTemplate(member2, questions2);
+
+        // when
+        List<Template> templates = templateRepository.findAllByOrderByUpdatedAtDesc();
+
+        // then
+        assertAll(
+            () -> assertThat(templates).hasSize(2),
+            () -> assertThat(templates.get(0)).isEqualTo(template2),
+            () -> assertThat(templates.get(1)).isEqualTo(template1)
+        );
+
+    }
+
+    @Test
+    @DisplayName("템플릿을 usedCount 내림차순으로 정렬하여 모두 조회한다.")
+    void findAllTemplatesOrderByUsedCount() {
+        // given
+        List<TemplateQuestion> questions1 = List.of(
+            new TemplateQuestion("question1", "description1"),
+            new TemplateQuestion("question2", "description2")
+        );
+        List<TemplateQuestion> questions2 = List.of(
+            new TemplateQuestion("question3", "description3"),
+            new TemplateQuestion("question4", "description4")
+        );
+        Template template1 = saveTemplate(member1, questions1);
+        Template template2 = saveTemplate(member2, questions2);
+        template2.increaseUsedCount();
+
+        // when
+        List<Template> templates = templateRepository.findAllByOrderByUpdatedAtDesc();
+
+        // then
+        assertAll(
+            () -> assertThat(templates).hasSize(2),
+            () -> assertThat(templates.get(0)).isEqualTo(template2),
+            () -> assertThat(templates.get(1)).isEqualTo(template1)
+        );
+
+    }
+
+    @Test
     @DisplayName("특정 사용자가 작성한 템플릿을 updatedAt 내림차순으로 정렬하여 조회한다.")
     void findByMemberOrderByUpdatedAtDesc() {
         // given
