@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,63 +34,96 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         accessToken = jwtTokenProvider.createAccessToken(String.valueOf(savedMember1.getId()));
     }
 
-    @Test
-    @DisplayName("본인의 사용자 정보를 조회한다.")
-    void findMyMemberInfo() {
-        // given
-        Member member = new Member("1", "jason", "제이슨", "profileUrl");
-        Member savedMember = memberService.save(member);
+    @Nested
+    @DisplayName("사용자 정보 조회")
+    class findMemberInfo {
 
-        String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
+        @Test
+        @DisplayName("본인의 사용자 정보를 조회한다.")
+        void findMyMemberInfo() {
+            // when
+            MemberResponse memberResponse = get("/api/members/1", accessToken)
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(MemberResponse.class);
 
-        // when
-        MemberResponse memberResponse = get("/api/members/me", accessToken)
-            .statusCode(HttpStatus.OK.value())
-            .extract()
-            .as(MemberResponse.class);
+            // then
+            assertAll(
+                () -> assertThat(memberResponse.getSocialNickname()).isEqualTo("jason"),
+                () -> assertThat(memberResponse.getNickname()).isEqualTo("제이슨"),
+                () -> assertThat(memberResponse.getProfileUrl()).isEqualTo("profileUrl")
+            );
+        }
 
-        // then
-        assertAll(
-            () -> assertThat(memberResponse.getSocialNickname()).isEqualTo("jason"),
-            () -> assertThat(memberResponse.getNickname()).isEqualTo("제이슨"),
-            () -> assertThat(memberResponse.getProfileUrl()).isEqualTo("profileUrl")
-        );
+        @Test
+        @DisplayName("타인의 사용자 정보를 조회한다.")
+        void findOtherMemberInfo() {
+            // given
+            Member member2 = new Member("2", "panda", "판다", "profileUrl");
+            memberService.save(member2);
+
+            // when
+            MemberResponse memberResponse = get("/api/members/2", accessToken)
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(MemberResponse.class);
+
+            // then
+            assertAll(
+                () -> assertThat(memberResponse.getSocialNickname()).isEqualTo("panda"),
+                () -> assertThat(memberResponse.getNickname()).isEqualTo("판다"),
+                () -> assertThat(memberResponse.getProfileUrl()).isEqualTo("profileUrl")
+            );
+        }
+
+        @Test
+        @DisplayName("로그인하지 않고 사용자 정보를 조회할 수 없다.")
+        void failToFindMyMemberInfo() {
+            // when, then
+            get("/api/members/me")
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 사용자를 조회할 수 없다.")
+        void failToFindInvalidSocialId() {
+            // when, then
+            get("/api/members/123", accessToken)
+                .statusCode(HttpStatus.NOT_FOUND.value());
+        }
     }
 
-    @Test
-    @DisplayName("로그인하지 않고 사용자 정보를 조회할 수 없다.")
-    void failToFindMyMemberInfo() {
-        // when, then
-        get("/api/members/me")
-            .statusCode(HttpStatus.UNAUTHORIZED.value());
-    }
+    @Nested
+    @DisplayName("닉네임 수정")
+    class updteNickname {
 
-    @Test
-    @DisplayName("본인의 닉네임을 수정한다.")
-    void updateMyNickname() {
-        // when
-        String nicknameToUpdate = "nickname to update";
-        MemberUpdateNicknameRequest updateRequest = new MemberUpdateNicknameRequest(nicknameToUpdate);
-        put("/api/members/me", updateRequest, accessToken)
-            .statusCode(HttpStatus.NO_CONTENT.value());
+        @Test
+        @DisplayName("본인의 닉네임을 수정한다.")
+        void updateMyNickname() {
+            // when
+            String nicknameToUpdate = "nickname to update";
+            MemberUpdateNicknameRequest updateRequest = new MemberUpdateNicknameRequest(nicknameToUpdate);
+            put("/api/members/me", updateRequest, accessToken)
+                .statusCode(HttpStatus.NO_CONTENT.value());
 
-        MemberResponse memberResponse = get("/api/members/me", accessToken)
-            .statusCode(HttpStatus.OK.value())
-            .extract()
-            .as(MemberResponse.class);
+            MemberResponse memberResponse = get("/api/members/1", accessToken)
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(MemberResponse.class);
 
-        // then
-        assertAll(
-            () -> assertThat(memberResponse.getNickname()).isEqualTo(nicknameToUpdate)
-        );
-    }
+            // then
+            assertAll(
+                () -> assertThat(memberResponse.getNickname()).isEqualTo(nicknameToUpdate)
+            );
+        }
 
-    @Test
-    @DisplayName("로그인하지 않고 사용자 닉네임을 수정할 수 없다.")
-    void failToUpdateMyNickname() {
-        // when, then
-        MemberUpdateNicknameRequest updateRequest = new MemberUpdateNicknameRequest("nicknameToUpdate");
-        put("/api/members/me", updateRequest)
-            .statusCode(HttpStatus.UNAUTHORIZED.value());
+        @Test
+        @DisplayName("로그인하지 않고 사용자 닉네임을 수정할 수 없다.")
+        void failToUpdateMyNickname() {
+            // when, then
+            MemberUpdateNicknameRequest updateRequest = new MemberUpdateNicknameRequest("nicknameToUpdate");
+            put("/api/members/me", updateRequest)
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
     }
 }

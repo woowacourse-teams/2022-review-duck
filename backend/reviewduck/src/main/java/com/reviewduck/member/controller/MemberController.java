@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,18 @@ public class MemberController {
         info("/api/members/me", "GET", "");
 
         return MemberResponse.from(member);
+    }
+
+    @Operation(summary = "사용자 정보를 조회한다.")
+    @GetMapping("/{socialId}")
+    @ResponseStatus(HttpStatus.OK)
+    public MemberResponse findMemberInfo(@AuthenticationPrincipal Member member,
+        @PathVariable String socialId) {
+
+        info("/api/members/" + socialId, "GET", "");
+
+        Member foundMember = memberService.getBySocialId(socialId);
+        return MemberResponse.from(foundMember);
     }
 
     @Operation(summary = "본인의 닉네임을 변경한다.")
