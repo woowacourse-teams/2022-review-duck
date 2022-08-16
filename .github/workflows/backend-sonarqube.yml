@@ -16,17 +16,7 @@ defaults:
 
 # 실행 해야 할 job 들에 대한 설정
 jobs:
-  # Job의 이름 설정, 빌드 수행
-  build:
-    # ubuntu 환경에서 실행, 환경은 GitHub 이 제공
-    runs-on: ubuntu-latest
-    # build job 의 세부 단계 설정
-    steps:
-      # 소스코드 체크아웃 수행
-      - name: Checkout source code
-        uses: actions/checkout@v2
-
-  # Job의 이름 설정, Scanner 발동
+  # Job의 이름 설정, 빌드 수행, Scanner 발동
   analysis:
     # ubuntu 환경에서 실행, 환경은 GitHub 이 제공
     runs-on: ubuntu-latest
