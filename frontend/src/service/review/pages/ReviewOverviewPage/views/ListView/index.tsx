@@ -7,10 +7,6 @@ import { ReviewFormAnswer } from 'service/@shared/types';
 
 import { Text, FlexContainer, Button, Icon, TextBox } from 'common/components';
 
-import QuestionContent from 'service/@shared/components/QuestionContent';
-import Profile from 'service/review/components/Profile';
-import Reaction from 'service/review/components/Reaction';
-
 import styles from './styles.module.scss';
 
 import { PAGE_LIST } from 'service/@shared/constants';
@@ -55,20 +51,12 @@ const ParticipantList = ({ children }: ParticipantListProps) => {
   );
 };
 
-const Review = () => {
-  return (
-    <section className={cn(styles.cardBox, styles.reviewContainer)}>
-      <Profile type="round" image={''} title={'타이틀'} description={'0일 전 작성'} />
+interface ReviewProps {
+  children: React.ReactNode;
+}
 
-      <hr />
-
-      <QuestionContent />
-
-      <hr />
-
-      <Reaction />
-    </section>
-  );
+const Review = ({ children }: ReviewProps) => {
+  return <section className={cn(styles.cardBox, styles.reviewContainer)}>{children}</section>;
 };
 
 interface SideMenuProps {
