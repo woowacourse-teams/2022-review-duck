@@ -1,0 +1,21 @@
+.templateList {
+  flex: 4;
+}
+
+.templateListMember {
+  display: flex;
+  align-items: center;
+}
+
+.templateListImg {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.templateListDelete {
+  color: red;
+  cursor: pointer;
+}
