@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import styles from './styles.module.scss';
 
-const propSizeType = [12, 14, 16, 18, 20, 24, 32, 40, 48] as const;
+const propSizeType = [12, 14, 16, 18, 20, 24, 28, 32, 40, 48] as const;
 
 interface Props extends React.HTMLAttributes<HTMLParagraphElement> {
   className?: string;
