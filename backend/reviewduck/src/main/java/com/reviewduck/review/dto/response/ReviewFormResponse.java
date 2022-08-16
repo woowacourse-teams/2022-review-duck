@@ -15,7 +15,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReviewFormResponse {
 
-    private String reviewTitle;
+    private String reviewFormTitle;
     private long updatedAt;
     private CreatorResponse creator;
     private boolean isCreator;
@@ -27,7 +27,7 @@ public class ReviewFormResponse {
             .collect(Collectors.toUnmodifiableList());
 
         return new ReviewFormResponse(
-            reviewForm.getReviewTitle(),
+            reviewForm.getTitle(),
             Timestamp.valueOf(reviewForm.getUpdatedAt()).getTime(),
             CreatorResponse.from(reviewForm.getMember()),
             reviewForm.isMine(member),

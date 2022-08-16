@@ -19,10 +19,11 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.dto.request.AnswerRequest;
+import com.reviewduck.review.dto.request.AnswerCreateRequest;
+import com.reviewduck.review.dto.request.ReviewContentCreateRequest;
+import com.reviewduck.review.dto.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
-import com.reviewduck.review.dto.request.ReviewRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
@@ -56,8 +57,9 @@ public class AdminReviewServiceTest {
         member2 = memberService.save(tempMember2);
 
         String reviewTitle = "title";
-        List<ReviewFormQuestionRequest> questions = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
+        List<ReviewFormQuestionCreateRequest> questions = List.of(
+            new ReviewFormQuestionCreateRequest("question1"),
+            new ReviewFormQuestionCreateRequest("question2"));
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
 
         this.reviewForm = reviewFormService.save(member1, createRequest);
@@ -106,10 +108,11 @@ public class AdminReviewServiceTest {
     }
 
     private Review saveReview(Member member) {
-        ReviewRequest reviewCreateRequest = new ReviewRequest(
-            List.of(new AnswerRequest(reviewForm.getReviewFormQuestions().get(0).getId(), "answer1")
-                , new AnswerRequest(reviewForm.getReviewFormQuestions().get(1).getId(), "answer2")));
+        ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+            new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+            new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+        ));
 
-        return reviewService.save(member, reviewForm.getCode(), reviewCreateRequest);
+        return reviewService.save(member, reviewForm.getCode(), createRequest);
     }
 }

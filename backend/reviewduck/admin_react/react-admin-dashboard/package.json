@@ -1,6 +1,7 @@
 {
   "name": "react-admin-dashboard",
   "version": "0.1.0",
+  "homepage": "https://ducks.kr/admin",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.0",
@@ -21,7 +22,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts --max_old_space_size=4096 build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

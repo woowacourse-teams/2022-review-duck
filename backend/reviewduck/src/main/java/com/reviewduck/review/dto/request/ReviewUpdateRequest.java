@@ -17,5 +17,5 @@ public class ReviewUpdateRequest {
 
     @NotNull(message = "회고 답변 관련 오류가 발생했습니다.")
     @Valid
-    private List<AnswerUpdateRequest> answers;
+    private List<ReviewContentUpdateRequest> contents;
 }

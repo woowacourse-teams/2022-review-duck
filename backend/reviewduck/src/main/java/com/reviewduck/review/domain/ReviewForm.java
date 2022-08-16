@@ -2,7 +2,6 @@ package com.reviewduck.review.domain;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -43,7 +42,7 @@ public class ReviewForm extends BaseDate {
     private String code;
 
     @Column(nullable = false)
-    private String reviewTitle;
+    private String title;
 
     @JoinColumn(name = "review_form_id")
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
@@ -53,32 +52,28 @@ public class ReviewForm extends BaseDate {
     @Column(nullable = false)
     private boolean isActive = true;
 
-    public ReviewForm(Member member, String reviewTitle, List<String> questionValues) {
-        validate(reviewTitle, member, questionValues);
-        this.reviewTitle = reviewTitle;
+    public ReviewForm(Member member, String title, List<ReviewFormQuestion> questions) {
+        validateWhenCreate(member, title, questions);
+
+        this.title = title;
         this.member = member;
-        this.reviewFormQuestions = setReviewFormQuestions(questionValues);
+        this.reviewFormQuestions = questions;
         this.code = RandomStringUtils.randomAlphanumeric(8).toUpperCase();
+
+        sortQuestions(reviewFormQuestions);
     }
 
-    public void update(String reviewTitle, List<ReviewFormQuestion> reviewFormQuestions) {
-        validateTitleLength(reviewTitle);
-        validateBlankTitle(reviewTitle);
-        this.reviewTitle = reviewTitle;
+    public void update(String title, List<ReviewFormQuestion> questions) {
+        validateWhenUpdate(title, questions);
+
+        this.title = title;
+        this.reviewFormQuestions = questions;
+
         sortQuestions(reviewFormQuestions);
-        this.reviewFormQuestions = reviewFormQuestions;
     }
 
     public boolean isMine(Member member) {
         return member.equals(this.member);
-    }
-
-    private List<ReviewFormQuestion> setReviewFormQuestions(List<String> questionValues) {
-        List<ReviewFormQuestion> reviewFormQuestions = questionValues.stream()
-            .map(ReviewFormQuestion::new)
-            .collect(Collectors.toUnmodifiableList());
-        sortQuestions(reviewFormQuestions);
-        return reviewFormQuestions;
     }
 
     private void sortQuestions(List<ReviewFormQuestion> reviewFormQuestions) {
@@ -88,11 +83,17 @@ public class ReviewForm extends BaseDate {
         }
     }
 
-    private void validate(String reviewTitle, Member member, List<String> questionValues) {
-        validateBlankTitle(reviewTitle);
-        validateTitleLength(reviewTitle);
+    private void validateWhenCreate(Member member, String title, List<ReviewFormQuestion> questions) {
+        validateBlankTitle(title);
+        validateTitleLength(title);
         validateNullMember(member);
-        validateNullQuestions(questionValues);
+        validateNullQuestions(questions);
+    }
+
+    private void validateWhenUpdate(String title, List<ReviewFormQuestion> questions) {
+        validateBlankTitle(title);
+        validateTitleLength(title);
+        validateNullQuestions(questions);
     }
 
     private void validateNullMember(Member member) {
@@ -101,20 +102,20 @@ public class ReviewForm extends BaseDate {
         }
     }
 
-    private void validateNullQuestions(List<String> questionValues) {
+    private void validateNullQuestions(List<ReviewFormQuestion> questionValues) {
         if (Objects.isNull(questionValues)) {
             throw new ReviewFormException("회고 폼의 질문 목록 생성 중 오류가 발생했습니다.");
         }
     }
 
-    private void validateTitleLength(String reviewTitle) {
-        if (reviewTitle.length() > 100) {
+    private void validateTitleLength(String title) {
+        if (title.length() > 100) {
             throw new ReviewFormException("회고 폼의 제목은 100자를 넘을 수 없습니다.");
         }
     }
 
-    private void validateBlankTitle(String reviewTitle) {
-        if (Objects.isNull(reviewTitle) || reviewTitle.isBlank()) {
+    private void validateBlankTitle(String title) {
+        if (Objects.isNull(title) || title.isBlank()) {
             throw new ReviewFormException("회고 폼의 제목은 비어있을 수 없습니다.");
         }
     }

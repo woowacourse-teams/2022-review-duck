@@ -1,9 +1,6 @@
 package com.reviewduck.review.dto.request;
 
-import java.util.List;
-
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,9 +12,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
-public class ReviewRequest {
+public class ReviewFormQuestionCreateRequest {
 
-    @NotNull(message = "회고 답변 관련 오류가 발생했습니다.")
-    @Valid
-    private List<AnswerRequest> answers;
+    @NotBlank(message = "회고 폼의 질문은 비어있을 수 없습니다.")
+    private String value;
 }
