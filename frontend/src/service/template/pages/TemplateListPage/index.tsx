@@ -37,20 +37,24 @@ function TemplateListPage() {
     <LayoutContainer>
       <div>
         <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${TEMPLATE_TAB.TREND}`}>
-          <button
-            className={cn(styles.button, { [styles.focus]: currentTab === TEMPLATE_TAB.TREND })}
-          >
-            <div className={styles.buttonBox}>
+          <button className={styles.button}>
+            <div
+              className={cn(styles.buttonBox, {
+                [styles.focus]: currentTab === TEMPLATE_TAB.TREND,
+              })}
+            >
               <Icon className={styles.icon} code="local_fire_department" />
               트랜딩
             </div>
           </button>
         </Link>
         <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${TEMPLATE_TAB.LATEST}`}>
-          <button
-            className={cn(styles.button, { [styles.focus]: currentTab === TEMPLATE_TAB.LATEST })}
-          >
-            <div className={styles.buttonBox}>
+          <button className={styles.button}>
+            <div
+              className={cn(styles.buttonBox, {
+                [styles.focus]: currentTab === TEMPLATE_TAB.LATEST,
+              })}
+            >
               <Icon className={styles.icon} code="playlist_add_check_circle" />
               최신
             </div>
