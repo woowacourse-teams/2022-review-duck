@@ -1,9 +1,14 @@
-import { GetTemplatesResponse, GetTemplateResponse, CreateFormResponse } from '../types/template';
+import {
+  GetTemplatesResponse,
+  GetTemplateResponse,
+  CreateFormResponse,
+  TemplateFilterType,
+} from '../types/template';
 
 import axiosInstance from './config/axiosInstance';
 
-const getTemplates = async (): Promise<GetTemplatesResponse> => {
-  const { data } = await axiosInstance.get('/api/templates');
+const getTemplates = async (filter: TemplateFilterType): Promise<GetTemplatesResponse> => {
+  const { data } = await axiosInstance.get(`/api/templates?filter=${filter}`);
 
   return data;
 };

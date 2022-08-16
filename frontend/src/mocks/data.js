@@ -1,117 +1,144 @@
-export const dummyTemplates = [
-  {
-    templateId: 0,
-    templateTitle: '샬라샬라 템플릿',
-    templateDescription: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
-    creator: {
-      nickname: 'dommorello',
-      profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
-      socialId: 'DomMorello',
+export const dummyTemplates = {
+  templates: [
+    {
+      info: {
+        id: 0,
+        title: '샬라샬라11 템플릿',
+        description: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
+        updatedAt: 1660277415389,
+        usedCount: 13,
+      },
+      creator: {
+        id: 0,
+        nickname: 'dommorello',
+        profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+        socialNickname: 'DomMorello',
+      },
     },
-    updatedAt: 1660049730600,
-    usedCount: 123,
-  },
-  {
-    templateId: 1,
-    templateTitle: '샬라샬라 템플릿',
-    templateDescription: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
-    creator: {
-      nickname: 'dommorello',
-      profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
-      socialId: 'DomMorello',
+    {
+      info: {
+        id: 1,
+        title: '샬라샬라22 템플릿 샬라샬라 템플릿 샬라샬라 템플릿 샬라샬라 템플릿',
+        description:
+          '이 템플릿을 이런저런이런저런 그런 템플릿입니다. 이 템플릿을 이런저런이런저런 그런 템플릿입니다. 이 템플릿을 이런저런이런저런 그런 템플릿입니다. 이 템플릿을 이런저런이런저런 그런 템플릿입니다. ',
+        updatedAt: 1660267415389,
+        usedCount: 145,
+      },
+      creator: {
+        id: 1,
+        nickname: 'dommorello',
+        profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+        socialNickname: 'DomMorello',
+      },
     },
-    updatedAt: 1660049730600,
-    usedCount: 123,
-  },
-  {
-    templateId: 2,
-    templateTitle: '샬라샬라 템플릿',
-    templateDescription: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
-    creator: {
-      nickname: 'dommorello',
-      profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
-      socialId: 'DomMorello',
+    {
+      info: {
+        id: 2,
+        title: '샬라샬라33 템플릿',
+        description: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
+        updatedAt: 1660257415389,
+        usedCount: 25,
+      },
+      creator: {
+        id: 2,
+        nickname: 'dommorello',
+        profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+        socialNickname: 'DomMorello',
+      },
     },
-    updatedAt: 1660049730600,
-    usedCount: 123,
-  },
-  {
-    templateId: 3,
-    templateTitle: '샬라샬라 템플릿',
-    templateDescription: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
-    creator: {
-      nickname: 'dommorello',
-      profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
-      socialId: 'DomMorello',
+    {
+      info: {
+        id: 3,
+        title: '샬라샬라44 템플릿',
+        description: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
+        updatedAt: 1660247415389,
+        usedCount: 194,
+      },
+      creator: {
+        id: 3,
+        nickname: 'dommorello',
+        profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+        socialNickname: 'DomMorello',
+      },
     },
-    updatedAt: 1660049730600,
-    usedCount: 123,
-  },
-  {
-    templateId: 4,
-    templateTitle:
-      '샬라샬라 템플릿 샬라샬라 템플릿 샬라샬라 템플릿템플릿 샬라샬라 템플릿템플릿 샬라샬라 템플릿',
-    templateDescription:
-      '이 템플릿을 이런저런이런저런 그런 템플릿입니다. 이 템플릿을 이런저런이런저런 그런 템플릿입니다. 이 템플릿을 이런저런이런저런 그런 템플릿입니다. 이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
-    creator: {
-      nickname: 'dommorello',
-      profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
-      socialId: 'DomMorello',
+    {
+      info: {
+        id: 4,
+        title: '샬라샬라55 템플릿',
+        description: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
+        updatedAt: 1660237415389,
+        usedCount: 74,
+      },
+      creator: {
+        id: 4,
+        nickname: 'dommorello',
+        profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+        socialNickname: 'DomMorello',
+      },
     },
-    updatedAt: 1660049730600,
-    usedCount: 123,
-  },
-  {
-    templateId: 5,
-    templateTitle: '샬라샬라 템플릿',
-    templateDescription: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
-    creator: {
-      nickname: 'dommorello',
-      profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
-      socialId: 'DomMorello',
+    {
+      info: {
+        id: 5,
+        title: '샬라샬라66 템플릿',
+        description: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
+        updatedAt: 1660227415389,
+        usedCount: 96,
+      },
+      creator: {
+        id: 5,
+        nickname: 'dommorello',
+        profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+        socialNickname: 'DomMorello',
+      },
     },
-    updatedAt: 1660049730600,
-    usedCount: 123,
-  },
-  {
-    templateId: 6,
-    templateTitle: '샬라샬라 템플릿',
-    templateDescription: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
-    creator: {
-      nickname: 'dommorello',
-      profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
-      socialId: 'DomMorello',
+    {
+      info: {
+        id: 6,
+        title: '샬라샬라77 템플릿',
+        description: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
+        updatedAt: 1660217415389,
+        usedCount: 8,
+      },
+      creator: {
+        id: 6,
+        nickname: 'dommorello',
+        profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+        socialNickname: 'DomMorello',
+      },
     },
-    updatedAt: 1660049730600,
-    usedCount: 123,
-  },
-  {
-    templateId: 7,
-    templateTitle: '샬라샬라 템플릿',
-    templateDescription: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
-    creator: {
-      nickname: 'dommorello',
-      profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
-      socialId: 'DomMorello',
+    {
+      info: {
+        id: 7,
+        title: '샬라샬라88 템플릿',
+        description: '이 템플릿을 이런저런이런저런 그런 템플릿입니다.',
+        updatedAt: 1660207415389,
+        usedCount: 119,
+      },
+      creator: {
+        id: 7,
+        nickname: 'dommorello',
+        profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+        socialNickname: 'DomMorello',
+      },
     },
-    updatedAt: 1660049730600,
-    usedCount: 123,
-  },
-];
+  ],
+};
 
 export const dummyTemplate = {
-  templateId: 2,
-  templateTitle: '팀 회고덕 스프린트 회고',
-  templateDescription:
-    '우아한테크코스 회고덕팀에서 매 스프린트 종료 후 진행하는 회고 템플릿입니다.',
+  info: {
+    id: 2,
+    title: '팀 회고덕 스프린트 회고',
+    description: '우아한테크코스 회고덕팀에서 매 스프린트 종료 후 진행하는 회고 템플릿입니다.',
+    updatedAt: 1660049730605,
+    usedCount: 142,
+  },
   creator: {
+    id: 4,
     nickname: '돔하디',
     profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
-    socialId: 'DomMorello',
+    socialNickname: 'DomMorello',
     bio: '세상에서 코딩이 젤 재미있어요.',
   },
-  updatedAt: 1660049730600,
-  usedCount: 123,
   questions: [
     {
       id: 1,

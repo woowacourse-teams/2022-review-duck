@@ -40,7 +40,7 @@ function TemplateDetailPage() {
   };
 
   const handleEditTemplate = (templateId: number) => {
-    /* TODO: reviewForm 수정 페이지로 라우팅 */
+    /* TODO: 템플릿 수정 페이지로 라우팅 */
   };
 
   const handleCreateTemplate = (templateId: number) => {
@@ -54,10 +54,10 @@ function TemplateDetailPage() {
       <button>이 템플릿으로 회고 질문폼 생성하기</button>
       <button>이 템플릿으로 회고 바로 시작하기</button>
       <div>
-        <Text>{template.templateTitle}</Text>
+        <Text>{template.info.title}</Text>
         <Text>{template.creator.nickname}</Text>
-        <Text>{getElapsedTimeText(template.updatedAt)}</Text>
-        <Text>{`${template.usedCount}회 사용됨`}</Text>
+        <Text>{getElapsedTimeText(template.info.updatedAt)}</Text>
+        <Text>{`${template.info.usedCount}회 사용됨`}</Text>
       </div>
       <div>
         {template.questions.map(({ id, value, description }, index) => (
@@ -78,7 +78,7 @@ function TemplateDetailPage() {
           }}
         ></div>
         <Text>{template.creator.nickname}</Text>
-        <Text>{template.creator.socialId}</Text>
+        <Text>{template.creator.socialNickname}</Text>
         <Text>{template.creator.bio}</Text>
       </div>
       <div>

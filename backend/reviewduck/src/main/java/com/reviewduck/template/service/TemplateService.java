@@ -55,8 +55,12 @@ public class TemplateService {
         return templateRepository.findByMemberOrderByUpdatedAtDesc(member);
     }
 
-    public List<Template> findAll() {
-        return templateRepository.findAll();
+    public List<Template> findAllOrderByLatest() {
+        return templateRepository.findAllByOrderByUpdatedAtDesc();
+    }
+
+    public List<Template> findAllOrderByTrend() {
+        return templateRepository.findAllByOrderByUsedCountDesc();
     }
 
     @Transactional

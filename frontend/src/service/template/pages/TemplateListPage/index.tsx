@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
-import { Link, useNavigate, Routes, Route } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+
+import { TemplateFilterType } from 'service/@shared/types';
 
 import { useGetTemplates } from 'service/@shared/hooks/queries/template/useGet';
 
@@ -10,10 +12,13 @@ import { PAGE_LIST } from 'service/@shared/constants';
 
 function TemplateListPage() {
   const navigate = useNavigate();
+  const [searchParam] = useSearchParams();
 
-  const { data, isError, error } = useGetTemplates();
+  const currentTab = searchParam.get('filter') as TemplateFilterType;
 
-  const templates = data || [];
+  const { data, isError, error } = useGetTemplates(currentTab);
+
+  const { templates } = data || { templates: [] };
 
   useEffect(() => {
     if (isError) {
@@ -25,20 +30,13 @@ function TemplateListPage() {
   return (
     <LayoutContainer>
       <div>
-        <Link to={PAGE_LIST.TEMPLATE_LIST}>
+        <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=trend`}>
           <button>트랜딩</button>
         </Link>
-        <Link to={`${PAGE_LIST.TEMPLATE_LIST}${PAGE_LIST.TEMPLATE_RECENT}`}>
+        <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=latest`}>
           <button>최신</button>
         </Link>
-        <Routes>
-          <Route index element={<TemplateListContainer templates={templates} />} />
-          <Route
-            path={`${PAGE_LIST.TEMPLATE_RECENT}`}
-            element={<TemplateListContainer templates={templates} />}
-          />
-          <Route path="*" element={<p>잘못된 접근입니다.</p>} />
-        </Routes>
+        <TemplateListContainer templates={templates} />
       </div>
     </LayoutContainer>
   );

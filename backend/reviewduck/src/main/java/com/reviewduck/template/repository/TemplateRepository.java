@@ -11,4 +11,8 @@ public interface TemplateRepository extends JpaRepository<Template, Long> {
 
     List<Template> findByMemberOrderByUpdatedAtDesc(Member member);
 
+    List<Template> findAllByOrderByUpdatedAtDesc();
+
+    List<Template> findAllByOrderByUsedCountDesc();
+
 }
