@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     # 현재 Job에서 사용할 환경변수, repository setting secrets 에서 설정한 환경변수 사용
     env:
-      SONARQUBE_PROJECT_KEY: reviewDuck
+      SONARQUBE_PROJECT_NAME: reviewDuck
       SONARQUBE_URL: ${{ secrets.SONAR_HOST_URL }}
       SONARQUBE_TOKEN: ${{ secrets.SONAR_TOKEN }}
       PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -66,8 +66,7 @@ jobs:
       - name: Sonarqube Analysis
         run: ./gradlew test sonarqube
           -Dsonar.host.url=${{ env.SONARQUBE_URL }}
-          -Dsonar.projectKey=${{ env.SONARQUBE_PROJECT_KEY }}
-          -Dsonar.projectName=${{ env.SONARQUBE_PROJECT_KEY }}-${{ env.PR_NUMBER }}
+          -Dsonar.projectName=${{ env.SONARQUBE_PROJECT_NAME }}-${{ env.PR_NUMBER }}
           -Dsonar.login=${{ env.SONARQUBE_TOKEN }}
 
       # PR 에 Comment 를 달아주는 스크립트 실행 test
@@ -75,7 +74,7 @@ jobs:
         uses: actions/github-script@v4
         with:
           script: |
-            const { SONARQUBE_PROJECT_KEY, SONARQUBE_URL, PR_NUMBER } = process.env
+            const { SONARQUBE_PROJECT_NAME, SONARQUBE_URL, PR_NUMBER } = process.env
             github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
