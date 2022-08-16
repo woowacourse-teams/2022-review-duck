@@ -23,6 +23,8 @@ import lombok.NoArgsConstructor;
 public class Member extends BaseDate {
 
     private static final Member MEMBER_NOT_LOGIN = new Member("-1", "socialNickname", "nickname", "url");
+    private static final String deletedInfo = "-";
+    private static final String deletedNickname = "탈퇴한 회원입니다.";
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,10 +64,10 @@ public class Member extends BaseDate {
     }
 
     public void deleteAllInfo() {
-        this.socialId = "-";
-        this.socialNickname = "-";
-        this.nickname = "탈퇴한 회원입니다";
-        this.profileUrl = "-";
+        this.socialId = deletedInfo;
+        this.socialNickname = deletedInfo;
+        this.nickname = deletedNickname;
+        this.profileUrl = deletedInfo;
     }
 
     public boolean isAdmin() {
