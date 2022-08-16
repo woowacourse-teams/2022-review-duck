@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -88,14 +89,17 @@ public class TemplateController {
         return TemplatesResponse.from(templates);
     }
 
-    @Operation(summary = "템플릿을 삭제한다.")
-    @DeleteMapping("/{templateId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@AuthenticationPrincipal Member member, @PathVariable Long templateId) {
+    @Operation(summary = "사용자가 생성한 템플릿을 모두 조회한다.")
+    @GetMapping(params = "member")
+    @ResponseStatus(HttpStatus.OK)
+    public MyTemplatesResponse findByMemberId(@AuthenticationPrincipal Member member,
+        @RequestParam(value = "member") String id) {
 
-        info("/api/templates/" + templateId, "DELETE", "");
+        info("/api/templates/me?member=" + id, "GET", "");
 
-        templateService.deleteById(member, templateId);
+        List<Template> templates = templateService.findBySocialId(id);
+
+        return MyTemplatesResponse.from(templates);
     }
 
     @Operation(summary = "템플릿을 수정한다.")
@@ -109,15 +113,14 @@ public class TemplateController {
         templateService.update(member, templateId, request);
     }
 
-    @Operation(summary = "내가 작성한 템플릿을 모두 조회한다.")
-    @GetMapping("/me")
-    @ResponseStatus(HttpStatus.OK)
-    public MyTemplatesResponse findByMember(@AuthenticationPrincipal Member member) {
+    @Operation(summary = "템플릿을 삭제한다.")
+    @DeleteMapping("/{templateId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@AuthenticationPrincipal Member member, @PathVariable Long templateId) {
 
-        info("/api/templates/me", "GET", "");
+        info("/api/templates/" + templateId, "DELETE", "");
 
-        List<Template> templates = templateService.findByMember(member);
-
-        return MyTemplatesResponse.from(templates);
+        templateService.deleteById(member, templateId);
     }
+
 }

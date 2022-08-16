@@ -28,7 +28,7 @@ import com.reviewduck.review.dto.request.ReviewFormQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
-import com.reviewduck.template.dto.request.TemplateQuestionRequest;
+import com.reviewduck.template.dto.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.service.TemplateService;
 
 @SpringBootTest
@@ -113,9 +113,9 @@ public class ReviewFormServiceTest {
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionRequest> questions = List.of(
-                new TemplateQuestionRequest("question1"),
-                new TemplateQuestionRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions = List.of(
+                new TemplateQuestionCreateRequest("question1"),
+                new TemplateQuestionCreateRequest("question2"));
 
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription, questions);
             Template savedTemplate = templateService.save(member1, templateRequest);

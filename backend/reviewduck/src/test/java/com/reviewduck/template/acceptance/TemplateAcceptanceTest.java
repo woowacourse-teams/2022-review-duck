@@ -16,10 +16,11 @@ import org.springframework.http.HttpStatus;
 import com.reviewduck.acceptance.AcceptanceTest;
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
-import com.reviewduck.template.dto.request.TemplateQuestionRequest;
+import com.reviewduck.template.dto.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
 import com.reviewduck.template.dto.response.MyTemplatesResponse;
@@ -57,8 +58,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             // given
             String templateTitle = "title";
             String templateDescription = "test description";
-            List<TemplateQuestionRequest> questions = List.of(new TemplateQuestionRequest("question1"),
-                new TemplateQuestionRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions = List.of(new TemplateQuestionCreateRequest("question1"),
+                new TemplateQuestionCreateRequest("question2"));
             TemplateCreateRequest request = new TemplateCreateRequest(templateTitle, templateDescription, questions);
 
             // when, then
@@ -72,8 +73,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             // given
             String templateTitle = "title";
             String templateDescription = "test description";
-            List<TemplateQuestionRequest> questions = List.of(new TemplateQuestionRequest("question1"),
-                new TemplateQuestionRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions = List.of(new TemplateQuestionCreateRequest("question1"),
+                new TemplateQuestionCreateRequest("question2"));
             TemplateCreateRequest request = new TemplateCreateRequest(templateTitle, templateDescription, questions);
 
             // when, then
@@ -183,47 +184,71 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("내가 작성한 템플릿 조회")
-    class findAllMyTemplates {
+    @DisplayName("사용자가 작성한 템플릿 조회")
+    class findMemberBySocialId {
 
         @Test
-        @DisplayName("내가 작성한 템플릿을 모두 조회한다.")
-        void findAllMyTemplates() {
+        @DisplayName("사용자가 작성한 템플릿을 최근 수정시각을 기준으로 내림차순 정렬하여 조회한다.")
+        void findMemberBySocialIdOrderByUpdatedAt() {
             // given
+            // save template
             String templateTitle1 = "title1";
             String templateDescription1 = "test description1";
-            List<TemplateQuestionRequest> questions1 = List.of(new TemplateQuestionRequest("question1"),
-                new TemplateQuestionRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions1 = List.of(
+                new TemplateQuestionCreateRequest("question1"),
+                new TemplateQuestionCreateRequest("question2"));
             TemplateCreateRequest request1 = new TemplateCreateRequest(templateTitle1, templateDescription1,
                 questions1);
             post("/api/templates", request1, accessToken1);
 
             String templateTitle2 = "title2";
             String templateDescription2 = "test description2";
-            List<TemplateQuestionRequest> questions2 = List.of(new TemplateQuestionRequest("question3"),
-                new TemplateQuestionRequest("question4"));
+            List<TemplateQuestionCreateRequest> questions2 = List.of(
+                new TemplateQuestionCreateRequest("question3"),
+                new TemplateQuestionCreateRequest("question4"));
             TemplateCreateRequest request2 = new TemplateCreateRequest(templateTitle2, templateDescription2,
                 questions2);
             post("/api/templates", request2, accessToken2);
 
+            String templateTitle3 = "title3";
+            String templateDescription3 = "test description3";
+            List<TemplateQuestionCreateRequest> questions3 = List.of
+                (new TemplateQuestionCreateRequest("question5"),
+                    new TemplateQuestionCreateRequest("question6"));
+            TemplateCreateRequest request3 = new TemplateCreateRequest(templateTitle3, templateDescription3,
+                questions3);
+            post("/api/templates", request3, accessToken1);
+
+            // find memberInfo
+            MemberResponse member = get("/api/members/me", accessToken1)
+                .extract()
+                .as(MemberResponse.class);
+
             // when, then
-            MyTemplatesResponse myTemplatesResponse = get("/api/templates/me", accessToken2).statusCode(
-                    HttpStatus.OK.value())
+            MyTemplatesResponse myTemplatesResponse = get("/api/templates?member=" + member.getSocialId(), accessToken1)
+                .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(MyTemplatesResponse.class);
 
             assertAll(
-                () -> assertThat(myTemplatesResponse.getNumberOfTemplates()).isEqualTo(1),
-                () -> assertThat(myTemplatesResponse.getTemplates()).hasSize(1),
-                () -> assertThat(myTemplatesResponse.getTemplates().get(0).getInfo().getTitle()).isEqualTo(
-                    templateTitle2)
+                () -> assertThat(myTemplatesResponse.getNumberOfTemplates()).isEqualTo(2),
+                () -> assertThat(myTemplatesResponse.getTemplates()).hasSize(2),
+                () -> assertThat(myTemplatesResponse.getTemplates().get(0).getInfo().getTitle())
+                    .isEqualTo(templateTitle3)
             );
+
         }
 
         @Test
-        @DisplayName("로그인하지 않은 상태로 내가 작성한 템플릿을 모두 조회할 수 없다.")
+        @DisplayName("로그인하지 않은 상태로 조회할 수 없다.")
         void withoutLogin() {
-            get("/api/templates/me").statusCode(HttpStatus.UNAUTHORIZED.value());
+            get("/api/templates?member=12345").statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 사용자에 대해 조회할 수 없다.")
+        void invalidId() {
+            get("/api/templates?member=12345", accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
         }
 
     }
@@ -351,8 +376,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
     private long saveTemplateAndGetId(String accessToken) {
         String templateTitle = "title";
         String description = "test description";
-        List<TemplateQuestionRequest> questions = List.of(new TemplateQuestionRequest("question1"),
-            new TemplateQuestionRequest("question2"));
+        List<TemplateQuestionCreateRequest> questions = List.of(new TemplateQuestionCreateRequest("question1"),
+            new TemplateQuestionCreateRequest("question2"));
         TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, description, questions);
 
         return post("/api/templates", templateCreateRequest, accessToken)

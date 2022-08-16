@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
@@ -26,7 +27,7 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
-import com.reviewduck.template.dto.request.TemplateQuestionRequest;
+import com.reviewduck.template.dto.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
 import com.reviewduck.template.service.TemplateService;
@@ -91,7 +92,7 @@ public class TemplateControllerTest {
         @ParameterizedTest
         @NullSource
         @DisplayName("질문 목록에 null 값이 들어갈 경우 예외가 발생한다.")
-        void nullQuestionList(List<TemplateQuestionRequest> questions) throws Exception {
+        void nullQuestionList(List<TemplateQuestionCreateRequest> questions) throws Exception {
             // given
             TemplateCreateRequest request = new TemplateCreateRequest("title", "description", questions);
 
@@ -105,10 +106,22 @@ public class TemplateControllerTest {
         void nullQuestionValue(String value) throws Exception {
             // given
             TemplateCreateRequest request = new TemplateCreateRequest("title", "description",
-                List.of(new TemplateQuestionRequest(value)));
+                List.of(new TemplateQuestionCreateRequest(value)));
 
             // when, then
             assertBadRequestFromPost("/api/templates", request, "템플릿의 질문 목록 생성 중 오류가 발생했습니다.");
+        }
+
+    }
+
+    @Nested
+    @DisplayName("사용자별 템플릿 조회")
+    class findByMemberSocialId {
+
+        @Test
+        @DisplayName("member 파라미터에 값이 없을 경우 예외가 발생한다.")
+        void emptyMember() throws Exception {
+            assertBadRequestFromGet("/api/templates?member=", "파라미터 정보가 올바르지 않습니다.");
         }
 
     }
@@ -156,12 +169,20 @@ public class TemplateControllerTest {
         void nullQuestionValue(String value) throws Exception {
             // given
             TemplateCreateRequest request = new TemplateCreateRequest("title", "description",
-                List.of(new TemplateQuestionRequest(value)));
+                List.of(new TemplateQuestionCreateRequest(value)));
 
             // when, then
             assertBadRequestFromPut("/api/templates/" + 1L, request, "템플릿의 질문 수정 중 오류가 발생했습니다.");
         }
 
+    }
+
+    private void assertBadRequestFromGet(String uri, String errorMessage) throws Exception {
+        mockMvc.perform(post(uri)
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+            ).andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message", containsString(errorMessage)));
     }
 
     private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {

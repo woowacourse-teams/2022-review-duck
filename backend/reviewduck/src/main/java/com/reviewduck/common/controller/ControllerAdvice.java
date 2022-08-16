@@ -3,6 +3,7 @@ package com.reviewduck.common.controller;
 import static com.reviewduck.common.util.Logging.*;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -57,6 +58,15 @@ public class ControllerAdvice {
         error(e.getMessage());
 
         return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleHttpMessageNotReadableException(Exception e) {
+
+        error(e.getMessage());
+
+        return new ErrorResponse("파라미터 정보가 올바르지 않습니다.");
     }
 
     @ExceptionHandler(Exception.class)
