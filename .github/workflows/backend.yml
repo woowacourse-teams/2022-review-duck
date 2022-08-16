@@ -1,0 +1,87 @@
+# Workflow 의 이름 설정
+name: backend-sonarqube-plugin-test
+
+# develop 브랜치에 대한 pr 이벤트가 일어났을 때 실행한다는 설정
+on:
+  push:
+    branches: [ "develop", "main", "feature-sonarqube-final-test"]
+  pull_request:
+    branches: [ "develop", "main", "feature-sonarqube-final"]
+
+# job 의 공통된 옵션
+defaults:
+  run:
+    # 작업을 수행할 디렉토리 설정
+    working-directory: ./backend/reviewduck/
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      clientId: ${{ secrets.CLIENTID }}
+      clientSecret: ${{ secrets.CLIENTSECRET }}
+      jwtKey: ${{ secrets.JWTKEY }}
+      jwtExpireLength: ${{ secrets.JWTEXPIRELENGTH }}
+      jwtRefreshExpireLength: ${{ secrets.JWTREFRESHEXPIRELENGTH }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.SECURITY_TOKEN }}
+          submodules: recursive
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'adopt'
+          cache: gradle
+
+      - name: Build
+        run: ./gradlew build
+
+
+  sonarqube:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.SECURITY_TOKEN }}
+          submodules: recursive
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: 11
+          distribution: 'adopt'
+          cache: gradle
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      - name: Build and analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          clientId: ${{ secrets.CLIENTID }}
+          clientSecret: ${{ secrets.CLIENTSECRET }}
+          jwtKey: ${{ secrets.JWTKEY }}
+          jwtExpireLength: ${{ secrets.JWTEXPIRELENGTH }}
+          jwtRefreshExpireLength: ${{ secrets.JWTREFRESHEXPIRELENGTH }}
+        run: ./gradlew build sonarqube --info
