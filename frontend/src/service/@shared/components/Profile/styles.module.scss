@@ -4,6 +4,8 @@
   position: relative;
   display: block;
 
+  background-size: cover;
+  background-position: center;
   border-radius: $GLOBAL_BORDERRADIUS_MAX;
 
   &.size-small {
