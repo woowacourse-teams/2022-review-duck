@@ -100,17 +100,6 @@ public class TemplateController {
         return TemplatesResponse.from(templates);
     }
 
-    @Operation(summary = "템플릿을 모두 조회한다.")
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public TemplatesResponse findAll(@AuthenticationPrincipal Member member) {
-
-        info("/api/templates", "GET", "");
-
-        List<Template> templates = templateService.findAll();
-        return TemplatesResponse.from(templates);
-    }
-
     @Operation(summary = "사용자가 생성한 템플릿을 모두 조회한다.")
     @GetMapping(params = "member")
     @ResponseStatus(HttpStatus.OK)

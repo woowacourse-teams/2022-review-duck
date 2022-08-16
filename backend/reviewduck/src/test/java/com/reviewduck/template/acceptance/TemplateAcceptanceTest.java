@@ -140,7 +140,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("로그인하지 않은 상태로 전체 템플릿을 조회할 수 없다.")
+        @DisplayName("로그인하지 않은 상태로 조회할 수 없다.")
         void withoutLogin() {
             get("/api/templates?filter=trend").statusCode(HttpStatus.UNAUTHORIZED.value());
         }
@@ -171,7 +171,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("로그인하지 않은 상태로 전체 템플릿을 조회할 수 없다.")
+        @DisplayName("로그인하지 않은 상태로 조회할 수 없다.")
         void withoutLogin() {
             get("/api/templates?filter=latest").statusCode(HttpStatus.UNAUTHORIZED.value());
         }

@@ -63,10 +63,6 @@ public class TemplateService {
         return templateRepository.findAllByOrderByUsedCountDesc();
     }
 
-    public List<Template> findAll() {
-        return templateRepository.findAll();
-    }
-
     @Transactional
     public Template update(Member member, Long id, TemplateUpdateRequest templateUpdateRequest) {
         Template template = findById(id);

@@ -129,35 +129,6 @@ public class TemplateServiceTest {
     }
 
     @Nested
-    @DisplayName("템플릿 전체 조회")
-    class findAllTemplates {
-
-        @Test
-        @DisplayName("템플릿을 모두 조회한다.")
-        void findAllTemplates() {
-            // given
-            // create template
-            List<TemplateQuestionCreateRequest> questions1 = List.of(
-                new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
-
-            List<TemplateQuestionCreateRequest> questions2 = List.of(
-                new TemplateQuestionCreateRequest("question3"),
-                new TemplateQuestionCreateRequest("question4"));
-
-            saveTemplate(member1, "title1", "description1", questions1);
-            saveTemplate(member1, "title2", "description2", questions2);
-
-            // when
-            List<Template> templates = templateService.findAll();
-
-            // then
-            assertThat(templates).hasSize(2);
-        }
-
-    }
-
-    @Nested
     @DisplayName("최신순 전체 템플릿 조회")
     class findAllOrderByLatest {
 
