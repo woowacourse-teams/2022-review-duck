@@ -42,6 +42,16 @@ public class MemberController {
         return MemberResponse.of(foundMember, member);
     }
 
+    @Operation(summary = "본인의 사용자 정보를 조회한다.")
+    @GetMapping("/me")
+    @ResponseStatus(HttpStatus.OK)
+    public MemberResponse findMyInfo(@AuthenticationPrincipal Member member) {
+
+        info("/api/members/me", "GET", "");
+
+        return MemberResponse.from(member);
+    }
+
     @Operation(summary = "본인의 닉네임을 변경한다.")
     @PutMapping("/me")
     @ResponseStatus(HttpStatus.NO_CONTENT)
