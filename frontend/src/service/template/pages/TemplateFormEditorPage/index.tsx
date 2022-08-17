@@ -4,12 +4,14 @@ import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
 
+import { Question } from 'service/@shared/types/review';
+
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/review/hooks/useQuestions';
 
 import { getErrorMessage, setFormFocus } from 'service/@shared/utils';
 
-import { Button, Icon, Logo, TextBox } from 'common/components';
+import { Button, Icon, Logo, TextBox, Text, Textarea, FieldSet } from 'common/components';
 
 import QuestionCard from 'service/@shared/components/QuestionCard';
 import SmallProfileCard from 'service/@shared/components/SmallProfileCard';
@@ -26,16 +28,22 @@ function TemplateFormEditorPage() {
   const navigate = useNavigate();
 
   const templateId = searchParams.get('templateId') || '';
+  const templateEditMode = searchParams.get('templateEditMode') || '';
 
-  const { template, isLoadError, loadError, submitReviewForm } =
-    useTemplateFormEditorPage(templateId);
+  const { template, isLoadError, loadError, isSubmitLoading, templateMutation, createReviewForm } =
+    useTemplateFormEditorPage(templateId, templateEditMode);
 
-  const [reviewFormTitle, setReviewTitle] = useState(template.info.title);
+  const [title, setTitle] = useState(template.info.title);
+  const [description, setDescription] = useState(template.info.description);
   const { questions, addQuestion, removeQuestion, updateQuestion, removeBlankQuestions } =
     useQuestions(template.questions);
 
   const { showSnackbar } = useSnackbar();
   const redirectUri = searchParams.get('redirect');
+
+  const isTemplateEditMode = templateId && templateEditMode;
+  const isReviewFormCreateMode = templateId && !templateEditMode;
+  const isTemplateCreateMode = !templateId && !templateEditMode;
 
   useEffect(() => {
     if (isLoadError) {
@@ -45,7 +53,11 @@ function TemplateFormEditorPage() {
   }, [isLoadError, loadError]);
 
   const handleChangeReviewTitle = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-    setReviewTitle(target.value);
+    setTitle(target.value);
+  };
+
+  const handleChangeDescription = ({ target }: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setDescription(target.value);
   };
 
   const handleAddQuestion = ({
@@ -90,8 +102,45 @@ function TemplateFormEditorPage() {
     });
   };
 
+  const handleTemplateSuccess = () => {
+    showSnackbar({
+      title: '템플릿을 ' + `${isTemplateEditMode ? '수정' : '생성'}` + '했습니다.',
+      description:
+        '이제 다른 사용자들이 ' +
+        `${isTemplateEditMode ? '수정된' : '이'}` +
+        ' 템플릿으로 회고를 할 수 있습니다.',
+    });
+
+    navigate(-1);
+  };
+
   const handleSubmitError = ({ message }: Record<'message', string>) => {
     alert(message);
+  };
+
+  const submitReviewForm = (submitQuestions: Question[]) => {
+    createReviewForm.mutate(
+      { templateId: Number(templateId), reviewFormTitle: title, questions: submitQuestions },
+      {
+        onSuccess: handleSubmitSuccess,
+        onError: handleSubmitError,
+      },
+    );
+  };
+
+  const submitTemplate = (submitQuestions: Question[]) => {
+    templateMutation.mutate(
+      {
+        templateId: Number(templateId),
+        templateTitle: title,
+        templateDescription: description,
+        questions: submitQuestions,
+      },
+      {
+        onSuccess: handleTemplateSuccess,
+        onError: handleSubmitError,
+      },
+    );
   };
 
   const handleSubmitReviewForm = (event: React.FormEvent) => {
@@ -100,27 +149,23 @@ function TemplateFormEditorPage() {
     const submitQuestions = removeBlankQuestions(questions);
 
     try {
-      validateReviewForm(reviewFormTitle, submitQuestions);
+      validateReviewForm(title, submitQuestions);
     } catch (error) {
       alert(getErrorMessage(error));
       return;
     }
 
-    submitReviewForm.mutate(
-      { reviewFormTitle, questions: submitQuestions },
-      {
-        onSuccess: handleSubmitSuccess,
-        onError: handleSubmitError,
-      },
-    );
+    if (isReviewFormCreateMode) {
+      submitReviewForm(submitQuestions);
+      return;
+    }
+    submitTemplate(submitQuestions);
   };
 
   const handleCancel = () => {
     if (!confirm('회고 생성을 정말 취소하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
 
-    navigate(redirectUri || `${PAGE_LIST.TEMPLATE_DETAIL}/${templateId}`, {
-      replace: true,
-    });
+    navigate(-1);
   };
 
   return (
@@ -130,11 +175,17 @@ function TemplateFormEditorPage() {
           <Link to={PAGE_LIST.HOME}>
             <Logo />
           </Link>
-          <SmallProfileCard
-            primaryText="템플릿 생성자"
-            secondaryText={template.creator.nickname}
-            profileUrl={template.creator.profileUrl}
-          />
+          {isReviewFormCreateMode || isTemplateEditMode ? (
+            <SmallProfileCard
+              primaryText="템플릿 생성자"
+              secondaryText={template.creator.nickname}
+              profileUrl={template.creator.profileUrl}
+            />
+          ) : (
+            <Text size={18} weight="bold">
+              템플릿 생성 페이지
+            </Text>
+          )}
         </div>
 
         <div className={cn(styles.previewContainer, 'flex-container column')}>
@@ -158,10 +209,24 @@ function TemplateFormEditorPage() {
           <TextBox
             theme="underline"
             size="large"
-            placeholder="회고의 제목을 입력해주세요."
-            value={reviewFormTitle}
+            placeholder={(templateId ? '회고' : '템플릿') + '의 제목을 입력해주세요.'}
+            value={title}
             onChange={handleChangeReviewTitle}
           />
+
+          {(isTemplateCreateMode || isTemplateEditMode) && (
+            <>
+              <FieldSet size="medium" title="템플릿 설명">
+                <Textarea
+                  placeholder="생성할 템플릿의 설명을 입력해주세요."
+                  maxLength={200}
+                  value={description}
+                  onChange={handleChangeDescription}
+                />
+              </FieldSet>
+              <hr className={styles.line} />
+            </>
+          )}
 
           <div className={cn(styles.itemContainer, 'flex-container column')}>
             {questions.map((question, index) => (
@@ -182,11 +247,7 @@ function TemplateFormEditorPage() {
               <span>취소하기</span>
             </Button>
 
-            <Button
-              type="button"
-              onClick={handleSubmitReviewForm}
-              disabled={submitReviewForm.isLoading}
-            >
+            <Button type="button" onClick={handleSubmitReviewForm} disabled={isSubmitLoading}>
               <Icon code="drive_file_rename_outline" />
               <span>생성하기</span>
             </Button>

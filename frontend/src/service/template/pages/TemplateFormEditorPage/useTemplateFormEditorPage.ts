@@ -1,24 +1,40 @@
 import { UseMutationResult, useQueryClient } from 'react-query';
 
-import { ErrorResponse, GetTemplateResponse, CreateReviewFormRequest } from 'service/@shared/types';
+import {
+  ErrorResponse,
+  GetTemplateResponse,
+  CreateTemplateRequest,
+  UpdateTemplateRequest,
+  CreateFormByTemplateRequest,
+} from 'service/@shared/types';
 
-import { useCreateReviewForm } from 'service/@shared/hooks/queries/review';
+import { useCreateFormByTemplate } from 'service/@shared/hooks/queries/review';
 import { useGetTemplate } from 'service/@shared/hooks/queries/template';
+import { useCreateTemplate } from 'service/@shared/hooks/queries/template/useCreate';
+import { useUpdateTemplate } from 'service/@shared/hooks/queries/template/useUpdate';
 
 import { QUERY_KEY } from 'service/@shared/constants';
 
-type SubmitMutationResult = UseMutationResult<
+type SubmitReviewFormResult = UseMutationResult<
   { reviewFormCode: string },
   ErrorResponse,
-  CreateReviewFormRequest
+  CreateFormByTemplateRequest
 >;
 
-function useTemplateFormEditorPage(templateId: string) {
-  const getTemplateQuery = useGetTemplate(Number(templateId));
+type SubmitTemplateResult = UseMutationResult<
+  { templateId: number },
+  ErrorResponse,
+  CreateTemplateRequest | UpdateTemplateRequest
+>;
+
+function useTemplateFormEditorPage(templateId: string, templateEditMode: string) {
+  const getTemplateQuery = useGetTemplate(Number(templateId), {
+    enabled: !!templateId,
+  });
 
   const queryClient = useQueryClient();
 
-  const submitMutation = useCreateReviewForm({
+  const createReviewForm = useCreateFormByTemplate({
     onSuccess: () => {
       queryClient.invalidateQueries([
         QUERY_KEY.DATA.TEMPLATE,
@@ -28,7 +44,14 @@ function useTemplateFormEditorPage(templateId: string) {
     },
   });
 
+  const createTemplate = useCreateTemplate();
+
+  const updateTemplate = useUpdateTemplate();
+
+  const templateMutation = templateEditMode ? updateTemplate : createTemplate;
+
   const initialTemplateFormContents: GetTemplateResponse = {
+    isCreator: false,
     info: {
       id: 0,
       title: '',
@@ -42,7 +65,11 @@ function useTemplateFormEditorPage(templateId: string) {
       nickname: '',
       profileUrl: '',
     },
-    questions: [],
+    questions: [
+      {
+        value: '',
+      },
+    ],
   };
 
   const template = getTemplateQuery.data || initialTemplateFormContents;
@@ -51,8 +78,9 @@ function useTemplateFormEditorPage(templateId: string) {
     template,
     isLoadError: getTemplateQuery.isError,
     loadError: getTemplateQuery.error,
-    isSubmitLoading: submitMutation.isLoading,
-    submitReviewForm: submitMutation as SubmitMutationResult,
+    isSubmitLoading: createReviewForm.isLoading || templateMutation.isLoading,
+    templateMutation: templateMutation as SubmitTemplateResult,
+    createReviewForm: createReviewForm as SubmitReviewFormResult,
   };
 }
 
