@@ -134,7 +134,10 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             // when, then
             get("/api/templates?filter=latest", accessToken1).statusCode(HttpStatus.OK.value())
                 .assertThat().body("templates", hasSize(2))
-                .assertThat().body("templates[0].info.title", equalTo("title2"));
+                .assertThat().body("templates[0].info.title", equalTo("title2"))
+                .assertThat().body("templates[0].isCreator", equalTo(false))
+                .assertThat().body("templates[1].info.title", equalTo("title1"))
+                .assertThat().body("templates[1].isCreator", equalTo(true));
 
         }
 
@@ -165,8 +168,10 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             // when, then
             get("/api/templates?filter=trend", accessToken1).statusCode(HttpStatus.OK.value())
                 .assertThat().body("templates", hasSize(3))
-                .assertThat().body("templates[0].info.title", equalTo("title2"));
-
+                .assertThat().body("templates[0].info.title", equalTo("title2"))
+                .assertThat().body("templates[0].isCreator", equalTo(false))
+                .assertThat().body("templates[1].info.title", equalTo("title1"))
+                .assertThat().body("templates[1].isCreator", equalTo(true));
         }
 
         @Test
@@ -182,8 +187,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
     class findTemplate {
 
         @Test
-        @DisplayName("특정 템플릿을 조회한다.")
-        void findTemplate() {
+        @DisplayName("자신이 만든 특정 템플릿을 조회한다.")
+        void findTemplateCreatedByMe() {
             //given
             long templateId = saveTemplateAndGetId(accessToken1);
 
@@ -192,7 +197,23 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
                 .assertThat()
                 .body("info.id", notNullValue())
                 .body("info.title", equalTo("title"))
-                .body("questions", hasSize(2));
+                .body("questions", hasSize(2))
+                .body("isCreator", equalTo(true));
+        }
+
+        @Test
+        @DisplayName("타인이 만든 특정 템플릿을 조회한다.")
+        void findTemplateCreatedBySomeone() {
+            //given
+            long templateId = saveTemplateAndGetId(accessToken1);
+
+            // when, then
+            get("/api/templates/" + templateId, accessToken2).statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .body("info.id", notNullValue())
+                .body("info.title", equalTo("title"))
+                .body("questions", hasSize(2))
+                .body("isCreator", equalTo(false));
         }
 
         @Test
@@ -251,20 +272,39 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             post("/api/templates", request3, accessToken1);
 
             // find memberInfo
-            MemberResponse member = get("/api/members/1", accessToken1)
+            String member1SocialId = get("/api/members/me", accessToken1)
                 .extract()
-                .as(MemberResponse.class);
+                .as(MemberResponse.class)
+                .getSocialId();
 
             // when, then
-            MemberTemplatesResponse memberTemplatesResponse = get("/api/templates?member=" + member.getSocialId(), accessToken1)
+            MemberTemplatesResponse member1TemplatesResponse = get("/api/templates?member=" + member1SocialId,
+                accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(MemberTemplatesResponse.class);
 
+            MemberTemplatesResponse member2TemplatesResponse = get("/api/templates?member=" + member1SocialId,
+                accessToken2)
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(MemberTemplatesResponse.class);
+
+            // accessToken1
             assertAll(
-                () -> assertThat(memberTemplatesResponse.getNumberOfTemplates()).isEqualTo(2),
-                () -> assertThat(memberTemplatesResponse.getTemplates()).hasSize(2),
-                () -> assertThat(memberTemplatesResponse.getTemplates().get(0).getInfo().getTitle())
+                () -> assertThat(member1TemplatesResponse.getNumberOfTemplates()).isEqualTo(2),
+                () -> assertThat(member1TemplatesResponse.getTemplates()).hasSize(2),
+                () -> assertThat(member1TemplatesResponse.getIsMine()).isTrue(),
+                () -> assertThat(member1TemplatesResponse.getTemplates().get(0).getInfo().getTitle())
+                    .isEqualTo(templateTitle3)
+            );
+
+            // accessToken2
+            assertAll(
+                () -> assertThat(member2TemplatesResponse.getNumberOfTemplates()).isEqualTo(2),
+                () -> assertThat(member2TemplatesResponse.getTemplates()).hasSize(2),
+                () -> assertThat(member2TemplatesResponse.getIsMine()).isFalse(),
+                () -> assertThat(member2TemplatesResponse.getTemplates().get(0).getInfo().getTitle())
                     .isEqualTo(templateTitle3)
             );
 
