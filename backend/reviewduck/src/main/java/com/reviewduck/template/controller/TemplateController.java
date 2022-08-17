@@ -106,7 +106,7 @@ public class TemplateController {
     public MyTemplatesResponse findByMemberId(@AuthenticationPrincipal Member member,
         @RequestParam(value = "member") String id) {
 
-        info("/api/templates/me?member=" + id, "GET", "");
+        info("/api/templates?member=" + id, "GET", "");
 
         List<Template> templates = templateService.findBySocialId(id);
 

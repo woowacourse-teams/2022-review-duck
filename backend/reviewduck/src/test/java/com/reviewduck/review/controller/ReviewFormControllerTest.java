@@ -97,10 +97,22 @@ public class ReviewFormControllerTest {
         void emptyQuestionValue(String question) throws Exception {
             // given
             ReviewFormCreateRequest request = new ReviewFormCreateRequest("title",
-                List.of(new ReviewFormQuestionCreateRequest(question)));
+                List.of(new ReviewFormQuestionCreateRequest(question, "description")));
 
             // when, then
             assertBadRequestFromPost("/api/review-forms", request, "회고 폼의 질문은 비어있을 수 없습니다.");
+        }
+
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("회고 질문에 빈 값이 들어갈 경우 예외가 발생한다.")
+        void nullQuestionDescription(String description) throws Exception {
+            // given
+            ReviewFormCreateRequest request = new ReviewFormCreateRequest("title",
+                List.of(new ReviewFormQuestionCreateRequest("question", description)));
+
+            // when, then
+            assertBadRequestFromPost("/api/review-forms", request, "회고 폼의 질문 설명 생성시 문제가 발생했습니다.");
         }
 
     }
@@ -192,10 +204,22 @@ public class ReviewFormControllerTest {
         void emptyQuestionValue(String questionValue) throws Exception {
             // given
             ReviewFormUpdateRequest request = new ReviewFormUpdateRequest("new title",
-                List.of(new ReviewFormQuestionUpdateRequest(1L, questionValue)));
+                List.of(new ReviewFormQuestionUpdateRequest(1L, questionValue, "new description")));
 
             // when, then
             assertBadRequestFromPut("/api/review-forms/" + invalidCode, request, "회고 폼의 질문은 비어있을 수 없습니다.");
+        }
+
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("질문이 비어있을 경우 예외가 발생한다.")
+        void emptyQuestionDescription(String questionDescription) throws Exception {
+            // given
+            ReviewFormUpdateRequest request = new ReviewFormUpdateRequest("new title",
+                List.of(new ReviewFormQuestionUpdateRequest(1L, "questionValue", questionDescription)));
+
+            // when, then
+            assertBadRequestFromPut("/api/review-forms/" + invalidCode, request, "회고 폼의 질문 설명 수정시 문제가 발생했습니다.");
         }
 
     }

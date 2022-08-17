@@ -106,10 +106,22 @@ public class TemplateControllerTest {
         void nullQuestionValue(String value) throws Exception {
             // given
             TemplateCreateRequest request = new TemplateCreateRequest("title", "description",
-                List.of(new TemplateQuestionCreateRequest(value)));
+                List.of(new TemplateQuestionCreateRequest(value, "")));
 
             // when, then
             assertBadRequestFromPost("/api/templates", request, "템플릿의 질문 목록 생성 중 오류가 발생했습니다.");
+        }
+
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("질문 설명에 null 값이 들어갈 경우 예외가 발생한다.")
+        void nullQuestionDescription(String description) throws Exception {
+            // given
+            TemplateCreateRequest request = new TemplateCreateRequest("title", "description",
+                List.of(new TemplateQuestionCreateRequest("value", description)));
+
+            // when, then
+            assertBadRequestFromPost("/api/templates", request, "템플릿의 질문 설명 생성 중 오류가 발생했습니다.");
         }
 
     }
@@ -193,10 +205,22 @@ public class TemplateControllerTest {
         void nullQuestionValue(String value) throws Exception {
             // given
             TemplateCreateRequest request = new TemplateCreateRequest("title", "description",
-                List.of(new TemplateQuestionCreateRequest(value)));
+                List.of(new TemplateQuestionCreateRequest(value, "")));
 
             // when, then
             assertBadRequestFromPut("/api/templates/" + 1L, request, "템플릿의 질문 수정 중 오류가 발생했습니다.");
+        }
+
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("질문 설명에 null 값이 들어갈 경우 예외가 발생한다.")
+        void nullQuestionDescription(String description) throws Exception {
+            // given
+            TemplateCreateRequest request = new TemplateCreateRequest("title", "description",
+                List.of(new TemplateQuestionCreateRequest("value", description)));
+
+            // when, then
+            assertBadRequestFromPut("/api/templates/" + 1L, request, "템플릿의 질문 설명 수정 중 오류가 발생했습니다.");
         }
 
     }
