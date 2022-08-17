@@ -1,18 +1,19 @@
 import { useState, useEffect } from 'react';
-import { flushSync } from 'react-dom';
 import { useNavigate, useParams, Link, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
 
+import { Question } from 'service/@shared/types';
+
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/review/hooks/useQuestions';
 
-import { getErrorMessage, setFormFocus } from 'service/@shared/utils';
+import { getErrorMessage } from 'service/@shared/utils';
 
-import { Button, Icon, Logo, TextBox } from 'common/components';
+import { Button, FlexContainer, Icon, Logo, TextBox } from 'common/components';
 
 import QuestionCard from 'service/@shared/components/QuestionCard';
-import QuestionEditor from 'service/review/components/QuestionEditor';
+import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
 
 import styles from './styles.module.scss';
 
@@ -35,8 +36,8 @@ function ReviewFormEditorPage() {
   } = useReviewFormEditor(reviewFormCode);
 
   const [reviewFormTitle, setReviewTitle] = useState(initialReviewForm.title);
-  const { questions, addQuestion, removeQuestion, updateQuestion, removeBlankQuestions } =
-    useQuestions(initialReviewForm.questions);
+  const { removeBlankQuestions } = useQuestions();
+  const [questions, setQuestion] = useState(initialReviewForm.questions);
 
   const { showSnackbar } = useSnackbar();
   const redirectUri = searchParams.get('redirect');
@@ -52,36 +53,9 @@ function ReviewFormEditorPage() {
     setReviewTitle(target.value);
   };
 
-  const handleAddQuestion = ({
-    currentTarget: $inputTarget,
-  }: React.MouseEvent | React.KeyboardEvent) => {
-    let questionIndex = null;
-
-    flushSync(() => {
-      questionIndex = addQuestion();
-    });
-
-    if (questionIndex === null) return;
-
-    setFormFocus($inputTarget as HTMLInputElement, questionIndex);
+  const handleChangeQuestions = (questions: Question[]) => {
+    setQuestion(questions);
   };
-
-  const handleUpdateQuestion = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedQuestion = { value: event.target.value };
-
-    updateQuestion(index, updatedQuestion);
-  };
-
-  const handleDeleteQuestion =
-    (index: number) =>
-    ({ currentTarget: $inputTarget }: React.MouseEvent | React.KeyboardEvent) => {
-      if (questions.length <= 1) return;
-
-      const previousInputIndex = index - 1;
-
-      removeQuestion(index);
-      setFormFocus($inputTarget as HTMLInputElement, previousInputIndex);
-    };
 
   const handleSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
@@ -133,7 +107,7 @@ function ReviewFormEditorPage() {
             (question, index) =>
               question.value && (
                 <QuestionCard
-                  key={question.key}
+                  key={index}
                   numbering={index + 1}
                   type="text"
                   title={question.value}
@@ -145,7 +119,7 @@ function ReviewFormEditorPage() {
       </div>
 
       <div>
-        <form className={cn(styles.container, styles.sticky, 'flex-container column')}>
+        <FlexContainer className={cn(styles.container, styles.sticky)} direction="column">
           <TextBox
             theme="underline"
             size="large"
@@ -154,18 +128,7 @@ function ReviewFormEditorPage() {
             onChange={handleChangeReviewTitle}
           />
 
-          <div className={cn(styles.itemContainer, 'flex-container column')}>
-            {questions.map((question, index) => (
-              <QuestionEditor
-                key={question.key}
-                numbering={index + 1}
-                value={question.value}
-                onChange={handleUpdateQuestion(index)}
-                onAddQuestion={handleAddQuestion}
-                onDeleteQuestion={handleDeleteQuestion(index)}
-              />
-            ))}
-          </div>
+          <QuestionsEditor initialQuestions={questions} onUpdate={handleChangeQuestions} />
 
           <div className={cn('button-container horizontal')}>
             <Button theme="outlined" onClick={handleCancel}>
@@ -178,7 +141,7 @@ function ReviewFormEditorPage() {
               <span>{isNewReviewForm ? '생성하기' : '수정하기'}</span>
             </Button>
           </div>
-        </form>
+        </FlexContainer>
       </div>
     </>
   );
