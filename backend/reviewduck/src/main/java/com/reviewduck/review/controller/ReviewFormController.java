@@ -35,7 +35,6 @@ import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -62,7 +61,7 @@ public class ReviewFormController {
     @PostMapping(params = "templateId")
     @ResponseStatus(HttpStatus.CREATED)
     public ReviewFormCodeResponse createReviewFormByTemplate(@AuthenticationPrincipal Member member,
-        @Parameter(required = true) @RequestParam Long templateId,
+        @RequestParam Long templateId,
         @RequestBody @Valid ReviewFormCreateRequest request) {
 
         info("/api/review-forms?templateId=" + templateId, "POST", request.toString());
