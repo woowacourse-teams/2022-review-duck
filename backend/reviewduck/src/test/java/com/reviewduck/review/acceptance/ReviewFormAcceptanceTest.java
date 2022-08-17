@@ -240,7 +240,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("개인이 생성한 회고 폼 조회")
+    @DisplayName("사용자가 생성한 회고 폼 조회")
     class findReviewFormsByMember {
 
         @Test

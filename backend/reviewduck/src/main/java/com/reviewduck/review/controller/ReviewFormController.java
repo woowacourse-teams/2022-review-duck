@@ -94,7 +94,7 @@ public class ReviewFormController {
         return ReviewFormResponse.of(reviewForm, member);
     }
 
-    @Operation(summary = "특정 멤버가 작성한 회고 폼을 모두 조회한다.")
+    @Operation(summary = "사용자가 작성한 회고 폼을 모두 조회한다.")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public MemberReviewFormsResponse findReviewFormsBySocialId(@AuthenticationPrincipal Member member,

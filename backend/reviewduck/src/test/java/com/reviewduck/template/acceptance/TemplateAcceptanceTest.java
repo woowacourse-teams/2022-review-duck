@@ -172,8 +172,6 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
                 .assertThat().body("templates[0].isCreator", equalTo(false))
                 .assertThat().body("templates[1].info.title", equalTo("title1"))
                 .assertThat().body("templates[1].isCreator", equalTo(true));
-            ;
-
         }
 
         @Test

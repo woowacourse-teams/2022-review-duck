@@ -156,7 +156,7 @@ public class ReviewServiceTest {
     }
 
     @Nested
-    @DisplayName("개인이 생성한 회고 조회")
+    @DisplayName("사용자가 생성한 회고 조회")
     class findMemberReview {
 
         @Test

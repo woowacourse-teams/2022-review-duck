@@ -81,7 +81,7 @@ public class ReviewRepositoryTest {
     }
 
     @Test
-    @DisplayName("개인이 작성한 회고를 updatedAt 내림차순으로 정렬하여 조회한다.")
+    @DisplayName("사용자가 작성한 회고를 updatedAt 내림차순으로 정렬하여 조회한다.")
     void findMemberReviewsOrderByUpdatedAtDesc() throws InterruptedException {
         // given
         saveReview(savedMember, savedReviewForm);
