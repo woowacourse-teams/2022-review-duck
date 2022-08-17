@@ -57,6 +57,19 @@ public class ReviewFormController {
         return ReviewFormCodeResponse.from(reviewForm);
     }
 
+    @Operation(summary = "템플릿을 기반으로 작성된 후 수정된 회고 폼을 생성한다.")
+    @PostMapping(params = "templateId")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReviewFormCodeResponse createReviewFormByTemplate(@AuthenticationPrincipal Member member,
+        @RequestParam Long templateId,
+        @RequestBody @Valid ReviewFormCreateRequest request) {
+
+        info("/api/review-forms?templateId=" + templateId, "POST", request.toString());
+
+        ReviewForm reviewForm = reviewFormService.saveFromTemplate(member, templateId, request);
+        return ReviewFormCodeResponse.from(reviewForm);
+    }
+
     @Operation(summary = "회고 답변을 생성한다.")
     @PostMapping("/{reviewFormCode}")
     @ResponseStatus(HttpStatus.CREATED)

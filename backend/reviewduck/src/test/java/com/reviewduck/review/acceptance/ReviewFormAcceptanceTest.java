@@ -28,6 +28,9 @@ import com.reviewduck.review.dto.response.MyReviewFormsResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
 import com.reviewduck.review.dto.response.ReviewResponse;
+import com.reviewduck.template.dto.request.TemplateCreateRequest;
+import com.reviewduck.template.dto.request.TemplateQuestionCreateRequest;
+import com.reviewduck.template.dto.response.TemplateIdResponse;
 
 public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
@@ -84,6 +87,51 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             post("/api/review-forms", request).statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
+    }
+
+    @Nested
+    @DisplayName("템플릿을 기반으로 작성된 후 수정된 회고 폼을 생성")
+    class createReviewFormByTemplate {
+
+        @Test
+        void createReviewFormByTemplate() {
+            // given
+            // create template
+            String templateTitle = "template title";
+            String templateDescription = "template description";
+            List<TemplateQuestionCreateRequest> templateQuestions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
+            TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
+                templateQuestions);
+
+            Long templateId = post("/api/templates", templateCreateRequest, accessToken1)
+                .extract()
+                .as(TemplateIdResponse.class)
+                .getTemplateId();
+
+            // when
+            String reviewTitle = "title";
+            List<ReviewFormQuestionCreateRequest> questions = List.of(
+                new ReviewFormQuestionCreateRequest("question3", "description3"),
+                new ReviewFormQuestionCreateRequest("question4", "description4"));
+            ReviewFormCreateRequest reviewFormCreateRequest = new ReviewFormCreateRequest(reviewTitle, questions);
+
+            // then
+            post("/api/review-forms?templateId=" + templateId, reviewFormCreateRequest, accessToken1)
+                .statusCode(HttpStatus.CREATED.value())
+                .assertThat().body("reviewFormCode", notNullValue());
+        }
+
+        @Test
+        @DisplayName("로그인하지 않은 상태로 생성할 수 없다.")
+        void withoutLogin() {
+            // given
+            ReviewFormCreateRequest request = new ReviewFormCreateRequest("title", List.of());
+
+            // when, then
+            post("/api/review-forms?templateId=1", request).statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
     }
 
     @Nested
