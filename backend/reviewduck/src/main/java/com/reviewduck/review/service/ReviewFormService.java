@@ -44,7 +44,7 @@ public class ReviewFormService {
     @Transactional
     public ReviewForm saveFromTemplate(Member member, Long templateId) {
         Template template = templateService.findById(templateId);
-        template.increaseUsedCount();
+        templateService.increaseUsedCount(templateId);
 
         List<ReviewFormQuestion> questions = template.getQuestions().stream()
             .map(question -> reviewFormQuestionService.save(question.getValue(), question.getDescription()))
