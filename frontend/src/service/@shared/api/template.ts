@@ -3,6 +3,9 @@ import {
   GetTemplateResponse,
   CreateFormResponse,
   TemplateFilterType,
+  CreateTemplateRequest,
+  CreateTemplateResponse,
+  UpdateTemplateRequest,
 } from '../types/template';
 
 import axiosInstance from './config/axiosInstance';
@@ -25,8 +28,23 @@ const createForm = async (templateId: number): Promise<CreateFormResponse> => {
   return data;
 };
 
-const updateTemplate = async (templateId: number): Promise<null> => {
-  const { data } = await axiosInstance.put(`/api/templates/${templateId}`);
+const createTemplate = async (query: CreateTemplateRequest): Promise<CreateTemplateResponse> => {
+  const { data } = await axiosInstance.post('/api/templates', query);
+
+  return data;
+};
+
+const updateTemplate = async ({
+  templateId,
+  templateTitle,
+  templateDescription,
+  questions,
+}: UpdateTemplateRequest): Promise<null> => {
+  const { data } = await axiosInstance.put(`/api/templates/${templateId}`, {
+    templateTitle,
+    templateDescription,
+    questions,
+  });
 
   return data;
 };
@@ -41,6 +59,7 @@ const templateAPI = {
   getTemplates,
   getTemplate,
   createForm,
+  createTemplate,
   updateTemplate,
   deleteTemplate,
 };

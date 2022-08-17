@@ -1,4 +1,7 @@
+import { Question } from './review';
+
 export interface Template {
+  isCreator?: boolean;
   info: {
     id: number;
     title: string;
@@ -15,20 +18,28 @@ export interface Template {
   };
 }
 
+export interface CreateTemplateRequest {
+  templateTitle: string;
+  templateDescription: string;
+  questions: Question[];
+}
+
 export interface GetTemplatesResponse {
   templates: Template[];
 }
 
 export interface GetTemplateResponse extends Template {
-  questions: Array<{
-    id: number;
-    value: string;
-    description: string;
-  }>;
+  questions: Question[];
 }
 
 export interface CreateFormResponse {
   reviewFormCode: string;
 }
+
+export interface CreateTemplateResponse {
+  templateId: number;
+}
+
+export type UpdateTemplateRequest = CreateTemplateResponse & CreateTemplateRequest;
 
 export type TemplateFilterType = 'trend' | 'latest';
