@@ -34,10 +34,12 @@ function useReviewFormEditor(reviewFormCode: string) {
     questions: [
       {
         value: '',
+        description: '',
       },
     ],
     info: {
       creator: {
+        id: -1,
         profileUrl: '',
         nickname: '알 수 없음',
       },
