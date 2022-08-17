@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { flushSync } from 'react-dom';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
@@ -9,13 +8,13 @@ import { Question } from 'service/@shared/types/review';
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/@shared/hooks/useQuestions';
 
-import { getErrorMessage, setFormFocus } from 'service/@shared/utils';
+import { getErrorMessage } from 'service/@shared/utils';
 
 import { Button, Icon, Logo, TextBox, Text, Textarea, FieldSet } from 'common/components';
 
 import QuestionCard from 'service/@shared/components/QuestionCard';
+import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
 import SmallProfileCard from 'service/@shared/components/SmallProfileCard';
-import QuestionEditor from 'service/review/components/QuestionEditor';
 
 import styles from './styles.module.scss';
 
@@ -35,8 +34,8 @@ function TemplateFormEditorPage() {
 
   const [title, setTitle] = useState(template.info.title);
   const [description, setDescription] = useState(template.info.description);
-  const { questions, addQuestion, removeQuestion, updateQuestion, removeBlankQuestions } =
-    useQuestions(template.questions);
+  const [questions, setQuestions] = useState(template.questions);
+  const { removeBlankQuestions } = useQuestions();
 
   const { showSnackbar } = useSnackbar();
   const redirectUri = searchParams.get('redirect');
@@ -60,36 +59,9 @@ function TemplateFormEditorPage() {
     setDescription(target.value);
   };
 
-  const handleAddQuestion = ({
-    currentTarget: $inputTarget,
-  }: React.MouseEvent | React.KeyboardEvent) => {
-    let questionIndex = null;
-
-    flushSync(() => {
-      questionIndex = addQuestion({ currentIndex: 0 });
-    });
-
-    if (questionIndex === null) return;
-
-    setFormFocus($inputTarget as HTMLInputElement, questionIndex);
+  const handleChangeQuestions = (questions: Question[]) => {
+    setQuestions(questions);
   };
-
-  const handleUpdateQuestion = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedQuestion = { value: event.target.value };
-
-    updateQuestion(index, updatedQuestion);
-  };
-
-  const handleDeleteQuestion =
-    (index: number) =>
-    ({ currentTarget: $inputTarget }: React.MouseEvent | React.KeyboardEvent) => {
-      if (questions.length <= 1) return;
-
-      const previousInputIndex = index - 1;
-
-      removeQuestion(index);
-      setFormFocus($inputTarget as HTMLInputElement, previousInputIndex);
-    };
 
   const handleSubmitSuccess = ({ reviewFormCode }: Record<'reviewFormCode', string>) => {
     showSnackbar({
@@ -193,7 +165,7 @@ function TemplateFormEditorPage() {
             (question, index) =>
               question.value && (
                 <QuestionCard
-                  key={question.key}
+                  key={index}
                   numbering={index + 1}
                   type="text"
                   title={question.value}
@@ -205,7 +177,7 @@ function TemplateFormEditorPage() {
       </div>
 
       <div>
-        <form className={cn(styles.container, styles.sticky, 'flex-container column')}>
+        <div className={cn(styles.container, styles.sticky, 'flex-container column')}>
           <TextBox
             theme="underline"
             size="large"
@@ -228,18 +200,7 @@ function TemplateFormEditorPage() {
             </>
           )}
 
-          <div className={cn(styles.itemContainer, 'flex-container column')}>
-            {questions.map((question, index) => (
-              <QuestionEditor
-                key={question.key}
-                numbering={index + 1}
-                value={question.value}
-                onChange={handleUpdateQuestion(index)}
-                onAddQuestion={handleAddQuestion}
-                onDeleteQuestion={handleDeleteQuestion(index)}
-              />
-            ))}
-          </div>
+          <QuestionsEditor initialQuestions={questions} onUpdate={handleChangeQuestions} />
 
           <div className={cn('button-container horizontal')}>
             <Button theme="outlined" onClick={handleCancel}>
@@ -252,7 +213,7 @@ function TemplateFormEditorPage() {
               <span>생성하기</span>
             </Button>
           </div>
-        </form>
+        </div>
       </div>
     </>
   );
