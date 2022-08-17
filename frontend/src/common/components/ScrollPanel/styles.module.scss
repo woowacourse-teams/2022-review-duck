@@ -18,11 +18,15 @@
 
 .correct-screen {
   position: relative;
-  transform: translateX(calc(max(100vw, 1024px) / 2 - 524px));
-  white-space: nowrap;
+  display: flex;
+  flex-direction: row;
+
+  &:not(.disabled) {
+    transform: translateX(calc(max(100vw, 1024px) / 2 - 524px));
+  }
 
   > * {
-    display: inline-block;
+    flex-shrink: 0;
     scroll-snap-align: end;
   }
 }
@@ -76,6 +80,10 @@
 
   &:hover .control-button:active {
     transform: scale(1.2);
+  }
+
+  &.hidden {
+    visibility: hidden;
   }
 
   &.hidden .control-button {
