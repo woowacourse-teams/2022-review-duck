@@ -1,16 +1,15 @@
 const PAGE_LIST = {
   HOME: '/',
-  REVIEW_FORM: '/review-form',
+  REVIEW_FORM: '/review/form',
   REVIEW: '/review',
-  REVIEW_JOIN: '/review/join',
   REVIEW_OVERVIEW: '/overview',
   AUTHORIZE: '/authorize',
   MY_PAGE: '/mypage',
   LOGOUT: '/logout',
   TEMPLATE_LIST: '/template/list',
-  TEMPLATE_RECENT: '/recent',
   TEMPLATE_DETAIL: '/template/view',
   TEMPLATE_FORM: '/template/review-form',
+  USER_PROFILE: '/profile',
 };
 
 const MODAL_LIST = {
