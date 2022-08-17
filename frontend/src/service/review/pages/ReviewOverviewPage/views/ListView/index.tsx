@@ -5,7 +5,11 @@ import cn from 'classnames';
 
 import { ReviewFormAnswer } from 'service/@shared/types';
 
+import useSnackbar from 'common/hooks/useSnackbar';
+
 import { Text, FlexContainer, Button, Icon, TextBox } from 'common/components';
+
+import ScrollPanel from 'common/components/ScrollPanel';
 
 import styles from './styles.module.scss';
 
@@ -44,9 +48,7 @@ const ParticipantList = ({ children }: ParticipantListProps) => {
         </Text>
       </div>
 
-      <FlexContainer className={styles.profileList} direction="row" gap="small">
-        {children}
-      </FlexContainer>
+      <ScrollPanel centerDisabled={true}>{children}</ScrollPanel>
     </FlexContainer>
   );
 };
@@ -73,8 +75,8 @@ type FormDetailProps = ContainerProps;
 
 const FormDetail = ({ children }: FormDetailProps) => {
   return (
-    <FlexContainer className={styles.cardBox} gap="medium">
-      <Text className={styles.formDetailTitle} size={20} weight="bold">
+    <FlexContainer className={cn(styles.cardBox, styles.formDetail)}>
+      <Text size={20} weight="bold">
         회고 정보
       </Text>
 
@@ -85,7 +87,7 @@ const FormDetail = ({ children }: FormDetailProps) => {
 
 interface InfoTextProps {
   name: string;
-  children: string;
+  children?: React.ReactNode;
 }
 
 const InfoText = ({ name, children }: InfoTextProps) => {
@@ -111,7 +113,7 @@ const JoinButton = ({ reviewFormCode }: JoinButtonProps) => {
     <Link to={`${PAGE_LIST.REVIEW}/${reviewFormCode}`}>
       <Button className={styles.formAnswerJoinButton} theme="outlined">
         <Icon code="group_add" />
-        <span>이 회고에 참여하기</span>
+        <span>이 회고에 기록하기</span>
       </Button>
     </Link>
   );
@@ -122,7 +124,25 @@ interface FormCopyLink {
 }
 
 const FormCopyLink = ({ reviewFormCode }: FormCopyLink) => {
-  const linkInpuRef = useRef<HTMLInputElement>(null);
+  const linkInputRef = useRef<HTMLInputElement>(null);
+  const { showSnackbar } = useSnackbar();
+
+  const handleCopyInviteLink = async () => {
+    const $copyLink = linkInputRef.current;
+
+    if (!$copyLink) return;
+
+    try {
+      await navigator.clipboard.writeText($copyLink.value);
+      showSnackbar({
+        icon: 'done',
+        title: '참여 링크를 클립보드에 복사했습니다.',
+        description: '함께 회고할 팀원들에게 공유해주세요.',
+      });
+    } catch (e) {
+      alert('링크 복사에 실패했습니다.');
+    }
+  };
 
   return (
     <FlexContainer className={styles.formCopyLink} gap="small">
@@ -130,14 +150,14 @@ const FormCopyLink = ({ reviewFormCode }: FormCopyLink) => {
 
       <div className={styles.copyBox}>
         <TextBox
-          ref={linkInpuRef}
+          ref={linkInputRef}
           className={styles.copyInfo}
           size="small"
           value={`${location.origin}/overview/${reviewFormCode}`}
           readOnly
         />
 
-        <Text size={12} className={styles.copyText}>
+        <Text size={12} className={styles.copyText} element="div" onClick={handleCopyInviteLink}>
           복사
         </Text>
       </div>

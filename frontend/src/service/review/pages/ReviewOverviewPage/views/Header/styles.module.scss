@@ -1,21 +1,25 @@
 @import 'styles/@global.scss';
 
 .header {
-  position: sticky;
-  top: 0;
-  width: 100%;
-  background-color: rgba(243, 243, 243, 0.5); // TODO: 상수 처리
-  backdrop-filter: blur(0.6rem); // TODO: 상수 처리
-  border-top: 5px solid $THEME_COLOR_STATUS_PRIMARY_500; // TODO: 스크롤에 따라 Progress 처리
+  height: 6.5rem;
 
-  z-index: 5;
+  .fixedContainer {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: rgba(243, 243, 243, 0.5); // TODO: 상수 처리
+    backdrop-filter: blur(0.6rem); // TODO: 상수 처리
+    border-top: 5px solid $THEME_COLOR_STATUS_PRIMARY_500; // TODO: 스크롤에 따라 Progress 처리
 
-  .menu-bar {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    border-bottom: 1px solid $THEME_COLOR_STATUS_PRIMARY_100;
-    padding: 1.5rem 1rem;
+    z-index: 5;
+
+    .menu-bar {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      border-bottom: 1px solid $THEME_COLOR_STATUS_PRIMARY_100;
+      padding: 1.5rem 1rem;
+    }
   }
 }
 
