@@ -82,9 +82,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
             // delete question2 and add question4 of reviewForm
             List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
-                new ReviewFormQuestionUpdateRequest(1L, "new question1"),
-                new ReviewFormQuestionUpdateRequest(3L, "new question3"),
-                new ReviewFormQuestionUpdateRequest(null, "new question4"));
+                new ReviewFormQuestionUpdateRequest(1L, "new question1","new description1"),
+                new ReviewFormQuestionUpdateRequest(3L, "new question3","new description3"),
+                new ReviewFormQuestionUpdateRequest(null, "new question4","new description4"));
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateQuestions);
             put("/api/review-forms/" + code, updateRequest, accessToken1);
 

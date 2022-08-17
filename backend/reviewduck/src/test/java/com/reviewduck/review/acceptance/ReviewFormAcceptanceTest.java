@@ -275,7 +275,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             String newReviewTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
-                new ReviewFormQuestionUpdateRequest(1L, "new question1"));
+                new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
 
             put("/api/review-forms/" + code, updateRequest, accessToken1);
@@ -368,7 +368,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             String newReviewTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
-                new ReviewFormQuestionUpdateRequest(1L, "new question1"));
+                new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
 
             put("/api/review-forms/" + code, updateRequest, accessToken1);
@@ -458,7 +458,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             // when, then
             String newReviewTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
-                new ReviewFormQuestionUpdateRequest(1L, "new question1"));
+                new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
 
             put("/api/review-forms/" + createReviewFormCode, updateRequest, accessToken1)
@@ -473,7 +473,8 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(getResponse.getReviewFormTitle()).isEqualTo(newReviewTitle),
                 () -> assertThat(getResponse.getQuestions()).hasSize(1),
                 () -> assertThat(getResponse.getQuestions().get(0).getId()).isEqualTo(1L),
-                () -> assertThat(getResponse.getQuestions().get(0).getValue()).isEqualTo("new question1")
+                () -> assertThat(getResponse.getQuestions().get(0).getValue()).isEqualTo("new question1"),
+                () -> assertThat(getResponse.getQuestions().get(0).getDescription()).isEqualTo("new description1")
             );
         }
 
@@ -486,7 +487,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             // when, then
             String newReviewTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
-                new ReviewFormQuestionUpdateRequest(1L, "new question1"));
+                new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
 
             put("/api/review-forms/" + createReviewFormCode, updateRequest)
@@ -499,7 +500,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             // when, then
             String newReviewTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
-                new ReviewFormQuestionUpdateRequest(1L, "new question1"));
+                new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
 
             put("/api/review-forms/aaaaaaaa", updateRequest, accessToken1)
@@ -515,7 +516,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             // when, then
             String newReviewTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
-                new ReviewFormQuestionUpdateRequest(1L, "new question1"));
+                new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
 
             // then

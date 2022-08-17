@@ -252,13 +252,13 @@ public class ReviewFormServiceTest {
             // when
             String reviewTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateRequests = List.of(
-                new ReviewFormQuestionUpdateRequest(questionId, "new question1"),
-                new ReviewFormQuestionUpdateRequest(null, "new question3"));
+                new ReviewFormQuestionUpdateRequest(questionId, "new question1", "new description1"),
+                new ReviewFormQuestionUpdateRequest(null, "new question3", "new description3"));
 
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateRequests);
 
             List<ReviewFormQuestion> expected = updateRequests.stream()
-                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(), ""))
+                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(), questionRequest.getDescription()))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -293,8 +293,8 @@ public class ReviewFormServiceTest {
             // when
             String reviewTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateRequests = List.of(
-                new ReviewFormQuestionUpdateRequest(questionId, "new question1"),
-                new ReviewFormQuestionUpdateRequest(null, "new question3"));
+                new ReviewFormQuestionUpdateRequest(questionId, "new question1", "new description1"),
+                new ReviewFormQuestionUpdateRequest(null, "new question3", "new description3"));
 
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateRequests);
 
@@ -317,9 +317,9 @@ public class ReviewFormServiceTest {
         void updateReviewFormByInvalidCode() {
             // when
             List<ReviewFormQuestionUpdateRequest> updateRequests = List.of(
-                new ReviewFormQuestionUpdateRequest(1L, "new question1"),
-                new ReviewFormQuestionUpdateRequest(null, "new question3"),
-                new ReviewFormQuestionUpdateRequest(2L, "new question2"));
+                new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"),
+                new ReviewFormQuestionUpdateRequest(null, "new question3", "new description3"),
+                new ReviewFormQuestionUpdateRequest(2L, "new question2", "new description2"));
 
             ReviewFormUpdateRequest reviewFormUpdateRequest = new ReviewFormUpdateRequest("new title", updateRequests);
 
@@ -336,7 +336,7 @@ public class ReviewFormServiceTest {
 
             // when, then
             List<ReviewFormQuestionUpdateRequest> updateRequests = List.of(
-                new ReviewFormQuestionUpdateRequest(9999999L, "new question"));
+                new ReviewFormQuestionUpdateRequest(9999999L, "new question", "new description"));
 
             assertThatThrownBy(
                 () -> reviewFormService.update(member1, code, new ReviewFormUpdateRequest("new title", updateRequests)))
