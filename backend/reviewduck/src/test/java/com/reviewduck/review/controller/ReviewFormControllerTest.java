@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
@@ -115,6 +116,19 @@ public class ReviewFormControllerTest {
             assertBadRequestFromPost("/api/review-forms", request, "회고 폼의 질문 설명 생성시 문제가 발생했습니다.");
         }
 
+    }
+
+    @Nested
+    @DisplayName("템플릿을 기반으로 작성된 후 수정된 회고 폼을 생성시")
+    class createReviewFormByTemplate {
+
+        @Test
+        @DisplayName("파라미터 값이 없을 경우 예외가 발생한다.")
+        void emptyTemplateId() throws Exception {
+            ReviewFormCreateRequest request = new ReviewFormCreateRequest("title", List.of());
+
+            assertBadRequestFromPost("/api/review-forms?templateId=", request, "파라미터 정보가 올바르지 않습니다.");
+        }
     }
 
     @Nested

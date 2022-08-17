@@ -67,12 +67,12 @@ public class ReviewFormServiceTest {
         @DisplayName("회고 폼을 생성한다.")
         void saveReviewForm() {
             // given
-            String reviewTitle = "title";
+            String reviewFormTitle = "title";
             List<ReviewFormQuestionCreateRequest> questions = List.of(
                 new ReviewFormQuestionCreateRequest("question1", "description1"),
                 new ReviewFormQuestionCreateRequest("question2", "description2"));
 
-            ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
+            ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewFormTitle, questions);
 
             List<ReviewFormQuestion> expected = questions.stream()
                 .map(questionRequest -> new ReviewFormQuestion(
@@ -94,7 +94,7 @@ public class ReviewFormServiceTest {
                 () -> assertThat(reviewForm.getId()).isNotNull(),
                 () -> assertThat(reviewForm.getMember().getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(reviewForm.getCode().length()).isEqualTo(8),
-                () -> assertThat(reviewForm.getTitle()).isEqualTo(reviewTitle),
+                () -> assertThat(reviewForm.getTitle()).isEqualTo(reviewFormTitle),
                 () -> assertThat(reviewForm.getReviewFormQuestions())
                     .usingRecursiveComparison()
                     .ignoringFields("id")
@@ -106,11 +106,11 @@ public class ReviewFormServiceTest {
 
     @Nested
     @DisplayName("템플릿 기반 회고폼 생성")
-    class saveReviewFormFromTemplate {
+    class saveReviewFormByTemplate {
 
         @Test
-        @DisplayName("템플릿을 기반으로 회고 폼을 생성한다.")
-        void saveReviewFormFromTemplate() {
+        @DisplayName("템플릿과 동일한 모양의 회고 폼을 생성한다.")
+        void saveFromTemplate_Same() {
             // when
             // 템플릿 생성
             String templateTitle = "title";
@@ -153,6 +153,59 @@ public class ReviewFormServiceTest {
 
         }
 
+        @Test
+        @DisplayName("템플릿과 동일하지 않은 모양의 회고 폼을 생성한다.")
+        void saveFromTemplate_Different() {
+            // given
+            // 템플릿 생성
+            String templateTitle = "title";
+            String templateDescription = "description";
+            List<TemplateQuestionCreateRequest> templateQuestions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
+
+            TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
+                templateQuestions);
+            Template savedTemplate = templateService.save(member1, templateRequest);
+
+            String reviewFormTitle = "title";
+            List<ReviewFormQuestionCreateRequest> reviewFromQuestions = List.of(
+                new ReviewFormQuestionCreateRequest("question3", "description3"),
+                new ReviewFormQuestionCreateRequest("question4", "description4"));
+
+            List<ReviewFormQuestion> expected = reviewFromQuestions.stream()
+                .map(request -> new ReviewFormQuestion(
+                    request.getValue(),
+                    request.getDescription()))
+                .collect(Collectors.toUnmodifiableList());
+
+            int index = 0;
+            for (ReviewFormQuestion reviewFormQuestion : expected) {
+                reviewFormQuestion.setPosition(index++);
+            }
+
+            // when
+            ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewFormTitle, reviewFromQuestions);
+            ReviewForm createdReviewForm = reviewFormService.saveFromTemplate(member1, savedTemplate.getId(),
+                createRequest);
+
+            // then
+            assertAll(
+                // save reviewForm
+                () -> assertThat(createdReviewForm).isNotNull(),
+                () -> assertThat(createdReviewForm.getId()).isNotNull(),
+                () -> assertThat(createdReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
+                () -> assertThat(createdReviewForm.getCode().length()).isEqualTo(8),
+                () -> assertThat(createdReviewForm.getTitle()).isEqualTo(reviewFormTitle),
+                () -> assertThat(createdReviewForm.getReviewFormQuestions())
+                    .usingRecursiveComparison()
+                    .ignoringFields("id")
+                    .isEqualTo(expected),
+                // usedCount ++
+                () -> assertThat(savedTemplate.getUsedCount()).isEqualTo(1)
+            );
+        }
+
     }
 
     @Nested
@@ -190,19 +243,19 @@ public class ReviewFormServiceTest {
         @Test
         @DisplayName("자신이 작성한 회고를 조회한다.")
         void findMyReviewForms() {
-            String reviewTitle1 = "title1";
+            String reviewFormTitle1 = "title1";
             List<ReviewFormQuestionCreateRequest> questions1 = List.of(
                 new ReviewFormQuestionCreateRequest("question1", "description1"),
                 new ReviewFormQuestionCreateRequest("question2", "description2"));
 
-            ReviewFormCreateRequest createRequest1 = new ReviewFormCreateRequest(reviewTitle1, questions1);
+            ReviewFormCreateRequest createRequest1 = new ReviewFormCreateRequest(reviewFormTitle1, questions1);
 
-            String reviewTitle2 = "title2";
+            String reviewFormTitle2 = "title2";
             List<ReviewFormQuestionCreateRequest> questions2 = List.of(
                 new ReviewFormQuestionCreateRequest("question3", "description3"),
                 new ReviewFormQuestionCreateRequest("question4", "description4"));
 
-            ReviewFormCreateRequest createRequest2 = new ReviewFormCreateRequest(reviewTitle2, questions2);
+            ReviewFormCreateRequest createRequest2 = new ReviewFormCreateRequest(reviewFormTitle2, questions2);
 
             List<ReviewFormQuestion> expected = questions1.stream()
                 .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(),
@@ -227,7 +280,7 @@ public class ReviewFormServiceTest {
                 () -> assertThat(myReviewForms.get(0).getMember().getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(myReviewForms.get(0).getId()).isNotNull(),
                 () -> assertThat(myReviewForms.get(0).getCode().length()).isEqualTo(8),
-                () -> assertThat(myReviewForms.get(0).getTitle()).isEqualTo(reviewTitle1),
+                () -> assertThat(myReviewForms.get(0).getTitle()).isEqualTo(reviewFormTitle1),
                 () -> assertThat(myReviewForms.get(0).getReviewFormQuestions())
                     .usingRecursiveComparison()
                     .ignoringFields("id")
@@ -250,12 +303,12 @@ public class ReviewFormServiceTest {
             Long questionId = savedReviewForm.getReviewFormQuestions().get(0).getId();
 
             // when
-            String reviewTitle = "new title";
+            String reviewFormTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateRequests = List.of(
                 new ReviewFormQuestionUpdateRequest(questionId, "new question1", "new description1"),
                 new ReviewFormQuestionUpdateRequest(null, "new question3", "new description3"));
 
-            ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateRequests);
+            ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewFormTitle, updateRequests);
 
             List<ReviewFormQuestion> expected = updateRequests.stream()
                 .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(),
@@ -275,7 +328,7 @@ public class ReviewFormServiceTest {
                 () -> assertThat(foundReviewForm.getId()).isNotNull(),
                 () -> assertThat(foundReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(foundReviewForm.getCode().length()).isEqualTo(8),
-                () -> assertThat(foundReviewForm.getTitle()).isEqualTo(reviewTitle),
+                () -> assertThat(foundReviewForm.getTitle()).isEqualTo(reviewFormTitle),
                 () -> assertThat(foundReviewForm.getReviewFormQuestions())
                     .usingRecursiveComparison()
                     .ignoringFields("id")
@@ -292,12 +345,12 @@ public class ReviewFormServiceTest {
             Long questionId = savedReviewForm.getReviewFormQuestions().get(0).getId();
 
             // when
-            String reviewTitle = "new title";
+            String reviewFormTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateRequests = List.of(
                 new ReviewFormQuestionUpdateRequest(questionId, "new question1", "new description1"),
                 new ReviewFormQuestionUpdateRequest(null, "new question3", "new description3"));
 
-            ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateRequests);
+            ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewFormTitle, updateRequests);
 
             List<ReviewFormQuestion> expected = updateRequests.stream()
                 .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(), ""))
