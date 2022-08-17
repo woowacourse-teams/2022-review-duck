@@ -60,7 +60,7 @@ module.exports = (env = {}, options = {}) => {
               loader: 'css-loader',
               options: {
                 modules: {
-                  localIdentName: '[local]--[hash:base64:5]',
+                  localIdentName: mode === 'development' ? '[local]--[hash:base64:5]' : '[hash:base64:5]',
                   exportLocalsConvention: 'camelCase',
                 },
               },

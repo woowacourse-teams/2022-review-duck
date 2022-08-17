@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 
-export type ErrorResponse = AxiosError<{ message: string }>;
+export type ErrorResponse = AxiosError<{ message: string }> | Error;
 
 export interface CreateRefreshTokenRequest {
   code: string;

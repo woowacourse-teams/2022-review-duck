@@ -1,23 +1,35 @@
-import { useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 
-import { Question } from 'service/@shared/types';
+import { Answer, Question } from 'service/@shared/types';
+
+import useUniqueKey from 'common/hooks/useUniqueKey';
+
+interface QuestionWithKey extends Question {
+  key?: number;
+}
 
 function useQuestions(initState?: Question[]) {
-  const [questions, setQuestions] = useState<Question[]>(initState || []);
-  const listKey = useRef(1);
+  const initialQuestion: QuestionWithKey[] = useMemo(
+    () => initState?.map((value, index) => ({ ...value, key: index })) || [],
+    [],
+  );
+
+  const [questions, setQuestions] = useState(initialQuestion);
+  const getUniqueKey = useUniqueKey(initialQuestion.length);
+
+  const answeredCount = questions.filter(({ answer }) => answer?.value).length;
+  const isAnswerComplete = questions.length === answeredCount;
 
   const addQuestion = (insertValue: Question): number => {
     const copiedQuestions = [...questions];
     const newQuestionIndex =
       copiedQuestions.push({
         ...insertValue,
-        questionId: null,
-        listKey: `list-${listKey.current}`,
+        key: getUniqueKey(),
       }) - 1;
 
-    listKey.current += 1;
-
     setQuestions(copiedQuestions);
+
     return newQuestionIndex;
   };
 
@@ -36,7 +48,38 @@ function useQuestions(initState?: Question[]) {
     setQuestions(copiedQuestions);
   };
 
-  return { addQuestion, removeQuestion, updateQuestion, questions };
+  const updateAnswer = (index: number, updateValue: Answer) => {
+    const copiedQuestions = [...questions];
+
+    const targetQuestion = questions[index];
+    const updateAnswer = { ...targetQuestion.answer, ...updateValue };
+
+    const newQuestion = { ...targetQuestion, answer: updateAnswer };
+
+    copiedQuestions.splice(index, 1, newQuestion);
+    setQuestions(copiedQuestions);
+  };
+
+  const removeBlankQuestions = (questions: QuestionWithKey[]) => {
+    const updateQuestion = questions.filter((question) => !!question.value?.trim());
+
+    return updateQuestion.map((question) => {
+      delete question.key;
+
+      return question;
+    });
+  };
+
+  return {
+    questions,
+    answeredCount,
+    isAnswerComplete,
+    addQuestion,
+    removeQuestion,
+    updateQuestion,
+    updateAnswer,
+    removeBlankQuestions,
+  };
 }
 
 export default useQuestions;
