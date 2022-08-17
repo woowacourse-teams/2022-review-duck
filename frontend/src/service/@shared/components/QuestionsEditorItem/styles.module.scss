@@ -1,0 +1,33 @@
+@import 'styles/@global.scss';
+
+.container {
+  display: grid;
+  grid-template-columns: minmax(auto, 5%) minmax(auto, 80%) minmax(5.5rem, auto);
+  gap: 5%;
+
+  .numbering {
+    display: flex;
+    align-items: center;
+    color: $THEME_COLOR_THEME_TEXT_400;
+  }
+
+  .question {
+    width: 100%;
+  }
+
+  .button {
+    background-color: $THEME_COLOR_STATUS_PRIMARY_500;
+  }
+
+  @include animation(0.2s ease) {
+    from {
+      opacity: 0;
+      transform: translateX(15%);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0%);
+    }
+  }
+}
