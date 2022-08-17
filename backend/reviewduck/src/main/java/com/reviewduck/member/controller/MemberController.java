@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,14 +29,17 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @Operation(summary = "본인의 사용자 정보를 조회한다.")
-    @GetMapping("/me")
+    @Operation(summary = "사용자 정보를 조회한다.")
+    @GetMapping("/{socialId}")
     @ResponseStatus(HttpStatus.OK)
-    public MemberResponse findMyMemberInfo(@AuthenticationPrincipal Member member) {
+    public MemberResponse findMemberInfo(@AuthenticationPrincipal Member member,
+        @PathVariable String socialId) {
 
-        info("/api/members/me", "GET", "");
+        info("/api/members/" + socialId, "GET", "");
 
-        return MemberResponse.from(member);
+        Member foundMember = memberService.getBySocialId(socialId);
+
+        return MemberResponse.of(foundMember, member);
     }
 
     @Operation(summary = "본인의 닉네임을 변경한다.")

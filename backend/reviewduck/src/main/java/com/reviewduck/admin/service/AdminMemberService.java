@@ -23,6 +23,11 @@ public class AdminMemberService {
         return memberRepository.findAll();
     }
 
+    public Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
+    }
+
     @Transactional
     public void deleteMemberById(Long memberId) {
         Member member = memberRepository.findById(memberId)

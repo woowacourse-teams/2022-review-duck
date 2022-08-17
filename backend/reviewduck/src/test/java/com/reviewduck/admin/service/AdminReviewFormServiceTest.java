@@ -92,8 +92,8 @@ public class AdminReviewFormServiceTest {
 
     private ReviewForm saveReviewForm(Member member) {
         List<ReviewFormQuestionCreateRequest> createRequests = List.of(
-            new ReviewFormQuestionCreateRequest("question1"),
-            new ReviewFormQuestionCreateRequest("question2"));
+            new ReviewFormQuestionCreateRequest("question1", "description1"),
+            new ReviewFormQuestionCreateRequest("question2", "description2"));
 
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest("title", createRequests);
 

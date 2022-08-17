@@ -56,13 +56,14 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("템플릿을 생성한다.")
-        void createTemplate() {
+        void createTemplate() throws InterruptedException {
             // given
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             List<TemplateQuestion> expected = convertRequestToQuestions(questions);
 
@@ -90,16 +91,22 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("템플릿을 조회한다.")
-        void findTemplate() {
+        void findTemplate() throws InterruptedException {
             // given
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             List<TemplateQuestion> expected = convertRequestToQuestions(questions);
-            Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
+            Template template = null;
+            try {
+                template = saveTemplate(member1, templateTitle, templateDescription, questions);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             // when
             Template foundTemplate = templateService.findById(template.getId());
@@ -134,16 +141,16 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("전체 템플릿을 최신순으로 조회한다.")
-        void findAllOrderByLatest() {
+        void findAllOrderByLatest() throws InterruptedException {
             // given
             // create template
             List<TemplateQuestionCreateRequest> questions1 = List.of(
-                new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             List<TemplateQuestionCreateRequest> questions2 = List.of(
-                new TemplateQuestionCreateRequest("question3"),
-                new TemplateQuestionCreateRequest("question4"));
+                new TemplateQuestionCreateRequest("question3", "description3"),
+                new TemplateQuestionCreateRequest("question4", "description4"));
 
             Template template1 = saveTemplate(member1, "title1", "description1", questions1);
             Template template2 = saveTemplate(member1, "title2", "description2", questions2);
@@ -167,16 +174,16 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("전체 템플릿을 사용순으로 조회한다.")
-        void findAllOrderByTrend() {
+        void findAllOrderByTrend() throws InterruptedException {
             // given
             // create template
             List<TemplateQuestionCreateRequest> questions1 = List.of(
-                new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             List<TemplateQuestionCreateRequest> questions2 = List.of(
-                new TemplateQuestionCreateRequest("question3"),
-                new TemplateQuestionCreateRequest("question4"));
+                new TemplateQuestionCreateRequest("question3", "description3"),
+                new TemplateQuestionCreateRequest("question4", "description4"));
 
             Template template1 = saveTemplate(member1, "title1", "description1", questions1);
             Template template2 = saveTemplate(member1, "title2", "description2", questions2);
@@ -202,22 +209,25 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("사용자 작성한 템플릿을 수정시각을 기준으로 내림차순 정렬하여 조회한다.")
-        void findBySocialIdOrderByUpdatedAt() {
+        void findBySocialIdOrderByUpdatedAt() throws InterruptedException {
             // given
             String templateTitle1 = "title1";
             String templateDescription1 = "description1";
-            List<TemplateQuestionCreateRequest> questions1 = List.of(new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions1 = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             String templateTitle2 = "title2";
             String templateDescription2 = "description2";
-            List<TemplateQuestionCreateRequest> questions2 = List.of(new TemplateQuestionCreateRequest("question3"),
-                new TemplateQuestionCreateRequest("question3"));
+            List<TemplateQuestionCreateRequest> questions2 = List.of(
+                new TemplateQuestionCreateRequest("question3", "description3"),
+                new TemplateQuestionCreateRequest("question4", "description4"));
 
             String templateTitle3 = "title3";
             String templateDescription3 = "description3";
-            List<TemplateQuestionCreateRequest> questions3 = List.of(new TemplateQuestionCreateRequest("question5"),
-                new TemplateQuestionCreateRequest("question6"));
+            List<TemplateQuestionCreateRequest> questions3 = List.of(
+                new TemplateQuestionCreateRequest("question5", "description5"),
+                new TemplateQuestionCreateRequest("question6", "description6"));
 
             saveTemplate(member1, templateTitle1, templateDescription1, questions1);
             saveTemplate(member2, templateTitle2, templateDescription2, questions2);
@@ -227,7 +237,7 @@ public class TemplateServiceTest {
             List<Template> myTemplates = templateService.findBySocialId(member1.getSocialId());
 
             List<TemplateQuestion> expectedTemplateQuestions = questions3.stream()
-                .map(questionUpdateRequest -> new TemplateQuestion(questionUpdateRequest.getValue(), ""))
+                .map(request -> new TemplateQuestion(request.getValue(), request.getDescription()))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -267,27 +277,30 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("템플릿을 수정한다.")
-        void updateTemplate() {
+        void updateTemplate() throws InterruptedException {
             // given
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
 
             // when
             List<TemplateQuestionUpdateRequest> newQuestions = List.of(
-                new TemplateQuestionUpdateRequest(1L, "new question1"),
-                new TemplateQuestionUpdateRequest(2L, "question2"),
-                new TemplateQuestionUpdateRequest(null, "question3"));
+                new TemplateQuestionUpdateRequest(1L, "new question1", "new description1"),
+                new TemplateQuestionUpdateRequest(2L, "question2", "description2"),
+                new TemplateQuestionUpdateRequest(null, "question3", "description3"));
 
             templateService.update(member1, template.getId(),
                 new TemplateUpdateRequest("new title", "new description", newQuestions));
 
             List<TemplateQuestion> expectedTemplateQuestions = newQuestions.stream()
-                .map(questionUpdateRequest -> new TemplateQuestion(questionUpdateRequest.getValue(), ""))
+                .map(questionUpdateRequest -> new TemplateQuestion(
+                    questionUpdateRequest.getValue(),
+                    questionUpdateRequest.getDescription()))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -312,21 +325,22 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("본인이 생성한 템플릿이 아니면 수정할 수 없다.")
-        void notMine() {
+        void notMine() throws InterruptedException {
             // given
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
 
             // when
             List<TemplateQuestionUpdateRequest> newQuestions = List.of(
-                new TemplateQuestionUpdateRequest(1L, "new question1"),
-                new TemplateQuestionUpdateRequest(2L, "question2"),
-                new TemplateQuestionUpdateRequest(null, "question3"));
+                new TemplateQuestionUpdateRequest(1L, "new question1", "new description1"),
+                new TemplateQuestionUpdateRequest(2L, "question2", "description2"),
+                new TemplateQuestionUpdateRequest(null, "question3", "description3"));
             TemplateUpdateRequest updateRequest = new TemplateUpdateRequest("new title", "new description",
                 newQuestions);
 
@@ -355,13 +369,14 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("템플릿을 삭제한다.")
-        void deleteTemplate() {
+        void deleteTemplate() throws InterruptedException {
             // given
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
 
@@ -376,13 +391,14 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("본인이 생성한 템플릿이 아니면 삭제할 수 없다.")
-        void notMine() {
+        void notMine() throws InterruptedException {
             // given
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
 
@@ -404,7 +420,7 @@ public class TemplateServiceTest {
 
     private List<TemplateQuestion> convertRequestToQuestions(List<TemplateQuestionCreateRequest> questions) {
         List<TemplateQuestion> expected = questions.stream()
-            .map(questionRequest -> new TemplateQuestion(questionRequest.getValue(), ""))
+            .map(questionRequest -> new TemplateQuestion(questionRequest.getValue(), questionRequest.getDescription()))
             .collect(Collectors.toUnmodifiableList());
 
         int index = 0;
@@ -415,7 +431,8 @@ public class TemplateServiceTest {
     }
 
     private Template saveTemplate(Member member, String templateTitle, String templateDescription,
-        List<TemplateQuestionCreateRequest> questions) {
+        List<TemplateQuestionCreateRequest> questions) throws InterruptedException {
+        Thread.sleep(1);
         TemplateCreateRequest createRequest = new TemplateCreateRequest(templateTitle, templateDescription, questions);
         return templateService.save(member, createRequest);
     }

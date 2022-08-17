@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.domain.QuestionAnswer;
 import com.reviewduck.review.domain.Review;
@@ -32,6 +33,7 @@ public class ReviewService {
     private final ReviewFormService reviewFormService;
     private final ReviewFormQuestionService reviewFormQuestionService;
     private final AnswerService answerService;
+    private final MemberService memberService;
 
     @Transactional
     public Review save(Member member, String code, ReviewCreateRequest request) {
@@ -48,8 +50,10 @@ public class ReviewService {
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
     }
 
-    public List<Review> findByMember(Member member) {
-        return reviewRepository.findByMember(member);
+    public List<Review> findBySocialId(String socialId) {
+        Member member = memberService.getBySocialId(socialId);
+
+        return reviewRepository.findByMemberOrderByUpdatedAtDesc(member);
     }
 
     public List<Review> findAllByCode(String code) {

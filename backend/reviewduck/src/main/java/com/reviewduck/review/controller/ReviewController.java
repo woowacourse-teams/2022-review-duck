@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,15 +45,17 @@ public class ReviewController {
         return ReviewSynchronizedResponse.from(reviewService.findById(reviewId));
     }
 
-    @Operation(summary = "자신이 작성한 회고 답변을 모두 조회한다.")
-    @GetMapping("/me")
+    @Operation(summary = "특정 멤버가 작성한 회고 답변을 모두 조회한다.")
+    @GetMapping(params = "member")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewsResponse findByMember(@AuthenticationPrincipal Member member) {
-        List<Review> reviews = reviewService.findByMember(member);
+    public ReviewsResponse findBySocialId(@AuthenticationPrincipal Member member,
+        @RequestParam(value = "member") String socialId) {
 
-        info("/api/reviews/me", "GET", "");
+        info("/api/reviews?member=" + socialId, "GET", "");
 
-        return ReviewsResponse.from(reviews);
+        List<Review> reviews = reviewService.findBySocialId(socialId);
+
+        return ReviewsResponse.of(reviews, socialId, member);
     }
 
     @Operation(summary = "회고 답변을 수정한다.")

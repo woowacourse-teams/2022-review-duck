@@ -26,7 +26,7 @@ import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
-import com.reviewduck.review.dto.response.MyReviewFormsResponse;
+import com.reviewduck.review.dto.response.MemberReviewFormsResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
 import com.reviewduck.review.dto.response.ReviewResponse;
@@ -35,18 +35,15 @@ import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/api/review-forms")
+@AllArgsConstructor
 public class ReviewFormController {
 
     private final ReviewFormService reviewFormService;
     private final ReviewService reviewService;
-
-    public ReviewFormController(ReviewFormService reviewFormService, ReviewService reviewService) {
-        this.reviewFormService = reviewFormService;
-        this.reviewService = reviewService;
-    }
 
     @Operation(summary = "회고 폼을 생성한다.")
     @PostMapping
@@ -57,6 +54,19 @@ public class ReviewFormController {
         info("/api/review-forms", "POST", request.toString());
 
         ReviewForm reviewForm = reviewFormService.save(member, request);
+        return ReviewFormCodeResponse.from(reviewForm);
+    }
+
+    @Operation(summary = "템플릿을 기반으로 작성된 후 수정된 회고 폼을 생성한다.")
+    @PostMapping(params = "templateId")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReviewFormCodeResponse createReviewFormByTemplate(@AuthenticationPrincipal Member member,
+        @RequestParam Long templateId,
+        @RequestBody @Valid ReviewFormCreateRequest request) {
+
+        info("/api/review-forms?templateId=" + templateId, "POST", request.toString());
+
+        ReviewForm reviewForm = reviewFormService.saveFromTemplate(member, templateId, request);
         return ReviewFormCodeResponse.from(reviewForm);
     }
 
@@ -84,16 +94,17 @@ public class ReviewFormController {
         return ReviewFormResponse.of(reviewForm, member);
     }
 
-    @Operation(summary = "내가 작성한 회고 폼을 모두 조회한다.")
-    @GetMapping("/me")
+    @Operation(summary = "특정 멤버가 작성한 회고 폼을 모두 조회한다.")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public MyReviewFormsResponse findReviewFormsByMember(@AuthenticationPrincipal Member member) {
+    public MemberReviewFormsResponse findReviewFormsBySocialId(@AuthenticationPrincipal Member member,
+        @RequestParam(value = "member") String socialId) {
 
-        info("/api/review-forms/me", "GET", "");
+        info("/api/review-forms?member=" + socialId, "GET", "");
 
-        List<ReviewForm> reviewForms = reviewFormService.findByMember(member);
+        List<ReviewForm> reviewForms = reviewFormService.findBySocialId(socialId);
 
-        return MyReviewFormsResponse.from(reviewForms);
+        return MemberReviewFormsResponse.of(reviewForms, socialId, member);
     }
 
     @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 모두 조회한다. (목록형 보기)")

@@ -15,10 +15,12 @@ public interface ReviewFormRepository extends JpaRepository<ReviewForm, Long> {
     @Query("select r from ReviewForm r where r.code = :code and r.isActive = true")
     Optional<ReviewForm> findByCode(String code);
 
-    @Query("select r from ReviewForm r where r.member = :member and r.isActive = true")
-    List<ReviewForm> findByMember(Member member);
+    @Query("select r from ReviewForm r where r.member = :member and r.isActive = true order by r.updatedAt desc")
+    List<ReviewForm> findByMemberOrderByUpdatedAtDesc(Member member);
 
     @Modifying
     @Query("update ReviewForm r set r.isActive = false where r.id = :id")
     void delete(Long id);
+
+    List<ReviewForm> findAllByMember(Member member);
 }

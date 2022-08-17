@@ -14,20 +14,20 @@ import lombok.Getter;
 @Getter
 public class ReviewContentResponse {
 
-    private QuestionResponse question;
+    private ReviewFormQuestionResponse question;
     private AnswerResponse answer;
 
     public static ReviewContentResponse from(QuestionAnswer questionAnswer) {
         return new ReviewContentResponse(
-            QuestionResponse.from(questionAnswer.getReviewFormQuestion()),
+            ReviewFormQuestionResponse.from(questionAnswer.getReviewFormQuestion()),
             AnswerResponse.from(questionAnswer.getAnswer())
         );
     }
 
     public static ReviewContentResponse of(ReviewFormQuestion question, Answer answer) {
         if (Objects.isNull(answer)) {
-            return new ReviewContentResponse(QuestionResponse.from(question), null);
+            return new ReviewContentResponse(ReviewFormQuestionResponse.from(question), null);
         }
-        return new ReviewContentResponse(QuestionResponse.from(question), AnswerResponse.from(answer));
+        return new ReviewContentResponse(ReviewFormQuestionResponse.from(question), AnswerResponse.from(answer));
     }
 }

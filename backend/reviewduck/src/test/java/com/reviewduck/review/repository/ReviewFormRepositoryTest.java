@@ -30,15 +30,10 @@ public class ReviewFormRepositoryTest {
 
     private Member member1;
 
-    private Member member2;
-
     @BeforeEach
     void setUp() {
         Member memberA = new Member("12345", "panda", "제이슨", "testUrl");
         member1 = memberRepository.save(memberA);
-
-        Member memberB = new Member("56789", "ariari", "브리", "testUrl2");
-        member2 = memberRepository.save(memberB);
     }
 
     @Test
@@ -67,26 +62,27 @@ public class ReviewFormRepositoryTest {
     }
 
     @Test
-    @DisplayName("개인이 작성한 회고 폼을 조회한다.")
-    void findMyReviewForms() {
+    @DisplayName("개인이 작성한 회고 폼을 updatedAt 내림차순으로 정렬하여 조회한다.")
+    void findMemberReviewForms() throws InterruptedException {
         // given
         saveReviewForm(member1);
-        saveReviewForm(member2);
+        ReviewForm expected = saveReviewForm(member1);
 
         // when
-        List<ReviewForm> myReviewForms = reviewFormRepository.findByMember(member1);
+        List<ReviewForm> myReviewForms = reviewFormRepository.findByMemberOrderByUpdatedAtDesc(member1);
 
         // then
         assertAll(
-            () -> assertThat(myReviewForms).hasSize(1),
+            () -> assertThat(myReviewForms).hasSize(2),
             () -> assertThat(myReviewForms.get(0)).isNotNull(),
-            () -> assertThat(myReviewForms.get(0).getMember().getNickname()).isEqualTo("제이슨")
+            () -> assertThat(myReviewForms.get(0).getMember().getNickname()).isEqualTo("제이슨"),
+            () -> assertThat(myReviewForms.get(0).getTitle()).isEqualTo(expected.getTitle())
         );
     }
 
     @Test
     @DisplayName("삭제된 회고 폼을 코드로 조회할 수 없다.")
-    void NotFoundDeletedReviewFormByCode() {
+    void NotFoundDeletedReviewFormByCode() throws InterruptedException {
         // given
         ReviewForm reviewForm = saveReviewForm(member1);
         String reviewFormCode = reviewForm.getCode();
@@ -100,7 +96,7 @@ public class ReviewFormRepositoryTest {
 
     @Test
     @DisplayName("삭제된 회고 폼을 멤버로 조회할 수 없다.")
-    void NotFoundDeletedReviewFormByMember() {
+    void NotFoundDeletedReviewFormByMember() throws InterruptedException {
         // given
         ReviewForm reviewForm = saveReviewForm(member1);
 
@@ -108,10 +104,12 @@ public class ReviewFormRepositoryTest {
         reviewFormRepository.delete(reviewForm);
 
         // then
-        assertThat(reviewFormRepository.findByMember(member1).isEmpty()).isTrue();
+        assertThat(reviewFormRepository.findByMemberOrderByUpdatedAtDesc(member1).isEmpty()).isTrue();
     }
 
-    private ReviewForm saveReviewForm(Member member) {
+    private ReviewForm saveReviewForm(Member member) throws InterruptedException {
+        Thread.sleep(1);
+
         List<ReviewFormQuestion> questions = List.of(
             new ReviewFormQuestion("question1", "description1"),
             new ReviewFormQuestion("question2", "description2"));

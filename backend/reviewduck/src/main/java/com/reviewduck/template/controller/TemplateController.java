@@ -26,7 +26,7 @@ import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
-import com.reviewduck.template.dto.response.MyTemplatesResponse;
+import com.reviewduck.template.dto.response.MemberTemplatesResponse;
 import com.reviewduck.template.dto.response.TemplateIdResponse;
 import com.reviewduck.template.dto.response.TemplateResponse;
 import com.reviewduck.template.dto.response.TemplatesResponse;
@@ -58,7 +58,7 @@ public class TemplateController {
     @Operation(summary = "템플릿을 기반으로 회고 폼을 생성한다.")
     @PostMapping("/{templateId}/review-forms")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReviewFormCodeResponse createReviewFormFromTemplate(@AuthenticationPrincipal Member member,
+    public ReviewFormCodeResponse createReviewFormByTemplate(@AuthenticationPrincipal Member member,
         @PathVariable Long templateId) {
 
         info("/api/templates/" + templateId + "/review-forms", "POST", "");
@@ -75,7 +75,7 @@ public class TemplateController {
         info("/api/templates/" + templateId, "GET", "");
 
         Template template = templateService.findById(templateId);
-        return TemplateResponse.from(template);
+        return TemplateResponse.of(template, member);
     }
 
     @Operation(summary = "템플릿을 최신순으로 내림차순 정렬하여 모두 조회한다.")
@@ -86,7 +86,7 @@ public class TemplateController {
         info("/api/templates?filter=latest", "GET", "");
 
         List<Template> templates = templateService.findAllOrderByLatest();
-        return TemplatesResponse.from(templates);
+        return TemplatesResponse.of(templates, member);
     }
 
     @Operation(summary = "템플릿을 사용 횟수를 기준으로 내림차순 정렬하여 모두 조회한다.")
@@ -97,20 +97,20 @@ public class TemplateController {
         info("/api/templates?filter=trend", "GET", "");
 
         List<Template> templates = templateService.findAllOrderByTrend();
-        return TemplatesResponse.from(templates);
+        return TemplatesResponse.of(templates, member);
     }
 
     @Operation(summary = "사용자가 생성한 템플릿을 모두 조회한다.")
     @GetMapping(params = "member")
     @ResponseStatus(HttpStatus.OK)
-    public MyTemplatesResponse findByMemberId(@AuthenticationPrincipal Member member,
-        @RequestParam(value = "member") String id) {
+    public MemberTemplatesResponse findByMemberId(@AuthenticationPrincipal Member member,
+        @RequestParam(value = "member") String socialId) {
 
-        info("/api/templates/me?member=" + id, "GET", "");
+        info("/api/templates?member=" + socialId, "GET", "");
 
-        List<Template> templates = templateService.findBySocialId(id);
+        List<Template> templates = templateService.findBySocialId(socialId);
 
-        return MyTemplatesResponse.from(templates);
+        return MemberTemplatesResponse.of(templates, socialId, member);
     }
 
     @Operation(summary = "템플릿을 수정한다.")

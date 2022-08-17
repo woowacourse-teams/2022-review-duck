@@ -4,13 +4,15 @@ import Topbar from './components/topbar/Topbar';
 import Sidebar from './components/sidebar/Sidebar';
 import Home from './pages/home/Home';
 
-import { BrowserRouter as Routes, Route, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MemberList from './pages/memberList/MemberList';
 import Member from './pages/member/Member';
 import ReviewFormList from './pages/reviewFormList/ReviewFormList';
 import ReviewForm from './pages/reviewForm/ReviewForm';
 import ReviewList from './pages/reviewList/ReviewList';
 import Review from './pages/review/Review';
+import TemplateList from './pages/templateList/TemplateList';
+import Template from './pages/template/Template';
 
 import axios from 'axios';
 
@@ -44,7 +46,7 @@ class App extends Component {
     const API_URI = process.env.REACT_APP_BACK_BASE_URL + '/api/admin';
 
     return (
-      <BrowserRouter basename="/admin">
+      <Router basename="admin">
         <Topbar />
         <div className="container">
           <Sidebar isLogin={isLogin} />
@@ -74,9 +76,17 @@ class App extends Component {
               path="/reviews/:reviewId"
               element={<Review API_URI={API_URI} accessToken={accessToken} />}
             />
+            <Route
+              path="/templates"
+              element={<TemplateList API_URI={API_URI} accessToken={accessToken} />}
+            />
+            <Route
+              path="/templates/:templateId"
+              element={<Template API_URI={API_URI} accessToken={accessToken} />}
+            />
           </Routes>
         </div>
-      </BrowserRouter>
+      </Router>
     );
   }
 }
