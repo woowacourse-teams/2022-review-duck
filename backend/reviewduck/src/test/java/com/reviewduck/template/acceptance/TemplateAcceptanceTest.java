@@ -252,7 +252,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             post("/api/templates", request3, accessToken1);
 
             // find memberInfo
-            MemberResponse member = get("/api/members/me", accessToken1)
+            MemberResponse member = get("/api/members/1", accessToken1)
                 .extract()
                 .as(MemberResponse.class);
 

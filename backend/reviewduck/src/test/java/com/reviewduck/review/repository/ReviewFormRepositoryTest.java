@@ -74,7 +74,7 @@ public class ReviewFormRepositoryTest {
         ReviewForm expected = saveReviewForm(member1);
 
         // when
-        List<ReviewForm> myReviewForms = reviewFormRepository.findByMemberOrderByUpdatedAtDesc(member2);
+        List<ReviewForm> myReviewForms = reviewFormRepository.findByMemberOrderByUpdatedAtDesc(member1);
 
         // then
         assertAll(
