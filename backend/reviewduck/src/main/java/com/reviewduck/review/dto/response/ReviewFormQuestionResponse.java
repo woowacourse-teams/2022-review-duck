@@ -20,5 +20,4 @@ public class ReviewFormQuestionResponse {
             reviewFormQuestion.getValue(),
             reviewFormQuestion.getDescription());
     }
-
 }

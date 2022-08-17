@@ -15,4 +15,6 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findByReviewForm(ReviewForm reviewForm);
 
     List<Review> findByMember(Member member);
+
+    List<Review> findAllByMember(Member member);
 }

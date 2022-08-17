@@ -1,20 +1,21 @@
-.member {
+.templateList {
   flex: 4;
 }
 
-li span {
-  background: ivory;
-}
-
-.infoMember {
+.templateListMember {
   display: flex;
   align-items: center;
 }
 
-.infoMemberImg {
+.templateListMemberImg {
   width: 32px;
   height: 32px;
   border-radius: 50%;
   object-fit: cover;
   margin-right: 10px;
+}
+
+.templateListDelete {
+  color: red;
+  cursor: pointer;
 }

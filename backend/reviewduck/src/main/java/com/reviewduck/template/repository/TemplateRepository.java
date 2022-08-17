@@ -15,4 +15,5 @@ public interface TemplateRepository extends JpaRepository<Template, Long> {
 
     List<Template> findAllByOrderByUsedCountDesc();
 
+    List<Template> findAllByMember(Member member);
 }
