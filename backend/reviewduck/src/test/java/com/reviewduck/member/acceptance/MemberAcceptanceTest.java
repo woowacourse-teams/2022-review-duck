@@ -38,6 +38,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @Nested
     @DisplayName("자신의 정보 조회")
     class findMyInfo {
+
         @Test
         @DisplayName("본인의 사용자 정보를 조회한다.")
         void findMyMemberInfo() {
