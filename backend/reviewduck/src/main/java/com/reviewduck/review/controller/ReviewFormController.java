@@ -84,7 +84,7 @@ public class ReviewFormController {
     @Operation(summary = "특정 멤버가 작성한 회고 폼을 모두 조회한다.")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public MyReviewFormsResponse findReviewFormsByMemberId(@AuthenticationPrincipal Member member,
+    public MyReviewFormsResponse findReviewFormsBySocialId(@AuthenticationPrincipal Member member,
         @RequestParam(value = "member") String id) {
 
         info("/api/review-forms?member=" + id, "GET", "");

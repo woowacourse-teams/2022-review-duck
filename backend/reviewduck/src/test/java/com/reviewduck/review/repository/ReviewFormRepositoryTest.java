@@ -30,15 +30,10 @@ public class ReviewFormRepositoryTest {
 
     private Member member1;
 
-    private Member member2;
-
     @BeforeEach
     void setUp() {
         Member memberA = new Member("12345", "panda", "제이슨", "testUrl");
         member1 = memberRepository.save(memberA);
-
-        Member memberB = new Member("56789", "ariari", "브리", "testUrl2");
-        member2 = memberRepository.save(memberB);
     }
 
     @Test
@@ -68,7 +63,7 @@ public class ReviewFormRepositoryTest {
 
     @Test
     @DisplayName("개인이 작성한 회고 폼을 updatedAt 내림차순으로 정렬하여 조회한다.")
-    void findMemberReviewForms() {
+    void findMemberReviewForms() throws InterruptedException {
         // given
         saveReviewForm(member1);
         ReviewForm expected = saveReviewForm(member1);
@@ -87,7 +82,7 @@ public class ReviewFormRepositoryTest {
 
     @Test
     @DisplayName("삭제된 회고 폼을 코드로 조회할 수 없다.")
-    void NotFoundDeletedReviewFormByCode() {
+    void NotFoundDeletedReviewFormByCode() throws InterruptedException {
         // given
         ReviewForm reviewForm = saveReviewForm(member1);
         String reviewFormCode = reviewForm.getCode();
@@ -101,7 +96,7 @@ public class ReviewFormRepositoryTest {
 
     @Test
     @DisplayName("삭제된 회고 폼을 멤버로 조회할 수 없다.")
-    void NotFoundDeletedReviewFormByMember() {
+    void NotFoundDeletedReviewFormByMember() throws InterruptedException {
         // given
         ReviewForm reviewForm = saveReviewForm(member1);
 
@@ -112,7 +107,9 @@ public class ReviewFormRepositoryTest {
         assertThat(reviewFormRepository.findByMemberOrderByUpdatedAtDesc(member1).isEmpty()).isTrue();
     }
 
-    private ReviewForm saveReviewForm(Member member) {
+    private ReviewForm saveReviewForm(Member member) throws InterruptedException {
+        Thread.sleep(1);
+
         List<ReviewFormQuestion> questions = List.of(
             new ReviewFormQuestion("question1", "description1"),
             new ReviewFormQuestion("question2", "description2"));

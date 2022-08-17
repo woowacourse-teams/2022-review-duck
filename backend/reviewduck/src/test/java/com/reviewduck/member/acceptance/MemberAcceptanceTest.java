@@ -19,19 +19,20 @@ import com.reviewduck.member.service.MemberService;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
 
-    private String accessToken;
-
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
     private MemberService memberService;
 
+    private String accessToken;
+    private Member savedMember;
+
     @BeforeEach
     void createMemberAndGetAccessToken() {
-        Member member1 = new Member("1", "jason", "제이슨", "profileUrl");
-        Member savedMember1 = memberService.save(member1);
+        Member member = new Member("1", "jason", "제이슨", "profileUrl");
+        savedMember = memberService.save(member);
 
-        accessToken = jwtTokenProvider.createAccessToken(String.valueOf(savedMember1.getId()));
+        accessToken = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
     }
 
     @Nested
@@ -42,7 +43,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         @DisplayName("본인의 사용자 정보를 조회한다.")
         void findMyMemberInfo() {
             // when
-            MemberResponse memberResponse = get("/api/members/1", accessToken)
+            MemberResponse memberResponse = get("/api/members/" + savedMember.getSocialId(), accessToken)
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(MemberResponse.class);
@@ -63,7 +64,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             memberService.save(member2);
 
             // when
-            MemberResponse memberResponse = get("/api/members/2", accessToken)
+            MemberResponse memberResponse = get("/api/members/" + member2.getSocialId(), accessToken)
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(MemberResponse.class);
@@ -106,7 +107,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             put("/api/members/me", updateRequest, accessToken)
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
-            MemberResponse memberResponse = get("/api/members/1", accessToken)
+            MemberResponse memberResponse = get("/api/members/" + savedMember.getSocialId(), accessToken)
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(MemberResponse.class);

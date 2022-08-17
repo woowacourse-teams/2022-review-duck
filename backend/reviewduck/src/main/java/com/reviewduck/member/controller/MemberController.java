@@ -30,14 +30,14 @@ public class MemberController {
     private final MemberService memberService;
 
     @Operation(summary = "사용자 정보를 조회한다.")
-    @GetMapping("/{socialId}")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public MemberResponse findMemberInfo(@AuthenticationPrincipal Member member,
-        @PathVariable String socialId) {
+        @PathVariable String id) {
 
-        info("/api/members/" + socialId, "GET", "");
+        info("/api/members/" + id, "GET", "");
 
-        Member foundMember = memberService.getBySocialId(socialId);
+        Member foundMember = memberService.getBySocialId(id);
         return MemberResponse.from(foundMember);
     }
 

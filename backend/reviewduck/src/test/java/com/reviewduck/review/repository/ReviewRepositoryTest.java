@@ -51,9 +51,9 @@ public class ReviewRepositoryTest {
 
     @Test
     @DisplayName("리뷰를 저장한다.")
-    void saveReview() {
+    void saveReview() throws InterruptedException {
         // when
-        Review savedReview = saveReview(savedMember, savedReviewForm, "title");
+        Review savedReview = saveReview(savedMember, savedReviewForm);
 
         // then
         assertAll(
@@ -66,9 +66,9 @@ public class ReviewRepositoryTest {
 
     @Test
     @DisplayName("특정 회고 폼을 기반으로 작성된 회고를 모두 조회한다.")
-    void findReviewsBySpecificReviewForm() {
+    void findReviewsBySpecificReviewForm() throws InterruptedException {
         // given
-        Review savedReview = saveReview(savedMember, savedReviewForm, "title");
+        Review savedReview = saveReview(savedMember, savedReviewForm);
 
         // when
         List<Review> reviews = reviewRepository.findByReviewForm(savedReviewForm);
@@ -82,10 +82,10 @@ public class ReviewRepositoryTest {
 
     @Test
     @DisplayName("개인이 작성한 회고를 updatedAt 내림차순으로 정렬하여 조회한다.")
-    void findMemberReviewsOrderByUpdatedAtDesc() {
+    void findMemberReviewsOrderByUpdatedAtDesc() throws InterruptedException {
         // given
-        saveReview(savedMember, savedReviewForm, "title");
-        Review review = saveReview(savedMember, savedReviewForm, "title2");
+        saveReview(savedMember, savedReviewForm);
+        Review review = saveReview(savedMember, savedReviewForm);
 
         //when
         List<Review> myReviews = reviewRepository.findByMemberOrderByUpdatedAtDesc(savedMember);
@@ -95,15 +95,15 @@ public class ReviewRepositoryTest {
             () -> assertThat(myReviews).hasSize(2),
             () -> assertThat(myReviews.get(0)).isNotNull(),
             () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo(savedMember.getNickname()),
-            () -> assertThat(myReviews.get(0).getTitle()).isEqualTo(review.getTitle())
+            () -> assertThat(myReviews.get(0).getUpdatedAt()).isEqualTo(review.getUpdatedAt())
         );
     }
 
     @Test
     @DisplayName("리뷰를 삭제한다.")
-    void deleteReview() {
+    void deleteReview() throws InterruptedException {
         // given
-        Review savedReview = saveReview(savedMember, savedReviewForm, "title");
+        Review savedReview = saveReview(savedMember, savedReviewForm);
 
         // when
         reviewRepository.deleteById(savedReview.getId());
@@ -112,8 +112,9 @@ public class ReviewRepositoryTest {
         assertThat(reviewRepository.findById(savedReview.getId()).isEmpty()).isTrue();
     }
 
-    private Review saveReview(Member member, ReviewForm savedReviewForm, String title) {
-        Review review = new Review(title, member, savedReviewForm,
+    private Review saveReview(Member member, ReviewForm savedReviewForm) throws InterruptedException {
+        Thread.sleep(1);
+        Review review = new Review("title", member, savedReviewForm,
             List.of(
                 new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(0), new Answer("answer1")),
                 new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(1), new Answer("answer2"))

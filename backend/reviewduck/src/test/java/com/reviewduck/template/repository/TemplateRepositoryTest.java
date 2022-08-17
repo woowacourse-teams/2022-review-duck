@@ -65,7 +65,7 @@ public class TemplateRepositoryTest {
 
     @Test
     @DisplayName("템플릿을 조회한다.")
-    void findTemplate() {
+    void findTemplate() throws InterruptedException {
         // given
         List<TemplateQuestion> questions = List.of(
             new TemplateQuestion("question1", "description1"),
@@ -89,7 +89,7 @@ public class TemplateRepositoryTest {
 
     @Test
     @DisplayName("템플릿을 모두 조회한다.")
-    void findAllTemplates() {
+    void findAllTemplates() throws InterruptedException {
         // given
         List<TemplateQuestion> questions1 = List.of(
             new TemplateQuestion("question1", "description1"),
@@ -111,7 +111,7 @@ public class TemplateRepositoryTest {
 
     @Test
     @DisplayName("템플릿을 updatedAt 내림차순으로 정렬하여 모두 조회한다.")
-    void findAllTemplatesOrderByUpdatedAt() {
+    void findAllTemplatesOrderByUpdatedAt() throws InterruptedException {
         // given
         List<TemplateQuestion> questions1 = List.of(
             new TemplateQuestion("question1", "description1"),
@@ -138,7 +138,7 @@ public class TemplateRepositoryTest {
 
     @Test
     @DisplayName("템플릿을 usedCount 내림차순으로 정렬하여 모두 조회한다.")
-    void findAllTemplatesOrderByUsedCount() {
+    void findAllTemplatesOrderByUsedCount() throws InterruptedException {
         // given
         List<TemplateQuestion> questions1 = List.of(
             new TemplateQuestion("question1", "description1"),
@@ -166,7 +166,7 @@ public class TemplateRepositoryTest {
 
     @Test
     @DisplayName("특정 사용자가 작성한 템플릿을 updatedAt 내림차순으로 정렬하여 조회한다.")
-    void findByMemberOrderByUpdatedAtDesc() {
+    void findByMemberOrderByUpdatedAtDesc() throws InterruptedException {
         // given
         List<TemplateQuestion> questions1 = List.of(
             new TemplateQuestion("question1", "description1"),
@@ -203,7 +203,7 @@ public class TemplateRepositoryTest {
 
     @Test
     @DisplayName("템플릿을 삭제한다.")
-    void deleteTemplate() {
+    void deleteTemplate() throws InterruptedException {
         // given
         List<TemplateQuestion> questions = List.of(
             new TemplateQuestion("question1", "description1"),
@@ -219,7 +219,8 @@ public class TemplateRepositoryTest {
         assertThat(templateRepository.findById(templateId)).isEmpty();
     }
 
-    private Template saveTemplate(Member member, List<TemplateQuestion> questions) {
+    private Template saveTemplate(Member member, List<TemplateQuestion> questions) throws InterruptedException {
+        Thread.sleep(1);
         Template template = new Template(member, "title", "description", questions);
 
         return templateRepository.save(template);

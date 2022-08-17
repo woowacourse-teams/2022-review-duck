@@ -48,7 +48,7 @@ public class ReviewController {
     @Operation(summary = "특정 멤버가 작성한 회고 답변을 모두 조회한다.")
     @GetMapping(params = "member")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewsResponse findByMemberId(@AuthenticationPrincipal Member member,
+    public ReviewsResponse findBySocialId(@AuthenticationPrincipal Member member,
         @RequestParam(value = "member") String id) {
 
         info("/api/reviews?member=" + id, "GET", "");

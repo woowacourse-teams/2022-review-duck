@@ -161,7 +161,7 @@ public class ReviewFormServiceTest {
         @DisplayName("회고 폼 코드로 회고 폼을 조회한다.")
         void findReviewForm() throws InterruptedException {
             // given
-            ReviewForm expected = saveReviewForm(member1, "title1");
+            ReviewForm expected = saveReviewForm(member1);
 
             // when
             ReviewForm actual = reviewFormService.findByCode(expected.getCode());
@@ -189,8 +189,8 @@ public class ReviewFormServiceTest {
         @DisplayName("회고 폼을 UpdatedAt 내림차순으로 조회한다.")
         void findMyReviewsFormOrderByUpdatedAtDesc() throws InterruptedException {
             // given
-            saveReviewForm(member1, "title1");
-            ReviewForm expected = saveReviewForm(member1, "title2");
+            saveReviewForm(member1);
+            ReviewForm expected = saveReviewForm(member1);
 
             // when
             List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId());
@@ -202,7 +202,7 @@ public class ReviewFormServiceTest {
                 () -> assertThat(myReviewForms.get(0).getMember().getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(myReviewForms.get(0).getId()).isNotNull(),
                 () -> assertThat(myReviewForms.get(0).getCode().length()).isEqualTo(8),
-                () -> assertThat(myReviewForms.get(0).getTitle()).isEqualTo(expected.getTitle()),
+                () -> assertThat(myReviewForms.get(0).getUpdatedAt()).isEqualTo(expected.getUpdatedAt()),
                 () -> assertThat(myReviewForms.get(0).getReviewFormQuestions())
                     .usingRecursiveComparison()
                     .ignoringFields("id")
@@ -219,7 +219,7 @@ public class ReviewFormServiceTest {
         @DisplayName("회고 폼을 수정한다.")
         void updateReviewForm() throws InterruptedException {
             // given
-            ReviewForm savedReviewForm = saveReviewForm(member1, "title1");
+            ReviewForm savedReviewForm = saveReviewForm(member1);
             String code = savedReviewForm.getCode();
             Long questionId = savedReviewForm.getReviewFormQuestions().get(0).getId();
 
@@ -260,7 +260,7 @@ public class ReviewFormServiceTest {
         @DisplayName("본인이 생성한 회고 폼이 아니면 수정할 수 없다.")
         void updateNotMyReviewForm() throws InterruptedException {
             // given
-            ReviewForm savedReviewForm = saveReviewForm(member1, "title1");
+            ReviewForm savedReviewForm = saveReviewForm(member1);
             String code = savedReviewForm.getCode();
             Long questionId = savedReviewForm.getReviewFormQuestions().get(0).getId();
 
@@ -306,7 +306,7 @@ public class ReviewFormServiceTest {
         @DisplayName("존재하지 않는 질문을 수정할 수 없다.")
         void updateReviewFormByInvalidQuestionId() throws InterruptedException {
             // given
-            String code = saveReviewForm(member1, "title1").getCode();
+            String code = saveReviewForm(member1).getCode();
 
             // when, then
             List<ReviewFormQuestionUpdateRequest> updateRequests = List.of(
@@ -329,7 +329,7 @@ public class ReviewFormServiceTest {
         @DisplayName("회고 폼을 삭제한다.")
         void deleteReviewForm() throws InterruptedException {
             // given
-            ReviewForm savedReviewForm = saveReviewForm(member1, "title1");
+            ReviewForm savedReviewForm = saveReviewForm(member1);
             String code = savedReviewForm.getCode();
 
             // when
@@ -345,7 +345,7 @@ public class ReviewFormServiceTest {
         @DisplayName("본인이 생성한 회고 폼이 아니면 삭제할 수 없다.")
         void deleteNotMyReviewForm() throws InterruptedException {
             // given
-            ReviewForm savedReviewForm = saveReviewForm(member1, "title1");
+            ReviewForm savedReviewForm = saveReviewForm(member1);
             String code = savedReviewForm.getCode();
 
             // when, then
@@ -365,14 +365,14 @@ public class ReviewFormServiceTest {
 
     }
 
-    private ReviewForm saveReviewForm(Member member, String title) throws InterruptedException {
+    private ReviewForm saveReviewForm(Member member) throws InterruptedException {
         Thread.sleep(1);
 
         List<ReviewFormQuestionCreateRequest> createRequests = List.of(
             new ReviewFormQuestionCreateRequest("question1"),
             new ReviewFormQuestionCreateRequest("question2"));
 
-        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(title, createRequests);
+        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest("title", createRequests);
 
         return reviewFormService.save(member, createRequest);
     }
