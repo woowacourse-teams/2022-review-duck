@@ -1,12 +1,15 @@
 import {
+  AnsweredQuestion,
   ErrorResponse,
   Question,
   ReviewForm,
   UpdateReviewAnswerRequest,
 } from 'service/@shared/types';
 
+import { useGetUserInfo } from 'service/@shared/hooks/queries/auth';
 import {
   useCreateReviewAnswer,
+  useGetReviewAnswer,
   useGetReviewForm,
   useUpdateReviewAnswer,
 } from 'service/@shared/hooks/queries/review';
@@ -21,6 +24,7 @@ const initialReviewContents: ReviewForm = {
   questions: [],
   info: {
     creator: {
+      id: -1,
       nickname: '닉네임',
       profileUrl: '',
     },
@@ -35,12 +39,17 @@ const changeRequestBody = (questions: Question[]) =>
     answer,
   })) as UpdateReviewAnswerRequest['contents'];
 
-function useAnswerEditorPage(reviewFormCode: string) {
+function useAnswerEditorPage(reviewFormCode: string, reviewId: string) {
   const createMutation = useCreateReviewAnswer();
   const updateMutation = useUpdateReviewAnswer();
 
+  const userProfileQuery = useGetUserInfo();
   const reviewFormQuery = useGetReviewForm(reviewFormCode);
-  const reviewContents = reviewFormQuery.data || initialReviewContents;
+  const reviewAnswerQuery = useGetReviewAnswer(Number(reviewId), {
+    enabled: !!reviewId,
+  });
+
+  const reviewContents = reviewAnswerQuery.data || reviewFormQuery.data || initialReviewContents;
 
   const submitCreateAnswer = (questions: Question[], handler: SubmitHandler) => {
     const { onSuccess, onError } = handler;
@@ -69,6 +78,8 @@ function useAnswerEditorPage(reviewFormCode: string) {
   };
 
   return {
+    authorProfile: userProfileQuery.data,
+    reviewForm: reviewFormQuery.data,
     reviewContents,
     submitCreateAnswer,
     submitUpdateAnswer,

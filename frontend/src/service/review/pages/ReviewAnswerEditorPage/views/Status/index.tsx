@@ -67,8 +67,8 @@ const AnsweredState = ({ answeredCount, questionCount }: AnsweredStateProps) => 
 };
 
 interface UserProfile {
-  nickname: string;
-  profileImage: string;
+  nickname?: string;
+  profileImage?: string;
   description: string;
 }
 

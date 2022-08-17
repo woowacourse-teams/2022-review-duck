@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { ErrorResponse } from 'service/@shared/types';
@@ -12,10 +13,8 @@ import { PAGE_LIST } from 'service/@shared/constants';
 
 /*
   TODO:
-  - [ ] 회고 수정 기능 구현
   - [ ] 상수 분리
   - [ ] 에러 바운더리 적용
-
 */
 
 const EDITOR_MODE = {
@@ -26,18 +25,23 @@ const EDITOR_MODE = {
 function ReviewAnswerEditorPage() {
   const { reviewFormCode = '', reviewId = '' } = useParams();
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
 
   const redirectUri =
     searchParams.get('redirect') || `${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`;
 
-  const { reviewContents, submitCreateAnswer, submitUpdateAnswer } =
-    useAnswerEditorPage(reviewFormCode);
+  const { authorProfile, reviewForm, reviewContents, submitCreateAnswer, submitUpdateAnswer } =
+    useAnswerEditorPage(reviewFormCode, reviewId);
   const { questions, answeredCount, isAnswerComplete, updateAnswer } = useQuestions(
     reviewContents.questions,
   );
+  const [focusQuestionIndex, setFocusQuestionIndex] = useState(0);
+
+  const handleFocusAnswer = (index: number) => () => {
+    setFocusQuestionIndex(index);
+  };
 
   const handleChangeAnswer =
     (index: number) =>
@@ -91,20 +95,25 @@ function ReviewAnswerEditorPage() {
         <Status.LogoButton link={PAGE_LIST.HOME} />
 
         <Status.FocusQuestion description="질문에 대한 설명">
-          유저가 포커스한 질문들
+          {questions[focusQuestionIndex].value}
         </Status.FocusQuestion>
         <Status.AnsweredState answeredCount={answeredCount} questionCount={questions.length} />
-        <Status.UserProfile nickname="작성자 닉네임" profileImage="" description="유저 소개" />
+        <Status.UserProfile
+          nickname={authorProfile?.nickname}
+          profileImage={authorProfile?.profileUrl}
+          description="유저 소개"
+        />
       </Status>
 
       <Editor onSubmit={handleSubmit}>
-        <Editor.Title>{reviewContents.title}</Editor.Title>
+        <Editor.Title>{reviewForm?.title}</Editor.Title>
 
         {questions.map(({ key, value, answer }, index) => (
           <Editor.AnswerField
             key={key}
             question={value}
             answer={answer?.value}
+            onFocus={handleFocusAnswer(index)}
             onChange={handleChangeAnswer(index)}
           />
         ))}

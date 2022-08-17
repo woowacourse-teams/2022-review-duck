@@ -15,7 +15,7 @@ const Container = ({ onSubmit, children, ...rest }: ContainerProps) => {
 };
 
 interface TitleProps {
-  children: string;
+  children?: string;
 }
 
 const Title = ({ children }: TitleProps) => {
@@ -31,12 +31,13 @@ interface AnswerFieldProps {
   description?: string;
   answer?: string;
   onChange: React.ChangeEventHandler<HTMLTextAreaElement>;
+  onFocus: React.FocusEventHandler<HTMLTextAreaElement>;
 }
 
-const AnswerField = ({ question, description, answer, onChange }: AnswerFieldProps) => {
+const AnswerField = ({ question, description, answer, onChange, onFocus }: AnswerFieldProps) => {
   return (
     <FieldSet size="large" title={question} description={description}>
-      <Textarea size="large" value={answer} onChange={onChange} />
+      <Textarea size="large" value={answer} onChange={onChange} onFocus={onFocus} />
     </FieldSet>
   );
 };
