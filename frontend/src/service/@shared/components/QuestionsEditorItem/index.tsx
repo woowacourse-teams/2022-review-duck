@@ -30,10 +30,9 @@ function QuestionsEditorItem({
   onAddQuestion,
   onDeleteQuestion,
 }: Props) {
-  const handleChange = useDebounce(
-    (event: React.ChangeEvent<HTMLInputElement>) => onChange && onChange(event),
-    250,
-  );
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange && onChange(event);
+  };
 
   const handleKeyUpTextBox = (event: React.KeyboardEvent<HTMLInputElement>) => {
     // TODO: 키보드 입력 버그 고치기 - 한글 입력 후 엔터가 두번 발생되는 문제
@@ -62,7 +61,7 @@ function QuestionsEditorItem({
         defaultValue={children}
         onChange={handleChange}
         onKeyDown={handleKeyDownTextBox}
-        onKeyUp={handleKeyUpTextBox}
+        onKeyPress={handleKeyUpTextBox}
       />
 
       <FlexContainer direction="row" justify="right" gap="small">

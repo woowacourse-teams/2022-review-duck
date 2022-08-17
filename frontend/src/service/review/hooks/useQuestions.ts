@@ -30,7 +30,7 @@ function useQuestions(initState?: Question[]) {
   const isAnswerComplete = questions.length === answeredCount;
 
   const addQuestion = ({ currentIndex, customValue }: AddQuestion): number => {
-    const insertIndex = (currentIndex && currentIndex + 1) || questions.length;
+    const insertIndex = currentIndex + 1 ?? questions.length;
     const copiedQuestions = [...questions];
     const initialQuestion = {
       key: getUniqueKey(),
