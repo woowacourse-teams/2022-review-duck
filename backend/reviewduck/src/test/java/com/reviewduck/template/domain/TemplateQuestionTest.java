@@ -66,15 +66,6 @@ public class TemplateQuestionTest {
                 .hasMessageContaining("질문 생성 중 에러가 발생하였습니다.");
         }
 
-        @Test
-        @DisplayName("질문의 설명은 200자를 넘을 수 없다.")
-        void descriptionOverLength() {
-            //when, then
-            assertThatThrownBy(() -> new TemplateQuestion("value", "a".repeat(201)))
-                .isInstanceOf(TemplateQuestionException.class)
-                .hasMessageContaining("질문은 200자를 넘을 수 없습니다.");
-        }
-
     }
 
     @Nested
@@ -142,18 +133,6 @@ public class TemplateQuestionTest {
             assertThatThrownBy(() -> question.update("value", description))
                 .isInstanceOf(TemplateQuestionException.class)
                 .hasMessageContaining("질문 생성 중 에러가 발생하였습니다.");
-        }
-
-        @Test
-        @DisplayName("질문의 설명은 200자를 넘을 수 없다.")
-        void descriptionOverLength() {
-            // given
-            TemplateQuestion question = new TemplateQuestion("value", "description");
-
-            //when, then
-            assertThatThrownBy(() -> question.update("value", "a".repeat(201)))
-                .isInstanceOf(TemplateQuestionException.class)
-                .hasMessageContaining("질문은 200자를 넘을 수 없습니다.");
         }
 
     }

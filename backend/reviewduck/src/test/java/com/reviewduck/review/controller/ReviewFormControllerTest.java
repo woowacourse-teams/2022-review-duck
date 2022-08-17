@@ -106,7 +106,7 @@ public class ReviewFormControllerTest {
 
         @ParameterizedTest
         @NullSource
-        @DisplayName("회고 질문에 빈 값이 들어갈 경우 예외가 발생한다.")
+        @DisplayName("회고 질문 설명에 빈 값이 들어갈 경우 예외가 발생한다.")
         void nullQuestionDescription(String description) throws Exception {
             // given
             ReviewFormCreateRequest request = new ReviewFormCreateRequest("title",
@@ -226,7 +226,7 @@ public class ReviewFormControllerTest {
 
         @ParameterizedTest
         @NullSource
-        @DisplayName("질문이 비어있을 경우 예외가 발생한다.")
+        @DisplayName("질문 설명이 비어있을 경우 예외가 발생한다.")
         void emptyQuestionDescription(String questionDescription) throws Exception {
             // given
             ReviewFormUpdateRequest request = new ReviewFormUpdateRequest("new title",

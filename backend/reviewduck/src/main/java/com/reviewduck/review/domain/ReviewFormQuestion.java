@@ -62,7 +62,6 @@ public class ReviewFormQuestion {
 
     private void validateDescription(String description) {
         validateNull(description);
-        validateLength(description);
     }
 
     private void validateNull(String value) {
