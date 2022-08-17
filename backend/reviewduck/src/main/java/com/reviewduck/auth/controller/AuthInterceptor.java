@@ -24,12 +24,25 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
+        if (isAuthenticationNotRequired(request))
+            return true;
+
         validateToken(request);
         return true;
     }
 
-    public boolean isPreflight(HttpServletRequest request) {
+    private boolean isPreflight(HttpServletRequest request) {
         return request.getMethod().equals(HttpMethod.OPTIONS.toString());
+    }
+
+    private boolean isAuthenticationNotRequired(HttpServletRequest request) {
+        boolean isTemplatesFindRequest = request.getRequestURI().equals("/api/templates")
+            && request.getParameterMap().containsKey("filter");
+        
+        boolean isTemplateFindRequest = request.getRequestURI().matches("/api/templates/[0-9]+");
+
+        return (isTemplatesFindRequest || isTemplateFindRequest)
+            && request.getMethod().equals(HttpMethod.GET.toString());
     }
 
     public void validateToken(HttpServletRequest request) {
