@@ -46,7 +46,7 @@ const FormInformation = ({ isLoading, fallback, children }: FormInformationProps
 };
 
 interface FormTextProps {
-  children?: string;
+  children: React.ReactNode;
 }
 
 const Title = ({ children }: FormTextProps) => {

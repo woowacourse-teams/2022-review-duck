@@ -8,13 +8,17 @@ interface QuestionWithKey extends Question {
   key?: number;
 }
 
+interface AddQuestion {
+  currentIndex: number;
+  customValue?: Question;
+}
+
 function useQuestions(initState?: Question[]) {
   const initialQuestion: QuestionWithKey[] = useMemo(
     () =>
       initState?.map((value, index) => ({
         ...value,
         key: index,
-        description: value.description || '',
       })) || [],
     [],
   );
@@ -25,18 +29,19 @@ function useQuestions(initState?: Question[]) {
   const answeredCount = questions.filter(({ answer }) => answer?.value).length;
   const isAnswerComplete = questions.length === answeredCount;
 
-  const addQuestion = (insertValue: Question): number => {
+  const addQuestion = ({ currentIndex, customValue }: AddQuestion): number => {
+    const insertIndex = currentIndex + 1 ?? questions.length;
     const copiedQuestions = [...questions];
-    const newQuestionIndex =
-      copiedQuestions.push({
-        ...insertValue,
-        key: getUniqueKey(),
-        description: '',
-      }) - 1;
+    const initialQuestion = {
+      key: getUniqueKey(),
+      value: '',
+      description: '',
+    };
 
+    copiedQuestions.splice(insertIndex, 0, { ...initialQuestion, ...customValue });
     setQuestions(copiedQuestions);
 
-    return newQuestionIndex;
+    return insertIndex;
   };
 
   const removeQuestion = (index: number) => {

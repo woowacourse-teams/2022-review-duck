@@ -68,6 +68,7 @@ function useTemplateFormEditorPage(templateId: string, templateEditMode: string)
     questions: [
       {
         value: '',
+        description: '',
       },
     ],
   };
