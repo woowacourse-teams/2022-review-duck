@@ -36,6 +36,41 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
+    @DisplayName("자신의 정보 조회")
+    class findMyInfo {
+        @Test
+        @DisplayName("본인의 사용자 정보를 조회한다.")
+        void findMyMemberInfo() {
+            // given
+            Member member = new Member("1", "jason", "제이슨", "profileUrl");
+            Member savedMember = memberService.save(member);
+
+            String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
+
+            // when
+            MemberResponse memberResponse = get("/api/members/me", accessToken)
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(MemberResponse.class);
+
+            // then
+            assertAll(
+                () -> assertThat(memberResponse.getSocialNickname()).isEqualTo("jason"),
+                () -> assertThat(memberResponse.getNickname()).isEqualTo("제이슨"),
+                () -> assertThat(memberResponse.getProfileUrl()).isEqualTo("profileUrl")
+            );
+        }
+
+        @Test
+        @DisplayName("로그인하지 않고 사용자 정보를 조회할 수 없다.")
+        void failToFindMyMemberInfo() {
+            // when, then
+            get("/api/members/me")
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
+    }
+
+    @Nested
     @DisplayName("사용자 정보 조회")
     class findMemberInfo {
 
@@ -98,7 +133,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     @Nested
     @DisplayName("닉네임 수정")
-    class updteNickname {
+    class updateNickname {
 
         @Test
         @DisplayName("본인의 닉네임을 수정한다.")

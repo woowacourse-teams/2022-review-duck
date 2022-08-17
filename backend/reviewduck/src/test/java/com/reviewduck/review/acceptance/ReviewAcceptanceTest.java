@@ -128,7 +128,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("개인이 작성한 회고 조회")
+    @DisplayName("사용자가 작성한 회고 조회")
     class findMemberReview {
 
         @Test
@@ -192,7 +192,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("로그인하지 않은 상태로 개인이 작성한 회고를 모두 조회할 수 있다")
+        @DisplayName("로그인하지 않은 상태로 사용자가 작성한 회고를 모두 조회할 수 있다")
         void withoutLogin() {
             get("/api/reviews?member=1").statusCode(HttpStatus.OK.value());
         }

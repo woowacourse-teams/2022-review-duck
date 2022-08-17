@@ -62,7 +62,7 @@ public class ReviewFormRepositoryTest {
     }
 
     @Test
-    @DisplayName("개인이 작성한 회고 폼을 updatedAt 내림차순으로 정렬하여 조회한다.")
+    @DisplayName("사용자가 작성한 회고 폼을 updatedAt 내림차순으로 정렬하여 조회한다.")
     void findMemberReviewForms() throws InterruptedException {
         // given
         saveReviewForm(member1);

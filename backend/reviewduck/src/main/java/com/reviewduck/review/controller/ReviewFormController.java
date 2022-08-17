@@ -35,6 +35,7 @@ import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -61,7 +62,7 @@ public class ReviewFormController {
     @PostMapping(params = "templateId")
     @ResponseStatus(HttpStatus.CREATED)
     public ReviewFormCodeResponse createReviewFormByTemplate(@AuthenticationPrincipal Member member,
-        @RequestParam Long templateId,
+        @Parameter(required = true) @RequestParam Long templateId,
         @RequestBody @Valid ReviewFormCreateRequest request) {
 
         info("/api/review-forms?templateId=" + templateId, "POST", request.toString());
@@ -94,7 +95,7 @@ public class ReviewFormController {
         return ReviewFormResponse.of(reviewForm, member);
     }
 
-    @Operation(summary = "특정 멤버가 작성한 회고 폼을 모두 조회한다.")
+    @Operation(summary = "사용자가 작성한 회고 폼을 모두 조회한다.")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public MemberReviewFormsResponse findReviewFormsBySocialId(@AuthenticationPrincipal Member member,
