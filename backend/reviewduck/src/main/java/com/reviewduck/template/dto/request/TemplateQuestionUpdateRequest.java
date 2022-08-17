@@ -18,4 +18,7 @@ public class TemplateQuestionUpdateRequest {
 
     @NotNull(message = "템플릿의 질문 수정 중 오류가 발생했습니다.")
     private String value;
+
+    @NotNull(message = "템플릿의 질문 설명 수정 중 오류가 발생했습니다.")
+    private String description;
 }

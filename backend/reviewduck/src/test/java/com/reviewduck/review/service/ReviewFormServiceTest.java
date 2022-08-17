@@ -116,8 +116,8 @@ public class ReviewFormServiceTest {
             String templateTitle = "title";
             String templateDescription = "description";
             List<TemplateQuestionCreateRequest> questions = List.of(
-                new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 questions);
@@ -127,7 +127,7 @@ public class ReviewFormServiceTest {
             ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(member1, savedTemplate.getId());
 
             List<ReviewFormQuestion> expected = questions.stream()
-                .map(question -> new ReviewFormQuestion(question.getValue(), ""))
+                .map(question -> new ReviewFormQuestion(question.getValue(), question.getDescription()))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -258,7 +258,8 @@ public class ReviewFormServiceTest {
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateRequests);
 
             List<ReviewFormQuestion> expected = updateRequests.stream()
-                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(), questionRequest.getDescription()))
+                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(),
+                    questionRequest.getDescription()))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
