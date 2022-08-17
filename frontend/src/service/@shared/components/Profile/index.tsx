@@ -47,20 +47,21 @@ function Image({
 }
 
 interface ProfileTextProps extends Partial<Pick<TextProps, 'size'>> {
+  className?: string;
   children?: string;
 }
 
-function Nickname({ size = 16, children }: ProfileTextProps) {
+function Nickname({ className, size = 16, children }: ProfileTextProps) {
   return (
-    <Text className={styles.nickname} size={size} weight="bold">
+    <Text className={cn(className, styles.nickname)} size={size} weight="bold">
       {children}
     </Text>
   );
 }
 
-function Description({ size = 14, children }: ProfileTextProps) {
+function Description({ className, size = 14, children }: ProfileTextProps) {
   return (
-    <Text className={styles.description} size={size} weight="lighter">
+    <Text className={cn(className, styles.description)} size={size} weight="lighter">
       {children}
     </Text>
   );
@@ -73,6 +74,7 @@ interface ContainerProps extends Partial<FlexContainerProps> {
 }
 
 function ProfileContainer({
+  className,
   direction = 'column',
   justify,
   align,
@@ -87,7 +89,7 @@ function ProfileContainer({
 
   return (
     <FlexContainer
-      className={cn(styles.profileContainer, styles[`align-${textAlign}`])}
+      className={cn(className, styles.profileContainer, styles[`align-${textAlign}`])}
       direction={direction}
       justify={justify}
       align={align}
@@ -95,7 +97,7 @@ function ProfileContainer({
     >
       {profileImage}
 
-      <FlexContainer direction="column" justify="center" gap={textGap}>
+      <FlexContainer className={styles.text} direction="column" justify="center" gap={textGap}>
         {nickname}
         {description}
       </FlexContainer>

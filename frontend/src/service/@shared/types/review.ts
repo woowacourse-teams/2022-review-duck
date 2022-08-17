@@ -122,6 +122,7 @@ export type DeleteReviewFormResponse = null;
 export type DeleteReviewAnswerResponse = null;
 
 export interface UserProfile {
+  id: number;
   nickname: string;
   profileUrl: string;
 }

@@ -18,7 +18,9 @@ interface ContainerProps {
 const Container = ({ children }: ContainerProps) => {
   return (
     <header className={styles.header}>
-      <nav className={cn(pageStyles.container, styles.menuBar)}>{children}</nav>
+      <div className={styles.fixedContainer}>
+        <nav className={cn(pageStyles.container, styles.menuBar)}>{children}</nav>
+      </div>
     </header>
   );
 };
@@ -64,23 +66,35 @@ const Description = ({ children }: FormTextProps) => {
 };
 
 interface ChangeViewButtons {
-  viewMode: boolean;
+  displayMode: string;
+  reviewFormCode: string;
   onClickListView?: () => void;
   onClickSheetView?: () => void;
 }
 
-const ViewChangeButtons = ({ viewMode, onClickListView, onClickSheetView }: ChangeViewButtons) => {
+const ViewChangeButtons = ({
+  reviewFormCode,
+  displayMode = 'list',
+  onClickListView,
+  onClickSheetView,
+}: ChangeViewButtons) => {
+  const isListMode = displayMode === 'list';
+
   return (
     <FlexContainer direction="row" gap="small" justify="center" align="center">
-      <Button theme={viewMode ? 'default' : 'outlined'} onClick={onClickListView}>
-        <Icon code="list" />
-        <span>목록형 보기</span>
-      </Button>
+      <Link to={`${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`}>
+        <Button theme={isListMode ? 'default' : 'outlined'} onClick={onClickListView}>
+          <Icon code="list" />
+          <span>목록형 보기</span>
+        </Button>
+      </Link>
 
-      <Button theme={viewMode ? 'default' : 'outlined'} onClick={onClickSheetView}>
-        <Icon code="table_view" />
-        <span>시트형 보기</span>
-      </Button>
+      <Link to={`${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}/sheet`}>
+        <Button theme={isListMode ? 'outlined' : 'default'} onClick={onClickSheetView}>
+          <Icon code="table_view" />
+          <span>시트형 보기</span>
+        </Button>
+      </Link>
     </FlexContainer>
   );
 };

@@ -58,7 +58,7 @@ function ReviewFormEditorPage() {
     let questionIndex = null;
 
     flushSync(() => {
-      questionIndex = addQuestion({ value: '' });
+      questionIndex = addQuestion({ value: '', description: '' });
     });
 
     if (questionIndex === null) return;

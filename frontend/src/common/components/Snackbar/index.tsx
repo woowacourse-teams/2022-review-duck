@@ -58,7 +58,7 @@ function Snackbar({
         <Icon className={styles.icon} type="outlined" code={icon} />
 
         <div className={styles.text}>
-          <Text className={styles.title} size={16} weight="bold">
+          <Text className={styles.title} size={18} weight="bold">
             {title}
           </Text>
           <Text className={styles.description} size={14}>

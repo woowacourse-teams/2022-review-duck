@@ -77,7 +77,7 @@ function useGetReviewFormAnswer(
   queryOptions?: UseQueryOptions<GetReviewFormAnswerResponse, ErrorResponse, ReviewFormAnswerList>,
 ) {
   return useQuery<GetReviewFormAnswerResponse, ErrorResponse, ReviewFormAnswerList>(
-    [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEWS, { reviewFormCode }],
+    [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEWS, { reviewFormCode, display }],
     () => reviewAPI.getFormAnswer(reviewFormCode, display),
     {
       ...queryOptions,

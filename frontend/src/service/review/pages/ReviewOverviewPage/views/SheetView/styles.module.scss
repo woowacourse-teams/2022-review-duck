@@ -1,0 +1,54 @@
+@import 'styles/@global.scss';
+
+.sheet-view {
+  text-align: left;
+  border-collapse: separate;
+
+  min-width: 100%;
+
+  th,
+  td {
+    border: {
+      bottom: 1px solid;
+      right: 1px solid;
+    }
+
+    border-color: $THEME_COLOR_STATUS_PRIMARY_100;
+    padding: 0.75rem;
+    min-width: 10vw;
+    line-height: 160%;
+  }
+
+  th,
+  td:first-child {
+    font-weight: bold;
+    color: $THEME_COLOR_STATUS_PRIMARY_600;
+  }
+
+  th:first-child,
+  td:first-child {
+    width: 15%;
+  }
+
+  tr:not(:only-child):hover {
+    background-color: $THEME_COLOR_STATUS_PRIMARY_100;
+  }
+}
+
+.questions {
+  position: sticky;
+  top: 6.5rem;
+  z-index: 5;
+
+  background-color: $GLOBAL_COLOR_WHITE_400;
+  backdrop-filter: blur(1rem);
+}
+
+.review-list {
+  td:first-child {
+    position: sticky;
+    left: 0px;
+    background-color: $GLOBAL_COLOR_WHITE_400;
+    backdrop-filter: blur(1rem);
+  }
+}

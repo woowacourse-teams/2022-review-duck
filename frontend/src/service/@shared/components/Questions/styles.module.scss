@@ -12,7 +12,7 @@
     padding: 0.25rem;
 
     .icon {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
     }
 
     &:hover {
@@ -22,6 +22,12 @@
 }
 
 .answerContainer {
+  &:not(:last-child) {
+    border-bottom: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
+    padding-bottom: 2rem;
+    margin-bottom: 1rem;
+  }
+
   .question {
     color: $THEME_COLOR_STATUS_PRIMARY_700;
   }

@@ -1,6 +1,9 @@
 @import 'styles/@global.scss';
 
 .layout {
+  position: relative;
+  display: inline-block;
+  min-width: 100%;
   min-height: 100vh;
   background-color: $THEME_COLOR_THEME_BACKGROUND_200;
 }
@@ -11,4 +14,8 @@
   padding: 0 1rem;
   height: 100%;
   margin: 0 auto;
+}
+
+.profile {
+  width: 5.75rem;
 }

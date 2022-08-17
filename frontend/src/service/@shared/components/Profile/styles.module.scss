@@ -6,7 +6,6 @@
 
   background-size: cover;
   background-position: center;
-  border-radius: $GLOBAL_BORDERRADIUS_MAX;
 
   &.size-small {
     width: 3rem;
@@ -27,12 +26,20 @@
   }
 
   &.size-large {
-    width: 6rem;
+    width: 5.75rem;
     height: 6rem;
 
     &.theme-rectangle {
-      height: 9rem;
+      height: 7.75rem;
     }
+  }
+
+  &.edge-round {
+    border-radius: $GLOBAL_BORDERRADIUS_MAX;
+  }
+
+  &.edge-pointed {
+    border-radius: $GLOBAL_BORDERRADIUS_LARGE;
   }
 }
 
@@ -55,5 +62,16 @@
 
   &.align-right {
     text-align: right;
+  }
+
+  .text {
+    width: 100%;
+
+    p {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      line-height: 140%;
+    }
   }
 }

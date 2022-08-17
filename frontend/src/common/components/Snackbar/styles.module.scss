@@ -45,15 +45,22 @@
   }
 
   .text {
-    min-width: 20rem;
+    width: 20rem;
   }
 
   .title {
     margin-bottom: 0.5rem;
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   .description {
     color: $THEME_COLOR_THEME_TEXT_100;
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
   .close {

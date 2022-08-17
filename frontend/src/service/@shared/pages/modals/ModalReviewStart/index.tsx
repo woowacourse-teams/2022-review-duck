@@ -47,7 +47,7 @@ function ModalReviewStart() {
             </Text>
 
             <Text className={styles.description} size={14}>
-              회고 폼을 생성하고 다른 사람들을 초대할 수 있어요!
+              회고 질문지를 생성하고 다른 사람들을 초대할 수 있어요!
             </Text>
           </div>
         </div>

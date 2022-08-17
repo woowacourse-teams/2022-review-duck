@@ -22,7 +22,7 @@ function CoverProfile({ image, title, description }: CoverProfileProps) {
   return (
     <Profile align="center" textAlign="center" textGap="medium">
       <Profile.Image src={image} />
-      <Profile.Nickname size={24}>{title}</Profile.Nickname>
+      <Profile.Nickname size={20}>{title}</Profile.Nickname>
       {description && <Profile.Description>{description}</Profile.Description>}
     </Profile>
   );

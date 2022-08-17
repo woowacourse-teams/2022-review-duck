@@ -11,6 +11,7 @@ import Icon from '../Icon';
 
 interface Props {
   className?: string;
+  centerDisabled?: boolean;
   children: React.ReactNode;
 }
 
@@ -20,7 +21,7 @@ interface controlVisible {
   next: boolean;
 }
 
-function ScrollPanel({ className, children }: Props) {
+function ScrollPanel({ className, centerDisabled, children }: Props) {
   const [controlHidden, setControlVisible] = useState<controlVisible>({
     previous: true,
     next: false,
@@ -61,7 +62,7 @@ function ScrollPanel({ className, children }: Props) {
         ? scrollLeft - childElementWidth.current
         : scrollLeft + childElementWidth.current;
 
-    const isMoveable = scrollWidth - clientWidth >= scrollLocation;
+    const isMoveable = scrollWidth - clientWidth + childElementWidth.current >= scrollLocation;
 
     if (!isMoveable) return;
 
@@ -87,7 +88,10 @@ function ScrollPanel({ className, children }: Props) {
         ref={scrollPanelRef}
         onScroll={handleChangeScroll}
       >
-        <div className={styles.correctScreen} ref={listRef}>
+        <div
+          className={cn(styles.correctScreen, { [styles.disabled]: centerDisabled })}
+          ref={listRef}
+        >
           {children}
         </div>
       </div>
