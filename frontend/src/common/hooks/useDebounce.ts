@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react';
 
-type CallbackFunction = (...rest: any[]) => void;
+type CallbackFunction = (...rest: any[]) => any;
 
 function useDebounce(callback: CallbackFunction, delay: number) {
   const timerRef = useRef<NodeJS.Timeout>();
@@ -11,7 +11,7 @@ function useDebounce(callback: CallbackFunction, delay: number) {
     [callback, delay],
   );
 
-  return (...rest: []) => {
+  return (...rest: []): any => {
     restRef.current = rest;
 
     clearTimeout(timerRef.current);
