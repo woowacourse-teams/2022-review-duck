@@ -175,7 +175,8 @@ export const DUMMY_REVIEW = {
     reviewFormTitle: '회고폼 제목',
     updatedAt: 160000,
     creator: {
-      nickname: '크리에이터',
+      id: 1,
+      nickname: '만든 사람',
       profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
     },
     isCreator: true,
@@ -183,10 +184,12 @@ export const DUMMY_REVIEW = {
       {
         id: 1,
         value: '질문 1',
+        description: '설명 1',
       },
       {
         id: 2,
         value: '질문 2',
+        description: '설명 2',
       },
     ],
   },
@@ -197,6 +200,7 @@ export const DUMMY_REVIEW = {
         question: {
           id: 1,
           value: '질문 1',
+          description: '설명 1',
         },
         answer: {
           id: 1,
@@ -207,7 +211,8 @@ export const DUMMY_REVIEW = {
       {
         question: {
           id: 2,
-          value: '질문 1',
+          value: '질문 2',
+          description: '설명 2',
         },
         answer: {
           id: 2,
@@ -223,6 +228,7 @@ export const DUMMY_REVIEW = {
       updatedAt: 100,
       isCreator: false,
       creator: {
+        id: 1,
         nickname: '유저1',
         profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
       },
@@ -231,6 +237,7 @@ export const DUMMY_REVIEW = {
           question: {
             id: 1,
             value: '질문 1',
+            description: '설명 1',
           },
           answer: {
             id: 1,
@@ -241,7 +248,8 @@ export const DUMMY_REVIEW = {
         {
           question: {
             id: 2,
-            value: '질문 1',
+            value: '질문 2',
+            description: '설명 2',
           },
           answer: {
             id: 2,
@@ -255,7 +263,8 @@ export const DUMMY_REVIEW = {
       updatedAt: 100,
       isCreator: false,
       creator: {
-        nickname: '유저1',
+        id: 2,
+        nickname: '유저2',
         profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
       },
       contents: [
@@ -263,6 +272,7 @@ export const DUMMY_REVIEW = {
           question: {
             id: 1,
             value: '질문 1',
+            description: '설명 1',
           },
           answer: {
             id: 1,
@@ -273,7 +283,8 @@ export const DUMMY_REVIEW = {
         {
           question: {
             id: 2,
-            value: '질문 1',
+            value: '질문 2',
+            description: '설명 2',
           },
           answer: {
             id: 2,

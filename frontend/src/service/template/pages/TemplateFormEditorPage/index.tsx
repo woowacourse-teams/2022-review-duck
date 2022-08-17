@@ -66,7 +66,7 @@ function TemplateFormEditorPage() {
     let questionIndex = null;
 
     flushSync(() => {
-      questionIndex = addQuestion({ value: '' });
+      questionIndex = addQuestion();
     });
 
     if (questionIndex === null) return;
