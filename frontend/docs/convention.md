@@ -177,8 +177,21 @@ useQuery<GetMyReviewFormsResponse, ErrorResponse>(
 
 ## CSS 스타일 관련
 
+* [ ] CSS Module 사용 시 스타일 시트 내에서 Sass 변수, 유틸리티 함수를 제외한, 다른 스타일 시트를 import를 하지 않는다.
+
+  * CSS Module에서 다른 스타일 시트를 import 할 시, 빌드 과정에서 import 된 스타일시트가 중복되어 작성됩니다.
+
+  * 예시
+
+    ```scss
+    @import './styles.scss';
+    
+    .classname {
+      ...
+    }
+
 - [x] 상위 컴포넌트의 스타일시트에서 자식 선택자를 통해 하위 컴포넌트의 Element를 선택하여 스타일을 추가할 수 없다.
-  
+
   - 예시 : 상위 페이지에서 Button 요소에 스타일을 추가한다.
     
     ```
@@ -200,13 +213,13 @@ useQuery<GetMyReviewFormsResponse, ErrorResponse>(
         background-color: green;
     }
     ```
-  
+
   - 이유 : 이런식으로 스타일을 내려줄 시 계층에 종속된 구조로 작성되어 컴포넌트의 유연성이 떨어질 것으로 생각됩니다.
-  
+
   ## 주석관련
-  
+
   - [ ] 페이지나 함수 등 규격을 새로 만들거나 사용방법에 대해서 팀원에게 글로 설명이 필요하다는 판단이 들 때는 함수 바로 위에 주석을 추가한다.
-  
+
   ```js
   /**
    * @author 돔하디 <zuzudnf@gmail.com>
