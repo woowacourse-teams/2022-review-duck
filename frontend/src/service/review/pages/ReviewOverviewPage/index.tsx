@@ -77,7 +77,7 @@ function ReviewOverViewPage() {
       <Header>
         <Header.FormInformation isLoading={!isContentLoaded} fallback={<Skeleton />}>
           <Header.Title>{reviewForm?.title}</Header.Title>
-          <Header.Description>{reviewForm?.info.creator.nickname}</Header.Description>
+          <Header.Description>크리에이터 : {reviewForm?.info.creator.nickname}</Header.Description>
         </Header.FormInformation>
 
         <Header.ViewChangeButtons displayMode={displayMode} reviewFormCode={reviewFormCode} />
