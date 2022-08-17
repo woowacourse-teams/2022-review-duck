@@ -54,10 +54,9 @@ function PageRoutes() {
       </Route>
 
       <Route path={PAGE_LIST.REVIEW_OVERVIEW}>
-        <Route element={<RequireAuth />}>
-          <Route index element={<ReviewOverviewPage />} />
-          <Route path=":reviewFormCode" element={<ReviewOverviewPage />} />
-        </Route>
+        <Route index element={<ReviewOverviewPage />} />
+        <Route path=":reviewFormCode" element={<ReviewOverviewPage />} />
+        <Route path=":reviewFormCode/:displayMode" element={<ReviewOverviewPage />} />
       </Route>
 
       <Route path={PAGE_LIST.AUTHORIZE} element={<Authorize />} />
