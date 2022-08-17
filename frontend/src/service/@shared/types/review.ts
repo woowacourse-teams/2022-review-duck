@@ -89,6 +89,14 @@ export interface CreateReviewAnswerRequest {
   }>;
 }
 
+export interface CreateFormByTemplateRequest {
+  templateId: number;
+  reviewFormTitle: string;
+  questions: Question[];
+}
+
+export type CreateFormByTemplateResponse = UpdateReviewFormResponse;
+
 export type CreateReviewAnswerResponse = null;
 
 export interface UpdateReviewFormRequest extends ReviewFormResponse {
