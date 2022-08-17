@@ -18,7 +18,6 @@ import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.service.MemberService;
-import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
@@ -108,8 +107,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             long templateId = saveTemplateAndGetId(accessToken1);
 
             // when, then
-            ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest("reviewFormTitle");
-            post("/api/templates/" + templateId + "/review-forms", request)
+            post("/api/templates/" + templateId + "/review-forms")
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
@@ -117,8 +115,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         @DisplayName("존재하지 않는 템플릿을 기반으로 회고 폼을 생성할 수 없다.")
         void invalidId() {
             // when, then
-            ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest("reviewFormTitle");
-            post("/api/templates/9999/review-forms", request, accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
+            post("/api/templates/9999/review-forms", accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
         }
 
     }
