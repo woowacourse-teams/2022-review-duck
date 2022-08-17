@@ -17,8 +17,9 @@ export const getAnswer = async (reviewId: number): Promise<ReviewType.GetReviewA
 
 export const getFormAnswer = async (
   reviewFormCode = '',
+  display = 'list',
 ): Promise<ReviewType.GetReviewFormAnswerResponse> => {
-  const { data } = await axiosInstance.get(API_URI.REVIEW.GET_FORM_ANSWER(reviewFormCode));
+  const { data } = await axiosInstance.get(API_URI.REVIEW.GET_FORM_ANSWER(reviewFormCode, display));
 
   return data;
 };
