@@ -27,5 +27,4 @@ public abstract class BaseDate {
     public void renewUpdatedAt() {
         updatedAt = LocalDateTime.now();
     }
-
 }

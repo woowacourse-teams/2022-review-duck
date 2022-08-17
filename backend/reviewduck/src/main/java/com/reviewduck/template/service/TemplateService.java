@@ -96,4 +96,8 @@ public class TemplateService {
             throw new AuthorizationException(message);
         }
     }
+
+    public void increaseUsedCount(Long templateId) {
+        templateRepository.increaseUsedCount(templateId);
+    }
 }

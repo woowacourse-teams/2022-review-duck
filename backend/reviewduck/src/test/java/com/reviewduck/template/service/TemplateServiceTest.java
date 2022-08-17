@@ -164,7 +164,6 @@ public class TemplateServiceTest {
                 () -> assertThat(templates.get(0)).isEqualTo(template2),
                 () -> assertThat(templates.get(1)).isEqualTo(template1)
             );
-
         }
     }
 
@@ -199,7 +198,6 @@ public class TemplateServiceTest {
                 () -> assertThat(templates.get(0)).isEqualTo(template2),
                 () -> assertThat(templates.get(1)).isEqualTo(template1)
             );
-
         }
     }
 
