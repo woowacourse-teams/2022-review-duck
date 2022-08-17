@@ -66,9 +66,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             // save reviewForm
             String reviewTitle = "title";
             List<ReviewFormQuestionCreateRequest> questions = List.of(
-                new ReviewFormQuestionCreateRequest("question1"),
-                new ReviewFormQuestionCreateRequest("question2"),
-                new ReviewFormQuestionCreateRequest("question3"));
+                new ReviewFormQuestionCreateRequest("question1", "description1"),
+                new ReviewFormQuestionCreateRequest("question2", "description2"),
+                new ReviewFormQuestionCreateRequest("question3", "description3"));
             String code = createReviewFormAndGetCode(accessToken1, reviewTitle, questions);
 
             // save review
@@ -82,9 +82,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
             // delete question2 and add question4 of reviewForm
             List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
-                new ReviewFormQuestionUpdateRequest(1L, "new question1"),
-                new ReviewFormQuestionUpdateRequest(3L, "new question3"),
-                new ReviewFormQuestionUpdateRequest(null, "new question4"));
+                new ReviewFormQuestionUpdateRequest(1L, "new question1","new description1"),
+                new ReviewFormQuestionUpdateRequest(3L, "new question3","new description3"),
+                new ReviewFormQuestionUpdateRequest(null, "new question4","new description4"));
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewTitle, updateQuestions);
             put("/api/review-forms/" + code, updateRequest, accessToken1);
 
@@ -152,8 +152,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             // given
             // 회고 폼 등록
             List<ReviewFormQuestionCreateRequest> questions = List.of(
-                new ReviewFormQuestionCreateRequest("question1"),
-                new ReviewFormQuestionCreateRequest("question2"));
+                new ReviewFormQuestionCreateRequest("question1", "description1"),
+                new ReviewFormQuestionCreateRequest("question2", "description2"));
             String reviewFormCode = createReviewFormAndGetCode(accessToken1, "title", questions);
 
             // 회고 등록
@@ -175,9 +175,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("로그인하지 않은 상태로 내가 작성한 회고를 모두 조회할 수 없다")
+        @DisplayName("로그인하지 않은 상태로 개인이 작성한 회고를 모두 조회할 수 있다")
         void withoutLogin() {
-            get("/api/reviews?member=1").statusCode(HttpStatus.UNAUTHORIZED.value());
+            get("/api/reviews?member=1").statusCode(HttpStatus.OK.value());
         }
     }
 
@@ -307,8 +307,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         // save ReviewForm
         String reviewTitle = "title";
         List<ReviewFormQuestionCreateRequest> questions = List.of(
-            new ReviewFormQuestionCreateRequest("question1"),
-            new ReviewFormQuestionCreateRequest("question2"));
+            new ReviewFormQuestionCreateRequest("question1", "description1"),
+            new ReviewFormQuestionCreateRequest("question2", "description2"));
         String code = createReviewFormAndGetCode(accessToken, reviewTitle, questions);
 
         // save Review

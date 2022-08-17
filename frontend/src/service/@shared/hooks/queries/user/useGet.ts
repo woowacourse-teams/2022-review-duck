@@ -16,8 +16,6 @@ function useGetMyReviewForms(
     [QUERY_KEY.DATA.REVIEW_FORM, QUERY_KEY.API.GET_MY_REVIEW_FORMS],
     () => userAPI.getMyReviewForms(),
     {
-      suspense: true,
-      useErrorBoundary: false,
       ...queryOptions,
     },
   );
@@ -28,8 +26,6 @@ function useGetMyReviews(queryOptions?: UseQueryOptions<GetMyReviewsResponse, Er
     [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_MY_REVIEWS],
     () => userAPI.getMyReviews(),
     {
-      suspense: true,
-      useErrorBoundary: false,
       ...queryOptions,
     },
   );

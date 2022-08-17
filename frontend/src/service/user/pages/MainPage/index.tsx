@@ -4,6 +4,8 @@ import useModal from 'common/hooks/useModal';
 
 import { Button, Icon, Text, TransitionDiv } from 'common/components';
 
+import ScrollPanel from 'common/components/ScrollPanel';
+
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
 import NoResult from 'service/@shared/components/NoResult';
 import QuestionCard from 'service/@shared/components/QuestionCard';
@@ -14,7 +16,6 @@ import { MODAL_LIST } from 'service/@shared/constants';
 
 function MainPage() {
   const { showModal } = useModal();
-
   const onClickReviewStart = () => {
     showModal(MODAL_LIST.REVIEW_START);
   };
@@ -92,6 +93,18 @@ function MainPage() {
       <LayoutContainer>
         <NoResult size="large">준비 중</NoResult>
       </LayoutContainer>
+
+      <ScrollPanel>
+        <div className={styles.cardTest}></div>
+        <div className={styles.cardTest}></div>
+        <div className={styles.cardTest}></div>
+        <div className={styles.cardTest}></div>
+        <div className={styles.cardTest}></div>
+        <div className={styles.cardTest}></div>
+        <div className={styles.cardTest}></div>
+        <div className={styles.cardTest}></div>
+        <div className={styles.cardTest}></div>
+      </ScrollPanel>
     </>
   );
 }

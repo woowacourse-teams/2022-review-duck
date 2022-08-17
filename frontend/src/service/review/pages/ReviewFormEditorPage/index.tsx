@@ -31,14 +31,12 @@ function ReviewFormEditorPage() {
     isSubmitLoading,
     isLoadError,
     loadError,
-    trimQuestions,
     submitReviewForm,
   } = useReviewFormEditor(reviewFormCode);
 
-  const [reviewTitle, setReviewTitle] = useState(initialReviewForm.reviewTitle);
-  const { questions, addQuestion, removeQuestion, updateQuestion } = useQuestions(
-    initialReviewForm.questions,
-  );
+  const [reviewFormTitle, setReviewTitle] = useState(initialReviewForm.title);
+  const { questions, addQuestion, removeQuestion, updateQuestion, removeBlankQuestions } =
+    useQuestions(initialReviewForm.questions);
 
   const { showSnackbar } = useSnackbar();
   const redirectUri = searchParams.get('redirect');
@@ -60,7 +58,7 @@ function ReviewFormEditorPage() {
     let questionIndex = null;
 
     flushSync(() => {
-      questionIndex = addQuestion({ questionValue: '' });
+      questionIndex = addQuestion({ value: '' });
     });
 
     if (questionIndex === null) return;
@@ -69,7 +67,7 @@ function ReviewFormEditorPage() {
   };
 
   const handleUpdateQuestion = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const updatedQuestion = { questionValue: event.target.value };
+    const updatedQuestion = { value: event.target.value };
 
     updateQuestion(index, updatedQuestion);
   };
@@ -88,17 +86,17 @@ function ReviewFormEditorPage() {
   const handleSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const submitQuestions = trimQuestions(questions);
+    const submitQuestions = removeBlankQuestions(questions);
 
     try {
-      validateReviewForm(reviewTitle, submitQuestions);
+      validateReviewForm(reviewFormTitle, submitQuestions);
     } catch (error) {
       alert(getErrorMessage(error));
       return;
     }
 
     submitReviewForm.mutate(
-      { reviewTitle, reviewFormCode, questions: submitQuestions },
+      { reviewFormTitle, reviewFormCode, questions: submitQuestions },
       {
         onSuccess: ({ reviewFormCode }) => {
           showSnackbar({
@@ -132,13 +130,13 @@ function ReviewFormEditorPage() {
 
         <div className={cn(styles.previewContainer, 'flex-container column')}>
           {questions.map(
-            ({ questionValue, questionId, listKey }, index) =>
-              questionValue && (
+            (question, index) =>
+              question.value && (
                 <QuestionCard
-                  key={questionId || listKey}
+                  key={question.key}
                   numbering={index + 1}
                   type="text"
-                  title={questionValue}
+                  title={question.value}
                   description="질문 설명이 이곳에 표기됩니다."
                 />
               ),
@@ -152,16 +150,16 @@ function ReviewFormEditorPage() {
             theme="underline"
             size="large"
             placeholder="회고의 제목을 입력해주세요."
-            value={reviewTitle}
+            value={reviewFormTitle}
             onChange={handleChangeReviewTitle}
           />
 
           <div className={cn(styles.itemContainer, 'flex-container column')}>
-            {questions.map(({ questionId, listKey, questionValue }, index) => (
+            {questions.map((question, index) => (
               <QuestionEditor
-                key={questionId || listKey}
+                key={question.key}
                 numbering={index + 1}
-                value={questionValue}
+                value={question.value}
                 onChange={handleUpdateQuestion(index)}
                 onAddQuestion={handleAddQuestion}
                 onDeleteQuestion={handleDeleteQuestion(index)}

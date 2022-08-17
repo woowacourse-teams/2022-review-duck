@@ -58,7 +58,7 @@ public class TemplateController {
     @Operation(summary = "템플릿을 기반으로 회고 폼을 생성한다.")
     @PostMapping("/{templateId}/review-forms")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReviewFormCodeResponse createReviewFormFromTemplate(@AuthenticationPrincipal Member member,
+    public ReviewFormCodeResponse createReviewFormByTemplate(@AuthenticationPrincipal Member member,
         @PathVariable Long templateId) {
 
         info("/api/templates/" + templateId + "/review-forms", "POST", "");
@@ -106,7 +106,7 @@ public class TemplateController {
     public MyTemplatesResponse findByMemberId(@AuthenticationPrincipal Member member,
         @RequestParam(value = "member") String id) {
 
-        info("/api/templates/me?member=" + id, "GET", "");
+        info("/api/templates?member=" + id, "GET", "");
 
         List<Template> templates = templateService.findBySocialId(id);
 

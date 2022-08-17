@@ -7,25 +7,7 @@ import { Text } from 'common/components';
 import styles from './styles.module.scss';
 
 function QuestionContent({ questions }: Record<'questions', Question[]>) {
-  return (
-    <div className={styles.answerContainer}>
-      {questions.map((question: Question, index: number) => (
-        <div className={styles.answer} key={index}>
-          <h5>{`${index + 1}. ${question.questionValue}`}</h5>
-
-          {question.questionDescription && (
-            <Text size={12} weight="lighter">
-              {question.questionDescription}
-            </Text>
-          )}
-
-          {question.answerValue && (
-            <div className={styles.answerContent}>{question.answerValue}</div>
-          )}
-        </div>
-      ))}
-    </div>
-  );
+  return <></>;
 }
 
 QuestionContent.propTypes = {

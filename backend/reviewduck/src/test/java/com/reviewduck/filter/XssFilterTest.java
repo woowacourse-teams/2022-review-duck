@@ -35,8 +35,8 @@ public class XssFilterTest extends AcceptanceTest {
 
         String XssQuestionValue = "<script>alert(\"xss\")</script>; 👍";
         List<ReviewFormQuestionCreateRequest> questions = List.of(
-            new ReviewFormQuestionCreateRequest(XssQuestionValue),
-            new ReviewFormQuestionCreateRequest("question2"));
+            new ReviewFormQuestionCreateRequest(XssQuestionValue, XssQuestionValue),
+            new ReviewFormQuestionCreateRequest("question2", "description2"));
         ReviewFormCreateRequest request = new ReviewFormCreateRequest("title", questions);
 
         // when

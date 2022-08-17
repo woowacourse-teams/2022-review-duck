@@ -36,13 +36,19 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     private boolean isAuthenticationNotRequired(HttpServletRequest request) {
-        boolean isTemplatesFindRequest = request.getRequestURI().equals("/api/templates")
-            && request.getParameterMap().containsKey("filter");
-        
-        boolean isTemplateFindRequest = request.getRequestURI().matches("/api/templates/[0-9]+");
+        boolean isTemplateFindRequest = request.getRequestURI().matches("/api/templates.*");
 
-        return (isTemplatesFindRequest || isTemplateFindRequest)
-            && request.getMethod().equals(HttpMethod.GET.toString());
+        boolean isMemberReviewFormFindRequest =
+            request.getRequestURI().matches("/api/review-forms") && request.getParameterMap().containsKey("member");
+
+        boolean isMemberReviewFindRequest =
+            request.getRequestURI().matches("/api/reviews") && request.getParameterMap().containsKey("member");
+
+        boolean isMemberFindRequest = request.getRequestURI().matches("/api/members/[0-9]+");
+
+        return
+            (isMemberReviewFormFindRequest || isTemplateFindRequest || isMemberReviewFindRequest || isMemberFindRequest)
+                && request.getMethod().equals(HttpMethod.GET.toString());
     }
 
     public void validateToken(HttpServletRequest request) {

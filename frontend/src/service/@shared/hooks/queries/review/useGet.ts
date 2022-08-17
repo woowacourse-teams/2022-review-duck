@@ -1,58 +1,104 @@
 import { useQuery, UseQueryOptions } from 'react-query';
 
-import { ErrorResponse } from 'service/@shared/types';
 import {
+  ErrorResponse,
+  GetReviewAnswerResponse,
+  GetReviewFormAnswerResponse,
   GetReviewFormResponse,
-  GetReviewResponse,
-  GetReviewsResponse,
+  ReviewAnswer,
+  ReviewForm,
+  ReviewFormAnswerList,
 } from 'service/@shared/types';
+import 'service/@shared/types';
 
-import reviewAPI from 'service/@shared/api/review';
+import { getElapsedTimeText } from 'service/@shared/utils';
+
+import { reviewAPI } from 'service/@shared/api';
 import { QUERY_KEY } from 'service/@shared/constants';
 
 function useGetReviewForm(
   reviewFormCode: string,
-  queryOptions?: UseQueryOptions<GetReviewFormResponse, ErrorResponse>,
+  queryOptions?: UseQueryOptions<GetReviewFormResponse, ErrorResponse, ReviewForm>,
 ) {
-  return useQuery<GetReviewFormResponse, ErrorResponse>(
+  return useQuery<GetReviewFormResponse, ErrorResponse, ReviewForm>(
     [QUERY_KEY.DATA.REVIEW_FORM, QUERY_KEY.API.GET_REVIEW_FORM, { reviewFormCode }],
     () => reviewAPI.getForm(reviewFormCode),
     {
-      suspense: true,
-      useErrorBoundary: false,
       ...queryOptions,
+
+      select: (data) => ({
+        title: data.reviewFormTitle,
+        questions: data.questions,
+        info: {
+          creator: data.creator,
+          isSelf: data.isCreator,
+          updateDate: getElapsedTimeText(data.updatedAt),
+        },
+      }),
     },
   );
 }
 
-function useGetReviews(
-  reviewFormCode: string,
-  queryOptions?: UseQueryOptions<GetReviewsResponse, ErrorResponse>,
-) {
-  return useQuery<GetReviewsResponse, ErrorResponse>(
-    [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEWS, { reviewFormCode }],
-    () => reviewAPI.getReviews(reviewFormCode),
-    {
-      suspense: true,
-      useErrorBoundary: false,
-      ...queryOptions,
-    },
-  );
-}
-
-function useGetReview(
+function useGetReviewAnswer(
   reviewId: number,
-  queryOptions?: UseQueryOptions<GetReviewResponse, ErrorResponse>,
+  queryOptions?: UseQueryOptions<GetReviewAnswerResponse, ErrorResponse, ReviewAnswer>,
 ) {
-  return useQuery<GetReviewResponse, ErrorResponse>(
+  return useQuery<GetReviewAnswerResponse, ErrorResponse, ReviewAnswer>(
     [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEW, { reviewId }],
-    () => reviewAPI.getReview(reviewId),
+    () => reviewAPI.getAnswer(reviewId),
     {
-      suspense: true,
-      useErrorBoundary: false,
       ...queryOptions,
+
+      select: (data) => ({
+        id: data.id,
+        questions: data.contents.map((content) => ({
+          id: content.question.id,
+          value: content.question.value,
+          description: content.question.description,
+          answer: content.answer,
+        })),
+        info: {
+          creator: data.creator,
+          isSelf: data.isCreator,
+          updateDate: getElapsedTimeText(data.updatedAt),
+        },
+      }),
     },
   );
 }
 
-export { useGetReviewForm, useGetReviews, useGetReview };
+interface UseGetReviewFormAnswer {
+  reviewFormCode: string;
+  display?: string;
+}
+
+function useGetReviewFormAnswer(
+  { reviewFormCode, display }: UseGetReviewFormAnswer,
+  queryOptions?: UseQueryOptions<GetReviewFormAnswerResponse, ErrorResponse, ReviewFormAnswerList>,
+) {
+  return useQuery<GetReviewFormAnswerResponse, ErrorResponse, ReviewFormAnswerList>(
+    [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEWS, { reviewFormCode }],
+    () => reviewAPI.getFormAnswer(reviewFormCode, display),
+    {
+      ...queryOptions,
+
+      select: (data) =>
+        data.map((review) => ({
+          id: review.id,
+          questions: review.contents.map((content) => ({
+            id: content.question.id,
+            value: content.question.value,
+            description: content.question.description,
+            answer: content.answer,
+          })),
+          info: {
+            creator: review.creator,
+            isSelf: review.isCreator,
+            updateDate: getElapsedTimeText(review.updatedAt),
+          },
+        })),
+    },
+  );
+}
+
+export { useGetReviewForm, useGetReviewFormAnswer, useGetReviewAnswer };

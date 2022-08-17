@@ -21,4 +21,6 @@ public interface ReviewFormRepository extends JpaRepository<ReviewForm, Long> {
     @Modifying
     @Query("update ReviewForm r set r.isActive = false where r.id = :id")
     void delete(Long id);
+
+    List<ReviewForm> findAllByMember(Member member);
 }

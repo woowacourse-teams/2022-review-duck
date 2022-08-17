@@ -51,7 +51,14 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     private boolean canAccessWithoutLogin(HttpServletRequest request) {
-        List<String> regexes = List.of("/api/review-forms/\\w{8}/reviews","/api/templates", "/api/templates/[0-9]+" );
+        List<String> regexes = List.of(
+            "/api/review-forms/\\w{8}/reviews",
+            "/api/templates",
+            "/api/templates/[0-9]+",
+            "/api/reviews",
+            "/api/review-forms",
+            "/api/members/[0-9]+"
+        );
 
         return regexes.stream().anyMatch(regex -> request.getRequestURI().matches(regex))
             && Objects.isNull(request.getHeader(HttpHeaders.AUTHORIZATION));

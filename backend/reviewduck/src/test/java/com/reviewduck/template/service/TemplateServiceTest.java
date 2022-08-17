@@ -61,8 +61,9 @@ public class TemplateServiceTest {
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             List<TemplateQuestion> expected = convertRequestToQuestions(questions);
 
@@ -95,8 +96,9 @@ public class TemplateServiceTest {
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             List<TemplateQuestion> expected = convertRequestToQuestions(questions);
             Template template = null;
@@ -143,12 +145,12 @@ public class TemplateServiceTest {
             // given
             // create template
             List<TemplateQuestionCreateRequest> questions1 = List.of(
-                new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             List<TemplateQuestionCreateRequest> questions2 = List.of(
-                new TemplateQuestionCreateRequest("question3"),
-                new TemplateQuestionCreateRequest("question4"));
+                new TemplateQuestionCreateRequest("question3", "description3"),
+                new TemplateQuestionCreateRequest("question4", "description4"));
 
             Template template1 = saveTemplate(member1, "title1", "description1", questions1);
             Template template2 = saveTemplate(member1, "title2", "description2", questions2);
@@ -176,12 +178,12 @@ public class TemplateServiceTest {
             // given
             // create template
             List<TemplateQuestionCreateRequest> questions1 = List.of(
-                new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             List<TemplateQuestionCreateRequest> questions2 = List.of(
-                new TemplateQuestionCreateRequest("question3"),
-                new TemplateQuestionCreateRequest("question4"));
+                new TemplateQuestionCreateRequest("question3", "description3"),
+                new TemplateQuestionCreateRequest("question4", "description4"));
 
             Template template1 = saveTemplate(member1, "title1", "description1", questions1);
             Template template2 = saveTemplate(member1, "title2", "description2", questions2);
@@ -211,18 +213,21 @@ public class TemplateServiceTest {
             // given
             String templateTitle1 = "title1";
             String templateDescription1 = "description1";
-            List<TemplateQuestionCreateRequest> questions1 = List.of(new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions1 = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             String templateTitle2 = "title2";
             String templateDescription2 = "description2";
-            List<TemplateQuestionCreateRequest> questions2 = List.of(new TemplateQuestionCreateRequest("question3"),
-                new TemplateQuestionCreateRequest("question3"));
+            List<TemplateQuestionCreateRequest> questions2 = List.of(
+                new TemplateQuestionCreateRequest("question3", "description3"),
+                new TemplateQuestionCreateRequest("question4", "description4"));
 
             String templateTitle3 = "title3";
             String templateDescription3 = "description3";
-            List<TemplateQuestionCreateRequest> questions3 = List.of(new TemplateQuestionCreateRequest("question5"),
-                new TemplateQuestionCreateRequest("question6"));
+            List<TemplateQuestionCreateRequest> questions3 = List.of(
+                new TemplateQuestionCreateRequest("question5", "description5"),
+                new TemplateQuestionCreateRequest("question6", "description6"));
 
             saveTemplate(member1, templateTitle1, templateDescription1, questions1);
             saveTemplate(member2, templateTitle2, templateDescription2, questions2);
@@ -232,7 +237,7 @@ public class TemplateServiceTest {
             List<Template> myTemplates = templateService.findBySocialId(member1.getSocialId());
 
             List<TemplateQuestion> expectedTemplateQuestions = questions3.stream()
-                .map(questionUpdateRequest -> new TemplateQuestion(questionUpdateRequest.getValue(), ""))
+                .map(request -> new TemplateQuestion(request.getValue(), request.getDescription()))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -277,22 +282,25 @@ public class TemplateServiceTest {
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
 
             // when
             List<TemplateQuestionUpdateRequest> newQuestions = List.of(
-                new TemplateQuestionUpdateRequest(1L, "new question1"),
-                new TemplateQuestionUpdateRequest(2L, "question2"),
-                new TemplateQuestionUpdateRequest(null, "question3"));
+                new TemplateQuestionUpdateRequest(1L, "new question1", "new description1"),
+                new TemplateQuestionUpdateRequest(2L, "question2", "description2"),
+                new TemplateQuestionUpdateRequest(null, "question3", "description3"));
 
             templateService.update(member1, template.getId(),
                 new TemplateUpdateRequest("new title", "new description", newQuestions));
 
             List<TemplateQuestion> expectedTemplateQuestions = newQuestions.stream()
-                .map(questionUpdateRequest -> new TemplateQuestion(questionUpdateRequest.getValue(), ""))
+                .map(questionUpdateRequest -> new TemplateQuestion(
+                    questionUpdateRequest.getValue(),
+                    questionUpdateRequest.getDescription()))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -322,16 +330,17 @@ public class TemplateServiceTest {
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
 
             // when
             List<TemplateQuestionUpdateRequest> newQuestions = List.of(
-                new TemplateQuestionUpdateRequest(1L, "new question1"),
-                new TemplateQuestionUpdateRequest(2L, "question2"),
-                new TemplateQuestionUpdateRequest(null, "question3"));
+                new TemplateQuestionUpdateRequest(1L, "new question1", "new description1"),
+                new TemplateQuestionUpdateRequest(2L, "question2", "description2"),
+                new TemplateQuestionUpdateRequest(null, "question3", "description3"));
             TemplateUpdateRequest updateRequest = new TemplateUpdateRequest("new title", "new description",
                 newQuestions);
 
@@ -365,8 +374,9 @@ public class TemplateServiceTest {
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
 
@@ -386,8 +396,9 @@ public class TemplateServiceTest {
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
 
             Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
 
@@ -409,7 +420,7 @@ public class TemplateServiceTest {
 
     private List<TemplateQuestion> convertRequestToQuestions(List<TemplateQuestionCreateRequest> questions) {
         List<TemplateQuestion> expected = questions.stream()
-            .map(questionRequest -> new TemplateQuestion(questionRequest.getValue(), ""))
+            .map(questionRequest -> new TemplateQuestion(questionRequest.getValue(), questionRequest.getDescription()))
             .collect(Collectors.toUnmodifiableList());
 
         int index = 0;

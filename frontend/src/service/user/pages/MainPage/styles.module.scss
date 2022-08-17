@@ -17,7 +17,7 @@
     display: grid;
     grid-template-columns: 29% 65%;
     gap: 13%;
-    padding: 2rem 0;
+    padding: 2rem 1rem;
     overflow: hidden;
 
     .left-container {
@@ -87,4 +87,12 @@
       }
     }
   }
+}
+
+.card-test {
+  width: 300px;
+  height: 380px;
+  border-radius: $GLOBAL_BORDERRADIUS_XLARGE;
+  background-color: $THEME_COLOR_THEME_BACKGROUND_200;
+  margin-right: 1.5rem;
 }

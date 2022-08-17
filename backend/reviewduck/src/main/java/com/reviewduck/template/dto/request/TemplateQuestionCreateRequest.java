@@ -16,4 +16,7 @@ public class TemplateQuestionCreateRequest {
 
     @NotNull(message = "템플릿의 질문 목록 생성 중 오류가 발생했습니다.")
     private String value;
+
+    @NotNull(message = "템플릿의 질문 설명 생성 중 오류가 발생했습니다.")
+    private String description;
 }

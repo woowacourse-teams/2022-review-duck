@@ -78,11 +78,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("로그인하지 않고 사용자 정보를 조회할 수 없다.")
-        void failToFindMyMemberInfo() {
+        @DisplayName("로그인하지 않고 사용자 정보를 조회할 수 있다.")
+        void findMemberInfoWithoutLogin() {
             // when, then
-            get("/api/members/me")
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+            get("/api/members/1")
+                .statusCode(HttpStatus.OK.value());
         }
 
         @Test

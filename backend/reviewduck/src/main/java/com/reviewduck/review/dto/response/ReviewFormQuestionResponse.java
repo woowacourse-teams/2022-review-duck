@@ -1,7 +1,6 @@
 package com.reviewduck.review.dto.response;
 
 import com.reviewduck.review.domain.ReviewFormQuestion;
-import com.reviewduck.template.domain.TemplateQuestion;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -13,12 +12,12 @@ public class ReviewFormQuestionResponse {
 
     private Long id;
     private String value;
+    private String description;
 
     public static ReviewFormQuestionResponse from(ReviewFormQuestion reviewFormQuestion) {
-        return new ReviewFormQuestionResponse(reviewFormQuestion.getId(), reviewFormQuestion.getValue());
-    }
-
-    public static ReviewFormQuestionResponse from(TemplateQuestion question) {
-        return new ReviewFormQuestionResponse(question.getId(), question.getValue());
+        return new ReviewFormQuestionResponse(
+            reviewFormQuestion.getId(),
+            reviewFormQuestion.getValue(),
+            reviewFormQuestion.getDescription());
     }
 }

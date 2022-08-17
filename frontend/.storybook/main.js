@@ -15,6 +15,7 @@ module.exports = {
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
     'storybook-addon-root-attribute/register',
+    '@storybook/addon-postcss',
   ],
   framework: '@storybook/react',
   core: {
@@ -25,11 +26,6 @@ module.exports = {
     config.resolve.modules = [...(config.resolve.modules || []), path.resolve(__dirname, '../src')];
     config.plugins.push(
       new webpack.EnvironmentPlugin(process.env),
-      new webpack.LoaderOptionsPlugin({
-        options: {
-          postcss: [autoprefixer()],
-        },
-      }),
       new MiniCssExtractPlugin({ linkType: false, filename: 'css/[name].[contenthash].css' }),
     );
 
