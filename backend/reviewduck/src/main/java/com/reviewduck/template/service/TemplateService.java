@@ -33,7 +33,7 @@ public class TemplateService {
     public Template save(Member member, TemplateCreateRequest createRequest) {
 
         List<TemplateQuestion> questions = createRequest.getQuestions().stream()
-            .map(request -> templateQuestionService.save(request.getValue(), ""))
+            .map(request -> templateQuestionService.save(request.getValue(), request.getDescription()))
             .collect(Collectors.toUnmodifiableList());
 
         Template template = new Template(member,
@@ -73,7 +73,7 @@ public class TemplateService {
             .map(request -> templateQuestionService.saveOrUpdateQuestion(
                 request.getId(),
                 request.getValue(),
-                ""))
+                request.getDescription()))
             .collect(Collectors.toUnmodifiableList());
 
         template.update(templateUpdateRequest.getTemplateTitle(),

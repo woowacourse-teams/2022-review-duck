@@ -18,7 +18,6 @@ import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.service.MemberService;
-import com.reviewduck.review.dto.request.ReviewFormCreateFromTemplateRequest;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
@@ -58,8 +57,9 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             // given
             String templateTitle = "title";
             String templateDescription = "test description";
-            List<TemplateQuestionCreateRequest> questions = List.of(new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
             TemplateCreateRequest request = new TemplateCreateRequest(templateTitle, templateDescription, questions);
 
             // when, then
@@ -73,8 +73,9 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             // given
             String templateTitle = "title";
             String templateDescription = "test description";
-            List<TemplateQuestionCreateRequest> questions = List.of(new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+            List<TemplateQuestionCreateRequest> questions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
             TemplateCreateRequest request = new TemplateCreateRequest(templateTitle, templateDescription, questions);
 
             // when, then
@@ -106,8 +107,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             long templateId = saveTemplateAndGetId(accessToken1);
 
             // when, then
-            ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest("reviewFormTitle");
-            post("/api/templates/" + templateId + "/review-forms", request)
+            post("/api/templates/" + templateId + "/review-forms")
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
@@ -115,8 +115,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         @DisplayName("존재하지 않는 템플릿을 기반으로 회고 폼을 생성할 수 없다.")
         void invalidId() {
             // when, then
-            ReviewFormCreateFromTemplateRequest request = new ReviewFormCreateFromTemplateRequest("reviewFormTitle");
-            post("/api/templates/9999/review-forms", request, accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
+            post("/api/templates/9999/review-forms", accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
         }
 
     }
@@ -227,8 +226,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             String templateTitle1 = "title1";
             String templateDescription1 = "test description1";
             List<TemplateQuestionCreateRequest> questions1 = List.of(
-                new TemplateQuestionCreateRequest("question1"),
-                new TemplateQuestionCreateRequest("question2"));
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
             TemplateCreateRequest request1 = new TemplateCreateRequest(templateTitle1, templateDescription1,
                 questions1);
             post("/api/templates", request1, accessToken1);
@@ -236,8 +235,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             String templateTitle2 = "title2";
             String templateDescription2 = "test description2";
             List<TemplateQuestionCreateRequest> questions2 = List.of(
-                new TemplateQuestionCreateRequest("question3"),
-                new TemplateQuestionCreateRequest("question4"));
+                new TemplateQuestionCreateRequest("question3", "description3"),
+                new TemplateQuestionCreateRequest("question4", "description4"));
             TemplateCreateRequest request2 = new TemplateCreateRequest(templateTitle2, templateDescription2,
                 questions2);
             post("/api/templates", request2, accessToken2);
@@ -245,8 +244,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             String templateTitle3 = "title3";
             String templateDescription3 = "test description3";
             List<TemplateQuestionCreateRequest> questions3 = List.of
-                (new TemplateQuestionCreateRequest("question5"),
-                    new TemplateQuestionCreateRequest("question6"));
+                (new TemplateQuestionCreateRequest("question5", "description5"),
+                    new TemplateQuestionCreateRequest("question6", "description6"));
             TemplateCreateRequest request3 = new TemplateCreateRequest(templateTitle3, templateDescription3,
                 questions3);
             post("/api/templates", request3, accessToken1);
@@ -299,9 +298,9 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             String newTemplateTitle = "new title";
             String newTemplateDescription = "new test description";
             List<TemplateQuestionUpdateRequest> newQuestions = List.of(
-                new TemplateQuestionUpdateRequest(1L, "new question1"),
-                new TemplateQuestionUpdateRequest(2L, "question2"),
-                new TemplateQuestionUpdateRequest(null, "question3")
+                new TemplateQuestionUpdateRequest(1L, "new question1", "new description1"),
+                new TemplateQuestionUpdateRequest(2L, "question2", "description2"),
+                new TemplateQuestionUpdateRequest(null, "question3", "description3")
             );
             TemplateUpdateRequest updateRequest = new TemplateUpdateRequest(newTemplateTitle, newTemplateDescription,
                 newQuestions);
@@ -319,9 +318,9 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             String newTemplateTitle = "new title";
             String newTemplateDescription = "new test description";
             List<TemplateQuestionUpdateRequest> newQuestions = List.of(
-                new TemplateQuestionUpdateRequest(1L, "new question1"),
-                new TemplateQuestionUpdateRequest(2L, "question2"),
-                new TemplateQuestionUpdateRequest(null, "question3")
+                new TemplateQuestionUpdateRequest(1L, "new question1", "new description1"),
+                new TemplateQuestionUpdateRequest(2L, "question2", "description2"),
+                new TemplateQuestionUpdateRequest(null, "question3", "description3")
             );
             TemplateUpdateRequest updateRequest = new TemplateUpdateRequest(newTemplateTitle, newTemplateDescription,
                 newQuestions);
@@ -340,9 +339,9 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             String newTemplateTitle = "new title";
             String newTemplateDescription = "new test description";
             List<TemplateQuestionUpdateRequest> newQuestions = List.of(
-                new TemplateQuestionUpdateRequest(1L, "new question1"),
-                new TemplateQuestionUpdateRequest(2L, "question2"),
-                new TemplateQuestionUpdateRequest(null, "question3")
+                new TemplateQuestionUpdateRequest(1L, "new question1", "new description1"),
+                new TemplateQuestionUpdateRequest(2L, "question2", "description2"),
+                new TemplateQuestionUpdateRequest(null, "question3", "description3")
             );
             TemplateUpdateRequest updateRequest = new TemplateUpdateRequest(newTemplateTitle, newTemplateDescription,
                 newQuestions);
@@ -409,8 +408,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         String templateTitle = "title";
         String description = "test description";
         List<TemplateQuestionCreateRequest> questions = List.of(
-            new TemplateQuestionCreateRequest("question1"),
-            new TemplateQuestionCreateRequest("question2"));
+            new TemplateQuestionCreateRequest("question1", "description1"),
+            new TemplateQuestionCreateRequest("question2", "description2"));
         TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, description, questions);
 
         return post("/api/templates", templateCreateRequest, accessToken)
@@ -422,8 +421,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
     private long saveTemplateAndGetId(String accessToken, String title) {
         String description = "test description";
         List<TemplateQuestionCreateRequest> questions = List.of(
-            new TemplateQuestionCreateRequest("question1"),
-            new TemplateQuestionCreateRequest("question2"));
+            new TemplateQuestionCreateRequest("question1", "description1"),
+            new TemplateQuestionCreateRequest("question2", "description2"));
         TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(title, description, questions);
 
         return post("/api/templates", templateCreateRequest, accessToken)
