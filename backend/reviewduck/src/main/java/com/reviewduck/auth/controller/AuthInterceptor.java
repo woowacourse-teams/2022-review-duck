@@ -1,5 +1,7 @@
 package com.reviewduck.auth.controller;
 
+import java.util.Arrays;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,19 +38,11 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     private boolean isAuthenticationNotRequired(HttpServletRequest request) {
-        boolean isTemplateFindRequest = request.getRequestURI().matches("/api/templates.*");
 
-        boolean isMemberReviewFormFindRequest =
-            request.getRequestURI().matches("/api/review-forms") && request.getParameterMap().containsKey("member");
+        return Arrays.stream(URIPattern.values())
+            .anyMatch(pattern -> pattern.match(request, "member"))
+            && request.getMethod().equals(HttpMethod.GET.toString());
 
-        boolean isMemberReviewFindRequest =
-            request.getRequestURI().matches("/api/reviews") && request.getParameterMap().containsKey("member");
-
-        boolean isMemberFindRequest = request.getRequestURI().matches("/api/members/[0-9]+");
-
-        return
-            (isMemberReviewFormFindRequest || isTemplateFindRequest || isMemberReviewFindRequest || isMemberFindRequest)
-                && request.getMethod().equals(HttpMethod.GET.toString());
     }
 
     public void validateToken(HttpServletRequest request) {

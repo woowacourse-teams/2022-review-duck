@@ -1,6 +1,5 @@
 package com.reviewduck.auth.controller;
 
-import java.util.List;
 import java.util.Objects;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,7 +36,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
         HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
 
-        if (canAccessWithoutLogin(request)) {
+        if (Objects.isNull(request.getHeader(HttpHeaders.AUTHORIZATION))) {
             return Member.getMemberNotLogin();
         }
 
@@ -48,19 +47,5 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         Long memberId = Long.parseLong(jwtTokenProvider.getPayload(token));
 
         return memberService.findById(memberId);
-    }
-
-    private boolean canAccessWithoutLogin(HttpServletRequest request) {
-        List<String> regexes = List.of(
-            "/api/review-forms/\\w{8}/reviews",
-            "/api/templates",
-            "/api/templates/[0-9]+",
-            "/api/reviews",
-            "/api/review-forms",
-            "/api/members/[0-9]+"
-        );
-
-        return regexes.stream().anyMatch(regex -> request.getRequestURI().matches(regex))
-            && Objects.isNull(request.getHeader(HttpHeaders.AUTHORIZATION));
     }
 }
