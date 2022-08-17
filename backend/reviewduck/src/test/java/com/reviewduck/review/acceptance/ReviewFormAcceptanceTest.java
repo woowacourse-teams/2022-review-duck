@@ -122,6 +122,16 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.CREATED.value())
                 .assertThat().body("reviewFormCode", notNullValue());
         }
+
+        @Test
+        @DisplayName("로그인하지 않은 상태로 생성할 수 없다.")
+        void withoutLogin() {
+            // given
+            ReviewFormCreateRequest request = new ReviewFormCreateRequest("title", List.of());
+
+            // when, then
+            post("/api/review-forms?templateId=1", request).statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
     }
 
     @Nested
