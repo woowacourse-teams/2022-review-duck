@@ -24,7 +24,6 @@ import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
-import com.reviewduck.review.dto.response.MyReviewFormsResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
 import com.reviewduck.review.dto.response.ReviewResponse;
@@ -193,38 +192,35 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("자신이 생성한 회고 폼 조회")
+    @DisplayName("개인이 생성한 회고 폼 조회")
     class findReviewFormsByMember {
 
         @Test
-        @DisplayName("내가 생성한 회고 폼을 모두 조회한다.")
+        @DisplayName("개인이 생성한 회고 폼을 updatedAt 내림차순으로 모두 조회한다.")
         void findAllMyReviewForms() {
             // given
             String reviewTitle1 = "title1";
             String reviewFormCode1 = createReviewFormAndGetCode(reviewTitle1, accessToken1);
 
             String reviewTitle2 = "title2";
-            String reviewFormCode2 = createReviewFormAndGetCode(reviewTitle2, accessToken2);
+            String reviewFormCode2 = createReviewFormAndGetCode(reviewTitle2, accessToken1);
 
             // when
             assertReviewTitleFromFoundReviewForm(reviewFormCode1, reviewTitle1, accessToken1);
-            assertReviewTitleFromFoundReviewForm(reviewFormCode2, reviewTitle2, accessToken2);
+            assertReviewTitleFromFoundReviewForm(reviewFormCode2, reviewTitle2, accessToken1);
 
             // then
-            MyReviewFormsResponse myReviewFormsResponse = get("/api/review-forms/me", accessToken1).statusCode(
-                    HttpStatus.OK.value())
+            get("/api/review-forms?member=1", accessToken2)
+                .statusCode(HttpStatus.OK.value())
                 .assertThat()
-                .body("reviewForms", hasSize(1))
-                .extract()
-                .as(MyReviewFormsResponse.class);
-
-            assertThat(myReviewFormsResponse.getReviewForms().get(0).getTitle()).isEqualTo(reviewTitle1);
+                .body("reviewForms", hasSize(2))
+                .body("reviewForms[0].title", equalTo(reviewTitle2));
         }
 
         @Test
         @DisplayName("로그인하지 않은 상태로 조회할 수 없다.")
         void withoutLogin() {
-            get("/api/review-forms/me").statusCode(HttpStatus.UNAUTHORIZED.value());
+            get("/api/review-forms?members=1").statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
     }

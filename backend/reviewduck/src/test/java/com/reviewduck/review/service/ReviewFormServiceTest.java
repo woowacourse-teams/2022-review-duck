@@ -117,7 +117,8 @@ public class ReviewFormServiceTest {
                 new TemplateQuestionCreateRequest("question1"),
                 new TemplateQuestionCreateRequest("question2"));
 
-            TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription, questions);
+            TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
+                questions);
             Template savedTemplate = templateService.save(member1, templateRequest);
 
             // 템플릿 기반 회고 폼 생성
@@ -160,7 +161,7 @@ public class ReviewFormServiceTest {
         @DisplayName("회고 폼 코드로 회고 폼을 조회한다.")
         void findReviewForm() {
             // given
-            ReviewForm expected = saveReviewForm(member1);
+            ReviewForm expected = saveReviewForm(member1, "title1");
 
             // when
             ReviewForm actual = reviewFormService.findByCode(expected.getCode());
@@ -181,56 +182,33 @@ public class ReviewFormServiceTest {
     }
 
     @Nested
-    @DisplayName("자신이 작성한 회고 조회")
-    class findByMember {
+    @DisplayName("개인이 생성한 회고 폼 조회")
+    class findMemberReviewForm {
 
         @Test
-        @DisplayName("자신이 작성한 회고를 조회한다.")
-        void findMyReviewForms() {
-            String reviewTitle1 = "title1";
-            List<ReviewFormQuestionCreateRequest> questions1 = List.of(
-                new ReviewFormQuestionCreateRequest("question1"),
-                new ReviewFormQuestionCreateRequest("question2"));
-
-            ReviewFormCreateRequest createRequest1 = new ReviewFormCreateRequest(reviewTitle1, questions1);
-
-            String reviewTitle2 = "title2";
-            List<ReviewFormQuestionCreateRequest> questions2 = List.of(
-                new ReviewFormQuestionCreateRequest("question3"),
-                new ReviewFormQuestionCreateRequest("question4"));
-
-            ReviewFormCreateRequest createRequest2 = new ReviewFormCreateRequest(reviewTitle2, questions2);
-
-            List<ReviewFormQuestion> expected = questions1.stream()
-                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(), ""))
-                .collect(Collectors.toUnmodifiableList());
-
-            int index = 0;
-            for (ReviewFormQuestion reviewFormQuestion : expected) {
-                reviewFormQuestion.setPosition(index++);
-            }
+        @DisplayName("회고 폼을 UpdatedAt 내림차순으로 조회한다.")
+        void findMyReviewsFormOrderByUpdatedAtDesc() {
+            // given
+            saveReviewForm(member1, "title1");
+            ReviewForm expected = saveReviewForm(member1, "title2");
 
             // when
-            reviewFormService.save(member1, createRequest1);
-            reviewFormService.save(member2, createRequest2);
-
-            List<ReviewForm> myReviewForms = reviewFormService.findByMember(member1);
+            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId());
 
             // then
             assertAll(
-                () -> assertThat(myReviewForms).hasSize(1),
+                () -> assertThat(myReviewForms).hasSize(2),
                 () -> assertThat(myReviewForms.get(0)).isNotNull(),
                 () -> assertThat(myReviewForms.get(0).getMember().getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(myReviewForms.get(0).getId()).isNotNull(),
                 () -> assertThat(myReviewForms.get(0).getCode().length()).isEqualTo(8),
-                () -> assertThat(myReviewForms.get(0).getTitle()).isEqualTo(reviewTitle1),
+                () -> assertThat(myReviewForms.get(0).getTitle()).isEqualTo(expected.getTitle()),
                 () -> assertThat(myReviewForms.get(0).getReviewFormQuestions())
                     .usingRecursiveComparison()
                     .ignoringFields("id")
-                    .isEqualTo(expected)
+                    .isEqualTo(expected.getReviewFormQuestions())
             );
         }
-
     }
 
     @Nested
@@ -241,7 +219,7 @@ public class ReviewFormServiceTest {
         @DisplayName("회고 폼을 수정한다.")
         void updateReviewForm() {
             // given
-            ReviewForm savedReviewForm = saveReviewForm(member1);
+            ReviewForm savedReviewForm = saveReviewForm(member1, "title1");
             String code = savedReviewForm.getCode();
             Long questionId = savedReviewForm.getReviewFormQuestions().get(0).getId();
 
@@ -282,7 +260,7 @@ public class ReviewFormServiceTest {
         @DisplayName("본인이 생성한 회고 폼이 아니면 수정할 수 없다.")
         void updateNotMyReviewForm() {
             // given
-            ReviewForm savedReviewForm = saveReviewForm(member1);
+            ReviewForm savedReviewForm = saveReviewForm(member1, "title1");
             String code = savedReviewForm.getCode();
             Long questionId = savedReviewForm.getReviewFormQuestions().get(0).getId();
 
@@ -328,7 +306,7 @@ public class ReviewFormServiceTest {
         @DisplayName("존재하지 않는 질문을 수정할 수 없다.")
         void updateReviewFormByInvalidQuestionId() {
             // given
-            String code = saveReviewForm(member1).getCode();
+            String code = saveReviewForm(member1, "title1").getCode();
 
             // when, then
             List<ReviewFormQuestionUpdateRequest> updateRequests = List.of(
@@ -351,7 +329,7 @@ public class ReviewFormServiceTest {
         @DisplayName("회고 폼을 삭제한다.")
         void deleteReviewForm() {
             // given
-            ReviewForm savedReviewForm = saveReviewForm(member1);
+            ReviewForm savedReviewForm = saveReviewForm(member1, "title1");
             String code = savedReviewForm.getCode();
 
             // when
@@ -367,7 +345,7 @@ public class ReviewFormServiceTest {
         @DisplayName("본인이 생성한 회고 폼이 아니면 삭제할 수 없다.")
         void deleteNotMyReviewForm() {
             // given
-            ReviewForm savedReviewForm = saveReviewForm(member1);
+            ReviewForm savedReviewForm = saveReviewForm(member1, "title1");
             String code = savedReviewForm.getCode();
 
             // when, then
@@ -387,12 +365,12 @@ public class ReviewFormServiceTest {
 
     }
 
-    private ReviewForm saveReviewForm(Member member) {
+    private ReviewForm saveReviewForm(Member member, String title) {
         List<ReviewFormQuestionCreateRequest> createRequests = List.of(
             new ReviewFormQuestionCreateRequest("question1"),
             new ReviewFormQuestionCreateRequest("question2"));
 
-        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest("title", createRequests);
+        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(title, createRequests);
 
         return reviewFormService.save(member, createRequest);
     }

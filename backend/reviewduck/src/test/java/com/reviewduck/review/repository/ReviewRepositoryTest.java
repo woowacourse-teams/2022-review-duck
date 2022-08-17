@@ -36,29 +36,24 @@ public class ReviewRepositoryTest {
 
     private ReviewForm savedReviewForm;
 
-    private Review review;
+    private Member savedMember;
 
     @BeforeEach
     void setUp() {
         Member member = new Member("1", "panda", "제이슨", "testUrl");
-        memberRepository.save(member);
+        savedMember = memberRepository.save(member);
+
         ReviewForm reviewForm = new ReviewForm(member, "title", List.of(
             new ReviewFormQuestion("question1", "description1"),
             new ReviewFormQuestion("question2", "description2")));
-        this.savedReviewForm = reviewFormRepository.save(reviewForm);
-        this.review = new Review("title", member, savedReviewForm,
-            List.of(
-                new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(0), new Answer("answer1")),
-                new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(1), new Answer("answer2"))
-            )
-        );
+        savedReviewForm = reviewFormRepository.save(reviewForm);
     }
 
     @Test
     @DisplayName("리뷰를 저장한다.")
     void saveReview() {
         // when
-        Review savedReview = reviewRepository.save(review);
+        Review savedReview = saveReview(savedMember, savedReviewForm, "title");
 
         // then
         assertAll(
@@ -73,7 +68,7 @@ public class ReviewRepositoryTest {
     @DisplayName("특정 회고 폼을 기반으로 작성된 회고를 모두 조회한다.")
     void findReviewsBySpecificReviewForm() {
         // given
-        Review savedReview = reviewRepository.save(review);
+        Review savedReview = saveReview(savedMember, savedReviewForm, "title");
 
         // when
         List<Review> reviews = reviewRepository.findByReviewForm(savedReviewForm);
@@ -86,10 +81,29 @@ public class ReviewRepositoryTest {
     }
 
     @Test
+    @DisplayName("개인이 작성한 회고를 updatedAt 내림차순으로 정렬하여 조회한다.")
+    void findMemberReviewsOrderByUpdatedAtDesc() {
+        // given
+        saveReview(savedMember, savedReviewForm, "title");
+        Review review = saveReview(savedMember, savedReviewForm, "title2");
+
+        //when
+        List<Review> myReviews = reviewRepository.findByMemberOrderByUpdatedAtDesc(savedMember);
+
+        //then
+        assertAll(
+            () -> assertThat(myReviews).hasSize(2),
+            () -> assertThat(myReviews.get(0)).isNotNull(),
+            () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo(savedMember.getNickname()),
+            () -> assertThat(myReviews.get(0).getTitle()).isEqualTo(review.getTitle())
+        );
+    }
+
+    @Test
     @DisplayName("리뷰를 삭제한다.")
     void deleteReview() {
         // given
-        Review savedReview = reviewRepository.save(review);
+        Review savedReview = saveReview(savedMember, savedReviewForm, "title");
 
         // when
         reviewRepository.deleteById(savedReview.getId());
@@ -98,35 +112,14 @@ public class ReviewRepositoryTest {
         assertThat(reviewRepository.findById(savedReview.getId()).isEmpty()).isTrue();
     }
 
-    @Test
-    @DisplayName("개인이 작성한 회고를 조회한다.")
-    void findMyReviewForms() {
-        // given
-        reviewRepository.save(review);
-
-        Member member2 = new Member("1", "ariari", "브리", "testUrl2");
-        memberRepository.save(member2);
-        ReviewForm reviewForm = new ReviewForm(member2, "title", List.of(
-            new ReviewFormQuestion("question1", "description1"),
-            new ReviewFormQuestion("question2", "description2")));
-        ReviewForm savedReviewForm = reviewFormRepository.save(reviewForm);
-        Review review2 = new Review("title", member2, savedReviewForm,
+    private Review saveReview(Member member, ReviewForm savedReviewForm, String title) {
+        Review review = new Review(title, member, savedReviewForm,
             List.of(
-                new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(0), new Answer("answer3")),
-                new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(1), new Answer("answer4"))
+                new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(0), new Answer("answer1")),
+                new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(1), new Answer("answer2"))
             )
         );
-        reviewRepository.save(review2);
 
-        //when
-        List<Review> myReviews = reviewRepository.findByMember(member2);
-
-        //then
-        assertAll(
-            () -> assertThat(myReviews).hasSize(1),
-            () -> assertThat(myReviews.get(0)).isNotNull(),
-            () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo("브리"),
-            () -> assertThat(myReviews.get(0).getQuestionAnswers().get(0).getAnswer().getValue()).isEqualTo("answer3")
-        );
+        return reviewRepository.save(review);
     }
 }

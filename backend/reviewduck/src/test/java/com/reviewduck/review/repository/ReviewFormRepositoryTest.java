@@ -67,20 +67,21 @@ public class ReviewFormRepositoryTest {
     }
 
     @Test
-    @DisplayName("개인이 작성한 회고 폼을 조회한다.")
-    void findMyReviewForms() {
+    @DisplayName("개인이 작성한 회고 폼을 updatedAt 내림차순으로 정렬하여 조회한다.")
+    void findMemberReviewForms() {
         // given
         saveReviewForm(member1);
-        saveReviewForm(member2);
+        ReviewForm expected = saveReviewForm(member1);
 
         // when
-        List<ReviewForm> myReviewForms = reviewFormRepository.findByMember(member1);
+        List<ReviewForm> myReviewForms = reviewFormRepository.findByMemberOrderByUpdatedAtDesc(member2);
 
         // then
         assertAll(
-            () -> assertThat(myReviewForms).hasSize(1),
+            () -> assertThat(myReviewForms).hasSize(2),
             () -> assertThat(myReviewForms.get(0)).isNotNull(),
-            () -> assertThat(myReviewForms.get(0).getMember().getNickname()).isEqualTo("제이슨")
+            () -> assertThat(myReviewForms.get(0).getMember().getNickname()).isEqualTo("제이슨"),
+            () -> assertThat(myReviewForms.get(0).getTitle()).isEqualTo(expected.getTitle())
         );
     }
 
@@ -108,7 +109,7 @@ public class ReviewFormRepositoryTest {
         reviewFormRepository.delete(reviewForm);
 
         // then
-        assertThat(reviewFormRepository.findByMember(member1).isEmpty()).isTrue();
+        assertThat(reviewFormRepository.findByMemberOrderByUpdatedAtDesc(member1).isEmpty()).isTrue();
     }
 
     private ReviewForm saveReviewForm(Member member) {

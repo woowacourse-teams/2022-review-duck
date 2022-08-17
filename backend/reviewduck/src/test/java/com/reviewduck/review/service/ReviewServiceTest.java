@@ -156,24 +156,25 @@ public class ReviewServiceTest {
     }
 
     @Nested
-    @DisplayName("자신이 생성한 회고 조회")
-    class findMyReview {
+    @DisplayName("개인이 생성한 회고 조회")
+    class findMemberReview {
 
         @Test
-        @DisplayName("자신이 생성한 회고 조회한다.")
-        void findMyReviews() {
+        @DisplayName("회고를 UpdatedAt 내림차순으로 조회한다.")
+        void findMyReviewsOrderByUpdatedAtDesc() {
             // given
             saveReview(member1);
-            saveReview(member2);
+            Review review = saveReview(member1);
 
             // when
-            List<Review> myReviews = reviewService.findByMember(member2);
+            List<Review> myReviews = reviewService.findBySocialId(member1.getSocialId());
 
             // then
             assertAll(
-                () -> assertThat(myReviews).hasSize(1),
+                () -> assertThat(myReviews).hasSize(2),
                 () -> assertThat(myReviews.get(0)).isNotNull(),
-                () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo("워니")
+                () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo(member1.getNickname()),
+                () -> assertThat(myReviews.get(0).getUpdatedAt()).isEqualTo(review.getUpdatedAt())
             );
         }
 
@@ -185,7 +186,7 @@ public class ReviewServiceTest {
 
             // when
             reviewFormService.deleteByCode(member1, reviewForm.getCode());
-            List<Review> reviews = reviewService.findByMember(member1);
+            List<Review> reviews = reviewService.findBySocialId(member1.getSocialId());
 
             // then
             assertAll(
@@ -194,7 +195,6 @@ public class ReviewServiceTest {
                     savedReview.getMember().getNickname())
             );
         }
-
     }
 
     @Nested

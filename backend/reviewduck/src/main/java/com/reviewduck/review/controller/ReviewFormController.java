@@ -35,18 +35,15 @@ import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/api/review-forms")
+@AllArgsConstructor
 public class ReviewFormController {
 
     private final ReviewFormService reviewFormService;
     private final ReviewService reviewService;
-
-    public ReviewFormController(ReviewFormService reviewFormService, ReviewService reviewService) {
-        this.reviewFormService = reviewFormService;
-        this.reviewService = reviewService;
-    }
 
     @Operation(summary = "회고 폼을 생성한다.")
     @PostMapping
@@ -84,14 +81,15 @@ public class ReviewFormController {
         return ReviewFormResponse.of(reviewForm, member);
     }
 
-    @Operation(summary = "내가 작성한 회고 폼을 모두 조회한다.")
-    @GetMapping("/me")
+    @Operation(summary = "특정 멤버가 작성한 회고 폼을 모두 조회한다.")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public MyReviewFormsResponse findReviewFormsByMember(@AuthenticationPrincipal Member member) {
+    public MyReviewFormsResponse findReviewFormsByMemberId(@AuthenticationPrincipal Member member,
+        @RequestParam(value = "member") String id) {
 
-        info("/api/review-forms/me", "GET", "");
+        info("/api/review-forms?member=" + id, "GET", "");
 
-        List<ReviewForm> reviewForms = reviewFormService.findByMember(member);
+        List<ReviewForm> reviewForms = reviewFormService.findBySocialId(id);
 
         return MyReviewFormsResponse.from(reviewForms);
     }

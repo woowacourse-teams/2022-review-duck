@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
@@ -28,6 +29,7 @@ public class ReviewFormService {
 
     private final ReviewFormQuestionService reviewFormQuestionService;
     private final TemplateService templateService;
+    private final MemberService memberService;
 
     @Transactional
     public ReviewForm save(Member member, ReviewFormCreateRequest createRequest) {
@@ -58,8 +60,10 @@ public class ReviewFormService {
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고 폼입니다."));
     }
 
-    public List<ReviewForm> findByMember(Member member) {
-        return reviewFormRepository.findByMember(member);
+    public List<ReviewForm> findBySocialId(String socialId) {
+        Member member = memberService.getBySocialId(socialId);
+
+        return reviewFormRepository.findByMemberOrderByUpdatedAtDesc(member);
     }
 
     @Transactional
