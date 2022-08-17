@@ -1,3 +1,4 @@
+import cn from 'classnames';
 import PropTypes from 'prop-types';
 
 import { Text } from 'common/components';
@@ -16,14 +17,15 @@ interface Props {
 function SmallProfileCard({ size = 'medium', primaryText, secondaryText, profileUrl }: Props) {
   return (
     <div className={styles.container}>
-      <div className={styles.profile} style={{ backgroundImage: `url(${profileUrl})` }} />
-      <div className={styles.userInfoContainer}>
-        <Text className={styles.nickname} size={14} weight="bold">
+      <div
+        className={cn(styles.profile, styles[`profile-${size}`])}
+        style={{ backgroundImage: `url(${profileUrl})` }}
+      />
+      <div className={cn(styles.userInfoContainer, styles[`user-info-container-${size}`])}>
+        <Text className={cn(styles.primary, styles[`primary-${size}`])} weight="bold">
           {primaryText}
         </Text>
-        <Text className={styles.update} size={12}>
-          {secondaryText}
-        </Text>
+        <Text className={cn(styles.secondary, styles[`secondary-${size}`])}>{secondaryText}</Text>
       </div>
     </div>
   );

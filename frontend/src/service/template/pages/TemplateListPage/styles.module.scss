@@ -1,5 +1,44 @@
 @import 'styles/@global.scss';
 
+.header {
+  display: flex;
+  justify-content: space-between;
+
+  .button {
+    border: none;
+    background: unset;
+    color: $THEME_COLOR_THEME_TEXT_600;
+    padding: 2rem 1rem;
+    font-size: 1.25rem;
+
+    .button-box {
+      display: flex;
+      align-items: center;
+      opacity: 0.5;
+
+      &:hover {
+        cursor: pointer;
+        opacity: 1;
+      }
+    }
+
+    .focus {
+      font-weight: bold;
+      opacity: 1;
+    }
+
+    .icon {
+      margin-right: 0.5rem;
+      color: $THEME_COLOR_STATUS_PRIMARY_500;
+    }
+  }
+
+  .button-container {
+    display: flex;
+    align-items: center;
+  }
+}
+
 .container {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

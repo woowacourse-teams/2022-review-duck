@@ -12,6 +12,7 @@ import ReviewAnswerEditorPage from 'service/review/pages/ReviewAnswerEditorPage'
 import ReviewFormEditorPage from 'service/review/pages/ReviewFormEditorPage';
 import ReviewOverviewPage from 'service/review/pages/ReviewOverviewPage';
 import TemplateDetailPage from 'service/template/pages/TemplateDetailPage';
+import TemplateFormEditorPage from 'service/template/pages/TemplateFormEditorPage';
 import TemplateListPage from 'service/template/pages/TemplateListPage';
 import Authorize from 'service/user/pages/Authorize';
 import Logout from 'service/user/pages/Logout';
@@ -50,6 +51,8 @@ function PageRoutes() {
             <Route index element={<ReviewFormEditorPage />} />
             <Route path=":reviewFormCode" element={<ReviewFormEditorPage />} />
           </Route>
+
+          <Route path={PAGE_LIST.TEMPLATE_FORM} element={<TemplateFormEditorPage />} />
         </Route>
       </Route>
 

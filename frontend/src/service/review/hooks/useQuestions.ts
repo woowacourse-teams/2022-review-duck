@@ -10,7 +10,12 @@ interface QuestionWithKey extends Question {
 
 function useQuestions(initState?: Question[]) {
   const initialQuestion: QuestionWithKey[] = useMemo(
-    () => initState?.map((value, index) => ({ ...value, key: index })) || [],
+    () =>
+      initState?.map((value, index) => ({
+        ...value,
+        key: index,
+        description: value.description || '',
+      })) || [],
     [],
   );
 
@@ -26,6 +31,7 @@ function useQuestions(initState?: Question[]) {
       copiedQuestions.push({
         ...insertValue,
         key: getUniqueKey(),
+        description: '',
       }) - 1;
 
     setQuestions(copiedQuestions);

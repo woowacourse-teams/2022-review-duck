@@ -10,7 +10,7 @@ const PAGE_LIST = {
   TEMPLATE_LIST: '/template/list',
   TEMPLATE_RECENT: '/recent',
   TEMPLATE_DETAIL: '/template/view',
-  TEMPLATE_EDIT: '/template/edit',
+  TEMPLATE_FORM: '/template/review-form',
 };
 
 const MODAL_LIST = {
@@ -69,6 +69,11 @@ const MYPAGE_TAB = {
   MY_REVIEW_FORMS: 'my-review-forms',
 };
 
+const TEMPLATE_TAB = {
+  TREND: 'trend',
+  LATEST: 'latest',
+};
+
 const REVIEW_FORM_TITLE_LENGTH = 100;
 
 const REVIEW_FORM_CODE_LENGTH = 8;
@@ -109,6 +114,7 @@ export {
   ACCESS_TOKEN_EXPIRE_TIME,
   ACCESS_TOKEN_REFRESH_TIME,
   MYPAGE_TAB,
+  TEMPLATE_TAB,
   PERMISSION_VALID_TIME,
   REVIEW_FORM_TITLE_LENGTH,
   REVIEW_FORM_CODE_LENGTH,

@@ -6,6 +6,8 @@ import { getElapsedTimeText } from 'service/@shared/utils';
 
 import { Icon, Text } from 'common/components';
 
+import TagLabel from 'common/components/TagLabel';
+
 import SmallProfileCard from 'service/@shared/components/SmallProfileCard';
 
 import styles from './styles.module.scss';
@@ -16,6 +18,12 @@ function TemplateCard({ info, creator }: Template) {
   return (
     <Link to={`${PAGE_LIST.TEMPLATE_DETAIL}/${info.id}`}>
       <div className={styles.container}>
+        <TagLabel>
+          <>
+            <Icon code="download" />
+            <span>{`${info.usedCount}회`}</span>
+          </>
+        </TagLabel>
         <Text className={styles.title} size={20}>
           {info.title}
         </Text>
@@ -23,10 +31,6 @@ function TemplateCard({ info, creator }: Template) {
           <div className={styles.info}>
             <Icon className={styles.icon} code="schedule" />
             <span className={styles.text}>{getElapsedTimeText(info.updatedAt)}</span>
-          </div>
-          <div className={styles.info}>
-            <Icon className={styles.icon} code="download_for_offline" />
-            <span className={styles.text}>{`${info.usedCount}회`}</span>
           </div>
         </div>
         <Text className={styles.description} size={14}>

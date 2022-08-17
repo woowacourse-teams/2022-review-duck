@@ -4,6 +4,7 @@ import {
   UpdateReviewAnswerResponse,
   UpdateReviewFormResponse,
   UseCustomMutationOptions,
+  CreateFormByTemplateResponse,
 } from 'service/@shared/types';
 
 import { reviewAPI } from 'service/@shared/api';
@@ -33,4 +34,18 @@ function useCreateReviewAnswer(
   });
 }
 
-export { useCreateReviewForm, useCreateReviewAnswer };
+function useCreateFormByTemplate(
+  mutationOptions?: UseCustomMutationOptions<CreateFormByTemplateResponse>,
+) {
+  const queryClient = useQueryClient();
+
+  return useMutation(reviewAPI.createFormByTemplate, {
+    onSuccess: () => {
+      queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
+      queryClient.invalidateQueries([QUERY_KEY.DATA.TEMPLATE]);
+    },
+    ...mutationOptions,
+  });
+}
+
+export { useCreateReviewForm, useCreateReviewAnswer, useCreateFormByTemplate };

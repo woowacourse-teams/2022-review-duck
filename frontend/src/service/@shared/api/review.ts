@@ -32,6 +32,19 @@ export const createForm = async (
   return data;
 };
 
+export const createFormByTemplate = async ({
+  templateId,
+  reviewFormTitle,
+  questions,
+}: ReviewType.CreateFormByTemplateRequest) => {
+  const { data } = await axiosInstance.post(`/api/review-forms?templateId=${templateId}`, {
+    reviewFormTitle,
+    questions,
+  });
+
+  return data;
+};
+
 export const createAnswer = async ({
   reviewFormCode,
   contents,
