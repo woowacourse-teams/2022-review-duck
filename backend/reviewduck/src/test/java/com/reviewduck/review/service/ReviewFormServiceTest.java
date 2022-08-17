@@ -3,10 +3,9 @@ package com.reviewduck.review.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +14,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
@@ -109,9 +110,11 @@ public class ReviewFormServiceTest {
     class saveReviewFormByTemplate {
 
         @Test
+        // 1차 캐시에서 조회하는 것을 막기 위해 테스트 메서드가 트랜잭션을 생성하지 않게 한다.
+        @Transactional(propagation = Propagation.NOT_SUPPORTED)
         @DisplayName("템플릿과 동일한 모양의 회고 폼을 생성한다.")
         void saveFromTemplate_Same() {
-            // when
+            // given
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
@@ -121,10 +124,11 @@ public class ReviewFormServiceTest {
 
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 questions);
-            Template savedTemplate = templateService.save(member1, templateRequest);
+            Long templateId = templateService.save(member1, templateRequest).getId();
 
+            // when
             // 템플릿 기반 회고 폼 생성
-            ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(member1, savedTemplate.getId());
+            ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(member1, templateId);
 
             List<ReviewFormQuestion> expected = questions.stream()
                 .map(question -> new ReviewFormQuestion(question.getValue(), question.getDescription()))
@@ -148,9 +152,40 @@ public class ReviewFormServiceTest {
                     .ignoringFields("id")
                     .isEqualTo(expected),
                 // template usedCount ++
-                () -> assertThat(savedTemplate.getUsedCount()).isEqualTo(1)
+                // DB에 반영된 usedCount를 확인하기 위해 새로 조회
+                () -> assertThat(templateService.findById(templateId).getUsedCount()).isEqualTo(1)
             );
+        }
 
+        @Test
+        @Transactional(propagation = Propagation.NOT_SUPPORTED)
+        @DisplayName("템플릿을 기반으로 회고 폼을 생성해도 수정 시간을 갱신하지 않는다.")
+        void saveReviewFormFromTemplateWithNotUpdatedAt() {
+            // given
+            // 템플릿 생성
+            String templateTitle = "title";
+            String templateDescription = "description";
+            List<TemplateQuestionCreateRequest> questions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
+
+            TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
+                questions);
+            Template savedTemplate = templateService.save(member1, templateRequest);
+            Long templateId = savedTemplate.getId();
+
+            // 초기 수정 시간
+            LocalDateTime updatedAt = templateService.findById(templateId).getUpdatedAt();
+
+            // when
+            // 템플릿 기반 회고 폼 생성
+            reviewFormService.saveFromTemplate(member1, templateId);
+
+            // 템플릿 기반 회고 폼 생성 후 수정 시간
+            LocalDateTime updatedAtAfterCreateReviewForm = templateService.findById(templateId).getUpdatedAt();
+
+            // then
+            assertThat(updatedAtAfterCreateReviewForm.isEqual(updatedAt)).isTrue();
         }
 
         @Test
@@ -372,7 +407,6 @@ public class ReviewFormServiceTest {
                 () -> reviewFormService.update(member1, code, new ReviewFormUpdateRequest("new title", updateRequests)))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 질문입니다.");
-
         }
 
     }

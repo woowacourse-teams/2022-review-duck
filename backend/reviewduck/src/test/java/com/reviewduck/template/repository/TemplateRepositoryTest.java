@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,6 +30,9 @@ public class TemplateRepositoryTest {
     private TemplateRepository templateRepository;
     @Autowired
     private MemberRepository memberRepository;
+
+    @PersistenceContext
+    private EntityManager em;
 
     private Member member1;
     private Member member2;
@@ -217,6 +223,28 @@ public class TemplateRepositoryTest {
 
         // then
         assertThat(templateRepository.findById(templateId)).isEmpty();
+    }
+
+    @Test
+    @DisplayName("사용 횟수를 증가시킨다.")
+    void increaseUsedCount() throws InterruptedException {
+        // given
+        List<TemplateQuestion> questions = List.of(
+            new TemplateQuestion("question1", "description1"),
+            new TemplateQuestion("question2", "description2")
+        );
+        Long templateId = saveTemplate(member1, questions).getId();
+
+        // when
+        templateRepository.increaseUsedCount(templateId);
+
+        Template template = templateRepository.findAllByMember(member1).get(0);
+
+        // DB에 저장된 값과 1차 캐시의 Template을 동기화
+        em.refresh(template);
+
+        // then
+        assertThat(template.getUsedCount()).isEqualTo(1);
     }
 
     private Template saveTemplate(Member member, List<TemplateQuestion> questions) throws InterruptedException {
