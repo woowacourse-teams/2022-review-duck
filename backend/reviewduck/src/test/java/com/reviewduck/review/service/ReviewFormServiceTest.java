@@ -159,7 +159,7 @@ public class ReviewFormServiceTest {
 
         @Test
         @DisplayName("회고 폼 코드로 회고 폼을 조회한다.")
-        void findReviewForm() {
+        void findReviewForm() throws InterruptedException {
             // given
             ReviewForm expected = saveReviewForm(member1, "title1");
 
@@ -187,7 +187,7 @@ public class ReviewFormServiceTest {
 
         @Test
         @DisplayName("회고 폼을 UpdatedAt 내림차순으로 조회한다.")
-        void findMyReviewsFormOrderByUpdatedAtDesc() {
+        void findMyReviewsFormOrderByUpdatedAtDesc() throws InterruptedException {
             // given
             saveReviewForm(member1, "title1");
             ReviewForm expected = saveReviewForm(member1, "title2");
@@ -217,7 +217,7 @@ public class ReviewFormServiceTest {
 
         @Test
         @DisplayName("회고 폼을 수정한다.")
-        void updateReviewForm() {
+        void updateReviewForm() throws InterruptedException {
             // given
             ReviewForm savedReviewForm = saveReviewForm(member1, "title1");
             String code = savedReviewForm.getCode();
@@ -258,7 +258,7 @@ public class ReviewFormServiceTest {
 
         @Test
         @DisplayName("본인이 생성한 회고 폼이 아니면 수정할 수 없다.")
-        void updateNotMyReviewForm() {
+        void updateNotMyReviewForm() throws InterruptedException {
             // given
             ReviewForm savedReviewForm = saveReviewForm(member1, "title1");
             String code = savedReviewForm.getCode();
@@ -304,7 +304,7 @@ public class ReviewFormServiceTest {
 
         @Test
         @DisplayName("존재하지 않는 질문을 수정할 수 없다.")
-        void updateReviewFormByInvalidQuestionId() {
+        void updateReviewFormByInvalidQuestionId() throws InterruptedException {
             // given
             String code = saveReviewForm(member1, "title1").getCode();
 
@@ -327,7 +327,7 @@ public class ReviewFormServiceTest {
 
         @Test
         @DisplayName("회고 폼을 삭제한다.")
-        void deleteReviewForm() {
+        void deleteReviewForm() throws InterruptedException {
             // given
             ReviewForm savedReviewForm = saveReviewForm(member1, "title1");
             String code = savedReviewForm.getCode();
@@ -343,7 +343,7 @@ public class ReviewFormServiceTest {
 
         @Test
         @DisplayName("본인이 생성한 회고 폼이 아니면 삭제할 수 없다.")
-        void deleteNotMyReviewForm() {
+        void deleteNotMyReviewForm() throws InterruptedException {
             // given
             ReviewForm savedReviewForm = saveReviewForm(member1, "title1");
             String code = savedReviewForm.getCode();
@@ -365,7 +365,9 @@ public class ReviewFormServiceTest {
 
     }
 
-    private ReviewForm saveReviewForm(Member member, String title) {
+    private ReviewForm saveReviewForm(Member member, String title) throws InterruptedException {
+        Thread.sleep(1);
+
         List<ReviewFormQuestionCreateRequest> createRequests = List.of(
             new ReviewFormQuestionCreateRequest("question1"),
             new ReviewFormQuestionCreateRequest("question2"));

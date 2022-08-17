@@ -133,7 +133,7 @@ public class ReviewServiceTest {
 
         @Test
         @DisplayName("id로 특정 회고를 조회한다.")
-        void findById() {
+        void findById() throws InterruptedException {
             // given
             Review saved = saveReview(member1);
 
@@ -161,7 +161,7 @@ public class ReviewServiceTest {
 
         @Test
         @DisplayName("회고를 UpdatedAt 내림차순으로 조회한다.")
-        void findMyReviewsOrderByUpdatedAtDesc() {
+        void findMyReviewsOrderByUpdatedAtDesc() throws InterruptedException {
             // given
             saveReview(member1);
             Review review = saveReview(member1);
@@ -180,7 +180,7 @@ public class ReviewServiceTest {
 
         @Test
         @DisplayName("특정 회고 폼을 삭제해도 자신이 생성한 회고를 조회할 수 있다.")
-        void findReviewsByDeletedSpecificReviewForm() {
+        void findReviewsByDeletedSpecificReviewForm() throws InterruptedException {
             // given
             Review savedReview = saveReview(member1);
 
@@ -203,7 +203,7 @@ public class ReviewServiceTest {
 
         @Test
         @DisplayName("특정 회고 폼을 기반으로 작성된 회고를 모두 조회한다.")
-        void findByReviewFormCode() {
+        void findByReviewFormCode() throws InterruptedException {
             // given
             Review savedReview = saveReview(member1);
 
@@ -235,7 +235,7 @@ public class ReviewServiceTest {
 
         @Test
         @DisplayName("회고를 수정한다.")
-        void updateReview() {
+        void updateReview() throws InterruptedException {
             // given
             Review savedReview = saveReview(member1);
 
@@ -258,7 +258,7 @@ public class ReviewServiceTest {
 
         @Test
         @DisplayName("본인이 생성한 회고가 아니면 수정할 수 없다.")
-        void notMine() {
+        void notMine() throws InterruptedException {
             // given
             Review savedReview = saveReview(member1);
 
@@ -291,7 +291,7 @@ public class ReviewServiceTest {
 
         @Test
         @DisplayName("유효하지 않은 질문 번호로 수정할 수 없다.")
-        void withInvalidQuestionId() {
+        void withInvalidQuestionId() throws InterruptedException {
             // given
             Review savedReview = saveReview(member1);
 
@@ -308,7 +308,7 @@ public class ReviewServiceTest {
 
         @Test
         @DisplayName("유효하지 않은 답변 번호로 수정할 수 없다.")
-        void withInvalidAnswerId() {
+        void withInvalidAnswerId() throws InterruptedException {
             // given
             Review savedReview = saveReview(member1);
 
@@ -331,7 +331,7 @@ public class ReviewServiceTest {
 
         @Test
         @DisplayName("회고를 삭제한다.")
-        void deleteReview() {
+        void deleteReview() throws InterruptedException {
             // given
             Review savedReview = saveReview(member1);
 
@@ -344,7 +344,7 @@ public class ReviewServiceTest {
 
         @Test
         @DisplayName("본인이 생성한 회고가 아니면 삭제할 수 없다.")
-        void notMine() {
+        void notMine() throws InterruptedException {
             // given
             Review savedReview = saveReview(member1);
 
@@ -365,7 +365,9 @@ public class ReviewServiceTest {
 
     }
 
-    private Review saveReview(Member member) {
+    private Review saveReview(Member member) throws InterruptedException {
+        Thread.sleep(1);
+
         ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(List.of(
             new ReviewContentCreateRequest(
                 reviewForm.getReviewFormQuestions().get(0).getId(),
