@@ -66,9 +66,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             // save reviewForm
             String reviewTitle = "title";
             List<ReviewFormQuestionCreateRequest> questions = List.of(
-                new ReviewFormQuestionCreateRequest("question1"),
-                new ReviewFormQuestionCreateRequest("question2"),
-                new ReviewFormQuestionCreateRequest("question3"));
+                new ReviewFormQuestionCreateRequest("question1", "description1"),
+                new ReviewFormQuestionCreateRequest("question2", "description2"),
+                new ReviewFormQuestionCreateRequest("question3", "description3"));
             String code = createReviewFormAndGetCode(accessToken1, reviewTitle, questions);
 
             // save review
@@ -151,8 +151,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             // given
             // 회고 폼 등록
             List<ReviewFormQuestionCreateRequest> questions = List.of(
-                new ReviewFormQuestionCreateRequest("question1"),
-                new ReviewFormQuestionCreateRequest("question2"));
+                new ReviewFormQuestionCreateRequest("question1", "description1"),
+                new ReviewFormQuestionCreateRequest("question2", "description2"));
             String reviewFormCode = createReviewFormAndGetCode(accessToken1, "title", questions);
 
             // 회고 등록
@@ -307,8 +307,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         // save ReviewForm
         String reviewTitle = "title";
         List<ReviewFormQuestionCreateRequest> questions = List.of(
-            new ReviewFormQuestionCreateRequest("question1"),
-            new ReviewFormQuestionCreateRequest("question2"));
+            new ReviewFormQuestionCreateRequest("question1", "description1"),
+            new ReviewFormQuestionCreateRequest("question2", "description2"));
         String code = createReviewFormAndGetCode(accessToken, reviewTitle, questions);
 
         // save Review

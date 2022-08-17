@@ -69,13 +69,15 @@ public class ReviewFormServiceTest {
             // given
             String reviewTitle = "title";
             List<ReviewFormQuestionCreateRequest> questions = List.of(
-                new ReviewFormQuestionCreateRequest("question1"),
-                new ReviewFormQuestionCreateRequest("question2"));
+                new ReviewFormQuestionCreateRequest("question1", "description1"),
+                new ReviewFormQuestionCreateRequest("question2", "description2"));
 
             ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
 
             List<ReviewFormQuestion> expected = questions.stream()
-                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(), ""))
+                .map(questionRequest -> new ReviewFormQuestion(
+                    questionRequest.getValue(),
+                    questionRequest.getDescription()))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -117,7 +119,8 @@ public class ReviewFormServiceTest {
                 new TemplateQuestionCreateRequest("question1"),
                 new TemplateQuestionCreateRequest("question2"));
 
-            TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription, questions);
+            TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
+                questions);
             Template savedTemplate = templateService.save(member1, templateRequest);
 
             // 템플릿 기반 회고 폼 생성
@@ -189,20 +192,21 @@ public class ReviewFormServiceTest {
         void findMyReviewForms() {
             String reviewTitle1 = "title1";
             List<ReviewFormQuestionCreateRequest> questions1 = List.of(
-                new ReviewFormQuestionCreateRequest("question1"),
-                new ReviewFormQuestionCreateRequest("question2"));
+                new ReviewFormQuestionCreateRequest("question1", "description1"),
+                new ReviewFormQuestionCreateRequest("question2", "description2"));
 
             ReviewFormCreateRequest createRequest1 = new ReviewFormCreateRequest(reviewTitle1, questions1);
 
             String reviewTitle2 = "title2";
             List<ReviewFormQuestionCreateRequest> questions2 = List.of(
-                new ReviewFormQuestionCreateRequest("question3"),
-                new ReviewFormQuestionCreateRequest("question4"));
+                new ReviewFormQuestionCreateRequest("question3", "description3"),
+                new ReviewFormQuestionCreateRequest("question4", "description4"));
 
             ReviewFormCreateRequest createRequest2 = new ReviewFormCreateRequest(reviewTitle2, questions2);
 
             List<ReviewFormQuestion> expected = questions1.stream()
-                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(), ""))
+                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(),
+                    questionRequest.getDescription()))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -389,8 +393,8 @@ public class ReviewFormServiceTest {
 
     private ReviewForm saveReviewForm(Member member) {
         List<ReviewFormQuestionCreateRequest> createRequests = List.of(
-            new ReviewFormQuestionCreateRequest("question1"),
-            new ReviewFormQuestionCreateRequest("question2"));
+            new ReviewFormQuestionCreateRequest("question1", "description1"),
+            new ReviewFormQuestionCreateRequest("question2", "description2"));
 
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest("title", createRequests);
 

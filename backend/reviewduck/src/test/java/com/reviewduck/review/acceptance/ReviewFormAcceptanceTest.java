@@ -64,8 +64,8 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             // given
             String reviewTitle = "title";
             List<ReviewFormQuestionCreateRequest> questions = List.of(
-                new ReviewFormQuestionCreateRequest("question1"),
-                new ReviewFormQuestionCreateRequest("question2"));
+                new ReviewFormQuestionCreateRequest("question1", "description1"),
+                new ReviewFormQuestionCreateRequest("question2", "description2"));
             ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
 
             // when, then
@@ -581,8 +581,8 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
     private String createReviewFormAndGetCode(String reviewTitle, String accessToken) {
         List<ReviewFormQuestionCreateRequest> questions = List.of(
-            new ReviewFormQuestionCreateRequest("question1"),
-            new ReviewFormQuestionCreateRequest("question2"));
+            new ReviewFormQuestionCreateRequest("question1", "description1"),
+            new ReviewFormQuestionCreateRequest("question2", "description2"));
 
         ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
 

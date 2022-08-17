@@ -32,7 +32,7 @@ public class ReviewFormService {
     @Transactional
     public ReviewForm save(Member member, ReviewFormCreateRequest createRequest) {
         List<ReviewFormQuestion> questions = createRequest.getQuestions().stream()
-            .map(request -> reviewFormQuestionService.save(request.getValue(), ""))
+            .map(request -> reviewFormQuestionService.save(request.getValue(), request.getDescription()))
             .collect(Collectors.toUnmodifiableList());
 
         ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewFormTitle(), questions);

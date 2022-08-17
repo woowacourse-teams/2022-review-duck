@@ -35,18 +35,15 @@ import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/api/review-forms")
+@AllArgsConstructor
 public class ReviewFormController {
 
     private final ReviewFormService reviewFormService;
     private final ReviewService reviewService;
-
-    public ReviewFormController(ReviewFormService reviewFormService, ReviewService reviewService) {
-        this.reviewFormService = reviewFormService;
-        this.reviewService = reviewService;
-    }
 
     @Operation(summary = "회고 폼을 생성한다.")
     @PostMapping
