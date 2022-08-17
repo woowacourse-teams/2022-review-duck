@@ -12,21 +12,21 @@ import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class MyReviewFormResponse {
+public class MemberReviewFormResponse {
 
     private String title;
     private String code;
     private long updatedAt;
     private List<ReviewFormQuestionResponse> questions;
 
-    public static MyReviewFormResponse from(ReviewForm reviewForm) {
+    public static MemberReviewFormResponse from(ReviewForm reviewForm) {
         List<ReviewFormQuestionResponse> reviewFormQuestionResponses = reviewForm.getReviewFormQuestions().stream()
             .map(ReviewFormQuestionResponse::from)
             .collect(Collectors.toUnmodifiableList());
 
         long updatedAt = Timestamp.valueOf(reviewForm.getUpdatedAt()).getTime();
 
-        return new MyReviewFormResponse(reviewForm.getTitle(), reviewForm.getCode(), updatedAt,
+        return new MemberReviewFormResponse(reviewForm.getTitle(), reviewForm.getCode(), updatedAt,
             reviewFormQuestionResponses);
     }
 }

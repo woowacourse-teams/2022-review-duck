@@ -30,15 +30,16 @@ public class MemberController {
     private final MemberService memberService;
 
     @Operation(summary = "사용자 정보를 조회한다.")
-    @GetMapping("/{id}")
+    @GetMapping("/{socialId}")
     @ResponseStatus(HttpStatus.OK)
     public MemberResponse findMemberInfo(@AuthenticationPrincipal Member member,
-        @PathVariable String id) {
+        @PathVariable String socialId) {
 
-        info("/api/members/" + id, "GET", "");
+        info("/api/members/" + socialId, "GET", "");
 
-        Member foundMember = memberService.getBySocialId(id);
-        return MemberResponse.from(foundMember);
+        Member foundMember = memberService.getBySocialId(socialId);
+
+        return MemberResponse.of(foundMember, member);
     }
 
     @Operation(summary = "본인의 닉네임을 변경한다.")

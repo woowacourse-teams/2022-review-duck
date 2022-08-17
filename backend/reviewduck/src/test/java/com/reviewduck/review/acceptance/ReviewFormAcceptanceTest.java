@@ -244,8 +244,31 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     class findReviewFormsByMember {
 
         @Test
-        @DisplayName("개인이 생성한 회고 폼을 updatedAt 내림차순으로 모두 조회한다.")
+        @DisplayName("자신이 생성한 회고 폼을 updatedAt 내림차순으로 모두 조회한다.")
         void findAllMyReviewForms() {
+            // given
+            String reviewTitle1 = "title1";
+            String reviewFormCode1 = createReviewFormAndGetCode(reviewTitle1, accessToken1);
+
+            String reviewTitle2 = "title2";
+            String reviewFormCode2 = createReviewFormAndGetCode(reviewTitle2, accessToken1);
+
+            // when
+            assertReviewTitleFromFoundReviewForm(reviewFormCode1, reviewTitle1, accessToken1);
+            assertReviewTitleFromFoundReviewForm(reviewFormCode2, reviewTitle2, accessToken1);
+
+            // then
+            get("/api/review-forms?member=1", accessToken1)
+                .statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .body("isMine", equalTo(true))
+                .body("reviewForms", hasSize(2))
+                .body("reviewForms[0].title", equalTo(reviewTitle2));
+        }
+
+        @Test
+        @DisplayName("타인이 생성한 회고 폼을 updatedAt 내림차순으로 모두 조회한다.")
+        void findAllOtherReviewForms() {
             // given
             String reviewTitle1 = "title1";
             String reviewFormCode1 = createReviewFormAndGetCode(reviewTitle1, accessToken1);
@@ -261,6 +284,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             get("/api/review-forms?member=1", accessToken2)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
+                .body("isMine", equalTo(false))
                 .body("reviewForms", hasSize(2))
                 .body("reviewForms[0].title", equalTo(reviewTitle2));
         }

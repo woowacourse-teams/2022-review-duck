@@ -132,8 +132,24 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     class findMemberReview {
 
         @Test
-        @DisplayName("개인이 작성한 회고를 updatedAt 내림차순으로 모두 조회한다.")
+        @DisplayName("자신이 작성한 회고를 updatedAt 내림차순으로 모두 조회한다.")
         void findAllMyReviews() {
+            // given
+            saveReviewAndGetId(accessToken1);
+            saveReviewAndGetId(accessToken1);
+
+            get("/api/reviews?member=1", accessToken1)
+                .statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .body("isMine", equalTo(true))
+                .body("reviews", hasSize(2))
+                .body("numberOfReviews", equalTo(2))
+                .body("reviews[0].id", equalTo(2));
+        }
+
+        @Test
+        @DisplayName("타인이 작성한 회고를 updatedAt 내림차순으로 모두 조회한다.")
+        void findAllOtherReviews() {
             // given
             saveReviewAndGetId(accessToken1);
             saveReviewAndGetId(accessToken1);
@@ -141,6 +157,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             get("/api/reviews?member=1", accessToken2)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
+                .body("isMine", equalTo(false))
                 .body("reviews", hasSize(2))
                 .body("numberOfReviews", equalTo(2))
                 .body("reviews[0].id", equalTo(2));

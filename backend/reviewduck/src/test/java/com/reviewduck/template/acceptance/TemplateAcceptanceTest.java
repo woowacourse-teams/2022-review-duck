@@ -22,7 +22,7 @@ import com.reviewduck.template.dto.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
-import com.reviewduck.template.dto.response.MyTemplatesResponse;
+import com.reviewduck.template.dto.response.MemberTemplatesResponse;
 import com.reviewduck.template.dto.response.TemplateIdResponse;
 
 public class TemplateAcceptanceTest extends AcceptanceTest {
@@ -256,15 +256,15 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
                 .as(MemberResponse.class);
 
             // when, then
-            MyTemplatesResponse myTemplatesResponse = get("/api/templates?member=" + member.getSocialId(), accessToken1)
+            MemberTemplatesResponse memberTemplatesResponse = get("/api/templates?member=" + member.getSocialId(), accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .extract()
-                .as(MyTemplatesResponse.class);
+                .as(MemberTemplatesResponse.class);
 
             assertAll(
-                () -> assertThat(myTemplatesResponse.getNumberOfTemplates()).isEqualTo(2),
-                () -> assertThat(myTemplatesResponse.getTemplates()).hasSize(2),
-                () -> assertThat(myTemplatesResponse.getTemplates().get(0).getInfo().getTitle())
+                () -> assertThat(memberTemplatesResponse.getNumberOfTemplates()).isEqualTo(2),
+                () -> assertThat(memberTemplatesResponse.getTemplates()).hasSize(2),
+                () -> assertThat(memberTemplatesResponse.getTemplates().get(0).getInfo().getTitle())
                     .isEqualTo(templateTitle3)
             );
 

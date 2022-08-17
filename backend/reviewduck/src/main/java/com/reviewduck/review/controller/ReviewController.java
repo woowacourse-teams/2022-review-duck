@@ -49,13 +49,13 @@ public class ReviewController {
     @GetMapping(params = "member")
     @ResponseStatus(HttpStatus.OK)
     public ReviewsResponse findBySocialId(@AuthenticationPrincipal Member member,
-        @RequestParam(value = "member") String id) {
+        @RequestParam(value = "member") String socialId) {
 
-        info("/api/reviews?member=" + id, "GET", "");
+        info("/api/reviews?member=" + socialId, "GET", "");
 
-        List<Review> reviews = reviewService.findBySocialId(id);
+        List<Review> reviews = reviewService.findBySocialId(socialId);
 
-        return ReviewsResponse.from(reviews);
+        return ReviewsResponse.of(reviews, socialId, member);
     }
 
     @Operation(summary = "회고 답변을 수정한다.")

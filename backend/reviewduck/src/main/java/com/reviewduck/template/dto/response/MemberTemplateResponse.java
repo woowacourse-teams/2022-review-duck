@@ -11,17 +11,17 @@ import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class MyTemplateResponse {
+public class MemberTemplateResponse {
 
     private TemplateInfoResponse info;
     private List<TemplateQuestionResponse> questions;
 
-    public static MyTemplateResponse from(Template template) {
+    public static MemberTemplateResponse from(Template template) {
         List<TemplateQuestionResponse> questions = template.getQuestions().stream()
             .map(TemplateQuestionResponse::from)
             .collect(Collectors.toUnmodifiableList());
 
-        return new MyTemplateResponse(
+        return new MemberTemplateResponse(
             TemplateInfoResponse.from(template),
             questions
         );

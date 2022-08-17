@@ -50,6 +50,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
             // then
             assertAll(
+                () -> assertThat(memberResponse.getIsMine()).isTrue(),
                 () -> assertThat(memberResponse.getSocialNickname()).isEqualTo("jason"),
                 () -> assertThat(memberResponse.getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(memberResponse.getProfileUrl()).isEqualTo("profileUrl")
@@ -71,6 +72,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
             // then
             assertAll(
+                () -> assertThat(memberResponse.getIsMine()).isFalse(),
                 () -> assertThat(memberResponse.getSocialNickname()).isEqualTo("panda"),
                 () -> assertThat(memberResponse.getNickname()).isEqualTo("판다"),
                 () -> assertThat(memberResponse.getProfileUrl()).isEqualTo("profileUrl")
