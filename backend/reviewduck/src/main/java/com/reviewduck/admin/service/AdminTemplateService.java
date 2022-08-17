@@ -25,7 +25,7 @@ public class AdminTemplateService {
         return templateRepository.findAll();
     }
 
-    public List<Template> findByMemberId(Long memberId) {
+    public List<Template> findTemplatesByMemberId(Long memberId) {
         Member member = adminMemberService.findMemberById(memberId);
         return templateRepository.findAllByMember(member);
     }

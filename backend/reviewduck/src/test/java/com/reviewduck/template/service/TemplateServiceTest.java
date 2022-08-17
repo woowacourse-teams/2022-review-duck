@@ -212,7 +212,7 @@ public class TemplateServiceTest {
             String templateTitle2 = "title2";
             String templateDescription2 = "description2";
             List<TemplateQuestionCreateRequest> questions2 = List.of(new TemplateQuestionCreateRequest("question3"),
-                new TemplateQuestionCreateRequest("question3"));
+                new TemplateQuestionCreateRequest("question4"));
 
             String templateTitle3 = "title3";
             String templateDescription3 = "description3";

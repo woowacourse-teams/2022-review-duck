@@ -81,7 +81,7 @@ public class AdminTemplateController {
         info("/api/templates?memberId=" + memberId, "GET", "");
 
         validateAdmin(member);
-        List<Template> templates = adminTemplateService.findByMemberId(memberId);
+        List<Template> templates = adminTemplateService.findTemplatesByMemberId(memberId);
 
         return AdminTemplatesResponse.from(templates);
     }
