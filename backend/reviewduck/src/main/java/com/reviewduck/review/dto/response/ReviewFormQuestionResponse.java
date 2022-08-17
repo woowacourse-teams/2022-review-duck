@@ -13,12 +13,14 @@ public class ReviewFormQuestionResponse {
 
     private Long id;
     private String value;
+    private String description;
 
     public static ReviewFormQuestionResponse from(ReviewFormQuestion reviewFormQuestion) {
-        return new ReviewFormQuestionResponse(reviewFormQuestion.getId(), reviewFormQuestion.getValue());
+        return new ReviewFormQuestionResponse(reviewFormQuestion.getId(), reviewFormQuestion.getValue(),
+            reviewFormQuestion.getDescription());
     }
 
     public static ReviewFormQuestionResponse from(TemplateQuestion question) {
-        return new ReviewFormQuestionResponse(question.getId(), question.getValue());
+        return new ReviewFormQuestionResponse(question.getId(), question.getValue(), question.getDescription());
     }
 }

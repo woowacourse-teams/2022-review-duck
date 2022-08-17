@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.common.exception.NotFoundException;
+import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.repository.ReviewFormRepository;
 
@@ -17,10 +18,16 @@ import lombok.AllArgsConstructor;
 @Transactional(readOnly = true)
 public class AdminReviewFormService {
 
+    private AdminMemberService adminMemberService;
     private ReviewFormRepository reviewFormRepository;
 
     public List<ReviewForm> findAllReviewForms() {
         return reviewFormRepository.findAll();
+    }
+
+    public List<ReviewForm> findByMemberId(Long memberId) {
+        Member member = adminMemberService.findMemberById(memberId);
+        return reviewFormRepository.findAllByMember(member);
     }
 
     @Transactional

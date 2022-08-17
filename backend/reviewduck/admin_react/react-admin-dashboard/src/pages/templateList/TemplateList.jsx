@@ -38,17 +38,10 @@ export default function TemplateList(props) {
         );
       },
     },
-    {
-      field: 'reviewFormCode',
-      headerName: 'Review Form Code',
-      width: 160,
-      renderCell: (params) => {
-        return (
-          <Link to={`/review-forms/${params.row.reviewFormCode}`}>{params.row.reviewFormCode}</Link>
-        );
-      },
-    },
-    { field: 'reviewFormTitle', headerName: 'Review Form Title', width: 160 },
+
+    { field: 'templateTitle', headerName: 'Template Title', width: 160 },
+    { field: 'templateDescription', headerName: 'Template Description', width: 250 },
+    { field: 'usedCount', headerName: 'Used Count', width: 160 },
 
     { field: 'createdAt', headerName: '생성일', width: 250 },
     { field: 'updatedAt', headerName: '최종 수정일', width: 250 },
@@ -60,15 +53,15 @@ export default function TemplateList(props) {
         return (
           <>
             <DeleteOutline
-              className="reviewListDelete"
-              onClick={() => axios.delete(`${props.API_URI}/reviews/${params.row.id}`, headers)}
+              className="templateListDelete"
+              onClick={() => axios.delete(`${props.API_URI}/templates/${params.row.id}`, headers)}
             />
           </>
         );
       },
     },
   ];
-  const [reviewRows, setReviewRows] = useState([]);
+  const [templateRows, setTemplateRows] = useState([]);
   const headers = {
     headers: {
       Authorization: 'Bearer ' + props.accessToken,
@@ -79,7 +72,7 @@ export default function TemplateList(props) {
     axios.get(`${props.API_URI}/templates`, headers).then((res) => {
       if (res.data) {
         console.log(res.data);
-        setReviewRows(res.data.reviews);
+        setTemplateRows(res.data.templates);
       } else {
         alert('failed to ');
       }
@@ -89,7 +82,7 @@ export default function TemplateList(props) {
   return (
     <div className="templateList">
       <DataGrid
-        rows={reviewRows}
+        rows={templateRows}
         columns={columns}
         pageSize={10}
         rowsPerPageOptions={[5]}

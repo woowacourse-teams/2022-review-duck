@@ -11,6 +11,8 @@ import ReviewFormList from './pages/reviewFormList/ReviewFormList';
 import ReviewForm from './pages/reviewForm/ReviewForm';
 import ReviewList from './pages/reviewList/ReviewList';
 import Review from './pages/review/Review';
+import TemplateList from './pages/templateList/TemplateList';
+import Template from './pages/template/Template';
 
 import axios from 'axios';
 
@@ -24,9 +26,9 @@ class App extends Component {
     this.getToken = this.getToken.bind(this);
   }
 
-  async getToken(code) {
-    const getToken = await axios.post(process.env.REACT_APP_BACK_BASE_URL + '/api/login', {
-      code: code,
+  async getToken() {
+    const getToken = await axios.get(process.env.REACT_APP_BACK_BASE_URL + '/api/login/refresh', {
+      withCredentials: true,
     });
 
     this.setState({
@@ -36,12 +38,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const url = new URL(window.location.href);
-    const authorizationCode = url.searchParams.get('code');
-    if (authorizationCode) {
-      this.getToken(authorizationCode);
-      console.log(authorizationCode);
-    }
+    this.getToken();
   }
 
   render() {
@@ -49,7 +46,7 @@ class App extends Component {
     const API_URI = process.env.REACT_APP_BACK_BASE_URL + '/api/admin';
 
     return (
-      <Router>
+      <Router basename="admin">
         <Topbar />
         <div className="container">
           <Sidebar isLogin={isLogin} />
@@ -78,6 +75,14 @@ class App extends Component {
             <Route
               path="/reviews/:reviewId"
               element={<Review API_URI={API_URI} accessToken={accessToken} />}
+            />
+            <Route
+              path="/templates"
+              element={<TemplateList API_URI={API_URI} accessToken={accessToken} />}
+            />
+            <Route
+              path="/templates/:templateId"
+              element={<Template API_URI={API_URI} accessToken={accessToken} />}
             />
           </Routes>
         </div>

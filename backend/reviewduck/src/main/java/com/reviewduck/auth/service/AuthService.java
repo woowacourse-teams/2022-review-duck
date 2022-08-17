@@ -1,6 +1,7 @@
 package com.reviewduck.auth.service;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -47,8 +48,10 @@ public class AuthService {
 
     @Transactional
     public TokensDto createTokens(LoginRequest loginRequest) {
-        Member member = getMemberFromGithub(loginRequest.getCode());
-        Member loginMember = login(member);
+        String githubAccessToken = getGithubAccessToken(loginRequest.getCode());
+        GithubMemberResponse githubMemberResponse = getGithubMemberResponse(githubAccessToken);
+
+        Member loginMember = login(githubMemberResponse);
 
         return generateTokens(loginMember.getId());
     }
@@ -86,10 +89,10 @@ public class AuthService {
         return githubTokenResponse.getAccessToken();
     }
 
-    private Member getMemberFromGithub(String code) {
-        String githubAccessToken = getGithubAccessToken(code);
-        GithubMemberResponse githubMemberResponse = getGithubMemberResponse(githubAccessToken);
-        return githubMemberResponse.toMember();
+    private void validateTokenResponse(GithubTokenResponse githubTokenResponse) {
+        if (Objects.isNull(githubTokenResponse.getAccessToken())) {
+            throw new AuthorizationException("깃허브 로그인이 실패했습니다.");
+        }
     }
 
     private GithubMemberResponse getGithubMemberResponse(String githubAccessToken) {
@@ -118,14 +121,14 @@ public class AuthService {
         }
     }
 
-    private Member login(Member member) {
-        return memberService.findBySocialId(member.getSocialId())
-            .orElseGet(() -> memberService.save(member));
-    }
-
-    private void validateTokenResponse(GithubTokenResponse githubTokenResponse) {
-        if (Objects.isNull(githubTokenResponse.getAccessToken())) {
-            throw new AuthorizationException("깃허브 로그인이 실패했습니다.");
+    private Member login(GithubMemberResponse githubMemberResponse) {
+        Optional<Member> member = memberService.findBySocialId(githubMemberResponse.getSocialId());
+        if (member.isEmpty()) {
+            return memberService.save(githubMemberResponse.toMember());
         }
+
+        Member foundMember = member.get();
+        foundMember.updateSocialInfo(githubMemberResponse.getSocialNickname(), githubMemberResponse.getAvatarUrl());
+        return foundMember;
     }
 }

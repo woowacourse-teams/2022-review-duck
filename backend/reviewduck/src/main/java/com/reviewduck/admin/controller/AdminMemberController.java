@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.reviewduck.admin.dto.response.AdminMemberResponse;
 import com.reviewduck.admin.dto.response.AdminMembersResponse;
 import com.reviewduck.admin.service.AdminMemberService;
 import com.reviewduck.auth.exception.AuthorizationException;
@@ -40,6 +41,19 @@ public class AdminMemberController {
         List<Member> members = adminMemberService.findAllMembers();
 
         return AdminMembersResponse.from(members);
+    }
+
+    @Operation(summary = "단일 사용자를 조회한다")
+    @GetMapping("/{memberId}")
+    @ResponseStatus(HttpStatus.OK)
+    public AdminMemberResponse findMember(@AuthenticationPrincipal Member member, @PathVariable Long memberId) {
+
+        Logging.info("api/admin/members" + memberId, "GET", "");
+
+        validateAdmin(member);
+        Member foundMember = adminMemberService.findMemberById(memberId);
+
+        return AdminMemberResponse.from(foundMember);
     }
 
     @Operation(summary = "사용자를 탈퇴시킨다")

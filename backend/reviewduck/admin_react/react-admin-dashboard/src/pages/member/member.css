@@ -1,3 +1,20 @@
 .member {
-    flex: 4;
+  flex: 4;
+}
+
+li span {
+  background: ivory;
+}
+
+.infoMember {
+  display: flex;
+  align-items: center;
+}
+
+.infoMemberImg {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
 }
