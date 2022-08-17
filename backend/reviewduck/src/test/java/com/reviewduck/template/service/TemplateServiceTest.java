@@ -56,7 +56,7 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("템플릿을 생성한다.")
-        void createTemplate() {
+        void createTemplate() throws InterruptedException {
             // given
             // 템플릿 생성
             String templateTitle = "title";
@@ -91,7 +91,7 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("템플릿을 조회한다.")
-        void findTemplate() {
+        void findTemplate() throws InterruptedException {
             // given
             // 템플릿 생성
             String templateTitle = "title";
@@ -101,7 +101,12 @@ public class TemplateServiceTest {
                 new TemplateQuestionCreateRequest("question2", "description2"));
 
             List<TemplateQuestion> expected = convertRequestToQuestions(questions);
-            Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
+            Template template = null;
+            try {
+                template = saveTemplate(member1, templateTitle, templateDescription, questions);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             // when
             Template foundTemplate = templateService.findById(template.getId());
@@ -136,7 +141,7 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("전체 템플릿을 최신순으로 조회한다.")
-        void findAllOrderByLatest() {
+        void findAllOrderByLatest() throws InterruptedException {
             // given
             // create template
             List<TemplateQuestionCreateRequest> questions1 = List.of(
@@ -169,7 +174,7 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("전체 템플릿을 사용순으로 조회한다.")
-        void findAllOrderByTrend() {
+        void findAllOrderByTrend() throws InterruptedException {
             // given
             // create template
             List<TemplateQuestionCreateRequest> questions1 = List.of(
@@ -204,7 +209,7 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("사용자 작성한 템플릿을 수정시각을 기준으로 내림차순 정렬하여 조회한다.")
-        void findBySocialIdOrderByUpdatedAt() {
+        void findBySocialIdOrderByUpdatedAt() throws InterruptedException {
             // given
             String templateTitle1 = "title1";
             String templateDescription1 = "description1";
@@ -272,7 +277,7 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("템플릿을 수정한다.")
-        void updateTemplate() {
+        void updateTemplate() throws InterruptedException {
             // given
             // 템플릿 생성
             String templateTitle = "title";
@@ -320,7 +325,7 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("본인이 생성한 템플릿이 아니면 수정할 수 없다.")
-        void notMine() {
+        void notMine() throws InterruptedException {
             // given
             // 템플릿 생성
             String templateTitle = "title";
@@ -364,7 +369,7 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("템플릿을 삭제한다.")
-        void deleteTemplate() {
+        void deleteTemplate() throws InterruptedException {
             // given
             // 템플릿 생성
             String templateTitle = "title";
@@ -386,7 +391,7 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("본인이 생성한 템플릿이 아니면 삭제할 수 없다.")
-        void notMine() {
+        void notMine() throws InterruptedException {
             // given
             // 템플릿 생성
             String templateTitle = "title";
@@ -426,7 +431,8 @@ public class TemplateServiceTest {
     }
 
     private Template saveTemplate(Member member, String templateTitle, String templateDescription,
-        List<TemplateQuestionCreateRequest> questions) {
+        List<TemplateQuestionCreateRequest> questions) throws InterruptedException {
+        Thread.sleep(1);
         TemplateCreateRequest createRequest = new TemplateCreateRequest(templateTitle, templateDescription, questions);
         return templateService.save(member, createRequest);
     }

@@ -22,7 +22,7 @@ import com.reviewduck.template.dto.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
-import com.reviewduck.template.dto.response.MyTemplatesResponse;
+import com.reviewduck.template.dto.response.MemberTemplatesResponse;
 import com.reviewduck.template.dto.response.TemplateIdResponse;
 
 public class TemplateAcceptanceTest extends AcceptanceTest {
@@ -139,9 +139,9 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("로그인하지 않은 상태로 조회할 수 없다.")
+        @DisplayName("로그인하지 않은 상태로 조회할 수 있다.")
         void withoutLogin() {
-            get("/api/templates?filter=trend").statusCode(HttpStatus.UNAUTHORIZED.value());
+            get("/api/templates?filter=trend").statusCode(HttpStatus.OK.value());
         }
 
     }
@@ -170,9 +170,9 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("로그인하지 않은 상태로 조회할 수 없다.")
+        @DisplayName("로그인하지 않은 상태로 조회할 수 있다.")
         void withoutLogin() {
-            get("/api/templates?filter=latest").statusCode(HttpStatus.UNAUTHORIZED.value());
+            get("/api/templates?filter=latest").statusCode(HttpStatus.OK.value());
         }
 
     }
@@ -196,13 +196,13 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("로그인하지 않은 상태로 특정 템플릿을 조회할 수 없다.")
+        @DisplayName("로그인하지 않은 상태로 특정 템플릿을 조회할 수 있다.")
         void withoutLogin() {
             //given
             long templateId = saveTemplateAndGetId(accessToken1);
 
             // when, then
-            get("/api/templates/" + templateId).statusCode(HttpStatus.UNAUTHORIZED.value());
+            get("/api/templates/" + templateId).statusCode(HttpStatus.OK.value());
         }
 
         @Test
@@ -251,29 +251,29 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             post("/api/templates", request3, accessToken1);
 
             // find memberInfo
-            MemberResponse member = get("/api/members/me", accessToken1)
+            MemberResponse member = get("/api/members/1", accessToken1)
                 .extract()
                 .as(MemberResponse.class);
 
             // when, then
-            MyTemplatesResponse myTemplatesResponse = get("/api/templates?member=" + member.getSocialId(), accessToken1)
+            MemberTemplatesResponse memberTemplatesResponse = get("/api/templates?member=" + member.getSocialId(), accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .extract()
-                .as(MyTemplatesResponse.class);
+                .as(MemberTemplatesResponse.class);
 
             assertAll(
-                () -> assertThat(myTemplatesResponse.getNumberOfTemplates()).isEqualTo(2),
-                () -> assertThat(myTemplatesResponse.getTemplates()).hasSize(2),
-                () -> assertThat(myTemplatesResponse.getTemplates().get(0).getInfo().getTitle())
+                () -> assertThat(memberTemplatesResponse.getNumberOfTemplates()).isEqualTo(2),
+                () -> assertThat(memberTemplatesResponse.getTemplates()).hasSize(2),
+                () -> assertThat(memberTemplatesResponse.getTemplates().get(0).getInfo().getTitle())
                     .isEqualTo(templateTitle3)
             );
 
         }
 
         @Test
-        @DisplayName("로그인하지 않은 상태로 조회할 수 없다.")
+        @DisplayName("로그인하지 않은 상태로 조회할 수 있다.")
         void withoutLogin() {
-            get("/api/templates?member=12345").statusCode(HttpStatus.UNAUTHORIZED.value());
+            get("/api/templates?member=1").statusCode(HttpStatus.OK.value());
         }
 
         @Test

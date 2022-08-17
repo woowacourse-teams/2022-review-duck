@@ -3,6 +3,7 @@ package com.reviewduck.template.dto.response;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.reviewduck.member.domain.Member;
 import com.reviewduck.template.domain.Template;
 
 import lombok.AccessLevel;
@@ -15,10 +16,10 @@ public class TemplatesResponse {
 
     private List<TemplateSummaryResponse> templates;
 
-    public static TemplatesResponse from(List<Template> templates) {
+    public static TemplatesResponse of(List<Template> templates, Member member) {
         return new TemplatesResponse(
             templates.stream()
-                .map(TemplateSummaryResponse::from)
+                .map(template -> TemplateSummaryResponse.of(template, member))
                 .collect(Collectors.toUnmodifiableList())
         );
     }

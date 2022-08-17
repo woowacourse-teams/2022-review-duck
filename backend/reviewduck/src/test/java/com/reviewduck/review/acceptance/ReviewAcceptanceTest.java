@@ -128,21 +128,39 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("자신이 작성한 회고 조회")
-    class findMyReview {
+    @DisplayName("개인이 작성한 회고 조회")
+    class findMemberReview {
 
         @Test
-        @DisplayName("자신이 작성한 회고를 모두 조회한다.")
+        @DisplayName("자신이 작성한 회고를 updatedAt 내림차순으로 모두 조회한다.")
         void findAllMyReviews() {
             // given
             saveReviewAndGetId(accessToken1);
-            saveReviewAndGetId(accessToken2);
+            saveReviewAndGetId(accessToken1);
 
-            get("/api/reviews/me", accessToken1)
+            get("/api/reviews?member=1", accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
-                .body("reviews", hasSize(1))
-                .body("numberOfReviews", equalTo(1));
+                .body("isMine", equalTo(true))
+                .body("reviews", hasSize(2))
+                .body("numberOfReviews", equalTo(2))
+                .body("reviews[0].id", equalTo(2));
+        }
+
+        @Test
+        @DisplayName("타인이 작성한 회고를 updatedAt 내림차순으로 모두 조회한다.")
+        void findAllOtherReviews() {
+            // given
+            saveReviewAndGetId(accessToken1);
+            saveReviewAndGetId(accessToken1);
+
+            get("/api/reviews?member=1", accessToken2)
+                .statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .body("isMine", equalTo(false))
+                .body("reviews", hasSize(2))
+                .body("numberOfReviews", equalTo(2))
+                .body("reviews[0].id", equalTo(2));
         }
 
         @Test
@@ -166,7 +184,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             delete("/api/review-forms/" + reviewFormCode, accessToken1);
 
             // then
-            get("/api/reviews/me", accessToken1)
+            get("/api/reviews?member=1", accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
                 .body("reviews", hasSize(1))
@@ -174,11 +192,10 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("로그인하지 않은 상태로 내가 작성한 회고를 모두 조회할 수 없다")
+        @DisplayName("로그인하지 않은 상태로 개인이 작성한 회고를 모두 조회할 수 있다")
         void withoutLogin() {
-            get("/api/reviews/me").statusCode(HttpStatus.UNAUTHORIZED.value());
+            get("/api/reviews?member=1").statusCode(HttpStatus.OK.value());
         }
-
     }
 
     @Nested

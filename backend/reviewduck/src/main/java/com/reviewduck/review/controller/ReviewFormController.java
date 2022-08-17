@@ -26,7 +26,7 @@ import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
-import com.reviewduck.review.dto.response.MyReviewFormsResponse;
+import com.reviewduck.review.dto.response.MemberReviewFormsResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
 import com.reviewduck.review.dto.response.ReviewResponse;
@@ -94,16 +94,17 @@ public class ReviewFormController {
         return ReviewFormResponse.of(reviewForm, member);
     }
 
-    @Operation(summary = "내가 작성한 회고 폼을 모두 조회한다.")
-    @GetMapping("/me")
+    @Operation(summary = "특정 멤버가 작성한 회고 폼을 모두 조회한다.")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public MyReviewFormsResponse findReviewFormsByMember(@AuthenticationPrincipal Member member) {
+    public MemberReviewFormsResponse findReviewFormsBySocialId(@AuthenticationPrincipal Member member,
+        @RequestParam(value = "member") String socialId) {
 
-        info("/api/review-forms/me", "GET", "");
+        info("/api/review-forms?member=" + socialId, "GET", "");
 
-        List<ReviewForm> reviewForms = reviewFormService.findByMember(member);
+        List<ReviewForm> reviewForms = reviewFormService.findBySocialId(socialId);
 
-        return MyReviewFormsResponse.from(reviewForms);
+        return MemberReviewFormsResponse.of(reviewForms, socialId, member);
     }
 
     @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 모두 조회한다. (목록형 보기)")
