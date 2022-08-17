@@ -60,8 +60,18 @@
 }
 
 .contents-container {
-  padding: 6rem 0;
+  padding: 0 0 6rem 0;
   border-bottom: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
+
+  .description {
+    padding: 1.5rem 0 3rem 0;
+
+    .text {
+      white-space: pre-wrap;
+      margin-top: 1rem;
+      color: $THEME_COLOR_THEME_TEXT_600;
+    }
+  }
 }
 
 .profile-container {
