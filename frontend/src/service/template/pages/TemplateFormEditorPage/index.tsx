@@ -7,7 +7,7 @@ import cn from 'classnames';
 import { Question } from 'service/@shared/types/review';
 
 import useSnackbar from 'common/hooks/useSnackbar';
-import useQuestions from 'service/review/hooks/useQuestions';
+import useQuestions from 'service/@shared/hooks/useQuestions';
 
 import { getErrorMessage, setFormFocus } from 'service/@shared/utils';
 
@@ -66,7 +66,7 @@ function TemplateFormEditorPage() {
     let questionIndex = null;
 
     flushSync(() => {
-      questionIndex = addQuestion();
+      questionIndex = addQuestion({ currentIndex: 0 });
     });
 
     if (questionIndex === null) return;

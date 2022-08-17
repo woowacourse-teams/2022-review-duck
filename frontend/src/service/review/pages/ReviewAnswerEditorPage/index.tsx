@@ -4,7 +4,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ErrorResponse } from 'service/@shared/types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
-import useQuestions from 'service/review/hooks/useQuestions';
+import useQuestions from 'service/@shared/hooks/useQuestions';
 
 import useAnswerEditorPage from './useAnswerEditorPage';
 import { Editor } from './views/Editor';

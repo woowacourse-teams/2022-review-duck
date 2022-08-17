@@ -5,7 +5,7 @@ import cn from 'classnames';
 
 import { Question } from 'service/@shared/types';
 
-import useQuestions from 'service/review/hooks/useQuestions';
+import useQuestions from 'service/@shared/hooks/useQuestions';
 
 import { setFormFocus } from 'service/@shared/utils';
 

@@ -6,7 +6,7 @@ import cn from 'classnames';
 import { Question } from 'service/@shared/types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
-import useQuestions from 'service/review/hooks/useQuestions';
+import useQuestions from 'service/@shared/hooks/useQuestions';
 
 import { getErrorMessage } from 'service/@shared/utils';
 
