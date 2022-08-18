@@ -26,7 +26,7 @@ function useGetAccessToken(queryOptions?: UseQueryOptions<CreateRefreshResponse,
   // TODO: 402 에러 시, 메시지 변경 처리.
 }
 
-function useGetUserInfo(queryOptions?: UseQueryOptions<UserProfileResponse, ErrorResponse>) {
+function useGetAuthProfile(queryOptions?: UseQueryOptions<UserProfileResponse, ErrorResponse>) {
   return useQuery<UserProfileResponse, ErrorResponse>(
     [QUERY_KEY.DATA.USER, QUERY_KEY.API.GET_USER_PROFILE],
     () => authAPI.getProfile(),
@@ -37,4 +37,4 @@ function useGetUserInfo(queryOptions?: UseQueryOptions<UserProfileResponse, Erro
   );
 }
 
-export { useGetAccessToken, useGetUserInfo };
+export { useGetAccessToken, useGetAuthProfile };

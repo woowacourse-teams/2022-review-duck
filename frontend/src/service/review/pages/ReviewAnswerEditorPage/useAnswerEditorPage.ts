@@ -5,7 +5,7 @@ import {
   UpdateReviewAnswerRequest,
 } from 'service/@shared/types';
 
-import { useGetUserInfo } from 'service/@shared/hooks/queries/auth';
+import { useGetAuthProfile } from 'service/@shared/hooks/queries/auth';
 import {
   useCreateReviewAnswer,
   useGetReviewAnswer,
@@ -43,7 +43,7 @@ function useAnswerEditorPage(reviewFormCode: string, reviewId: string) {
   const createMutation = useCreateReviewAnswer();
   const updateMutation = useUpdateReviewAnswer();
 
-  const userProfileQuery = useGetUserInfo();
+  const userProfileQuery = useGetAuthProfile();
   const reviewFormQuery = useGetReviewForm(reviewFormCode);
   const reviewAnswerQuery = useGetReviewAnswer(Number(reviewId), {
     enabled: !!reviewId,
