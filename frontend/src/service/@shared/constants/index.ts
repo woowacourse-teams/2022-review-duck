@@ -104,7 +104,7 @@ const API_URI = {
   USER: {
     GET_REVIEW_ANSWERS: '/api/reviews',
     GET_REVIEW_FORMS: '/api/review-forms',
-    GET_PROFILE: (socialId: number) => ` /api/members/${socialId}`,
+    GET_PROFILE: (socialId: numberString) => `/api/members/${socialId}`,
   },
 };
 

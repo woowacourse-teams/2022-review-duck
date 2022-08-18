@@ -60,10 +60,12 @@ function ProfilePage() {
           </div>
 
           <div className={styles.profileManage}>
-            <Button size="small">
-              <Icon code="edit_note" />
-              <span>Edit</span>
-            </Button>
+            {userProfile.isMine && (
+              <Button size="small">
+                <Icon code="edit_note" />
+                <span>Edit</span>
+              </Button>
+            )}
 
             <a
               href={`${GITHUB_PROFILE_URL}${userProfile.socialNickname}`}

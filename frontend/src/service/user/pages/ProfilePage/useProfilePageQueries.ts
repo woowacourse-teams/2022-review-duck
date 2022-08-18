@@ -1,12 +1,16 @@
-import { useGetAuthProfile } from 'service/@shared/hooks/queries/auth';
 import { useDeleteReviewAnswer, useDeleteReviewForm } from 'service/@shared/hooks/queries/review';
-import { useGetUserReviewForms, useGetUserReviewAnswer } from 'service/@shared/hooks/queries/user';
+import {
+  useGetUserReviewForms,
+  useGetUserReviewAnswer,
+  useGetUserProfile,
+} from 'service/@shared/hooks/queries/user';
 
-function useProfilePageQueries(socialId: string) {
-  const getMyReviewsQuery = useGetUserReviewAnswer(Number(socialId));
-  const getMyReviewFormsQuery = useGetUserReviewForms(Number(socialId));
+function useProfilePageQueries(socialIdPrams: string) {
+  const socialId = Number(socialIdPrams);
+  const getMyReviewsQuery = useGetUserReviewAnswer(socialId);
+  const getMyReviewFormsQuery = useGetUserReviewForms(socialId);
 
-  const getUserProfileQuery = useGetAuthProfile();
+  const getUserProfileQuery = useGetUserProfile({ socialId });
   const deleteReviewMutation = useDeleteReviewAnswer();
   const deleteReviewFormMutation = useDeleteReviewForm();
 
@@ -23,6 +27,7 @@ function useProfilePageQueries(socialId: string) {
   };
 
   const userProfile = getUserProfileQuery.data || {
+    isMine: false,
     socialId: '',
     nickname: '',
     socialNickname: '',

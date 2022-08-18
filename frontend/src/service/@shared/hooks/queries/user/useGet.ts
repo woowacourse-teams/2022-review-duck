@@ -4,10 +4,28 @@ import {
   GetUserReviewAnswerResponse,
   GetUserReviewFormsResponse,
   ErrorResponse,
+  GetUserProfileResponse,
 } from 'service/@shared/types';
 
 import { userAPI } from 'service/@shared/api';
 import { QUERY_KEY } from 'service/@shared/constants';
+
+interface UseGetUserProfile {
+  socialId: number;
+}
+
+function useGetUserProfile(
+  { socialId }: UseGetUserProfile,
+  queryOptions?: UseQueryOptions<GetUserProfileResponse, ErrorResponse>,
+) {
+  return useQuery<GetUserProfileResponse, ErrorResponse>(
+    [QUERY_KEY.DATA.USER, QUERY_KEY.API.GET_USER_PROFILE, { socialId }],
+    () => userAPI.getUserProfile(socialId),
+    {
+      ...queryOptions,
+    },
+  );
+}
 
 function useGetUserReviewForms(
   socialId: number,
@@ -35,4 +53,4 @@ function useGetUserReviewAnswer(
   );
 }
 
-export { useGetUserReviewForms, useGetUserReviewAnswer };
+export { useGetUserProfile, useGetUserReviewForms, useGetUserReviewAnswer };

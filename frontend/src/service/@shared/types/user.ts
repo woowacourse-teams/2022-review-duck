@@ -37,3 +37,11 @@ export interface GetUserReviewFormsResponse {
     questions: ServerQuestionRequireId[];
   }>;
 }
+
+export interface GetUserProfileResponse {
+  isMine: boolean;
+  socialId: string;
+  socialNickname: string;
+  nickname: string;
+  profileUrl: string;
+}
