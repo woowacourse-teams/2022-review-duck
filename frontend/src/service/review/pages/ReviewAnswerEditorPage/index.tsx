@@ -103,7 +103,7 @@ function ReviewAnswerEditorPage() {
         <Status.UserProfile
           nickname={authorProfile?.nickname}
           profileImage={authorProfile?.profileUrl}
-          description="이 프로필으로 회고에 기록됩니다."
+          description="이 프로필로 회고에 기록됩니다."
         />
       </Status>
 
