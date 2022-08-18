@@ -35,10 +35,10 @@
 }
 
 .textarea {
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: lighter;
 
   &::placeholder {
-    color: $THEME_COLOR_THEME_TEXT_100;
+    color: $THEME_COLOR_THEME_TEXT_400;
   }
 }

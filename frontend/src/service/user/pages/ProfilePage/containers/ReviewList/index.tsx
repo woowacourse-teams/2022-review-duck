@@ -80,20 +80,10 @@ function ReviewList({ filter, socialId }: ReviewList) {
       {filter === USER_PROFILE_TAB.REVIEWS
         ? myReviews?.reviews.map((review) => (
             <div className={styles.reviewContainer} key={review.id}>
-              <div className={styles.header}>
-                <Link
-                  to={`${PAGE_LIST.REVIEW_OVERVIEW}/${review.reviewForm.code}`}
-                  state={{ redirect: `${PAGE_LIST.USER_PROFILE}/${socialId}` }}
-                >
-                  <Text className={styles.title} size={24} weight="bold">
-                    {review.reviewForm.title}
-                  </Text>
-                </Link>
-              </div>
-
-              <hr className={styles.line} />
-
               <Questions>
+                <Link to={`${PAGE_LIST.REVIEW_OVERVIEW}/${review.reviewForm.code}`}>
+                  <Questions.Title>{review.reviewForm.title}</Questions.Title>
+                </Link>
                 <Questions.EditButtons
                   isVisible={myReviews.isMine}
                   onClickEdit={handleClickEdit(
@@ -116,17 +106,11 @@ function ReviewList({ filter, socialId }: ReviewList) {
           ))
         : myReviewForms?.reviewForms.map((reviewForm) => (
             <div className={styles.reviewContainer} key={reviewForm.code}>
-              <div className={styles.header}>
-                <Link to={`${PAGE_LIST.REVIEW_OVERVIEW}/${reviewForm.code}`}>
-                  <Text className={styles.title} size={24} weight="bold">
-                    {reviewForm.title}
-                  </Text>
-                </Link>
-              </div>
-
-              <hr className={styles.line} />
-
               <Questions>
+                <Link to={`${PAGE_LIST.REVIEW_OVERVIEW}/${reviewForm.code}`}>
+                  <Questions.Title>{reviewForm.title}</Questions.Title>
+                </Link>
+
                 <Questions.EditButtons
                   isVisible={myReviews.isMine}
                   onClickEdit={handleClickEdit(
