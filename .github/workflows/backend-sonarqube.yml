@@ -3,8 +3,8 @@ name: backend-sonarqube
 
 # develop 브랜치에 대한 pr 이벤트가 일어났을 때 실행한다는 설정
 on:
-  push:
-    branches: ["develop", "fix-comment-on-push"]
+#   push:
+#     branches: ["develop"]
   pull_request:
     branches: ["develop", "main"]
 
@@ -27,7 +27,7 @@ jobs:
       SONARQUBE_PROJECT_NAME: reviewDuck
       SONARQUBE_URL: ${{ secrets.SONAR_HOST_URL }}
       SONARQUBE_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      PR_NUMBER: ""
+      PR_NUMBER: ${{ github.event.pull_request.number }}
       clientId: ${{ secrets.CLIENTID }}
       clientSecret: ${{ secrets.CLIENTSECRET }}
       jwtKey: ${{ secrets.JWTKEY }}
@@ -36,9 +36,6 @@ jobs:
 
     # analysis job 의 세부 단계 설정
     steps:
-      - name: get PR number
-        run: env.PR_NUMBER=$(jq --raw-output .pull_request.number "$GITHUB_EVENT_PATH")
-        
       # 소스코드 체크아웃 수행
       - name: Checkout source code
         uses: actions/checkout@v2
