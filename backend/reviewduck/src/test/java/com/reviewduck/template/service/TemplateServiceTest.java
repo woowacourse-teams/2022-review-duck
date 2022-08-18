@@ -187,7 +187,7 @@ public class TemplateServiceTest {
             Template template1 = saveTemplate(member1, "title1", "description1", questions1);
             Template template2 = saveTemplate(member1, "title2", "description2", questions2);
 
-            template2.increaseUsedCount();
+            templateService.increaseUsedCount(template2.getId());
 
             // when
             List<Template> templates = templateService.findAllOrderByTrend();
