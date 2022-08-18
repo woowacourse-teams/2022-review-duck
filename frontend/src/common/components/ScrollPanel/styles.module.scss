@@ -9,10 +9,11 @@
   position: relative;
   width: 100%;
   overflow-x: scroll;
-  overflow-y: hidden;
+  overflow-y: visible;
   overscroll-behavior-x: contain;
   scroll-snap-type: none;
   scroll-behavior: smooth;
+
   @include hide-scroll-bar;
 }
 
@@ -20,13 +21,14 @@
   position: relative;
   display: flex;
   flex-direction: row;
-
+  overflow-y: visible;
   &:not(.disabled) {
     transform: translateX(calc(max(100vw, 1024px) / 2 - 524px));
   }
 
   > * {
     flex-shrink: 0;
+    flex-grow: 0;
     scroll-snap-align: end;
   }
 }
