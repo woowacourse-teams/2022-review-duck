@@ -1,5 +1,5 @@
 alter table review_form_question
-    change description description text;
+    alter column description text not null;
 
 alter table template_question
-    change description description text;
+    alter column description text not null;
