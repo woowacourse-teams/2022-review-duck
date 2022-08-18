@@ -324,3 +324,58 @@ export const DUMMY_REVIEW = {
     ],
   },
 };
+
+export const DUMMY_USER = {
+  GET_REVIEW_FORMS: {
+    numberOfReviewForms: 53,
+    isMine: true,
+    reviewForms: [
+      {
+        title: '회고 폼 타이틀',
+        code: '123ABC',
+        updatedAt: 0,
+        questions: [
+          {
+            id: 1,
+            value: '질문 1',
+            description: '설명 1',
+          },
+        ],
+      },
+    ],
+  },
+  GET_REVIEW_ANSWERS: {
+    numberOfReviews: 15,
+    isMine: true,
+    reviews: [
+      {
+        id: 1,
+        title: '다른 유저의 회고 1',
+        updatedAt: 0,
+        contents: [
+          {
+            question: {
+              id: 1,
+              value: '질문 1',
+              description: '설명 1',
+            },
+            answer: {
+              id: 1,
+              value: '답변 1',
+            },
+          },
+        ],
+        reviewForm: {
+          title: '회고 답변 조회 시 폼 타이틀',
+          code: '123ABC',
+          creator: {
+            id: 123,
+            socialNickname: 'compy-ryu',
+            nickname: '콤피',
+            profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+          },
+        },
+      },
+    ],
+  },
+};
