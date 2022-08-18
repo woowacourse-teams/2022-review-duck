@@ -3,6 +3,8 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
 
+import useModal from 'common/hooks/useModal';
+
 import { Button, Icon, Text } from 'common/components';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
@@ -11,13 +13,19 @@ import styles from './styles.module.scss';
 
 import ReviewList from './containers/ReviewList';
 import useProfilePageQueries from './useProfilePageQueries';
-import { USER_PROFILE_TAB, GITHUB_PROFILE_URL, PAGE_LIST } from 'service/@shared/constants';
+import {
+  USER_PROFILE_TAB,
+  GITHUB_PROFILE_URL,
+  PAGE_LIST,
+  MODAL_LIST,
+} from 'service/@shared/constants';
 
 function ProfilePage() {
   const navigate = useNavigate();
 
   const { socialId = '' } = useParams();
   const [searchParams] = useSearchParams();
+  const { showModal } = useModal();
 
   const currentTab = searchParams.get('tab') || USER_PROFILE_TAB.REVIEWS;
 
@@ -31,6 +39,10 @@ function ProfilePage() {
 
   const onChangeTab = (filter: string) => () => {
     navigate(`${PAGE_LIST.USER_PROFILE}/${socialId}?tab=${filter}`);
+  };
+
+  const handleEditProfile = () => {
+    showModal(MODAL_LIST.PROFILE_EDIT);
   };
 
   return (
@@ -61,7 +73,7 @@ function ProfilePage() {
 
           <div className={styles.profileManage}>
             {userProfile.isMine && (
-              <Button size="small">
+              <Button size="small" onClick={handleEditProfile}>
                 <Icon code="edit_note" />
                 <span>Edit</span>
               </Button>
