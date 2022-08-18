@@ -46,7 +46,7 @@ function QuestionsEditor({ className, initialQuestions, onUpdate, ...rest }: Que
     setFormFocus(event.target as HTMLInputElement, newQuestionIndex);
   };
 
-  const handleChange = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeQuestion = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const $input = event.target as HTMLInputElement;
     const currentQuestion = questions[index];
 
@@ -55,8 +55,18 @@ function QuestionsEditor({ className, initialQuestions, onUpdate, ...rest }: Que
     updateQuestion(index, { value: event.target.value });
   };
 
+  const handleChangeDescription =
+    (index: number) => (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+      const $textarea = event.target as HTMLTextAreaElement;
+      const currentQuestion = questions[index];
+
+      if (!currentQuestion || $textarea.value === '') return;
+
+      updateQuestion(index, { description: event.target.value });
+    };
+
   const handleDelete = (index: number) => (event: UpdateQuestionEvent) => {
-    if (index === 0) return;
+    if (questions.length <= 1) return;
 
     removeQuestion(index);
     setFormFocus(event.target as HTMLInputElement, index - 1);
@@ -73,7 +83,8 @@ function QuestionsEditor({ className, initialQuestions, onUpdate, ...rest }: Que
           key={key || index}
           numbering={index + 1}
           description={description}
-          onChange={handleChange(index)}
+          onChangeQuestion={handleChangeQuestion(index)}
+          onChangeDescription={handleChangeDescription(index)}
           onAddQuestion={handleAdd(index)}
           onDeleteQuestion={handleDelete(index)}
         >
