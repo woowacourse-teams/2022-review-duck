@@ -1,6 +1,20 @@
 @import 'styles/@global.scss';
 
 .container {
+  @include animation(0.2s ease) {
+    from {
+      opacity: 0;
+      transform: translateX(15%);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0%);
+    }
+  }
+}
+
+.grid-container {
   display: grid;
   grid-template-columns: minmax(auto, 5%) minmax(auto, 80%) minmax(5.5rem, auto);
   gap: 5%;
@@ -18,16 +32,13 @@
   .button {
     background-color: $THEME_COLOR_STATUS_PRIMARY_500;
   }
+}
 
-  @include animation(0.2s ease) {
-    from {
-      opacity: 0;
-      transform: translateX(15%);
-    }
+.textarea {
+  font-size: 0.8125rem;
+  font-weight: lighter;
 
-    to {
-      opacity: 1;
-      transform: translateX(0%);
-    }
+  &::placeholder {
+    color: $THEME_COLOR_THEME_TEXT_100;
   }
 }
