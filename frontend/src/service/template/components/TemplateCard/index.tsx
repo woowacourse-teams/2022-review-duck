@@ -1,8 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
-
 import cn from 'classnames';
-
-import { Template } from 'service/@shared/types';
 
 import { getElapsedTimeText } from 'service/@shared/utils';
 
@@ -14,52 +10,104 @@ import SmallProfileCard from 'service/@shared/components/SmallProfileCard';
 
 import styles from './styles.module.scss';
 
-import { PAGE_LIST } from 'service/@shared/constants';
-
-interface Props {
+interface ContainerProps {
   className?: string;
-  template: Template;
+  children: React.ReactNode;
 }
 
-function TemplateCard({ className, template }: Props) {
-  const navigate = useNavigate();
+function Container({ className, children }: ContainerProps) {
+  return <div className={cn(className, styles.container)}>{children}</div>;
+}
 
-  const handleMoveToTemplate = (templateId: number) => () => {
-    navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${templateId}`);
-  };
+interface TagProps {
+  className?: string;
+  usedCount: number;
+}
 
+function Tag({ className, usedCount }: TagProps) {
   return (
-    <div className={cn(className, styles.container)}>
-      <div onClick={handleMoveToTemplate(template.info.id)}>
-        <TagLabel>
-          <>
-            <Icon code="download" />
-            <span>{`${template.info.usedCount}회`}</span>
-          </>
-        </TagLabel>
-        <Text className={styles.title} size={20}>
-          {template.info.title}
-        </Text>
-        <div className={styles.infoContainer}>
-          <div className={styles.info}>
-            <Icon className={styles.icon} code="schedule" />
-            <span className={styles.text}>{getElapsedTimeText(template.info.updatedAt)}</span>
-          </div>
-        </div>
-        <Text className={styles.description} size={14}>
-          {template.info.description}
-        </Text>
-        <hr className={styles.line} />
+    <TagLabel className={className}>
+      <>
+        <Icon code="download" />
+        <span>{`${usedCount}회`}</span>
+      </>
+    </TagLabel>
+  );
+}
+
+interface TitleProps {
+  className?: string;
+  title: string;
+}
+
+function Title({ className, title }: TitleProps) {
+  return (
+    <Text className={cn(className, styles.title)} size={20}>
+      {title}
+    </Text>
+  );
+}
+
+interface UpdatedAtProps {
+  className?: string;
+  updatedAt: number;
+}
+
+function UpdatedAt({ className, updatedAt }: UpdatedAtProps) {
+  return (
+    <div className={cn(className, styles.infoContainer)}>
+      <div className={styles.info}>
+        <Icon className={styles.icon} code="schedule" />
+        <span className={styles.text}>{getElapsedTimeText(updatedAt)}</span>
       </div>
-      <Link to={`${PAGE_LIST.USER_PROFILE}/${template.creator.id}`}>
-        <SmallProfileCard
-          profileUrl={template.creator.profileUrl}
-          primaryText={template.creator.nickname}
-          secondaryText={template.creator.socialNickname || ''}
-        />
-      </Link>
     </div>
   );
 }
+
+interface DescriptionProps {
+  className?: string;
+  description: string;
+}
+
+function Description({ className, description }: DescriptionProps) {
+  return (
+    <Text className={cn(className, styles.description)} size={14}>
+      {description}
+    </Text>
+  );
+}
+
+interface LineProps {
+  className?: string;
+}
+
+function Line({ className }: LineProps) {
+  return <hr className={cn(className, styles.line)} />;
+}
+
+interface ProfileProps {
+  profileUrl: string;
+  nickname: string;
+  socialNickname: string;
+}
+
+function Profile({ profileUrl, nickname, socialNickname }: ProfileProps) {
+  return (
+    <SmallProfileCard
+      profileUrl={profileUrl}
+      primaryText={nickname}
+      secondaryText={socialNickname || ''}
+    />
+  );
+}
+
+const TemplateCard = Object.assign(Container, {
+  Tag,
+  Title,
+  UpdatedAt,
+  Description,
+  Line,
+  Profile,
+});
 
 export default TemplateCard;
