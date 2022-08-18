@@ -89,9 +89,20 @@
   }
 }
 
-.card {
-  width: 18.75rem;
-  border-radius: $GLOBAL_BORDERRADIUS_XLARGE;
-  background-color: $THEME_COLOR_THEME_BACKGROUND_200;
-  margin-right: 2rem;
+.content-header {
+  padding: 2rem 0.25rem 1rem;
+}
+
+.main-card {
+  width: 18rem;
+  margin-right: 2.5rem;
+  padding: 2rem;
+}
+
+.card-list {
+  padding: 0.75rem 0;
+}
+
+.temp {
+  padding: 3rem;
 }

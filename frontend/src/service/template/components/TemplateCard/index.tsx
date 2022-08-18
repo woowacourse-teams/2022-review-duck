@@ -1,8 +1,10 @@
+import { useNavigate } from 'react-router-dom';
+
 import cn from 'classnames';
 
 import { getElapsedTimeText } from 'service/@shared/utils';
 
-import { Icon, Text } from 'common/components';
+import { FlexContainer, Icon, Text } from 'common/components';
 
 import TagLabel from 'common/components/TagLabel';
 
@@ -12,11 +14,26 @@ import styles from './styles.module.scss';
 
 interface ContainerProps {
   className?: string;
+  link: string;
   children: React.ReactNode;
 }
 
-function Container({ className, children }: ContainerProps) {
-  return <div className={cn(className, styles.container)}>{children}</div>;
+function Container({ className, link, children }: ContainerProps) {
+  const navigate = useNavigate();
+
+  const handleClickLink = () => {
+    navigate(link);
+  };
+
+  return (
+    <FlexContainer
+      className={cn(className, styles.container)}
+      gap="small"
+      onClick={handleClickLink}
+    >
+      {children}
+    </FlexContainer>
+  );
 }
 
 interface TagProps {
@@ -27,10 +44,8 @@ interface TagProps {
 function Tag({ className, usedCount }: TagProps) {
   return (
     <TagLabel className={className}>
-      <>
-        <Icon code="download" />
-        <span>{`${usedCount}회`}</span>
-      </>
+      <Icon code="download" />
+      <span>{`${usedCount}회`}</span>
     </TagLabel>
   );
 }
@@ -55,12 +70,10 @@ interface UpdatedAtProps {
 
 function UpdatedAt({ className, updatedAt }: UpdatedAtProps) {
   return (
-    <div className={cn(className, styles.infoContainer)}>
-      <div className={styles.info}>
-        <Icon className={styles.icon} code="schedule" />
-        <span className={styles.text}>{getElapsedTimeText(updatedAt)}</span>
-      </div>
-    </div>
+    <FlexContainer className={cn(className, styles.info)} direction="row" align="center">
+      <Icon className={styles.icon} code="schedule" />
+      <span className={styles.text}>{getElapsedTimeText(updatedAt)}</span>
+    </FlexContainer>
   );
 }
 
@@ -71,18 +84,10 @@ interface DescriptionProps {
 
 function Description({ className, description }: DescriptionProps) {
   return (
-    <Text className={cn(className, styles.description)} size={14}>
+    <Text className={cn(className, styles.description)} size={16}>
       {description}
     </Text>
   );
-}
-
-interface LineProps {
-  className?: string;
-}
-
-function Line({ className }: LineProps) {
-  return <hr className={cn(className, styles.line)} />;
 }
 
 interface ProfileProps {
@@ -93,11 +98,14 @@ interface ProfileProps {
 
 function Profile({ profileUrl, nickname, socialNickname }: ProfileProps) {
   return (
-    <SmallProfileCard
-      profileUrl={profileUrl}
-      primaryText={nickname}
-      secondaryText={socialNickname || ''}
-    />
+    <>
+      <hr className={styles.line} />
+      <SmallProfileCard
+        profileUrl={profileUrl}
+        primaryText={nickname}
+        secondaryText={socialNickname}
+      />
+    </>
   );
 }
 
@@ -106,7 +114,6 @@ const TemplateCard = Object.assign(Container, {
   Title,
   UpdatedAt,
   Description,
-  Line,
   Profile,
 });
 

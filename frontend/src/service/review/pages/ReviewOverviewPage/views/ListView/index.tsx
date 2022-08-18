@@ -184,7 +184,7 @@ const FormManageButtons = ({ reviewFormCode }: FormManageButtonsProps) => {
           </Button>
         </Link>
 
-        <Button theme="outlined" size="small">
+        <Button theme="outlined" size="small" disabled={false}>
           <Icon code="share" />
           <span>템플릿 공유</span>
         </Button>
