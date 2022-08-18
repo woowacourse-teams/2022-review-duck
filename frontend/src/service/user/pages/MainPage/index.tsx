@@ -106,27 +106,29 @@ function MainPage() {
         </LayoutContainer>
       </section>
 
-      <LayoutContainer>
-        <NoResult size="large">준비 중</NoResult>
+      <LayoutContainer className={styles.contentHeader}>
+        <Text size={24} element="h1">
+          인기 템플릿
+        </Text>
       </LayoutContainer>
 
       <ScrollPanel>
         {templates.map((template) => (
-          <TemplateCard key={template.info.id} className={styles.card}>
-            <Link to={`${PAGE_LIST.TEMPLATE_DETAIL}/${template.info.id}`}>
-              <TemplateCard.Tag usedCount={template.info.usedCount} />
-              <TemplateCard.Title title={template.info.title} />
-              <TemplateCard.UpdatedAt updatedAt={template.info.updatedAt} />
-              <TemplateCard.Description description={template.info.description} />
-              <TemplateCard.Line />
-            </Link>
-            <Link to={`${PAGE_LIST.USER_PROFILE}/${template.creator.id}`}>
-              <TemplateCard.Profile
-                profileUrl={template.creator.profileUrl}
-                nickname={template.creator.nickname}
-                socialNickname={template.creator.socialNickname || ''}
-              />
-            </Link>
+          <TemplateCard
+            key={template.info.id}
+            className={styles.mainCard}
+            link={`${PAGE_LIST.TEMPLATE_DETAIL}/${template.info.id}`}
+          >
+            <TemplateCard.Tag usedCount={template.info.usedCount} />
+            <TemplateCard.Title title={template.info.title} />
+            <TemplateCard.UpdatedAt updatedAt={template.info.updatedAt} />
+            <TemplateCard.Description description={template.info.description} />
+
+            <TemplateCard.Profile
+              profileUrl={template.creator.profileUrl}
+              nickname={template.creator.nickname}
+              socialNickname={template.creator.socialNickname || ''}
+            />
           </TemplateCard>
         ))}
       </ScrollPanel>
