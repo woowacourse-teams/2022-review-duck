@@ -22,6 +22,8 @@ function useGetAccessToken(queryOptions?: UseQueryOptions<CreateRefreshResponse,
       ...queryOptions,
     },
   );
+
+  // TODO: 402 에러 시, 메시지 변경 처리.
 }
 
 function useGetUserInfo(queryOptions?: UseQueryOptions<UserProfileResponse, ErrorResponse>) {
