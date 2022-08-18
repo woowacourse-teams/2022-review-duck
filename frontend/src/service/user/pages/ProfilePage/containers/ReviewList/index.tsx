@@ -91,7 +91,7 @@ function ReviewList({ filter, socialId }: ReviewList) {
                 </Link>
               </div>
 
-              <hr />
+              <hr className={styles.line} />
 
               <Questions>
                 <Questions.EditButtons
@@ -123,7 +123,8 @@ function ReviewList({ filter, socialId }: ReviewList) {
                   </Text>
                 </Link>
               </div>
-              <hr />
+
+              <hr className={styles.line} />
 
               <Questions>
                 <Questions.EditButtons
