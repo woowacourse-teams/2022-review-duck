@@ -90,7 +90,13 @@ function ReviewOverViewPage() {
               {membersUniqueFilter?.map(
                 ([key, creator]) =>
                   key && (
-                    <Profile key={key} className={styles.profile} textAlign="center" align="center">
+                    <Profile
+                      key={key}
+                      className={styles.profile}
+                      socialId={creator.id}
+                      textAlign="center"
+                      align="center"
+                    >
                       <Profile.Image size="large" edge="pointed" src={creator.profileUrl} />
                       <Profile.Nickname size={14}>{creator.nickname}</Profile.Nickname>
                       <Profile.Description size={12}></Profile.Description>
@@ -104,6 +110,7 @@ function ReviewOverViewPage() {
                 <ListView.Review key={id}>
                   <Questions>
                     <Questions.CoverProfile
+                      socialId={info.creator.id}
                       image={info.creator.profileUrl}
                       title={info.creator.nickname}
                       description={info.updateDate}
@@ -167,6 +174,7 @@ function ReviewOverViewPage() {
               reviewAnswers?.map(({ id, info: { creator }, questions }) => (
                 <SheetView.Answers key={id}>
                   <SheetView.Creator
+                    socialId={creator.id}
                     nickname={creator.nickname}
                     profileImage={creator.profileUrl}
                   />

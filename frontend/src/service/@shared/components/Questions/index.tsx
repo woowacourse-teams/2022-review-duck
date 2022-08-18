@@ -13,14 +13,15 @@ function Container({ children }: ContainerProps) {
 }
 
 interface CoverProfileProps {
+  socialId: number;
   image: string;
   title: string;
   description?: string;
 }
 
-function CoverProfile({ image, title, description }: CoverProfileProps) {
+function CoverProfile({ socialId, image, title, description }: CoverProfileProps) {
   return (
-    <Profile align="center" textAlign="center" textGap="medium">
+    <Profile socialId={socialId} align="center" textAlign="center" textGap="medium">
       <Profile.Image src={image} />
       <Profile.Nickname size={20}>{title}</Profile.Nickname>
       {description && <Profile.Description>{description}</Profile.Description>}

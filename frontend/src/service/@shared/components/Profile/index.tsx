@@ -1,4 +1,5 @@
 import React, { Children, isValidElement } from 'react';
+import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -8,6 +9,8 @@ import FlexContainer, { FlexContainerProps } from 'common/components/FlexContain
 import { TextProps } from 'common/components/Text';
 
 import styles from './styles.module.scss';
+
+import { PAGE_LIST } from 'service/@shared/constants';
 
 const getChildComponent = (children: React.ReactNode, findTarget: JSX.Element) => {
   const target = Children.toArray(children).filter(
@@ -68,6 +71,7 @@ function Description({ className, size = 14, children }: ProfileTextProps) {
 }
 
 interface ContainerProps extends Partial<FlexContainerProps> {
+  socialId: number;
   textAlign?: 'left' | 'center' | 'right';
   textGap?: Pick<FlexContainerProps, 'gap'>['gap'];
   children?: React.ReactNode;
@@ -75,6 +79,7 @@ interface ContainerProps extends Partial<FlexContainerProps> {
 
 function ProfileContainer({
   className,
+  socialId,
   direction = 'column',
   justify,
   align,
@@ -87,6 +92,8 @@ function ProfileContainer({
   const nickname = getChildComponent(children, <Nickname />);
   const description = getChildComponent(children, <Description />);
 
+  const userProfileURL = `${PAGE_LIST.USER_PROFILE}/${socialId}`;
+
   return (
     <FlexContainer
       className={cn(className, styles.profileContainer, styles[`align-${textAlign}`])}
@@ -95,10 +102,10 @@ function ProfileContainer({
       align={align}
       gap={gap}
     >
-      {profileImage}
+      <Link to={userProfileURL}>{profileImage}</Link>
 
       <FlexContainer className={styles.text} direction="column" justify="center" gap={textGap}>
-        {nickname}
+        <Link to={userProfileURL}>{nickname}</Link>
         {description}
       </FlexContainer>
     </FlexContainer>
