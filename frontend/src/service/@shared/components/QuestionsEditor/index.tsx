@@ -66,7 +66,7 @@ function QuestionsEditor({ className, initialQuestions, onUpdate, ...rest }: Que
     };
 
   const handleDelete = (index: number) => (event: UpdateQuestionEvent) => {
-    if (index === 0) return;
+    if (questions.length <= 1) return;
 
     removeQuestion(index);
     setFormFocus(event.target as HTMLInputElement, index - 1);
