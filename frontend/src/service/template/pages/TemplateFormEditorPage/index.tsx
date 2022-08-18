@@ -169,7 +169,7 @@ function TemplateFormEditorPage() {
                   numbering={index + 1}
                   type="text"
                   title={question.value}
-                  description="질문 설명이 이곳에 표기됩니다."
+                  description={question.description}
                 />
               ),
           )}
