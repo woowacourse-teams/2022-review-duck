@@ -13,6 +13,7 @@
   .header {
     display: flex;
     justify-content: space-between;
+    padding: 0.5rem 0;
 
     .title {
       color: $THEME_COLOR_STATUS_PRIMARY_600;
@@ -40,11 +41,6 @@
         }
       }
     }
-  }
-
-  > hr {
-    margin: 1.5rem 0;
-    border-color: $THEME_COLOR_STATUS_PRIMARY_100;
   }
 }
 

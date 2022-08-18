@@ -19,6 +19,7 @@ const MODAL_LIST = {
 
 const QUERY_KEY = {
   DATA: {
+    AUTH: 'auth',
     USER: 'user',
 
     REVIEW: 'review',
@@ -28,6 +29,7 @@ const QUERY_KEY = {
   },
   API: {
     GET_ACCESS_TOKEN: 'getRefreshedAccessToken',
+    GET_AUTH_MY_PROFILE: 'getAuthMyProfile',
     GET_USER_PROFILE: 'getUserProfile',
 
     GET_REVIEWS: 'getReviews',
@@ -63,9 +65,9 @@ const ACCESS_TOKEN_REFRESH_TIME = ACCESS_TOKEN_EXPIRE_TIME - 60 * 2 * 1000;
 
 const PERMISSION_VALID_TIME = 60 * 1000;
 
-const MYPAGE_TAB = {
-  MY_REVIEWS: 'my-reviews',
-  MY_REVIEW_FORMS: 'my-review-forms',
+const USER_PROFILE_TAB = {
+  REVIEWS: 'reviews',
+  REVIEW_FORMS: 'review-forms',
 };
 
 const TEMPLATE_TAB = {
@@ -99,6 +101,11 @@ const API_URI = {
     DELETE_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
     DELETE_ANSWER: (reviewId: numberString) => `/api/reviews/${reviewId}`,
   },
+  USER: {
+    GET_REVIEW_ANSWERS: '/api/reviews',
+    GET_REVIEW_FORMS: '/api/review-forms',
+    GET_PROFILE: (socialId: numberString) => `/api/members/${socialId}`,
+  },
 };
 
 export {
@@ -112,7 +119,7 @@ export {
   ACCESS_PERMISSION,
   ACCESS_TOKEN_EXPIRE_TIME,
   ACCESS_TOKEN_REFRESH_TIME,
-  MYPAGE_TAB,
+  USER_PROFILE_TAB,
   TEMPLATE_TAB,
   PERMISSION_VALID_TIME,
   REVIEW_FORM_TITLE_LENGTH,

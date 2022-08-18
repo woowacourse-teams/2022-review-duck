@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -9,13 +10,18 @@ import LayoutContainer from 'service/@shared/components/LayoutContainer';
 import styles from './styles.module.scss';
 
 import ReviewList from './containers/ReviewList';
-import useMyPageQueries from './useMyPageQueries';
-import { MYPAGE_TAB, GITHUB_PROFILE_URL } from 'service/@shared/constants';
+import useProfilePageQueries from './useProfilePageQueries';
+import { USER_PROFILE_TAB, GITHUB_PROFILE_URL, PAGE_LIST } from 'service/@shared/constants';
 
-function MyPage() {
-  const [currentTab, setCurrentTab] = useState(MYPAGE_TAB.MY_REVIEWS);
+function ProfilePage() {
+  const navigate = useNavigate();
 
-  const { myReviews, myReviewForms, userProfile, isError, error } = useMyPageQueries();
+  const { socialId = '' } = useParams();
+  const [searchParams] = useSearchParams();
+
+  const currentTab = searchParams.get('tab') || USER_PROFILE_TAB.REVIEWS;
+
+  const { myReviews, myReviewForms, userProfile, isError, error } = useProfilePageQueries(socialId);
 
   useEffect(() => {
     if (isError) {
@@ -24,7 +30,7 @@ function MyPage() {
   }, [isError, error]);
 
   const onChangeTab = (filter: string) => () => {
-    setCurrentTab(filter);
+    navigate(`${PAGE_LIST.USER_PROFILE}/${socialId}?tab=${filter}`);
   };
 
   return (
@@ -54,10 +60,12 @@ function MyPage() {
           </div>
 
           <div className={styles.profileManage}>
-            <Button size="small">
-              <Icon code="edit_note" />
-              <span>Edit</span>
-            </Button>
+            {userProfile.isMine && (
+              <Button size="small">
+                <Icon code="edit_note" />
+                <span>Edit</span>
+              </Button>
+            )}
 
             <a
               href={`${GITHUB_PROFILE_URL}${userProfile.socialNickname}`}
@@ -79,16 +87,18 @@ function MyPage() {
             </Text>
 
             <li
-              className={cn(styles.item, { [styles.focus]: currentTab === MYPAGE_TAB.MY_REVIEWS })}
-              onClick={onChangeTab(MYPAGE_TAB.MY_REVIEWS)}
+              className={cn(styles.item, {
+                [styles.focus]: currentTab === USER_PROFILE_TAB.REVIEWS,
+              })}
+              onClick={onChangeTab(USER_PROFILE_TAB.REVIEWS)}
             >
               작성한 회고글
             </li>
             <li
               className={cn(styles.item, {
-                [styles.focus]: currentTab === MYPAGE_TAB.MY_REVIEW_FORMS,
+                [styles.focus]: currentTab === USER_PROFILE_TAB.REVIEW_FORMS,
               })}
-              onClick={onChangeTab(MYPAGE_TAB.MY_REVIEW_FORMS)}
+              onClick={onChangeTab(USER_PROFILE_TAB.REVIEW_FORMS)}
             >
               생성한 회고
             </li>
@@ -113,17 +123,11 @@ function MyPage() {
         </aside>
 
         <div className={styles.mainContent}>
-          <ReviewList
-            filter={
-              currentTab === MYPAGE_TAB.MY_REVIEWS
-                ? MYPAGE_TAB.MY_REVIEWS
-                : MYPAGE_TAB.MY_REVIEW_FORMS
-            }
-          />
+          <ReviewList socialId={socialId} filter={currentTab} />
         </div>
       </LayoutContainer>
     </>
   );
 }
 
-export default MyPage;
+export default ProfilePage;
