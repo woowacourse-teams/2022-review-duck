@@ -10,7 +10,7 @@ function useDeleteRefreshToken(mutationOptions?: UseCustomMutationOptions<null>)
 
   return useMutation(authAPI.deleteRefreshToken, {
     onSettled: () => {
-      queryClient.refetchQueries([QUERY_KEY.DATA.USER]);
+      queryClient.refetchQueries([QUERY_KEY.DATA.AUTH]);
     },
     ...mutationOptions,
   });
