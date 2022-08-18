@@ -112,7 +112,7 @@ function MainPage() {
         </Text>
       </LayoutContainer>
 
-      <ScrollPanel>
+      <ScrollPanel className={styles.cardList}>
         {templates.map((template) => (
           <TemplateCard
             key={template.info.id}
@@ -132,6 +132,8 @@ function MainPage() {
           </TemplateCard>
         ))}
       </ScrollPanel>
+
+      <div className={styles.temp}></div>
     </>
   );
 }
