@@ -1,64 +1,48 @@
 @import 'styles/@global.scss';
 
 .container {
-  height: 17.1875rem;
-  width: 14.375rem;
-  padding: 1.2rem 1.3rem 0.3125rem 1.3rem;
-  background-color: $THEME_COLOR_THEME_BACKGROUND_200;
-  border-radius: $GLOBAL_BORDERRADIUS_LARGE;
-  transition: background-color 0.1s ease;
   cursor: pointer;
+  width: 23.5%;
+
+  border-radius: $GLOBAL_BORDERRADIUS_XLARGE;
+  background-color: $THEME_COLOR_THEME_BACKGROUND_200;
+  padding: 1.5rem;
+  transition: transform 0.3s ease;
 
   &:hover {
-    background-color: $THEME_COLOR_THEME_BACKGROUND_100;
+    transform: translateY(-3%);
   }
+}
 
-  .title {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    height: 20px;
-    line-height: 1.25rem;
-    color: $LIGHT_COLOR_STATUS_PRIMARY_800;
-    margin-top: 1rem;
-  }
+.title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: $LIGHT_COLOR_STATUS_PRIMARY_800;
+}
 
-  .info-container {
-    display: flex;
-    gap: 1rem;
-    margin: 0.5rem 0;
-    color: $LIGHT_COLOR_THEME_TEXT_100;
-    font-size: 0.75rem;
+.info {
+  gap: 0.25rem;
+  color: $LIGHT_COLOR_THEME_TEXT_100;
+  font-size: 0.75rem;
+}
 
-    .info {
-      display: flex;
-      align-items: center;
+.description {
+  $line-count: 4;
 
-      .icon {
-        margin-bottom: 2px;
-      }
+  display: -webkit-box;
+  -webkit-line-clamp: $line-count;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  box-orient: vertical;
+  color: $THEME_COLOR_THEME_TEXT_400;
+  line-height: 160%;
+  min-height: calc(1.6rem * $line-count);
+  margin-bottom: 20%;
+}
 
-      .text {
-        margin-left: 0.25rem;
-      }
-    }
-  }
-
-  .description {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    height: 76px;
-    padding: 1rem 0;
-    color: $THEME_COLOR_THEME_TEXT_400;
-    line-height: 1.25rem;
-  }
-
-  .line {
-    width: 2rem;
-    margin: 0.5rem 0;
-    border-color: $THEME_COLOR_STATUS_PRIMARY_100;
-  }
+.line {
+  margin: 0;
+  width: 2rem;
+  border-color: $THEME_COLOR_STATUS_PRIMARY_100;
 }

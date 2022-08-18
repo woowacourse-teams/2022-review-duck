@@ -1,12 +1,10 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import cn from 'classnames';
 
-import { Template } from 'service/@shared/types';
-
 import { getElapsedTimeText } from 'service/@shared/utils';
 
-import { Icon, Text } from 'common/components';
+import { FlexContainer, Icon, Text } from 'common/components';
 
 import TagLabel from 'common/components/TagLabel';
 
@@ -14,52 +12,109 @@ import SmallProfileCard from 'service/@shared/components/SmallProfileCard';
 
 import styles from './styles.module.scss';
 
-import { PAGE_LIST } from 'service/@shared/constants';
-
-interface Props {
+interface ContainerProps {
   className?: string;
-  template: Template;
+  link: string;
+  children: React.ReactNode;
 }
 
-function TemplateCard({ className, template }: Props) {
+function Container({ className, link, children }: ContainerProps) {
   const navigate = useNavigate();
 
-  const handleMoveToTemplate = (templateId: number) => () => {
-    navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${templateId}`);
+  const handleClickLink = () => {
+    navigate(link);
   };
 
   return (
-    <div className={cn(className, styles.container)}>
-      <div onClick={handleMoveToTemplate(template.info.id)}>
-        <TagLabel>
-          <>
-            <Icon code="download" />
-            <span>{`${template.info.usedCount}회`}</span>
-          </>
-        </TagLabel>
-        <Text className={styles.title} size={20}>
-          {template.info.title}
-        </Text>
-        <div className={styles.infoContainer}>
-          <div className={styles.info}>
-            <Icon className={styles.icon} code="schedule" />
-            <span className={styles.text}>{getElapsedTimeText(template.info.updatedAt)}</span>
-          </div>
-        </div>
-        <Text className={styles.description} size={14}>
-          {template.info.description}
-        </Text>
-        <hr className={styles.line} />
-      </div>
-      <Link to={`${PAGE_LIST.USER_PROFILE}/${template.creator.id}`}>
-        <SmallProfileCard
-          profileUrl={template.creator.profileUrl}
-          primaryText={template.creator.nickname}
-          secondaryText={template.creator.socialNickname || ''}
-        />
-      </Link>
-    </div>
+    <FlexContainer
+      className={cn(className, styles.container)}
+      gap="small"
+      onClick={handleClickLink}
+    >
+      {children}
+    </FlexContainer>
   );
 }
+
+interface TagProps {
+  className?: string;
+  usedCount: number;
+}
+
+function Tag({ className, usedCount }: TagProps) {
+  return (
+    <TagLabel className={className}>
+      <Icon code="download" />
+      <span>{`${usedCount}회`}</span>
+    </TagLabel>
+  );
+}
+
+interface TitleProps {
+  className?: string;
+  title: string;
+}
+
+function Title({ className, title }: TitleProps) {
+  return (
+    <Text className={cn(className, styles.title)} size={20}>
+      {title}
+    </Text>
+  );
+}
+
+interface UpdatedAtProps {
+  className?: string;
+  updatedAt: number;
+}
+
+function UpdatedAt({ className, updatedAt }: UpdatedAtProps) {
+  return (
+    <FlexContainer className={cn(className, styles.info)} direction="row" align="center">
+      <Icon className={styles.icon} code="schedule" />
+      <span className={styles.text}>{getElapsedTimeText(updatedAt)}</span>
+    </FlexContainer>
+  );
+}
+
+interface DescriptionProps {
+  className?: string;
+  description: string;
+}
+
+function Description({ className, description }: DescriptionProps) {
+  return (
+    <Text className={cn(className, styles.description)} size={16}>
+      {description}
+    </Text>
+  );
+}
+
+interface ProfileProps {
+  profileUrl: string;
+  nickname: string;
+  socialNickname: string;
+}
+
+function Profile({ profileUrl, nickname, socialNickname }: ProfileProps) {
+  return (
+    <>
+      <hr className={styles.line} />
+      <SmallProfileCard
+        profileUrl={profileUrl}
+        primaryText={nickname}
+        secondaryText={socialNickname}
+      />
+    </>
+  );
+}
+
+const TemplateCard = Object.assign(Container, {
+  Tag,
+  Title,
+  UpdatedAt,
+  Description,
+  Profile,
+});
 
 export default TemplateCard;

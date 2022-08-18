@@ -32,7 +32,7 @@ function useGetUserReviewForms(
   queryOptions?: UseQueryOptions<GetUserReviewFormsResponse, ErrorResponse>,
 ) {
   return useQuery<GetUserReviewFormsResponse, ErrorResponse>(
-    [QUERY_KEY.DATA.REVIEW_FORM, QUERY_KEY.API.GET_MY_REVIEW_FORMS],
+    [QUERY_KEY.DATA.REVIEW_FORM, QUERY_KEY.API.GET_MY_REVIEW_FORMS, { socialId }],
     () => userAPI.getUserReviewForms(socialId),
     {
       ...queryOptions,
@@ -45,7 +45,7 @@ function useGetUserReviewAnswer(
   queryOptions?: UseQueryOptions<GetUserReviewAnswerResponse, ErrorResponse>,
 ) {
   return useQuery<GetUserReviewAnswerResponse, ErrorResponse>(
-    [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_MY_REVIEWS],
+    [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_MY_REVIEWS, { socialId }],
     () => userAPI.getUserReviewAnswers(socialId),
     {
       ...queryOptions,

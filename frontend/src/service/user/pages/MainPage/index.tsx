@@ -1,6 +1,12 @@
+import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+
 import cn from 'classnames';
 
+import { TemplateFilterType } from 'service/@shared/types';
+
 import useModal from 'common/hooks/useModal';
+import { useGetTemplates } from 'service/@shared/hooks/queries/template';
 
 import { Button, Icon, Text, TransitionDiv } from 'common/components';
 
@@ -9,16 +15,26 @@ import ScrollPanel from 'common/components/ScrollPanel';
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
 import NoResult from 'service/@shared/components/NoResult';
 import QuestionCard from 'service/@shared/components/QuestionCard';
+import TemplateCard from 'service/template/components/TemplateCard';
 
 import styles from './styles.module.scss';
 
-import { MODAL_LIST } from 'service/@shared/constants';
+import { MODAL_LIST, TEMPLATE_TAB } from 'service/@shared/constants';
+import { PAGE_LIST } from 'service/@shared/constants';
 
 function MainPage() {
   const { showModal } = useModal();
   const onClickReviewStart = () => {
     showModal(MODAL_LIST.REVIEW_START);
   };
+  const { data, isError, error } = useGetTemplates(TEMPLATE_TAB.TREND as TemplateFilterType);
+  const { templates } = data || { templates: [] };
+
+  useEffect(() => {
+    if (isError) {
+      alert(error.message);
+    }
+  }, [isError, error]);
 
   return (
     <>
@@ -90,21 +106,34 @@ function MainPage() {
         </LayoutContainer>
       </section>
 
-      <LayoutContainer>
-        <NoResult size="large">준비 중</NoResult>
+      <LayoutContainer className={styles.contentHeader}>
+        <Text size={24} element="h1">
+          인기 템플릿
+        </Text>
       </LayoutContainer>
 
-      <ScrollPanel>
-        <div className={styles.cardTest}></div>
-        <div className={styles.cardTest}></div>
-        <div className={styles.cardTest}></div>
-        <div className={styles.cardTest}></div>
-        <div className={styles.cardTest}></div>
-        <div className={styles.cardTest}></div>
-        <div className={styles.cardTest}></div>
-        <div className={styles.cardTest}></div>
-        <div className={styles.cardTest}></div>
+      <ScrollPanel className={styles.cardList}>
+        {templates.map((template) => (
+          <TemplateCard
+            key={template.info.id}
+            className={styles.mainCard}
+            link={`${PAGE_LIST.TEMPLATE_DETAIL}/${template.info.id}`}
+          >
+            <TemplateCard.Tag usedCount={template.info.usedCount} />
+            <TemplateCard.Title title={template.info.title} />
+            <TemplateCard.UpdatedAt updatedAt={template.info.updatedAt} />
+            <TemplateCard.Description description={template.info.description} />
+
+            <TemplateCard.Profile
+              profileUrl={template.creator.profileUrl}
+              nickname={template.creator.nickname}
+              socialNickname={template.creator.socialNickname || ''}
+            />
+          </TemplateCard>
+        ))}
       </ScrollPanel>
+
+      <div className={styles.temp}></div>
     </>
   );
 }

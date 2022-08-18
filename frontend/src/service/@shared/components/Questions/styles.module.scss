@@ -33,10 +33,20 @@
   }
 
   .description {
+    line-height: 1.5rem;
+    white-space: pre-wrap;
+    word-break: keep-all;
     color: $THEME_COLOR_THEME_TEXT_400;
+    white-space: pre;
+    line-height: 160%;
   }
 
   .answer {
+    line-height: 1.5rem;
+    white-space: pre-wrap;
+    word-break: keep-all;
     color: $THEME_COLOR_THEME_TEXT_800;
+    white-space: pre;
+    line-height: 180%;
   }
 }

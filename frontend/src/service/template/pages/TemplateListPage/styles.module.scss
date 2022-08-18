@@ -39,9 +39,12 @@
   }
 }
 
+.card {
+  margin-bottom: 2rem;
+}
+
 .template-container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  row-gap: 1rem;
-  gap: 2rem;
+  display: flex;
+  flex-flow: wrap;
+  gap: 2%;
 }
