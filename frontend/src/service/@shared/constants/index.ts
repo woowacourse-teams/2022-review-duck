@@ -19,6 +19,7 @@ const MODAL_LIST = {
 
 const QUERY_KEY = {
   DATA: {
+    AUTH: 'auth',
     USER: 'user',
 
     REVIEW: 'review',
@@ -28,6 +29,7 @@ const QUERY_KEY = {
   },
   API: {
     GET_ACCESS_TOKEN: 'getRefreshedAccessToken',
+    GET_AUTH_MY_PROFILE: 'getAuthMyProfile',
     GET_USER_PROFILE: 'getUserProfile',
 
     GET_REVIEWS: 'getReviews',
@@ -102,6 +104,7 @@ const API_URI = {
   USER: {
     GET_REVIEW_ANSWERS: '/api/reviews',
     GET_REVIEW_FORMS: '/api/review-forms',
+    GET_PROFILE: (socialId: number) => ` /api/members/${socialId}`,
   },
 };
 
