@@ -1,0 +1,118 @@
+@import 'styles/@global.scss';
+
+.container {
+  position: relative;
+  padding: 7.5rem 0;
+  gap: 5rem;
+}
+
+.blur-card-container {
+  position: relative;
+  padding-top: 3.5rem;
+  margin-bottom: 0rem;
+
+  &::before {
+    content: '';
+    position: absolute;
+    display: block;
+    top: 0;
+    left: calc(50% - 3.125rem);
+    width: 6.25rem;
+    height: 6.25rem;
+
+    font-size: 3.2em;
+    text-shadow: 0px 0.1875rem 1.25rem $GLOBAL_COLOR_BLACK_200;
+    color: $GLOBAL_COLOR_WHITE_900;
+
+    background: rgba(49, 113, 114, 0.7);
+    border-radius: 40px;
+    transform: rotate(-30deg);
+
+    @include animation(2s ease) {
+      from {
+        opacity: 0;
+        transform: rotate(0deg) translateY(200%);
+        filter: blur(0.55em);
+      }
+
+      50% {
+        opacity: 1;
+        filter: blur(0);
+      }
+
+      to {
+        transform: rotate(-30deg);
+      }
+    }
+  }
+
+  .error-icon {
+    position: absolute;
+    top: 0;
+    left: calc(50% - 3.125rem);
+    width: 6.25rem;
+    height: 6.25rem;
+
+    font-size: 3.2em;
+    text-shadow: 0px 0.1875rem 1.25rem $GLOBAL_COLOR_BLACK_200;
+    color: $GLOBAL_COLOR_WHITE_900;
+    padding: 1.25rem;
+    transform: rotate(-30deg);
+
+    z-index: 5;
+
+    @include animation(2s ease) {
+      from {
+        opacity: 0;
+        transform: rotate(0deg) translateY(200%);
+      }
+
+      60% {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+        transform: rotate(-30deg);
+      }
+    }
+  }
+
+  .error-number {
+    margin-bottom: 2.5rem;
+    padding: 2.75rem 3.25rem;
+    background: linear-gradient(180deg, rgba(98, 147, 148, 0.28) 0%, rgba(232, 164, 61, 0.28) 100%);
+    box-shadow: 0px 12px 48px rgba(0, 0, 0, 0.25), inset 0px 0px 3px 3px rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(15px);
+    border-radius: $GLOBAL_BORDERRADIUS_XLARGE;
+
+    font-weight: bold;
+    font-size: 4rem;
+    color: $GLOBAL_COLOR_WHITE_900;
+    text-shadow: 0px 0.1875rem 1.25rem $GLOBAL_COLOR_BLACK_200;
+
+    @include animation(0.75s ease) {
+      from {
+        opacity: 0;
+        transform: translateY(20%);
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+  }
+
+  .description {
+    color: $THEME_COLOR_THEME_TEXT_50;
+  }
+}
+
+.text-container {
+  width: 100%;
+  text-align: center;
+
+  .title {
+    color: $THEME_COLOR_STATUS_PRIMARY_600;
+  }
+}

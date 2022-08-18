@@ -8,6 +8,7 @@ import { RecoilRoot } from 'recoil';
 import { ErrorBoundary, ModalProvider, SnackbarProvider } from 'common/components';
 
 import queryClient from 'service/@shared/api/config/queryClient';
+import ErrorPage from 'service/@shared/pages/ErrorPage';
 import * as modalContentList from 'service/@shared/pages/modals';
 import 'styles/@app.scss';
 
@@ -25,13 +26,14 @@ function App() {
   // TODO: 전역 페이지 로딩 화면 구현하기, 페이지 단위로 lazy 로드 처리
   return (
     <ContextWrapper>
-      <ErrorBoundary>
-        <SnackbarProvider />
-        <Suspense>
-          <ModalProvider contentList={modalContentList} />
+      <SnackbarProvider />
+      <Suspense>
+        <ModalProvider contentList={modalContentList} />
+
+        <ErrorBoundary fallback={ErrorPage}>
           <PageRoutes />
-        </Suspense>
-      </ErrorBoundary>
+        </ErrorBoundary>
+      </Suspense>
     </ContextWrapper>
   );
 }

@@ -18,8 +18,6 @@ function useGetTemplates(
     [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_TEMPLATES, { filter }],
     () => templateAPI.getTemplates(filter),
     {
-      suspense: true,
-      useErrorBoundary: false,
       ...queryOptions,
     },
   );
@@ -33,8 +31,6 @@ function useGetTemplate(
     [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_TEMPLATE, { templateId }],
     () => templateAPI.getTemplate(templateId),
     {
-      suspense: true,
-      useErrorBoundary: false,
       ...queryOptions,
     },
   );
