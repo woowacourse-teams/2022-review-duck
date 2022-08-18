@@ -159,7 +159,7 @@ public class ReviewFormServiceTest {
 
         @Test
         @Transactional(propagation = Propagation.NOT_SUPPORTED)
-        @DisplayName("템플릿을 기반으로 회고 폼을 생성해도 수정 시간을 갱신하지 않는다.")
+        @DisplayName("템플릿과 동일한 모양으로 회고 폼을 생성해도 수정 시간을 갱신하지 않는다.")
         void saveReviewFormFromTemplateWithNotUpdatedAt() {
             // given
             // 템플릿 생성
@@ -189,6 +189,7 @@ public class ReviewFormServiceTest {
         }
 
         @Test
+        @Transactional(propagation = Propagation.NOT_SUPPORTED)
         @DisplayName("템플릿과 동일하지 않은 모양의 회고 폼을 생성한다.")
         void saveFromTemplate_Different() {
             // given
@@ -201,7 +202,7 @@ public class ReviewFormServiceTest {
 
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 templateQuestions);
-            Template savedTemplate = templateService.save(member1, templateRequest);
+            Long templateId = templateService.save(member1, templateRequest).getId();
 
             String reviewFormTitle = "title";
             List<ReviewFormQuestionCreateRequest> reviewFromQuestions = List.of(
@@ -221,7 +222,7 @@ public class ReviewFormServiceTest {
 
             // when
             ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewFormTitle, reviewFromQuestions);
-            ReviewForm createdReviewForm = reviewFormService.saveFromTemplate(member1, savedTemplate.getId(),
+            ReviewForm createdReviewForm = reviewFormService.saveFromTemplate(member1, templateId,
                 createRequest);
 
             // then
@@ -237,8 +238,58 @@ public class ReviewFormServiceTest {
                     .ignoringFields("id")
                     .isEqualTo(expected),
                 // usedCount ++
-                () -> assertThat(savedTemplate.getUsedCount()).isEqualTo(1)
+                // DB에 반영된 usedCount를 확인하기 위해 새로 조회
+                () -> assertThat(templateService.findById(templateId).getUsedCount()).isEqualTo(1)
             );
+        }
+
+        @Test
+        @Transactional(propagation = Propagation.NOT_SUPPORTED)
+        @DisplayName("템플릿과 동일하지 않은 모양으로 회고 폼을 생성해도 수정 시간을 갱신하지 않는다.")
+        void saveReviewFormFromTemplateWithNotUpdatedAt_Different() {
+            // given
+            // 템플릿 생성
+            String templateTitle = "title";
+            String templateDescription = "description";
+            List<TemplateQuestionCreateRequest> templateQuestions = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
+
+            TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
+                templateQuestions);
+
+            Long templateId = templateService.save(member1, templateRequest).getId();
+
+            String reviewFormTitle = "title";
+            List<ReviewFormQuestionCreateRequest> reviewFromQuestions = List.of(
+                new ReviewFormQuestionCreateRequest("question3", "description3"),
+                new ReviewFormQuestionCreateRequest("question4", "description4"));
+
+            List<ReviewFormQuestion> expected = reviewFromQuestions.stream()
+                .map(request -> new ReviewFormQuestion(
+                    request.getValue(),
+                    request.getDescription()))
+                .collect(Collectors.toUnmodifiableList());
+
+            int index = 0;
+            for (ReviewFormQuestion reviewFormQuestion : expected) {
+                reviewFormQuestion.setPosition(index++);
+            }
+
+            // 초기 수정 시간
+            LocalDateTime updatedAt = templateService.findById(templateId).getUpdatedAt();
+
+            // when
+            // 템플릿 기반 회고 폼 생성
+            ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewFormTitle, reviewFromQuestions);
+            reviewFormService.saveFromTemplate(member1, templateId,
+                createRequest);
+
+            // 템플릿 기반 회고 폼 생성 후 수정 시간
+            LocalDateTime updatedAtAfterCreateReviewForm = templateService.findById(templateId).getUpdatedAt();
+
+            // then
+            assertThat(updatedAtAfterCreateReviewForm.isEqual(updatedAt)).isTrue();
         }
 
     }

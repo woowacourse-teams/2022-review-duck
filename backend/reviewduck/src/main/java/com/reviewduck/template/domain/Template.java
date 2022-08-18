@@ -72,10 +72,6 @@ public class Template extends BaseDate {
         sortQuestions();
     }
 
-    public void increaseUsedCount() {
-        usedCount++;
-    }
-
     public boolean isMine(Member member) {
         return member.equals(this.member);
     }
