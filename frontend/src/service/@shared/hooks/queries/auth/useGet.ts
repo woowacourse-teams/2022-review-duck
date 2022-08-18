@@ -16,6 +16,7 @@ function useGetAccessToken(queryOptions?: UseQueryOptions<CreateRefreshResponse,
     [QUERY_KEY.DATA.AUTH, QUERY_KEY.API.GET_ACCESS_TOKEN],
     () => authAPI.getRefreshedAccessToken(),
     {
+      useErrorBoundary: false,
       staleTime: ACCESS_TOKEN_EXPIRE_TIME,
       refetchInterval: ACCESS_TOKEN_REFRESH_TIME,
       refetchIntervalInBackground: true,
@@ -31,6 +32,7 @@ function useGetAuthProfile(queryOptions?: UseQueryOptions<UserProfileResponse, E
     [QUERY_KEY.DATA.AUTH, QUERY_KEY.API.GET_AUTH_MY_PROFILE],
     () => authAPI.getProfile(),
     {
+      useErrorBoundary: false,
       staleTime: PERMISSION_VALID_TIME,
       ...queryOptions,
     },
