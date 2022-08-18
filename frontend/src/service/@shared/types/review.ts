@@ -1,3 +1,5 @@
+import { UserProfile } from './user';
+
 export interface Question {
   id?: number;
   value: string;
@@ -42,6 +44,27 @@ export type ReviewFormAnswerList = ReviewFormAnswer[];
 
 // API 관련 타입
 
+export interface ServerQuestion {
+  id?: number;
+  value: string;
+  description: string;
+}
+export interface ServerQuestionRequireId {
+  id: number;
+  value: string;
+  description: string;
+}
+
+export interface ServerAnswer {
+  id?: number;
+  value: string;
+}
+
+export interface ServerAnswerRequireId {
+  id: number;
+  value: string;
+}
+
 export interface ReviewFormResponse {
   reviewFormTitle: string;
   questions: Question[];
@@ -59,8 +82,8 @@ export interface GetReviewAnswerResponse {
   creator: UserProfile;
   isCreator: boolean;
   contents: Array<{
-    question: Required<Question>;
-    answer: Required<Answer>;
+    question: ServerQuestionRequireId;
+    answer: ServerAnswerRequireId;
   }>;
 }
 
@@ -70,8 +93,8 @@ export type GetReviewFormAnswerResponse = Array<{
   creator: UserProfile;
   isCreator: boolean;
   contents: Array<{
-    question: Required<Question>;
-    answer: Required<Answer>;
+    question: ServerQuestionRequireId;
+    answer: ServerAnswerRequireId;
   }>;
 }>;
 
@@ -85,14 +108,14 @@ export interface CreateReviewAnswerRequest {
   reviewFormCode: string;
   contents: Array<{
     questionId: number;
-    answer: Answer;
+    answer: ServerAnswer;
   }>;
 }
 
 export interface CreateFormByTemplateRequest {
   templateId: number;
   reviewFormTitle: string;
-  questions: Question[];
+  questions: ServerQuestion[];
 }
 
 export type CreateFormByTemplateResponse = UpdateReviewFormResponse;
@@ -111,7 +134,7 @@ export interface UpdateReviewAnswerRequest {
   reviewId: number;
   contents: Array<{
     questionId: number;
-    answer: Answer;
+    answer: ServerAnswer;
   }>;
 }
 
@@ -120,9 +143,3 @@ export type UpdateReviewAnswerResponse = null;
 export type DeleteReviewFormResponse = null;
 
 export type DeleteReviewAnswerResponse = null;
-
-export interface UserProfile {
-  id: number;
-  nickname: string;
-  profileUrl: string;
-}

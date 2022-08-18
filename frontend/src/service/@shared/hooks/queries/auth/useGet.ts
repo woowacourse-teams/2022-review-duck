@@ -13,7 +13,7 @@ import {
 
 function useGetAccessToken(queryOptions?: UseQueryOptions<CreateRefreshResponse, ErrorResponse>) {
   return useQuery<CreateRefreshResponse, ErrorResponse>(
-    [QUERY_KEY.DATA.USER, QUERY_KEY.API.GET_ACCESS_TOKEN],
+    [QUERY_KEY.DATA.AUTH, QUERY_KEY.API.GET_ACCESS_TOKEN],
     () => authAPI.getRefreshedAccessToken(),
     {
       staleTime: ACCESS_TOKEN_EXPIRE_TIME,
@@ -22,11 +22,13 @@ function useGetAccessToken(queryOptions?: UseQueryOptions<CreateRefreshResponse,
       ...queryOptions,
     },
   );
+
+  // TODO: 402 에러 시, 메시지 변경 처리.
 }
 
-function useGetUserInfo(queryOptions?: UseQueryOptions<UserProfileResponse, ErrorResponse>) {
+function useGetAuthProfile(queryOptions?: UseQueryOptions<UserProfileResponse, ErrorResponse>) {
   return useQuery<UserProfileResponse, ErrorResponse>(
-    [QUERY_KEY.DATA.USER, QUERY_KEY.API.GET_USER_PROFILE],
+    [QUERY_KEY.DATA.AUTH, QUERY_KEY.API.GET_AUTH_MY_PROFILE],
     () => authAPI.getProfile(),
     {
       staleTime: PERMISSION_VALID_TIME,
@@ -35,4 +37,4 @@ function useGetUserInfo(queryOptions?: UseQueryOptions<UserProfileResponse, Erro
   );
 }
 
-export { useGetAccessToken, useGetUserInfo };
+export { useGetAccessToken, useGetAuthProfile };

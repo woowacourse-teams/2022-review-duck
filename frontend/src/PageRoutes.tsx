@@ -17,7 +17,7 @@ import TemplateListPage from 'service/template/pages/TemplateListPage';
 import Authorize from 'service/user/pages/Authorize';
 import Logout from 'service/user/pages/Logout';
 import MainPage from 'service/user/pages/MainPage';
-import MyPage from 'service/user/pages/MyPage';
+import ProfilePage from 'service/user/pages/ProfilePage';
 
 function PageRoutes() {
   useAuth();
@@ -27,13 +27,11 @@ function PageRoutes() {
       <Route element={<MainLayout />}>
         <Route index element={<MainPage />} />
 
-        <Route element={<RequireAuth />}>
-          <Route path={PAGE_LIST.MY_PAGE} element={<MyPage />} />
-        </Route>
-
         <Route path={PAGE_LIST.TEMPLATE_LIST} element={<TemplateListPage />} />
 
         <Route path={`${PAGE_LIST.TEMPLATE_DETAIL}/:templateId`} element={<TemplateDetailPage />} />
+
+        <Route path="/profile/:socialId" element={<ProfilePage />} />
         <Route path="playground" element={<Playground />} />
       </Route>
 

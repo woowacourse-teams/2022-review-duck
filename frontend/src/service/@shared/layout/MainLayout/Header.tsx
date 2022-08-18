@@ -22,7 +22,8 @@ function Header() {
   const { isLogin, getUserProfileQuery } = useAuth();
   const { showModal } = useModal();
 
-  const { profileUrl: profileImage = imageDefaultProfile } = getUserProfileQuery.data || {};
+  const { profileUrl: profileImage = imageDefaultProfile, socialId } =
+    getUserProfileQuery.data || {};
 
   const onClickReviewStart = () => {
     showModal(MODAL_LIST.REVIEW_START);
@@ -66,7 +67,7 @@ function Header() {
                 />
               }
             >
-              <Link className={styles.item} to={PAGE_LIST.MY_PAGE}>
+              <Link className={styles.item} to={`${PAGE_LIST.USER_PROFILE}/${socialId}`}>
                 <Icon code="person" /> <span>마이 페이지</span>
               </Link>
 

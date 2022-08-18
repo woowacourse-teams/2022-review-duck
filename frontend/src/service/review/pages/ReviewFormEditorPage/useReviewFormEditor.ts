@@ -40,6 +40,7 @@ function useReviewFormEditor(reviewFormCode: string) {
     info: {
       creator: {
         id: -1,
+        socialNickname: 'user-id',
         profileUrl: '',
         nickname: '알 수 없음',
       },
