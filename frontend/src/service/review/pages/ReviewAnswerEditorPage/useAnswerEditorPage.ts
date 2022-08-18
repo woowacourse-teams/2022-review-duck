@@ -1,5 +1,4 @@
 import {
-  AnsweredQuestion,
   ErrorResponse,
   Question,
   ReviewForm,
@@ -25,6 +24,7 @@ const initialReviewContents: ReviewForm = {
   info: {
     creator: {
       id: -1,
+      socialNickname: 'user-id',
       nickname: '닉네임',
       profileUrl: '',
     },
