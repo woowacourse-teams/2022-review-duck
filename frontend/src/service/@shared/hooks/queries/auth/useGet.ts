@@ -13,7 +13,7 @@ import {
 
 function useGetAccessToken(queryOptions?: UseQueryOptions<CreateRefreshResponse, ErrorResponse>) {
   return useQuery<CreateRefreshResponse, ErrorResponse>(
-    [QUERY_KEY.DATA.USER, QUERY_KEY.API.GET_ACCESS_TOKEN],
+    [QUERY_KEY.DATA.AUTH, QUERY_KEY.API.GET_ACCESS_TOKEN],
     () => authAPI.getRefreshedAccessToken(),
     {
       staleTime: ACCESS_TOKEN_EXPIRE_TIME,
@@ -28,7 +28,7 @@ function useGetAccessToken(queryOptions?: UseQueryOptions<CreateRefreshResponse,
 
 function useGetAuthProfile(queryOptions?: UseQueryOptions<UserProfileResponse, ErrorResponse>) {
   return useQuery<UserProfileResponse, ErrorResponse>(
-    [QUERY_KEY.DATA.USER, QUERY_KEY.API.GET_USER_PROFILE],
+    [QUERY_KEY.DATA.AUTH, QUERY_KEY.API.GET_AUTH_MY_PROFILE],
     () => authAPI.getProfile(),
     {
       staleTime: PERMISSION_VALID_TIME,
