@@ -7,7 +7,7 @@ import useSnackbar from 'common/hooks/useSnackbar';
 
 import { getElapsedTimeText } from 'service/@shared/utils';
 
-import { Button, Icon, Text } from 'common/components';
+import { Button, FlexContainer, Icon, Text } from 'common/components';
 
 import ScrollPanel from 'common/components/ScrollPanel';
 import TagLabel from 'common/components/TagLabel';
@@ -90,7 +90,7 @@ function TemplateDetailPage() {
     <LayoutContainer>
       <section className={styles.header}>
         <div className={styles.titleContainer}>
-          <Text className={styles.title} size={28} weight="bold">
+          <Text className={styles.title} size={28} weight="bold" element="h1">
             {template.info.title}
           </Text>
           <div className={styles.info}>
@@ -110,7 +110,7 @@ function TemplateDetailPage() {
             </div>
           </div>
         </div>
-        <div className={styles.buttonContainer}>
+        <FlexContainer className={styles.buttonContainer} gap="medium" justify="center">
           <div className={styles.templateButtons}>
             <Link to={`${PAGE_LIST.TEMPLATE_FORM}?templateId=${template.info.id}`}>
               <Button>
@@ -126,20 +126,26 @@ function TemplateDetailPage() {
           {template.isCreator && (
             <div className={styles.iconButtons}>
               <div className={styles.iconButton} onClick={handleDeleteTemplate(template.info.id)}>
-                <Icon type="outlined" code="delete" />
-                템플릿 삭제
+                <Icon type="round" code="delete" />
+                <Text size={14} element="span">
+                  템플릿 삭제
+                </Text>
               </div>
+
               <Link
                 to={`${PAGE_LIST.TEMPLATE_FORM}?templateId=${templateId}&templateEditMode=true`}
               >
                 <div className={styles.iconButton}>
-                  <Icon type="outlined" code="edit" />
-                  템플릿 수정
+                  <Icon type="round" code="edit" />
+
+                  <Text size={14} element="span">
+                    템플릿 수정
+                  </Text>
                 </div>
               </Link>
             </div>
           )}
-        </div>
+        </FlexContainer>
       </section>
       <section className={styles.contentsContainer}>
         <div className={styles.descriptionContainer}>
@@ -184,6 +190,7 @@ function TemplateDetailPage() {
           </Link>
         </div>
       </div>
+
       <section className={styles.footer}>
         <section className={styles.headerContainer}>
           <div className={styles.alignCenter}>
@@ -192,19 +199,25 @@ function TemplateDetailPage() {
               인기 템플릿
             </Text>
           </div>
+
           <div className={cn(styles.alignCenter, styles.buttonContainer)}>
             <Link to={PAGE_LIST.TEMPLATE_FORM}>
-              <Button size="small">템플릿 생성하기</Button>
+              <Button size="medium">
+                <Icon code="add" />
+                <span>새 템플릿 작성</span>
+              </Button>
             </Link>
             <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${TEMPLATE_TAB.TREND}`}>
-              <Button size="small" theme="outlined">
-                목록으로 돌아가기
+              <Button size="medium" theme="outlined">
+                <Icon code="list" />
+                <span>목록</span>
               </Button>
             </Link>
           </div>
         </section>
+
         <section className={styles.trend}>
-          <ScrollPanel centerDisabled={true}>
+          <ScrollPanel className={styles.scrollContainer} centerDisabled={true}>
             {trendingTemplates.map((template) => (
               <TemplateCard
                 key={template.info.id}

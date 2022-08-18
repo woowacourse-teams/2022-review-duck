@@ -2,11 +2,10 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
-import { Text, Icon } from 'common/components';
+import { Text } from 'common/components';
 
 import NoResult from 'service/@shared/components/NoResult';
 import Questions from 'service/@shared/components/Questions';
-import Reaction from 'service/review/components/Reaction';
 
 import styles from './styles.module.scss';
 
@@ -81,20 +80,10 @@ function ReviewList({ filter, socialId }: ReviewList) {
       {filter === USER_PROFILE_TAB.REVIEWS
         ? myReviews?.reviews.map((review) => (
             <div className={styles.reviewContainer} key={review.id}>
-              <div className={styles.header}>
-                <Link
-                  to={`${PAGE_LIST.REVIEW_OVERVIEW}/${review.reviewForm.code}`}
-                  state={{ redirect: `${PAGE_LIST.MY_PAGE}` }}
-                >
-                  <Text className={styles.title} size={24} weight="bold">
-                    {review.reviewForm.title}
-                  </Text>
-                </Link>
-              </div>
-
-              <hr />
-
               <Questions>
+                <Link to={`${PAGE_LIST.REVIEW_OVERVIEW}/${review.reviewForm.code}`}>
+                  <Questions.Title>{review.reviewForm.title}</Questions.Title>
+                </Link>
                 <Questions.EditButtons
                   isVisible={myReviews.isMine}
                   onClickEdit={handleClickEdit(
@@ -117,21 +106,16 @@ function ReviewList({ filter, socialId }: ReviewList) {
           ))
         : myReviewForms?.reviewForms.map((reviewForm) => (
             <div className={styles.reviewContainer} key={reviewForm.code}>
-              <div className={styles.header}>
-                <Link to={`${PAGE_LIST.REVIEW_OVERVIEW}/${reviewForm.code}`}>
-                  <Text className={styles.title} size={24} weight="bold">
-                    {reviewForm.title}
-                  </Text>
-                </Link>
-              </div>
-              <hr />
-
               <Questions>
+                <Link to={`${PAGE_LIST.REVIEW_OVERVIEW}/${reviewForm.code}`}>
+                  <Questions.Title>{reviewForm.title}</Questions.Title>
+                </Link>
+
                 <Questions.EditButtons
                   isVisible={myReviews.isMine}
                   onClickEdit={handleClickEdit(
                     `${PAGE_LIST.REVIEW_FORM}/${reviewForm.code}?redirect=${encodeURIComponent(
-                      PAGE_LIST.MY_PAGE,
+                      `${PAGE_LIST.USER_PROFILE}/${socialId}`,
                     )}`,
                   )}
                   onClickDelete={handleDeleteReviewForm(reviewForm.code)}

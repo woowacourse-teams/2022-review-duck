@@ -4,7 +4,6 @@ const PAGE_LIST = {
   REVIEW: '/review',
   REVIEW_OVERVIEW: '/overview',
   AUTHORIZE: '/authorize',
-  MY_PAGE: '/mypage',
   LOGOUT: '/logout',
   TEMPLATE_LIST: '/template/list',
   TEMPLATE_DETAIL: '/template/view',
