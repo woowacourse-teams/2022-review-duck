@@ -93,3 +93,36 @@
     }
   }
 }
+
+.footer {
+  padding: 1rem 0;
+
+  .align-center {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+
+    .button-container {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+    }
+
+    .icon {
+      color: $THEME_COLOR_STATUS_WARNING_500;
+      margin-right: 0.3rem;
+    }
+  }
+
+  .trend {
+    padding: 1rem 0 2rem 0;
+
+    .card {
+      margin-right: 1rem;
+    }
+  }
+}

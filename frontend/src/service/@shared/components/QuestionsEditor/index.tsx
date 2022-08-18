@@ -80,7 +80,7 @@ function QuestionsEditor({ className, initialQuestions, onUpdate, ...rest }: Que
     <form {...rest} className={cn(className, styles.container)} onSubmit={handleSubmit}>
       {questions.map(({ key, description, ...question }, index) => (
         <QuestionEditorItem
-          key={key}
+          key={key || index}
           numbering={index + 1}
           description={description}
           onChangeQuestion={handleChangeQuestion(index)}

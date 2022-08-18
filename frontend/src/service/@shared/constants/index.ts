@@ -15,6 +15,8 @@ const PAGE_LIST = {
 const MODAL_LIST = {
   REVIEW_START: 'ModalReviewStart',
   REVIEW_JOIN: 'ModalReviewJoin',
+
+  PROFILE_EDIT: 'ModalProfileEdit',
 };
 
 const QUERY_KEY = {
@@ -105,6 +107,7 @@ const API_URI = {
     GET_REVIEW_ANSWERS: '/api/reviews',
     GET_REVIEW_FORMS: '/api/review-forms',
     GET_PROFILE: (socialId: numberString) => `/api/members/${socialId}`,
+    UPDATE_PROFILE: '/api/members/me',
   },
 };
 

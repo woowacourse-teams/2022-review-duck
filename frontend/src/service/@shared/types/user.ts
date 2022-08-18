@@ -45,3 +45,5 @@ export interface GetUserProfileResponse {
   nickname: string;
   profileUrl: string;
 }
+
+export type UpdateProfileResponse = null;
