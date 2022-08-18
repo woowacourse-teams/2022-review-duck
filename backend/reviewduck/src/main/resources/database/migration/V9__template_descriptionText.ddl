@@ -1,1 +1,1 @@
-alter table template_question alter column description type text;
+alter table template_question alter description varchar(8000);
