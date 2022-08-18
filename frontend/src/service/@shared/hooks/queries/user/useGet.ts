@@ -1,34 +1,38 @@
 import { useQuery, UseQueryOptions } from 'react-query';
 
 import {
-  GetMyReviewFormsResponse,
-  GetMyReviewsResponse,
+  GetUserReviewAnswerResponse,
+  GetUserReviewFormsResponse,
   ErrorResponse,
 } from 'service/@shared/types';
 
-import userAPI from 'service/@shared/api/user';
+import { userAPI } from 'service/@shared/api';
 import { QUERY_KEY } from 'service/@shared/constants';
 
-function useGetMyReviewForms(
-  queryOptions?: UseQueryOptions<GetMyReviewFormsResponse, ErrorResponse>,
+function useGetUserReviewForms(
+  socialId: number,
+  queryOptions?: UseQueryOptions<GetUserReviewFormsResponse, ErrorResponse>,
 ) {
-  return useQuery<GetMyReviewFormsResponse, ErrorResponse>(
+  return useQuery<GetUserReviewFormsResponse, ErrorResponse>(
     [QUERY_KEY.DATA.REVIEW_FORM, QUERY_KEY.API.GET_MY_REVIEW_FORMS],
-    () => userAPI.getMyReviewForms(),
+    () => userAPI.getUserReviewForms(socialId),
     {
       ...queryOptions,
     },
   );
 }
 
-function useGetMyReviews(queryOptions?: UseQueryOptions<GetMyReviewsResponse, ErrorResponse>) {
-  return useQuery<GetMyReviewsResponse, ErrorResponse>(
+function useGetUserReviewAnswer(
+  socialId: number,
+  queryOptions?: UseQueryOptions<GetUserReviewAnswerResponse, ErrorResponse>,
+) {
+  return useQuery<GetUserReviewAnswerResponse, ErrorResponse>(
     [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_MY_REVIEWS],
-    () => userAPI.getMyReviews(),
+    () => userAPI.getUserReviewAnswers(socialId),
     {
       ...queryOptions,
     },
   );
 }
 
-export { useGetMyReviewForms, useGetMyReviews };
+export { useGetUserReviewForms, useGetUserReviewAnswer };

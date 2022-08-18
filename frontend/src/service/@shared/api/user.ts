@@ -1,22 +1,18 @@
-import { GetMyReviewsResponse, GetMyReviewFormsResponse } from '../types';
+import { GetUserReviewAnswerResponse, GetUserReviewFormsResponse } from '../types';
 
+import { API_URI } from '../constants';
 import axiosInstance from 'service/@shared/api/config/axiosInstance';
 
-const getMyReviews = async (): Promise<GetMyReviewsResponse> => {
-  const { data } = await axiosInstance.get('/api/reviews/me');
+export const getUserReviewAnswers = async (
+  socialId: number,
+): Promise<GetUserReviewAnswerResponse> => {
+  const { data } = await axiosInstance.get(`${API_URI.USER.GET_REVIEW_ANSWERS}?member=${socialId}`);
 
   return data;
 };
 
-const getMyReviewForms = async (): Promise<GetMyReviewFormsResponse> => {
-  const { data } = await axiosInstance.get('/api/review-forms/me');
+export const getUserReviewForms = async (socialId: number): Promise<GetUserReviewFormsResponse> => {
+  const { data } = await axiosInstance.get(`${API_URI.USER.GET_REVIEW_FORMS}?member=${socialId}`);
 
   return data;
 };
-
-const userAPI = {
-  getMyReviews,
-  getMyReviewForms,
-};
-
-export default userAPI;
