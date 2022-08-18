@@ -163,12 +163,14 @@ function TemplateDetailPage() {
         </Questions>
       </section>
       <div className={styles.profileContainer}>
-        <SmallProfileCard
-          size="large"
-          profileUrl={template.creator.profileUrl}
-          primaryText={template.creator.nickname}
-          secondaryText={template.creator.bio || template.creator.socialNickname || ''}
-        />
+        <Link to={`${PAGE_LIST.USER_PROFILE}/${template.creator.id}`}>
+          <SmallProfileCard
+            size="large"
+            profileUrl={template.creator.profileUrl}
+            primaryText={template.creator.nickname}
+            secondaryText={template.creator.bio || template.creator.socialNickname || ''}
+          />
+        </Link>
         <div className={styles.iconContainer}>
           <a
             href={`${GITHUB_PROFILE_URL}${template.creator.socialNickname}`}

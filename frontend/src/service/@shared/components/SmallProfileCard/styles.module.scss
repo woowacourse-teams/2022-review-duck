@@ -3,6 +3,13 @@
 .container {
   display: flex;
   padding: 0.5rem 0.25rem;
+  filter: brightness(0.9);
+  transition: all 0.2s ease;
+  width: fit-content;
+
+  &:hover {
+    filter: brightness(1.1);
+  }
 
   .profile {
     background-position: center;

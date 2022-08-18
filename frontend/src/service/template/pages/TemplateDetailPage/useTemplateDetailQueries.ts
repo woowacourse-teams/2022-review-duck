@@ -35,6 +35,7 @@ function useTemplateDetailQueries(templateId: number) {
       usedCount: 0,
     },
     creator: {
+      id: 0,
       nickname: '',
       profileUrl: '',
       socialNickname: '',

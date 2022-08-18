@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -29,34 +29,35 @@ function TemplateCard({ className, template }: Props) {
   };
 
   return (
-    <div
-      className={cn(className, styles.container)}
-      onClick={handleMoveToTemplate(template.info.id)}
-    >
-      <TagLabel>
-        <>
-          <Icon code="download" />
-          <span>{`${template.info.usedCount}회`}</span>
-        </>
-      </TagLabel>
-      <Text className={styles.title} size={20}>
-        {template.info.title}
-      </Text>
-      <div className={styles.infoContainer}>
-        <div className={styles.info}>
-          <Icon className={styles.icon} code="schedule" />
-          <span className={styles.text}>{getElapsedTimeText(template.info.updatedAt)}</span>
+    <div className={cn(className, styles.container)}>
+      <div onClick={handleMoveToTemplate(template.info.id)}>
+        <TagLabel>
+          <>
+            <Icon code="download" />
+            <span>{`${template.info.usedCount}회`}</span>
+          </>
+        </TagLabel>
+        <Text className={styles.title} size={20}>
+          {template.info.title}
+        </Text>
+        <div className={styles.infoContainer}>
+          <div className={styles.info}>
+            <Icon className={styles.icon} code="schedule" />
+            <span className={styles.text}>{getElapsedTimeText(template.info.updatedAt)}</span>
+          </div>
         </div>
+        <Text className={styles.description} size={14}>
+          {template.info.description}
+        </Text>
+        <hr className={styles.line} />
       </div>
-      <Text className={styles.description} size={14}>
-        {template.info.description}
-      </Text>
-      <hr className={styles.line} />
-      <SmallProfileCard
-        profileUrl={template.creator.profileUrl}
-        primaryText={template.creator.nickname}
-        secondaryText={template.creator.socialNickname || ''}
-      />
+      <Link to={`${PAGE_LIST.USER_PROFILE}/${template.creator.id}`}>
+        <SmallProfileCard
+          profileUrl={template.creator.profileUrl}
+          primaryText={template.creator.nickname}
+          secondaryText={template.creator.socialNickname || ''}
+        />
+      </Link>
     </div>
   );
 }
