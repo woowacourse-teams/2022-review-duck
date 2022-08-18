@@ -142,7 +142,7 @@ function TemplateDetailPage() {
         </div>
       </section>
       <section className={styles.contentsContainer}>
-        <div className={styles.description}>
+        <div className={styles.descriptionContainer}>
           <Text size={18} weight="bold">
             템플릿 소개
           </Text>
@@ -179,7 +179,9 @@ function TemplateDetailPage() {
           >
             <GithubIcon className={styles.icon} />
           </a>
-          <Icon className={styles.icon} code="house" type="outlined" />
+          <Link to={`${PAGE_LIST.USER_PROFILE}/${template.creator.id}`}>
+            <Icon className={styles.icon} code="house" type="outlined" />
+          </Link>
         </div>
       </div>
       <section className={styles.footer}>
