@@ -326,6 +326,13 @@ export const DUMMY_REVIEW = {
 };
 
 export const DUMMY_USER = {
+  GET_USER_PROFILE: {
+    isMine: true,
+    socialId: 1,
+    socialNickname: 'compy-ryu',
+    nickname: '콤피',
+    profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+  },
   GET_REVIEW_FORMS: {
     numberOfReviewForms: 53,
     isMine: true,
