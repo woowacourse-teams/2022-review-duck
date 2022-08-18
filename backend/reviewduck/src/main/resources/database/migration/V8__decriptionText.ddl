@@ -1,5 +1,5 @@
-alter table review_form_question
-    change description description text;
+ALTER TABLE review_form_question
+    ALTER COLUMN description text;
 
-alter table template_question
-    change description description text;
+ALTER TABLE template_question
+    ALTER COLUMN description text;
