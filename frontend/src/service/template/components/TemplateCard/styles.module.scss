@@ -2,7 +2,7 @@
 
 .container {
   width: 14.375rem;
-  padding: 2% 2.2% 1% 2.2%;
+  padding: 2% 2.5% 1.5% 2.5%;
   background-color: $THEME_COLOR_THEME_BACKGROUND_200;
   border-radius: $GLOBAL_BORDERRADIUS_LARGE;
   transition: background-color 0.1s ease;
@@ -50,7 +50,7 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     height: 76px;
-    padding: 8% 0;
+    padding: 8% 0 40% 0;
     color: $THEME_COLOR_THEME_TEXT_400;
     line-height: 1.25rem;
   }
