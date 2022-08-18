@@ -1,40 +1,45 @@
 import { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
+import cn from 'classnames';
+
 import useSnackbar from 'common/hooks/useSnackbar';
 
 import { getElapsedTimeText } from 'service/@shared/utils';
 
 import { Button, Icon, Text } from 'common/components';
 
+import ScrollPanel from 'common/components/ScrollPanel';
 import TagLabel from 'common/components/TagLabel';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
 import Questions from 'service/@shared/components/Questions';
 import SmallProfileCard from 'service/@shared/components/SmallProfileCard';
+import TemplateCard from 'service/template/components/TemplateCard';
 
 import GithubIcon from 'assets/images/github.svg';
 
 import styles from './styles.module.scss';
 
 import useTemplateDetailQueries from './useTemplateDetailQueries';
-import { GITHUB_PROFILE_URL, PAGE_LIST } from 'service/@shared/constants';
+import { GITHUB_PROFILE_URL, PAGE_LIST, TEMPLATE_TAB } from 'service/@shared/constants';
 
 function TemplateDetailPage() {
   const { templateId } = useParams();
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
 
-  const { template, isError, error, createFormMutation, deleteMutation } = useTemplateDetailQueries(
-    Number(templateId),
-  );
+  const { template, templates, isLoadError, loadError, createFormMutation, deleteMutation } =
+    useTemplateDetailQueries(Number(templateId));
+
+  const { templates: trendingTemplates } = templates || { templates: [] };
 
   useEffect(() => {
-    if (isError) {
-      alert(error?.message);
+    if (isLoadError) {
+      alert(loadError?.message);
       navigate(-1);
     }
-  }, [isError, error]);
+  }, [isLoadError, loadError]);
 
   const handleDeleteTemplate = (templateId: number) => () => {
     if (confirm('정말 템플릿을 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) {
@@ -83,7 +88,7 @@ function TemplateDetailPage() {
 
   return (
     <LayoutContainer>
-      <div className={styles.header}>
+      <section className={styles.header}>
         <div className={styles.titleContainer}>
           <Text className={styles.title} size={28} weight="bold">
             {template.info.title}
@@ -110,12 +115,12 @@ function TemplateDetailPage() {
             <Link to={`${PAGE_LIST.TEMPLATE_FORM}?templateId=${template.info.id}`}>
               <Button>
                 <Icon code="rate_review" />
-                템플릿으로 회고 생성
+                템플릿으로 질문지 만들기
               </Button>
             </Link>
             <Button theme="outlined" onClick={handleStartReview}>
               <Icon code="add_task" />
-              템플릿으로 회고 시작
+              템플릿으로 회고하기
             </Button>
           </div>
           {template.isCreator && (
@@ -135,9 +140,9 @@ function TemplateDetailPage() {
             </div>
           )}
         </div>
-      </div>
-      <div className={styles.contentsContainer}>
-        <div className={styles.description}>
+      </section>
+      <section className={styles.contentsContainer}>
+        <div className={styles.descriptionContainer}>
           <Text size={18} weight="bold">
             템플릿 소개
           </Text>
@@ -156,14 +161,16 @@ function TemplateDetailPage() {
             );
           })}
         </Questions>
-      </div>
+      </section>
       <div className={styles.profileContainer}>
-        <SmallProfileCard
-          size="large"
-          profileUrl={template.creator.profileUrl}
-          primaryText={template.creator.nickname}
-          secondaryText={template.creator.bio || template.creator.socialNickname || ''}
-        />
+        <Link to={`${PAGE_LIST.USER_PROFILE}/${template.creator.id}`}>
+          <SmallProfileCard
+            size="large"
+            profileUrl={template.creator.profileUrl}
+            primaryText={template.creator.nickname}
+            secondaryText={template.creator.bio || template.creator.socialNickname || ''}
+          />
+        </Link>
         <div className={styles.iconContainer}>
           <a
             href={`${GITHUB_PROFILE_URL}${template.creator.socialNickname}`}
@@ -172,11 +179,53 @@ function TemplateDetailPage() {
           >
             <GithubIcon className={styles.icon} />
           </a>
-          <Icon className={styles.icon} code="house" type="outlined" />
+          <Link to={`${PAGE_LIST.USER_PROFILE}/${template.creator.id}`}>
+            <Icon className={styles.icon} code="house" type="outlined" />
+          </Link>
         </div>
       </div>
-      <div>TOP 10 목록</div>
-      {/* TODO: 메인 페이지에서 컴포넌트 가져와서 구현할 예정 */}
+      <section className={styles.footer}>
+        <section className={styles.headerContainer}>
+          <div className={styles.alignCenter}>
+            <Icon className={styles.icon} code="local_fire_department" />
+            <Text size={18} weight="bold">
+              인기 템플릿
+            </Text>
+          </div>
+          <div className={cn(styles.alignCenter, styles.buttonContainer)}>
+            <Link to={PAGE_LIST.TEMPLATE_FORM}>
+              <Button size="small">템플릿 생성하기</Button>
+            </Link>
+            <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${TEMPLATE_TAB.TREND}`}>
+              <Button size="small" theme="outlined">
+                목록으로 돌아가기
+              </Button>
+            </Link>
+          </div>
+        </section>
+        <section className={styles.trend}>
+          <ScrollPanel centerDisabled={true}>
+            {trendingTemplates.map((template) => (
+              <TemplateCard key={template.info.id} className={styles.card}>
+                <Link to={`${PAGE_LIST.TEMPLATE_DETAIL}/${template.info.id}`}>
+                  <TemplateCard.Tag usedCount={template.info.usedCount} />
+                  <TemplateCard.Title title={template.info.title} />
+                  <TemplateCard.UpdatedAt updatedAt={template.info.updatedAt} />
+                  <TemplateCard.Description description={template.info.description} />
+                  <TemplateCard.Line />
+                </Link>
+                <Link to={`${PAGE_LIST.USER_PROFILE}/${template.creator.id}`}>
+                  <TemplateCard.Profile
+                    profileUrl={template.creator.profileUrl}
+                    nickname={template.creator.nickname}
+                    socialNickname={template.creator.socialNickname || ''}
+                  />
+                </Link>
+              </TemplateCard>
+            ))}
+          </ScrollPanel>
+        </section>
+      </section>
     </LayoutContainer>
   );
 }

@@ -56,8 +56,7 @@ public class ReviewFormService {
 
     @Transactional
     public ReviewForm saveFromTemplate(Member member, Long templateId, ReviewFormCreateRequest request) {
-        Template template = templateService.findById(templateId);
-        template.increaseUsedCount();
+        templateService.increaseUsedCount(templateId);
 
         return save(member, request);
     }

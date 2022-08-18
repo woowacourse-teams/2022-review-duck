@@ -156,7 +156,8 @@ public class TemplateRepositoryTest {
         );
         Template template1 = saveTemplate(member1, questions1);
         Template template2 = saveTemplate(member2, questions2);
-        template2.increaseUsedCount();
+
+        templateRepository.increaseUsedCount(template2.getId());
 
         // when
         List<Template> templates = templateRepository.findAllByOrderByUsedCountDesc();
