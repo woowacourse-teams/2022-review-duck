@@ -22,9 +22,10 @@ function TemplateListPage() {
   const navigate = useNavigate();
   const [searchParam] = useSearchParams();
 
-  const currentTab = searchParam.get('filter') as TemplateFilterType;
+  const tabString = searchParam.get('filter');
+  const currentTab = tabString === 'trend' || tabString === 'latest' ? tabString : 'trend';
 
-  const { data, isError, error } = useGetTemplates(currentTab);
+  const { data, isError, error } = useGetTemplates(currentTab as TemplateFilterType);
 
   const { templates } = data || { templates: [] };
 
