@@ -45,6 +45,10 @@
 
 .nickname {
   color: $THEME_COLOR_THEME_TEXT_900;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .description {
