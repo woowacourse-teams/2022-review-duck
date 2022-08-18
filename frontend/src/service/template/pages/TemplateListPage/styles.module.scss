@@ -40,8 +40,8 @@
 }
 
 .template-container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  row-gap: 1rem;
-  gap: 2rem;
+  display: flex;
+  gap: 1rem;
+  flex-flow: wrap;
+  justify-content: center;
 }
