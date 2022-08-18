@@ -1,11 +1,13 @@
 @import 'styles/@global.scss';
 
 .container {
-  height: 275px;
+  height: 17.1875rem;
+  width: 14.375rem;
   padding: 1.2rem 1.3rem 0.3125rem 1.3rem;
   background-color: $THEME_COLOR_THEME_BACKGROUND_200;
   border-radius: $GLOBAL_BORDERRADIUS_LARGE;
   transition: background-color 0.1s ease;
+  cursor: pointer;
 
   &:hover {
     background-color: $THEME_COLOR_THEME_BACKGROUND_100;

@@ -1,16 +1,29 @@
-import { useGetTemplate } from 'service/@shared/hooks/queries/template';
+import { TemplateFilterType } from 'service/@shared/types';
+
+import { useGetTemplate, useGetTemplates } from 'service/@shared/hooks/queries/template';
 import { useCreateForm } from 'service/@shared/hooks/queries/template/useCreate';
 import { useDeleteTemplate } from 'service/@shared/hooks/queries/template/useDelete';
 import { useUpdateTemplate } from 'service/@shared/hooks/queries/template/useUpdate';
 
+import { TEMPLATE_TAB } from 'service/@shared/constants';
+
 function useTemplateDetailQueries(templateId: number) {
-  const { data, isError, error } = useGetTemplate(templateId);
+  const { data, isError: isTemplateError, error: templateError } = useGetTemplate(templateId);
+  const {
+    data: templates,
+    isError: isTemplatesError,
+    error: templatesError,
+  } = useGetTemplates(TEMPLATE_TAB.TREND as TemplateFilterType);
 
   const createFormMutation = useCreateForm();
 
   const updateMutation = useUpdateTemplate();
 
   const deleteMutation = useDeleteTemplate();
+
+  const isLoadError = isTemplateError || isTemplatesError;
+
+  const loadError = templateError || templatesError;
 
   const template = data || {
     isCreator: false,
@@ -30,7 +43,15 @@ function useTemplateDetailQueries(templateId: number) {
     questions: [],
   };
 
-  return { template, isError, error, createFormMutation, updateMutation, deleteMutation };
+  return {
+    template,
+    templates,
+    isLoadError,
+    loadError,
+    createFormMutation,
+    updateMutation,
+    deleteMutation,
+  };
 }
 
 export default useTemplateDetailQueries;

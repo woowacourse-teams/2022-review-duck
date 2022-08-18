@@ -10,11 +10,9 @@ function TemplateListContainer({ templates }: GetTemplatesResponse) {
     return <NoResult>템플릿이 없습니다.</NoResult>;
   }
   return (
-    <div className={styles.container}>
-      {templates.map(({ info, creator }) => (
-        <div key={info.id}>
-          <TemplateCard info={info} creator={creator} />
-        </div>
+    <div className={styles.templateContainer}>
+      {templates.map((template) => (
+        <TemplateCard key={template.info.id} template={template} />
       ))}
     </div>
   );
