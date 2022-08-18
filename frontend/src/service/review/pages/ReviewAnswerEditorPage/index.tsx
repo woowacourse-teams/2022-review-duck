@@ -96,25 +96,26 @@ function ReviewAnswerEditorPage() {
       <Status>
         <Status.LogoButton link={PAGE_LIST.HOME} />
 
-        <Status.FocusQuestion description="질문에 대한 설명">
+        <Status.FocusQuestion description={questions[focusQuestionIndex].description}>
           {questions[focusQuestionIndex].value}
         </Status.FocusQuestion>
         <Status.AnsweredState answeredCount={answeredCount} questionCount={questions.length} />
         <Status.UserProfile
           nickname={authorProfile?.nickname}
           profileImage={authorProfile?.profileUrl}
-          description="유저 소개"
+          description="이 프로필으로 회고에 기록됩니다."
         />
       </Status>
 
       <Editor onSubmit={handleSubmit}>
         <Editor.Title>{reviewForm?.title}</Editor.Title>
 
-        {questions.map(({ key, value, answer }, index) => (
+        {questions.map(({ key, answer, ...question }, index) => (
           <Editor.AnswerField
             key={key}
-            question={value}
+            question={question.value}
             answer={answer?.value}
+            description={question.description}
             onFocus={handleFocusAnswer(index)}
             onChange={handleChangeAnswer(index)}
           />
