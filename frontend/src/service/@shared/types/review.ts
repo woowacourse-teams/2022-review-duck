@@ -1,88 +1,145 @@
-import { UseMutationOptions } from 'react-query';
-
-import { ErrorResponse } from 'service/@shared/types';
+import { UserProfile } from './user';
 
 export interface Question {
-  questionId?: number | null;
-  questionValue?: string;
-  questionDescription?: string;
-  answerId?: number | null;
-  answerValue?: string;
-  listKey?: string | undefined;
+  id?: number;
+  value: string;
+  description: string;
+  answer?: Answer;
+}
+
+export interface AnsweredQuestion<RequiredAnswerId = true>
+  extends RequiredPartialType<Question, 'id'> {
+  answer: RequiredAnswerId extends true ? Required<Answer> : Answer;
+}
+export interface Answer {
+  id?: number;
+  value: string;
+}
+
+export interface UserContentRequireField {
+  creator: UserProfile;
+  isSelf: boolean;
+  updateDate: string;
 }
 
 export interface ReviewForm {
-  reviewTitle: string;
+  title: string;
+  questions: Question[];
+  info: UserContentRequireField;
+}
+
+export interface ReviewAnswer {
+  id: number;
+  questions: AnsweredQuestion<false>[];
+  info: UserContentRequireField;
+}
+
+export interface ReviewFormAnswer {
+  id: number;
+  questions: AnsweredQuestion[];
+  info: UserContentRequireField;
+}
+
+export type ReviewFormAnswerList = ReviewFormAnswer[];
+
+// API 관련 타입
+
+export interface ServerQuestion {
+  id?: number;
+  value: string;
+  description: string;
+}
+export interface ServerQuestionRequireId {
+  id: number;
+  value: string;
+  description: string;
+}
+
+export interface ServerAnswer {
+  id?: number;
+  value: string;
+}
+
+export interface ServerAnswerRequireId {
+  id: number;
+  value: string;
+}
+
+export interface ReviewFormResponse {
+  reviewFormTitle: string;
   questions: Question[];
 }
 
-export interface Answer {
-  questionValue: string;
-  answerId?: number;
-  answerValue: string;
-}
-
-export interface GetReviewFormResponse {
-  reviewTitle: string;
+export interface GetReviewFormResponse extends ReviewFormResponse {
   updatedAt: number;
-  creator: {
-    nickname: string;
-    profileUrl: string;
-  };
+  creator: UserProfile;
   isCreator: boolean;
-  questions: Question[];
 }
 
-export interface Review {
-  reviewId: number;
+export interface GetReviewAnswerResponse {
+  id: number;
   updatedAt: number;
-  isMine: boolean;
-  participant: {
-    nickname: string;
-    profileUrl: string;
-  };
-  answers: Answer[];
+  creator: UserProfile;
+  isCreator: boolean;
+  contents: Array<{
+    question: ServerQuestionRequireId;
+    answer: ServerAnswerRequireId;
+  }>;
 }
 
-export interface GetReviewsResponse {
-  reviews: Review[];
+export type GetReviewFormAnswerResponse = Array<{
+  id: number;
+  updatedAt: number;
+  creator: UserProfile;
+  isCreator: boolean;
+  contents: Array<{
+    question: ServerQuestionRequireId;
+    answer: ServerAnswerRequireId;
+  }>;
+}>;
+
+export type CreateReviewFormRequest = ReviewFormResponse;
+
+export interface CreateReviewFormResponse {
+  reviewFormCode: string;
 }
 
-export interface GetReviewResponse {
-  answers: Answer[];
+export interface CreateReviewAnswerRequest {
+  reviewFormCode: string;
+  contents: Array<{
+    questionId: number;
+    answer: ServerAnswer;
+  }>;
 }
 
-export interface UpdateReviewFormRequest extends ReviewForm {
-  reviewFormCode?: string | null;
+export interface CreateFormByTemplateRequest {
+  templateId: number;
+  reviewFormTitle: string;
+  questions: ServerQuestion[];
+}
+
+export type CreateFormByTemplateResponse = UpdateReviewFormResponse;
+
+export type CreateReviewAnswerResponse = null;
+
+export interface UpdateReviewFormRequest extends ReviewFormResponse {
+  reviewFormCode: string;
 }
 
 export interface UpdateReviewFormResponse {
   reviewFormCode: string;
 }
 
-export type RequiredPartialType<Type, P extends keyof Type> = Type & {
-  [key in P]-?: Type[key];
-};
-
-export interface SubmitAnswerRequest {
-  reviewFormCode: string;
-  answers: {
-    answerValue: string;
-    questionId: number | null | undefined;
-  }[];
-}
-
-export interface UpdateReviewRequest {
+export interface UpdateReviewAnswerRequest {
   reviewId: number;
-  answers: Question[];
+  contents: Array<{
+    questionId: number;
+    answer: ServerAnswer;
+  }>;
 }
 
-export type UseCustomMutationOptions<TData = unknown> = UseMutationOptions<
-  TData,
-  ErrorResponse,
-  unknown
->;
+export type UpdateReviewAnswerResponse = null;
 
-export interface RedirectState {
-  redirect: string;
-}
+export type DeleteReviewFormResponse = null;
+
+export type DeleteReviewAnswerResponse = null;

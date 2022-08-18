@@ -56,4 +56,22 @@ public class MemberTest {
             .isInstanceOf(MemberException.class)
             .hasMessageContaining("닉네임이 비어있을 수 없습니다.");
     }
+
+    @Test
+    @DisplayName("멤버의 프로필 url과 소셜 닉네임을 변경한다.")
+    void updateSocialInfo() {
+        // given
+        Member member = new Member("1", "socialId", "original nickname", "profileUrl");
+
+        // when
+        String expectedProfileUrl = "updated profileUrl";
+        String expectedSocialNickname = "update nickname";
+        member.updateSocialInfo(expectedSocialNickname, expectedProfileUrl);
+
+        // then
+        assertAll(
+            () -> assertThat(member.getSocialNickname()).isEqualTo(expectedSocialNickname),
+            () -> assertThat(member.getProfileUrl()).isEqualTo(expectedProfileUrl)
+        );
+    }
 }

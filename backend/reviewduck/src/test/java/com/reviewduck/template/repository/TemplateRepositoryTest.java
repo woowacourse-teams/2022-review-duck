@@ -4,27 +4,35 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 
 import com.reviewduck.common.exception.NotFoundException;
+import com.reviewduck.config.JpaAuditingConfig;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
-import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.template.domain.Template;
+import com.reviewduck.template.domain.TemplateQuestion;
 
 @DataJpaTest
+@Import(JpaAuditingConfig.class)
 public class TemplateRepositoryTest {
 
     @Autowired
     private TemplateRepository templateRepository;
     @Autowired
     private MemberRepository memberRepository;
+
+    @PersistenceContext
+    private EntityManager em;
 
     private Member member1;
     private Member member2;
@@ -42,10 +50,11 @@ public class TemplateRepositoryTest {
     @DisplayName("템플릿을 저장한다.")
     void saveTemplate() {
         // given
-        List<String> questionValues = List.of("question1", "question2");
-        List<ReviewFormQuestion> reviewFormQuestions = convertValuesToQuestions(questionValues);
-
-        Template template = new Template(member1, "title", "description", questionValues);
+        List<TemplateQuestion> questions = List.of(
+            new TemplateQuestion("question1", "description1"),
+            new TemplateQuestion("question2", "description2")
+        );
+        Template template = new Template(member1, "title", "description", questions);
 
         // when
         Template savedTemplate = templateRepository.save(template);
@@ -56,19 +65,19 @@ public class TemplateRepositoryTest {
             () -> assertThat(savedTemplate.getQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(reviewFormQuestions)
+                .isEqualTo(questions)
         );
     }
 
     @Test
     @DisplayName("템플릿을 조회한다.")
-    void findTemplate() {
+    void findTemplate() throws InterruptedException {
         // given
-        List<String> questionValues = List.of("question1", "question2");
-        List<ReviewFormQuestion> reviewFormQuestions = convertValuesToQuestions(questionValues);
-
-        Template template = new Template(member1, "title", "description", questionValues);
-        Template savedTemplate = templateRepository.save(template);
+        List<TemplateQuestion> questions = List.of(
+            new TemplateQuestion("question1", "description1"),
+            new TemplateQuestion("question2", "description2")
+        );
+        Template savedTemplate = saveTemplate(member1, questions);
 
         // when
         Template foundTemplate = templateRepository.findById(savedTemplate.getId())
@@ -80,20 +89,24 @@ public class TemplateRepositoryTest {
             () -> assertThat(foundTemplate.getQuestions())
                 .usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(reviewFormQuestions)
+                .isEqualTo(questions)
         );
     }
 
     @Test
     @DisplayName("템플릿을 모두 조회한다.")
-    void findAllTemplates() {
+    void findAllTemplates() throws InterruptedException {
         // given
-        List<String> questionValues1 = List.of("question1", "question2");
-        Template template1 = new Template(member1, "title1", "description1", questionValues1);
-        templateRepository.save(template1);
-        List<String> questionValues2 = List.of("question3", "question4");
-        Template template2 = new Template(member1, "title2", "description2", questionValues2);
-        templateRepository.save(template2);
+        List<TemplateQuestion> questions1 = List.of(
+            new TemplateQuestion("question1", "description1"),
+            new TemplateQuestion("question2", "description2")
+        );
+        List<TemplateQuestion> questions2 = List.of(
+            new TemplateQuestion("question1", "description1"),
+            new TemplateQuestion("question2", "description2")
+        );
+        saveTemplate(member1, questions1);
+        saveTemplate(member2, questions2);
 
         // when
         List<Template> templates = templateRepository.findAll();
@@ -103,12 +116,107 @@ public class TemplateRepositoryTest {
     }
 
     @Test
-    @DisplayName("템플릿을 삭제한다.")
-    void deleteTemplate() {
+    @DisplayName("템플릿을 updatedAt 내림차순으로 정렬하여 모두 조회한다.")
+    void findAllTemplatesOrderByUpdatedAt() throws InterruptedException {
         // given
-        List<String> questionValues = List.of("question1", "question2");
-        Template template = new Template(member1, "title", "description", questionValues);
-        Template savedTemplate = templateRepository.save(template);
+        List<TemplateQuestion> questions1 = List.of(
+            new TemplateQuestion("question1", "description1"),
+            new TemplateQuestion("question2", "description2")
+        );
+        List<TemplateQuestion> questions2 = List.of(
+            new TemplateQuestion("question3", "description3"),
+            new TemplateQuestion("question4", "description4")
+        );
+        Template template1 = saveTemplate(member1, questions1);
+        Template template2 = saveTemplate(member2, questions2);
+
+        // when
+        List<Template> templates = templateRepository.findAllByOrderByUpdatedAtDesc();
+
+        // then
+        assertAll(
+            () -> assertThat(templates).hasSize(2),
+            () -> assertThat(templates.get(0)).isEqualTo(template2),
+            () -> assertThat(templates.get(1)).isEqualTo(template1)
+        );
+
+    }
+
+    @Test
+    @DisplayName("템플릿을 usedCount 내림차순으로 정렬하여 모두 조회한다.")
+    void findAllTemplatesOrderByUsedCount() throws InterruptedException {
+        // given
+        List<TemplateQuestion> questions1 = List.of(
+            new TemplateQuestion("question1", "description1"),
+            new TemplateQuestion("question2", "description2")
+        );
+        List<TemplateQuestion> questions2 = List.of(
+            new TemplateQuestion("question3", "description3"),
+            new TemplateQuestion("question4", "description4")
+        );
+        Template template1 = saveTemplate(member1, questions1);
+        Template template2 = saveTemplate(member2, questions2);
+
+        templateRepository.increaseUsedCount(template2.getId());
+
+        // when
+        List<Template> templates = templateRepository.findAllByOrderByUsedCountDesc();
+
+        // then
+        assertAll(
+            () -> assertThat(templates).hasSize(2),
+            () -> assertThat(templates.get(0)).isEqualTo(template2),
+            () -> assertThat(templates.get(1)).isEqualTo(template1)
+        );
+
+    }
+
+    @Test
+    @DisplayName("특정 사용자가 작성한 템플릿을 updatedAt 내림차순으로 정렬하여 조회한다.")
+    void findByMemberOrderByUpdatedAtDesc() throws InterruptedException {
+        // given
+        List<TemplateQuestion> questions1 = List.of(
+            new TemplateQuestion("question1", "description1"),
+            new TemplateQuestion("question2", "description2")
+        );
+        saveTemplate(member1, questions1);
+
+        List<TemplateQuestion> questions2 = List.of(
+            new TemplateQuestion("question3", "description3"),
+            new TemplateQuestion("question4", "description4")
+        );
+        saveTemplate(member2, questions2);
+
+        List<TemplateQuestion> questions3 = List.of(
+            new TemplateQuestion("question5", "description5"),
+            new TemplateQuestion("question6", "description6")
+        );
+        saveTemplate(member1, questions3);
+
+        // when
+        List<Template> myTemplates = templateRepository.findByMemberOrderByUpdatedAtDesc(member1);
+
+        // then
+        assertAll(
+            () -> assertThat(myTemplates).hasSize(2),
+            () -> assertThat(myTemplates.get(0)).isNotNull(),
+            () -> assertThat(myTemplates.get(0).getMember().getNickname()).isEqualTo("제이슨"),
+            () -> assertThat(myTemplates.get(0).getQuestions())
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(questions3)
+        );
+    }
+
+    @Test
+    @DisplayName("템플릿을 삭제한다.")
+    void deleteTemplate() throws InterruptedException {
+        // given
+        List<TemplateQuestion> questions = List.of(
+            new TemplateQuestion("question1", "description1"),
+            new TemplateQuestion("question2", "description2")
+        );
+        Template savedTemplate = saveTemplate(member1, questions);
 
         // when
         Long templateId = savedTemplate.getId();
@@ -119,44 +227,31 @@ public class TemplateRepositoryTest {
     }
 
     @Test
-    @DisplayName("개인이 작성한 템플릿을 조회한다.")
-    void findByMember() {
+    @DisplayName("사용 횟수를 증가시킨다.")
+    void increaseUsedCount() throws InterruptedException {
         // given
-        List<String> questionValues1 = List.of("question1", "question2");
-        Template template1 = new Template(member1, "title1", "description1", questionValues1);
-
-        List<String> questionValues2 = List.of("question3", "question4");
-        Template template2 = new Template(member2, "title2", "description2", questionValues2);
-
-        templateRepository.save(template1);
-        templateRepository.save(template2);
+        List<TemplateQuestion> questions = List.of(
+            new TemplateQuestion("question1", "description1"),
+            new TemplateQuestion("question2", "description2")
+        );
+        Long templateId = saveTemplate(member1, questions).getId();
 
         // when
-        List<Template> myTemplates = templateRepository.findByMember(member2);
-        List<ReviewFormQuestion> reviewFormQuestions = convertValuesToQuestions(questionValues2);
+        templateRepository.increaseUsedCount(templateId);
+
+        Template template = templateRepository.findAllByMember(member1).get(0);
+
+        // DB에 저장된 값과 1차 캐시의 Template을 동기화
+        em.refresh(template);
 
         // then
-        assertAll(
-            () -> assertThat(myTemplates).hasSize(1),
-            () -> assertThat(myTemplates.get(0)).isNotNull(),
-            () -> assertThat(myTemplates.get(0).getMember().getNickname()).isEqualTo("브리"),
-            () -> assertThat(myTemplates.get(0).getTemplateTitle()).isEqualTo("title2"),
-            () -> assertThat(myTemplates.get(0).getQuestions())
-                .usingRecursiveComparison()
-                .ignoringFields("id")
-                .isEqualTo(reviewFormQuestions)
-        );
+        assertThat(template.getUsedCount()).isEqualTo(1);
     }
 
-    private List<ReviewFormQuestion> convertValuesToQuestions(List<String> questionValues) {
-        List<ReviewFormQuestion> reviewFormQuestions = questionValues.stream()
-            .map(ReviewFormQuestion::new)
-            .collect(Collectors.toUnmodifiableList());
+    private Template saveTemplate(Member member, List<TemplateQuestion> questions) throws InterruptedException {
+        Thread.sleep(1);
+        Template template = new Template(member, "title", "description", questions);
 
-        int index = 0;
-        for (ReviewFormQuestion reviewFormQuestion : reviewFormQuestions) {
-            reviewFormQuestion.setPosition(index++);
-        }
-        return reviewFormQuestions;
+        return templateRepository.save(template);
     }
 }

@@ -19,7 +19,7 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionRequest;
+import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.service.ReviewFormService;
 
 @SpringBootTest
@@ -91,8 +91,10 @@ public class AdminReviewFormServiceTest {
     }
 
     private ReviewForm saveReviewForm(Member member) {
-        List<ReviewFormQuestionRequest> createRequests = List.of(new ReviewFormQuestionRequest("question1"),
-            new ReviewFormQuestionRequest("question2"));
+        List<ReviewFormQuestionCreateRequest> createRequests = List.of(
+            new ReviewFormQuestionCreateRequest("question1", "description1"),
+            new ReviewFormQuestionCreateRequest("question2", "description2"));
+
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest("title", createRequests);
 
         return reviewFormService.save(member, createRequest);

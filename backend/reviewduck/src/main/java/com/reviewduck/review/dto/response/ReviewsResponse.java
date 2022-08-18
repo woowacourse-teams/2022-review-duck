@@ -16,13 +16,21 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ReviewsResponse {
 
-    private List<ReviewResponse> reviews;
+    private int numberOfReviews;
+    private boolean isMine;
+    private List<ReviewSummaryResponse> reviews;
 
-    public static ReviewsResponse of(Member member, List<Review> reviews) {
-        List<ReviewResponse> reviewResponses = reviews.stream()
-            .map(review -> ReviewResponse.of(member, review))
+    public static ReviewsResponse of(List<Review> reviews, String socialId, Member member) {
+        List<ReviewSummaryResponse> reviewResponses = reviews.stream()
+            .map(ReviewSummaryResponse::from)
             .collect(Collectors.toUnmodifiableList());
 
-        return new ReviewsResponse(reviewResponses);
+        boolean isMine = member.getSocialId().equals(socialId);
+
+        return new ReviewsResponse(reviews.size(), isMine, reviewResponses);
+    }
+
+    public boolean getIsMine() {
+        return isMine;
     }
 }

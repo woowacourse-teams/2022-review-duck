@@ -3,8 +3,10 @@ package com.reviewduck.review.domain;
 import static lombok.AccessLevel.*;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -17,6 +19,7 @@ import javax.persistence.OrderBy;
 
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.review.exception.ReviewException;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,6 +33,9 @@ public class Review extends BaseDate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String title;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
@@ -41,8 +47,10 @@ public class Review extends BaseDate {
     @OrderBy("position asc")
     private List<QuestionAnswer> questionAnswers;
 
-    public Review(Member member, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers) {
+    public Review(String title, Member member, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers) {
+        validate(title);
         sortQuestionAnswers(questionAnswers);
+        this.title = title;
         this.member = member;
         this.reviewForm = reviewForm;
         this.questionAnswers = questionAnswers;
@@ -55,13 +63,19 @@ public class Review extends BaseDate {
     }
 
     public boolean isMine(Member member) {
-        return member.equals(this.member);
+        return this.member.equals(member);
     }
 
     private void sortQuestionAnswers(List<QuestionAnswer> questionAnswers) {
         int index = 0;
         for (QuestionAnswer questionAnswer : questionAnswers) {
             questionAnswer.setPosition(index++);
+        }
+    }
+
+    private void validate(String title) {
+        if (Objects.isNull(title) || title.isBlank()) {
+            throw new ReviewException("회고의 제목은 비어있을 수 없습니다.");
         }
     }
 }

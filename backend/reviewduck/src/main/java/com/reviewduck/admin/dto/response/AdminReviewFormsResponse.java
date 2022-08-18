@@ -13,11 +13,11 @@ import lombok.Getter;
 @Getter
 public class AdminReviewFormsResponse {
 
-    private List<AdminReviewFormResponse> reviewForms;
+    private List<AdminReviewFormInfoResponse> reviewForms;
 
     public static AdminReviewFormsResponse from(List<ReviewForm> reviewForms) {
-        List<AdminReviewFormResponse> reviewFormResponses = reviewForms.stream()
-            .map(AdminReviewFormResponse::from)
+        List<AdminReviewFormInfoResponse> reviewFormResponses = reviewForms.stream()
+            .map(AdminReviewFormInfoResponse::from)
             .collect(Collectors.toUnmodifiableList());
 
         return new AdminReviewFormsResponse(reviewFormResponses);

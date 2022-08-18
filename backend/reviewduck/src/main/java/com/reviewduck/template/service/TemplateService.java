@@ -9,10 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.service.MemberService;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.domain.TemplateQuestion;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
-import com.reviewduck.template.dto.request.TemplateQuestionRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
 import com.reviewduck.template.repository.TemplateRepository;
 
@@ -27,15 +27,20 @@ public class TemplateService {
 
     private final TemplateQuestionService templateQuestionService;
 
+    private final MemberService memberService;
+
     @Transactional
     public Template save(Member member, TemplateCreateRequest createRequest) {
-        List<String> questionValues = createRequest.getQuestions().stream()
-            .map(TemplateQuestionRequest::getQuestionValue)
+
+        List<TemplateQuestion> questions = createRequest.getQuestions().stream()
+            .map(request -> templateQuestionService.save(request.getValue(), request.getDescription()))
             .collect(Collectors.toUnmodifiableList());
 
-        Template template = new Template(member, createRequest.getTemplateTitle(),
+        Template template = new Template(member,
+            createRequest.getTemplateTitle(),
             createRequest.getTemplateDescription(),
-            questionValues);
+            questions);
+
         return templateRepository.save(template);
     }
 
@@ -44,12 +49,18 @@ public class TemplateService {
             .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
     }
 
-    public List<Template> findByMember(Member member) {
-        return templateRepository.findByMember(member);
+    public List<Template> findBySocialId(String id) {
+        Member member = memberService.getBySocialId(id);
+
+        return templateRepository.findByMemberOrderByUpdatedAtDesc(member);
     }
 
-    public List<Template> findAll() {
-        return templateRepository.findAll();
+    public List<Template> findAllOrderByLatest() {
+        return templateRepository.findAllByOrderByUpdatedAtDesc();
+    }
+
+    public List<Template> findAllOrderByTrend() {
+        return templateRepository.findAllByOrderByUsedCountDesc();
     }
 
     @Transactional
@@ -59,11 +70,14 @@ public class TemplateService {
         validateTemplateIsMine(template, member, "본인이 생성한 템플릿이 아니면 수정할 수 없습니다.");
 
         List<TemplateQuestion> questions = templateUpdateRequest.getQuestions().stream()
-            .map(request -> templateQuestionService.saveOrUpdateQuestion(request.getQuestionId(),
-                request.getQuestionValue()))
+            .map(request -> templateQuestionService.saveOrUpdateQuestion(
+                request.getId(),
+                request.getValue(),
+                request.getDescription()))
             .collect(Collectors.toUnmodifiableList());
 
-        template.update(templateUpdateRequest.getTemplateTitle(), templateUpdateRequest.getTemplateDescription(),
+        template.update(templateUpdateRequest.getTemplateTitle(),
+            templateUpdateRequest.getTemplateDescription(),
             questions);
 
         return template;
@@ -81,5 +95,9 @@ public class TemplateService {
         if (!template.isMine(member)) {
             throw new AuthorizationException(message);
         }
+    }
+
+    public void increaseUsedCount(Long templateId) {
+        templateRepository.increaseUsedCount(templateId);
     }
 }

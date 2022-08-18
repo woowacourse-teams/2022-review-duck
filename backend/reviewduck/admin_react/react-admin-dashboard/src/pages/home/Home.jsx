@@ -9,7 +9,11 @@ const headers = {
 
 function socialLoginHandler() {
   window.location.assign(
-    `https://github.com/login/oauth/authorize?client_id=${process.env.REACT_APP_CLIENT_ID}`,
+    `https://github.com/login/oauth/authorize?client_id=${
+      process.env.REACT_APP_CLIENT_ID
+    }&redirect_uri=${encodeURIComponent(
+      /*'https://ducks.kr/admin'*/ 'http://localhost:3000/admin',
+    )}`,
     headers,
   );
 }

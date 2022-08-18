@@ -11,13 +11,19 @@ import imageDefaultProfile from 'assets/images/profile.png';
 
 import styles from './styles.module.scss';
 
-import { GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST } from 'service/@shared/constants';
+import {
+  GITHUB_OAUTH_LOGIN_URL,
+  MODAL_LIST,
+  PAGE_LIST,
+  TEMPLATE_TAB,
+} from 'service/@shared/constants';
 
 function Header() {
   const { isLogin, getUserProfileQuery } = useAuth();
   const { showModal } = useModal();
 
-  const { profileUrl: profileImage = imageDefaultProfile } = getUserProfileQuery.data || {};
+  const { profileUrl: profileImage = imageDefaultProfile, socialId } =
+    getUserProfileQuery.data || {};
 
   const onClickReviewStart = () => {
     showModal(MODAL_LIST.REVIEW_START);
@@ -39,7 +45,7 @@ function Header() {
 
         <ul className={styles.menuList}>
           <li className={styles.menuItem}>회고덕 소개</li>
-          <Link to={PAGE_LIST.TEMPLATE_STORE}>
+          <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${TEMPLATE_TAB.TREND}`}>
             <li className={styles.menuItem}>템플릿 탐색</li>
           </Link>
           <li className={styles.menuItem}>타임라인</li>
@@ -61,7 +67,7 @@ function Header() {
                 />
               }
             >
-              <Link className={styles.item} to={PAGE_LIST.MY_PAGE}>
+              <Link className={styles.item} to={`${PAGE_LIST.USER_PROFILE}/${socialId}`}>
                 <Icon code="person" /> <span>마이 페이지</span>
               </Link>
 

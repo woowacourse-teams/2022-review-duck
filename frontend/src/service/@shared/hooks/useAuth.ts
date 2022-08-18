@@ -2,7 +2,7 @@ import { axiosInstanceUtils } from '../utils';
 
 import {
   useGetAccessToken,
-  useGetUserInfo,
+  useGetAuthProfile,
   useCreateRefreshToken,
   useDeleteRefreshToken,
 } from './queries/auth';
@@ -25,7 +25,7 @@ function useAuth() {
     },
   });
 
-  const getUserProfileQuery = useGetUserInfo({
+  const getUserProfileQuery = useGetAuthProfile({
     enabled: getAccessTokenQuery.isSuccess,
   });
   const isLogin = getUserProfileQuery.isSuccess;

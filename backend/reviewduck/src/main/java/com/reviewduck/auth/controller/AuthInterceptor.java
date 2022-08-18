@@ -1,5 +1,7 @@
 package com.reviewduck.auth.controller;
 
+import java.util.Arrays;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,12 +26,23 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
+        if (isAuthenticationNotRequired(request))
+            return true;
+
         validateToken(request);
         return true;
     }
 
-    public boolean isPreflight(HttpServletRequest request) {
+    private boolean isPreflight(HttpServletRequest request) {
         return request.getMethod().equals(HttpMethod.OPTIONS.toString());
+    }
+
+    private boolean isAuthenticationNotRequired(HttpServletRequest request) {
+
+        return Arrays.stream(URIPattern.values())
+            .anyMatch(pattern -> pattern.match(request, "member"))
+            && request.getMethod().equals(HttpMethod.GET.toString());
+
     }
 
     public void validateToken(HttpServletRequest request) {

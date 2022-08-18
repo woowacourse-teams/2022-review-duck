@@ -1,36 +1,49 @@
-interface Answer {
-  questionValue: string;
-  answerValue: string;
+import { ServerAnswerRequireId, ServerQuestionRequireId } from './review';
+
+export interface UserProfile {
+  id: number;
+  socialNickname: string;
+  nickname: string;
+  profileUrl: string;
 }
 
-interface Question {
-  questionId: number;
-  questionValue: string;
-}
-
-export interface GetMyReviewsResponse {
+export interface GetUserReviewAnswerResponse {
   numberOfReviews: number;
-  reviews: {
-    reviewId: number;
+  isMine: boolean;
+  reviews: Array<{
+    id: number;
+    title: string;
     updatedAt: number;
-    answers: Answer[];
+    contents: Array<{
+      question: ServerQuestionRequireId;
+      answer: ServerAnswerRequireId;
+    }>;
+
     reviewForm: {
       title: string;
       code: string;
-      creator: {
-        nickname: string;
-        profileUrl: string;
-      };
+      creator: UserProfile;
     };
-  }[];
+  }>;
 }
 
-export interface GetMyReviewFormsResponse {
+export interface GetUserReviewFormsResponse {
   numberOfReviewForms: number;
-  reviewForms: {
+  isMine: boolean;
+  reviewForms: Array<{
     title: string;
     code: string;
     updatedAt: number;
-    questions: Question[];
-  }[];
+    questions: ServerQuestionRequireId[];
+  }>;
 }
+
+export interface GetUserProfileResponse {
+  isMine: boolean;
+  socialId: string;
+  socialNickname: string;
+  nickname: string;
+  profileUrl: string;
+}
+
+export type UpdateProfileResponse = null;

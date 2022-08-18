@@ -8,8 +8,21 @@ import { DataGrid } from '@mui/x-data-grid';
 import { DeleteOutline } from '@mui/icons-material';
 
 export default function ReviewForm(props) {
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 70 },
+  const questionColumns = [
+    { field: 'id', headerName: 'Question ID', width: 150 },
+    { field: 'value', headerName: 'Question Value', width: 250 },
+    { field: 'description', headerName: 'Question Description', width: 250 },
+  ];
+
+  const reviewColumns = [
+    {
+      field: 'id',
+      headerName: 'ID',
+      width: 70,
+      renderCell: (params) => {
+        return <Link to={`/reviews/${params.row.id}`}>{params.row.id}</Link>;
+      },
+    },
     {
       field: 'memberId',
       headerName: 'Member Id',
@@ -63,6 +76,8 @@ export default function ReviewForm(props) {
   ];
 
   const params = useParams();
+  const [reviewFormInfo, setReviewFormInfo] = useState([]);
+  const [questionRows, setQuestionRows] = useState([]);
   const [reviewRows, setReviewRows] = useState([]);
   const headers = {
     headers: {
@@ -71,23 +86,66 @@ export default function ReviewForm(props) {
   };
 
   useEffect(() => {
-    axios
-      .get(`${props.API_URI}/review-forms/${params.reviewFormCode}/reviews`, headers)
-      .then((res) => {
-        if (res.data) {
-          console.log(res.data);
-          setReviewRows(res.data.reviews);
-        } else {
-          alert('failed to ');
-        }
-      });
+    axios.get(`${props.API_URI}/review-forms/${params.reviewFormCode}`, headers).then((res) => {
+      if (res.data) {
+        console.log(res.data);
+        setReviewFormInfo(res.data.reviewFormInfo);
+        setQuestionRows(res.data.questions);
+        setReviewRows(res.data.reviews);
+      } else {
+        alert('failed to ');
+      }
+    });
   }, []);
 
   return (
     <div className="reviewList">
+      <div className="reviewFormInfo">
+        <ul>
+          <li>
+            <span>ReviewForm Id </span>
+            {reviewFormInfo.id}
+          </li>
+          <li>
+            <span>ReviewForm Code </span>
+            {reviewFormInfo.id}
+          </li>
+          <li>
+            <span>Author Id </span>
+            {reviewFormInfo.memberId}
+          </li>
+          <li>
+            <span>Author Profile</span>
+            {reviewFormInfo.memberProfile}
+          </li>
+          <li>
+            <span>Author Nickname </span>
+            {reviewFormInfo.memberNickname}
+          </li>
+          <li>
+            <span>ReviewForm Title </span>
+            {reviewFormInfo.templateTitle}
+          </li>
+          <li>
+            <span>작성일 </span>
+            {reviewFormInfo.createdAt}
+          </li>
+          <li>
+            <span>최종 수정일 </span>
+            {reviewFormInfo.updatedAt}
+          </li>
+        </ul>
+      </div>
+      <DataGrid
+        rows={questionRows}
+        columns={questionColumns}
+        pageSize={10}
+        rowsPerPageOptions={[5]}
+        checkboxSelection
+      />
       <DataGrid
         rows={reviewRows}
-        columns={columns}
+        columns={reviewColumns}
         pageSize={10}
         rowsPerPageOptions={[5]}
         checkboxSelection

@@ -10,10 +10,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.reviewduck.admin.dto.response.AdminMemberResponse;
 import com.reviewduck.admin.dto.response.AdminMembersResponse;
 import com.reviewduck.admin.service.AdminMemberService;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
+import com.reviewduck.common.util.Logging;
 import com.reviewduck.member.domain.Member;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,8 +35,7 @@ public class AdminMemberController {
     @ResponseStatus(HttpStatus.OK)
     public AdminMembersResponse findAllMembers(@AuthenticationPrincipal Member member) {
 
-        log.info("uri={}, method = {}",
-            "api/admin/members", "GET");
+        Logging.info("api/admin/members", "GET", "");
 
         validateAdmin(member);
         List<Member> members = adminMemberService.findAllMembers();
@@ -42,13 +43,25 @@ public class AdminMemberController {
         return AdminMembersResponse.from(members);
     }
 
+    @Operation(summary = "단일 사용자를 조회한다")
+    @GetMapping("/{memberId}")
+    @ResponseStatus(HttpStatus.OK)
+    public AdminMemberResponse findMember(@AuthenticationPrincipal Member member, @PathVariable Long memberId) {
+
+        Logging.info("api/admin/members" + memberId, "GET", "");
+
+        validateAdmin(member);
+        Member foundMember = adminMemberService.findMemberById(memberId);
+
+        return AdminMemberResponse.from(foundMember);
+    }
+
     @Operation(summary = "사용자를 탈퇴시킨다")
     @DeleteMapping("/{memberId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteMember(@AuthenticationPrincipal Member member, @PathVariable Long memberId) {
 
-        log.info("uri={}, method = {}",
-            "api/admin/members/" + memberId, "DELETE");
+        Logging.info("api/admin/members/" + memberId, "DELETE", "");
 
         validateAdmin(member);
         adminMemberService.deleteMemberById(memberId);

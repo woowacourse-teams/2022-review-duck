@@ -10,7 +10,7 @@ function useCreateRefreshToken(mutationOptions?: UseCustomMutationOptions<Create
 
   return useMutation(authAPI.createRefreshToken, {
     onSettled: () => {
-      queryClient.refetchQueries([QUERY_KEY.DATA.USER, QUERY_KEY.API.GET_ACCESS_TOKEN]);
+      queryClient.refetchQueries([QUERY_KEY.DATA.AUTH, QUERY_KEY.API.GET_ACCESS_TOKEN]);
     },
     ...mutationOptions,
   });

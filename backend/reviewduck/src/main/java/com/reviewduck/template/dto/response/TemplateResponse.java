@@ -3,29 +3,36 @@ package com.reviewduck.template.dto.response;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.reviewduck.member.domain.Member;
 import com.reviewduck.template.domain.Template;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Getter
 public class TemplateResponse {
 
-    private Long templateId;
-    private String templateTitle;
-    private String templateDescription;
+    private boolean isCreator;
+    private TemplateInfoResponse info;
+    private CreatorResponse creator;
     private List<TemplateQuestionResponse> questions;
 
-    public static TemplateResponse from(Template template) {
-        List<TemplateQuestionResponse> questionResponses = template.getQuestions().stream()
+    public static TemplateResponse of(Template template, Member member) {
+        List<TemplateQuestionResponse> questions = template.getQuestions().stream()
             .map(TemplateQuestionResponse::from)
             .collect(Collectors.toUnmodifiableList());
 
-        return new TemplateResponse(template.getId(), template.getTemplateTitle(), template.getTemplateDescription(),
-            questionResponses);
+        return new TemplateResponse(
+            template.isMine(member),
+            TemplateInfoResponse.from(template),
+            CreatorResponse.from(template.getMember()),
+            questions
+        );
+    }
+
+    public boolean getIsCreator() {
+        return isCreator;
     }
 }

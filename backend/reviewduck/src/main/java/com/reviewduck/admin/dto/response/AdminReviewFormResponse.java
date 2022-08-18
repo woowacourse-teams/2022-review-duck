@@ -1,8 +1,11 @@
 package com.reviewduck.admin.dto.response;
 
-import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
+import com.reviewduck.review.dto.response.ReviewFormQuestionResponse;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,19 +15,21 @@ import lombok.Getter;
 @Getter
 public class AdminReviewFormResponse {
 
-    private Long id;
-    private Long memberId;
-    private String memberProfileUrl;
-    private String memberNickname;
-    private String code;
-    private String reviewTitle;
-    private boolean isActive;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private AdminReviewFormInfoResponse reviewFormInfo;
+    private List<ReviewFormQuestionResponse> questions;
+    private List<AdminReviewInfoResponse> reviews;
 
-    public static AdminReviewFormResponse from(ReviewForm reviewForm) {
-        return new AdminReviewFormResponse(reviewForm.getId(), reviewForm.getMember().getId(),
-            reviewForm.getMember().getProfileUrl(), reviewForm.getMember().getNickname(), reviewForm.getCode(),
-            reviewForm.getReviewTitle(), reviewForm.isActive(), reviewForm.getCreatedAt(), reviewForm.getUpdatedAt());
+    public static AdminReviewFormResponse of(ReviewForm reviewForm, List<Review> reviews) {
+        AdminReviewFormInfoResponse reviewFormInfoResponse = AdminReviewFormInfoResponse.from(reviewForm);
+
+        List<ReviewFormQuestionResponse> questionResponses = reviewForm.getReviewFormQuestions().stream()
+            .map(ReviewFormQuestionResponse::from)
+            .collect(Collectors.toUnmodifiableList());
+
+        List<AdminReviewInfoResponse> reviewResponses = reviews.stream()
+            .map(AdminReviewInfoResponse::from)
+            .collect(Collectors.toUnmodifiableList());
+
+        return new AdminReviewFormResponse(reviewFormInfoResponse, questionResponses, reviewResponses);
     }
 }

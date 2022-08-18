@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,8 +21,8 @@ import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
-import com.reviewduck.review.dto.response.MyReviewsResponse;
-import com.reviewduck.review.dto.response.ReviewSummaryResponse;
+import com.reviewduck.review.dto.response.ReviewSynchronizedResponse;
+import com.reviewduck.review.dto.response.ReviewsResponse;
 import com.reviewduck.review.service.ReviewService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,25 +35,27 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @Operation(summary = "특정한 회고 답변을 조회한다.")
+    @Operation(summary = "특정한 회고 답변을 최신화된 회고 폼과 동기화하여 조회한다.")
     @GetMapping("/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewSummaryResponse findById(@AuthenticationPrincipal Member member, @PathVariable Long reviewId) {
+    public ReviewSynchronizedResponse findById(@AuthenticationPrincipal Member member, @PathVariable Long reviewId) {
 
         info("/api/reviews/" + reviewId, "GET", "");
 
-        return ReviewSummaryResponse.from(reviewService.findById(reviewId));
+        return ReviewSynchronizedResponse.from(reviewService.findById(reviewId));
     }
 
-    @Operation(summary = "특정한 회고 답변 수정시 최신화된 회고폼을 반영하기 위하여 동기화된 회고 답변을 조회한다.")
-    @GetMapping("/{reviewId}/synchronized")
+    @Operation(summary = "사용자가 작성한 회고 답변을 모두 조회한다.")
+    @GetMapping(params = "member")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewSummaryResponse synchronizedFindById(@AuthenticationPrincipal Member member,
-        @PathVariable Long reviewId) {
+    public ReviewsResponse findBySocialId(@AuthenticationPrincipal Member member,
+        @RequestParam(value = "member") String socialId) {
 
-        info("/api/reviews/" + reviewId + "/synchronize", "GET", "");
+        info("/api/reviews?member=" + socialId, "GET", "");
 
-        return ReviewSummaryResponse.synchronizedWithReviewForm(reviewService.findById(reviewId));
+        List<Review> reviews = reviewService.findBySocialId(socialId);
+
+        return ReviewsResponse.of(reviews, socialId, member);
     }
 
     @Operation(summary = "회고 답변을 수정한다.")
@@ -74,16 +77,5 @@ public class ReviewController {
         info("/api/reviews/" + reviewId, "DELETE", "");
 
         reviewService.delete(member, reviewId);
-    }
-
-    @Operation(summary = "내가 작성한 회고 답변을 모두 조회한다.")
-    @GetMapping("/me")
-    @ResponseStatus(HttpStatus.OK)
-    public MyReviewsResponse findByMember(@AuthenticationPrincipal Member member) {
-        List<Review> reviews = reviewService.findByMember(member);
-
-        info("/api/reviews/me", "GET", "");
-
-        return MyReviewsResponse.from(reviews);
     }
 }

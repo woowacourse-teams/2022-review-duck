@@ -1,25 +1,27 @@
 const PAGE_LIST = {
   HOME: '/',
-  REVIEW_FORM: '/review-form',
+  REVIEW_FORM: '/review/form',
   REVIEW: '/review',
-  REVIEW_JOIN: '/review/join',
   REVIEW_OVERVIEW: '/overview',
   AUTHORIZE: '/authorize',
   MY_PAGE: '/mypage',
   LOGOUT: '/logout',
-  TEMPLATE_STORE: '/template/list',
-  TEMPLATE_RECENT: '/recent',
-  TEMPLATE_DETAIL: 'template/view',
-  TEMPLATE_EDIT: 'template/edit',
+  TEMPLATE_LIST: '/template/list',
+  TEMPLATE_DETAIL: '/template/view',
+  TEMPLATE_FORM: '/template/review-form',
+  USER_PROFILE: '/profile',
 };
 
 const MODAL_LIST = {
   REVIEW_START: 'ModalReviewStart',
   REVIEW_JOIN: 'ModalReviewJoin',
+
+  PROFILE_EDIT: 'ModalProfileEdit',
 };
 
 const QUERY_KEY = {
   DATA: {
+    AUTH: 'auth',
     USER: 'user',
 
     REVIEW: 'review',
@@ -29,6 +31,7 @@ const QUERY_KEY = {
   },
   API: {
     GET_ACCESS_TOKEN: 'getRefreshedAccessToken',
+    GET_AUTH_MY_PROFILE: 'getAuthMyProfile',
     GET_USER_PROFILE: 'getUserProfile',
 
     GET_REVIEWS: 'getReviews',
@@ -39,6 +42,7 @@ const QUERY_KEY = {
     GET_MY_REVIEW_FORMS: 'getMyReviewForms',
 
     GET_TEMPLATES: 'getTemplates',
+    GET_TEMPLATE: 'getTemplate',
   },
 };
 
@@ -63,9 +67,14 @@ const ACCESS_TOKEN_REFRESH_TIME = ACCESS_TOKEN_EXPIRE_TIME - 60 * 2 * 1000;
 
 const PERMISSION_VALID_TIME = 60 * 1000;
 
-const MYPAGE_TAB = {
-  MY_REVIEWS: 'my-reviews',
-  MY_REVIEW_FORMS: 'my-review-forms',
+const USER_PROFILE_TAB = {
+  REVIEWS: 'reviews',
+  REVIEW_FORMS: 'review-forms',
+};
+
+const TEMPLATE_TAB = {
+  TREND: 'trend',
+  LATEST: 'latest',
 };
 
 const REVIEW_FORM_TITLE_LENGTH = 100;
@@ -74,7 +83,36 @@ const REVIEW_FORM_CODE_LENGTH = 8;
 
 const REVIEW_FORM_CODE_REGEX = `(?=.*[A-Za-z])(?=.*[0-9])[a-zA-Z0-9]{${REVIEW_FORM_CODE_LENGTH}}$`;
 
+const API_URI = {
+  AUTH: {
+    GET_ACCESS_TOKEN: '/api/login/refresh',
+    GET_USER_PROFILE: '/api/members/me',
+  },
+  REVIEW: {
+    GET_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
+    GET_ANSWER: (reviewId: numberString) => `/api/reviews/${reviewId}`,
+    GET_FORM_ANSWER: (reviewFormCode: string, display: string) =>
+      `/api/review-forms/${reviewFormCode}/reviews?displayType=${display}`,
+
+    CREATE_FORM: '/api/review-forms',
+    CREATE_ANSWER: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
+
+    UPDATE_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
+    UPDATE_ANSWER: (reviewId: numberString) => `/api/reviews/${reviewId}`,
+
+    DELETE_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
+    DELETE_ANSWER: (reviewId: numberString) => `/api/reviews/${reviewId}`,
+  },
+  USER: {
+    GET_REVIEW_ANSWERS: '/api/reviews',
+    GET_REVIEW_FORMS: '/api/review-forms',
+    GET_PROFILE: (socialId: numberString) => `/api/members/${socialId}`,
+    UPDATE_PROFILE: '/api/members/me',
+  },
+};
+
 export {
+  API_URI,
   PAGE_LIST,
   MODAL_LIST,
   QUERY_KEY,
@@ -84,7 +122,8 @@ export {
   ACCESS_PERMISSION,
   ACCESS_TOKEN_EXPIRE_TIME,
   ACCESS_TOKEN_REFRESH_TIME,
-  MYPAGE_TAB,
+  USER_PROFILE_TAB,
+  TEMPLATE_TAB,
   PERMISSION_VALID_TIME,
   REVIEW_FORM_TITLE_LENGTH,
   REVIEW_FORM_CODE_LENGTH,

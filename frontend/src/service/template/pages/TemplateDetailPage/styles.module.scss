@@ -1,0 +1,128 @@
+@import 'styles/@global.scss';
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
+
+  .title-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2rem 0;
+
+    .title {
+      color: $THEME_COLOR_STATUS_PRIMARY_600;
+    }
+
+    .info {
+      display: flex;
+      gap: 1rem;
+
+      .icon-text {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        color: $THEME_COLOR_THEME_TEXT_400;
+      }
+    }
+  }
+
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 0;
+    gap: 0.6rem;
+
+    .template-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .icon-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+
+      .icon-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: $THEME_COLOR_THEME_TEXT_600;
+
+        &:hover {
+          cursor: pointer;
+          color: $THEME_COLOR_THEME_TEXT_900;
+        }
+      }
+    }
+  }
+}
+
+.contents-container {
+  padding: 0 0 6rem 0;
+  border-bottom: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
+
+  .description {
+    padding: 1.5rem 0 3rem 0;
+
+    .text {
+      white-space: pre-wrap;
+      margin-top: 1rem;
+      color: $THEME_COLOR_THEME_TEXT_600;
+    }
+  }
+}
+
+.profile-container {
+  padding: 1rem 0;
+  border-bottom: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
+
+  .icon-container {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0.25rem;
+
+    .icon {
+      font-size: 32px;
+
+      &:hover {
+        cursor: pointer;
+        opacity: 0.6;
+      }
+    }
+  }
+}
+
+.footer {
+  padding: 1rem 0;
+
+  .align-center {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+
+    .button-container {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+    }
+
+    .icon {
+      color: $THEME_COLOR_STATUS_WARNING_500;
+      margin-right: 0.3rem;
+    }
+  }
+
+  .trend {
+    padding: 1rem 0 2rem 0;
+
+    .card {
+      margin-right: 1rem;
+    }
+  }
+}

@@ -1,0 +1,16 @@
+@import 'styles/@global.scss';
+
+.tag {
+  color: $THEME_COLOR_STATUS_SUCCESS_400;
+  border: 1px solid $THEME_COLOR_STATUS_SUCCESS_400;
+  width: fit-content;
+  border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+
+  .tag-wrapper {
+    font-size: 0.75rem;
+    display: flex;
+    gap: 0.125rem;
+    align-items: center;
+    padding: 0.2rem 0.5rem;
+  }
+}

@@ -1,8 +1,11 @@
 package com.reviewduck.auth.controller;
 
+import java.util.Objects;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.core.MethodParameter;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -32,6 +35,11 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
+
+        if (Objects.isNull(request.getHeader(HttpHeaders.AUTHORIZATION))) {
+            return Member.getMemberNotLogin();
+        }
+
         String token = AuthorizationExtractor.extract(request);
 
         jwtTokenProvider.validateToken(token);

@@ -38,6 +38,21 @@ public class AcceptanceTest {
             .then().log().all();
     }
 
+    public ValidatableResponse post(String url, String accessToken) {
+        return RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .auth().oauth2(accessToken)
+            .when().post(url)
+            .then().log().all();
+    }
+
+    public ValidatableResponse post(String url) {
+        return RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().post(url)
+            .then().log().all();
+    }
+
     public ValidatableResponse get(String url) {
         return RestAssured.given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)

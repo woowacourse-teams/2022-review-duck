@@ -22,6 +22,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 public class Member extends BaseDate {
 
+    private static final Member MEMBER_NOT_LOGIN = new Member("-1", "socialNickname", "nickname", "url");
+    private static final String deletedInfo = "-";
+    private static final String deletedNickname = "탈퇴한 회원입니다.";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,10 +49,8 @@ public class Member extends BaseDate {
         this.isAdmin = false;
     }
 
-    private void validate(String nickname) {
-        if (Objects.isNull(nickname) || nickname.isBlank()) {
-            throw new MemberException("닉네임이 비어있을 수 없습니다.");
-        }
+    public static Member getMemberNotLogin() {
+        return MEMBER_NOT_LOGIN;
     }
 
     public void updateNickname(String nickname) {
@@ -56,11 +58,26 @@ public class Member extends BaseDate {
         this.nickname = nickname;
     }
 
+    public void updateSocialInfo(String socialNickname, String profileUrl) {
+        this.socialNickname = socialNickname;
+        this.profileUrl = profileUrl;
+    }
+
     public void deleteAllInfo() {
-        this.socialId = "-";
-        this.socialNickname = "-";
-        this.nickname = "탈퇴한 회원입니다";
-        this.profileUrl = "-";
+        this.socialId = deletedInfo;
+        this.socialNickname = deletedInfo;
+        this.nickname = deletedNickname;
+        this.profileUrl = deletedInfo;
+    }
+
+    public boolean isAdmin() {
+        return this.isAdmin;
+    }
+
+    private void validate(String nickname) {
+        if (Objects.isNull(nickname) || nickname.isBlank()) {
+            throw new MemberException("닉네임이 비어있을 수 없습니다.");
+        }
     }
 
     @Override
@@ -70,15 +87,11 @@ public class Member extends BaseDate {
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o))
             return false;
         Member member = (Member)o;
-        return Objects.equals(id, member.id);
+        return id != null && Objects.equals(id, member.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    public boolean isAdmin() {
-        return this.isAdmin;
+        return getClass().hashCode();
     }
 }

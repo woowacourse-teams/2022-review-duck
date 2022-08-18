@@ -1,97 +1,186 @@
-import { Suspense, useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import cn from 'classnames';
+import useSnackbar from 'common/hooks/useSnackbar';
+import {
+  useDeleteReviewAnswer,
+  useGetReviewForm,
+  useGetReviewFormAnswer,
+} from 'service/@shared/hooks/queries/review';
 
-import { Button, Icon, Logo } from 'common/components';
+import { FlexContainer, Skeleton } from 'common/components';
 
-import Skeleton from 'common/components/Skeleton';
+import Profile from 'service/@shared/components/Profile';
+import Questions from 'service/@shared/components/Questions';
 
 import styles from './styles.module.scss';
 
-import ReviewHeader from './containers/ReviewHeader';
-import ReviewListMain from './containers/ReviewListMain';
-import ReviewSheetView from './containers/ReviewSheetView';
-import ReviewSideMenu from './containers/ReviewSideMenu';
-import useOverviewQueries from './useOverviewQueries';
+import { Header } from './views/Header';
+import { ListView } from './views/ListView';
+import { SheetView } from './views/SheetView';
 import { PAGE_LIST } from 'service/@shared/constants';
 
-function ReviewOverviewPage() {
-  const { reviewFormCode = '' } = useParams();
+/*
+  TODO:
+  - 페이지 비즈니스 로직 & API 통신 처리 커스텀훅 분리
+  - ListView => ReviewList, SideMenu로 나누기
+  - 시트뷰 / 리스트뷰 출력 방식 조금 더 보기 좋게 구조 개선
+*/
+
+function ReviewOverViewPage() {
   const navigate = useNavigate();
+  const { reviewFormCode = '', displayMode = 'list' } = useParams();
 
-  const [isSheetEnabled, setSheetEnabled] = useState(false);
+  const { showSnackbar } = useSnackbar();
 
-  const { isError, error } = useOverviewQueries(reviewFormCode);
+  const reviewFormAnswerQuery = useGetReviewFormAnswer(
+    { reviewFormCode, display: displayMode },
+    {
+      suspense: false,
+    },
+  );
 
-  const handleModeChange = (isEnabled: boolean) => () => {
-    if (isEnabled === isSheetEnabled) return;
+  const reviewFormQuery = useGetReviewForm(reviewFormCode, {
+    suspense: false,
+  });
 
-    setSheetEnabled(isEnabled);
+  const { mutate } = useDeleteReviewAnswer();
+
+  const reviewForm = reviewFormQuery.data;
+  const reviewAnswers = reviewFormAnswerQuery.data;
+
+  const isContentLoaded = reviewFormQuery.isSuccess && reviewFormAnswerQuery.isSuccess;
+
+  const membersUniqueFilter = [
+    ...new Map(reviewAnswers?.map(({ info: { creator } }) => [creator.id, creator])),
+  ];
+
+  const handleEditAnswer = (reviewId: number) => () => {
+    navigate(`${PAGE_LIST.REVIEW}/${reviewFormCode}/${reviewId}`);
   };
 
-  useEffect(() => {
-    if (isError) {
-      alert(error?.message);
-      navigate(-1);
-    }
-  }, [isError, error]);
+  const handleDeleteAnswer = (reviewId: number) => () => {
+    if (!confirm('정말 해당 회고를 삭제하시겠습니까?')) return;
+
+    mutate(reviewId, {
+      onSuccess: () => {
+        showSnackbar({
+          title: '작성한 회고가 삭제되었습니다.',
+          description: '더 이상 조회할 수 없으며, 삭제된 정보는 복구할 수 없습니다.',
+          theme: 'danger',
+        });
+      },
+    });
+  };
 
   return (
-    <div className={cn(styles.layout)}>
-      <header className={cn(styles.header)}>
-        <nav className={cn(styles.container, styles.menuBar)}>
-          <div className={styles.leftContainer}>
-            <Link to={PAGE_LIST.HOME}>
-              <Logo size="small" />
-            </Link>
+    <div className={styles.layout}>
+      <Header>
+        <Header.FormInformation isLoading={!isContentLoaded} fallback={<Skeleton />}>
+          <Header.Title>{reviewForm?.title}</Header.Title>
+          <Header.Description>크리에이터 : {reviewForm?.info.creator.nickname}</Header.Description>
+        </Header.FormInformation>
 
-            <Suspense fallback={<Skeleton />}>
-              <ReviewHeader reviewFormCode={reviewFormCode} />
-            </Suspense>
-          </div>
+        <Header.ViewChangeButtons displayMode={displayMode} reviewFormCode={reviewFormCode} />
+      </Header>
 
-          <div className={styles.rightContainer}>
-            <Button
-              theme={!isSheetEnabled ? 'default' : 'outlined'}
-              onClick={handleModeChange(false)}
-            >
-              <Icon code="list" />
-              <span>목록형 보기</span>
-            </Button>
+      {displayMode !== 'sheet' ? (
+        <ListView>
+          <ListView.Content isLoading={!isContentLoaded} fallback={<Skeleton line={4} />}>
+            <ListView.ParticipantList>
+              {membersUniqueFilter?.map(
+                ([key, creator]) =>
+                  key && (
+                    <Profile key={key} className={styles.profile} textAlign="center" align="center">
+                      <Profile.Image size="large" edge="pointed" src={creator.profileUrl} />
+                      <Profile.Nickname size={14}>{creator.nickname}</Profile.Nickname>
+                      <Profile.Description size={12}></Profile.Description>
+                    </Profile>
+                  ),
+              )}
+            </ListView.ParticipantList>
 
-            <Button
-              theme={isSheetEnabled ? 'default' : 'outlined'}
-              onClick={handleModeChange(true)}
-            >
-              <Icon code="table_view" />
-              <span>시트형 보기</span>
-            </Button>
-          </div>
-        </nav>
-      </header>
+            {isContentLoaded &&
+              reviewAnswers?.map(({ id, info, questions }) => (
+                <ListView.Review key={id}>
+                  <Questions>
+                    <Questions.CoverProfile
+                      image={info.creator.profileUrl}
+                      title={info.creator.nickname}
+                      description={info.updateDate}
+                    />
 
-      {isSheetEnabled && (
-        <Suspense fallback={<Skeleton line={4} />}>
-          <ReviewSheetView reviewFormCode={reviewFormCode} />
-        </Suspense>
+                    <Questions.EditButtons
+                      isVisible={info.isSelf}
+                      onClickEdit={handleEditAnswer(id)}
+                      onClickDelete={handleDeleteAnswer(id)}
+                    ></Questions.EditButtons>
+
+                    {questions.map(({ description, answer, ...question }, index) => (
+                      <Questions.Answer
+                        key={question.id}
+                        question={`${index + 1}. ${question.value}`}
+                        description={description}
+                      >
+                        {answer.value}
+                      </Questions.Answer>
+                    ))}
+
+                    <Questions.Reaction onClickLike={() => null} onClickBookmark={() => null} />
+                  </Questions>
+                </ListView.Review>
+              ))}
+          </ListView.Content>
+
+          <ListView.SideMenu isLoading={!isContentLoaded} fallback={<Skeleton line={3} />}>
+            <ListView.FormDetail>
+              <FlexContainer gap="small">
+                <ListView.InfoText name="크리에이터">
+                  {reviewForm?.info.creator.nickname}
+                </ListView.InfoText>
+                <ListView.InfoText name="회고 참여자">
+                  총 {membersUniqueFilter.length}명이 참여함
+                </ListView.InfoText>
+                <ListView.InfoText name="업데이트">{reviewForm?.info.updateDate}</ListView.InfoText>
+              </FlexContainer>
+
+              <ListView.JoinButton reviewFormCode={reviewFormCode} />
+
+              <ListView.FormCopyLink reviewFormCode={reviewFormCode} />
+
+              <ListView.FormManageButtons reviewFormCode={reviewFormCode} />
+            </ListView.FormDetail>
+          </ListView.SideMenu>
+        </ListView>
+      ) : (
+        <SheetView>
+          <SheetView.Questions>
+            {isContentLoaded &&
+              reviewForm?.questions.map((question) => (
+                <SheetView.Item key={question.id} isTitle>
+                  {question.value}
+                </SheetView.Item>
+              ))}
+          </SheetView.Questions>
+
+          <SheetView.ReviewList>
+            {isContentLoaded &&
+              reviewAnswers?.map(({ id, info: { creator }, questions }) => (
+                <SheetView.Answers key={id}>
+                  <SheetView.Creator
+                    nickname={creator.nickname}
+                    profileImage={creator.profileUrl}
+                  />
+
+                  {questions.map(({ answer, ...review }) => (
+                    <SheetView.Item key={review.id}>{answer && answer.value}</SheetView.Item>
+                  ))}
+                </SheetView.Answers>
+              ))}
+          </SheetView.ReviewList>
+        </SheetView>
       )}
-
-      {!isSheetEnabled && (
-        <main className={cn(styles.container, styles.content)}>
-          <Suspense fallback={<Skeleton line={4} />}>
-            <ReviewListMain reviewFormCode={reviewFormCode} />
-          </Suspense>
-
-          <Suspense fallback={<Skeleton line={3} />}>
-            <ReviewSideMenu reviewFormCode={reviewFormCode} />
-          </Suspense>
-        </main>
-      )}
-
-      <footer></footer>
     </div>
   );
 }
 
-export default ReviewOverviewPage;
+export default ReviewOverViewPage;
