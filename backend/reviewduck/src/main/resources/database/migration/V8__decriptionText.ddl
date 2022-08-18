@@ -1,5 +1,3 @@
-ALTER TABLE review_form_question
-    ALTER COLUMN description TYPE VARCHAR(8000);
+alter table review_form_question alter description text not null;
 
-ALTER TABLE template_question
-    ALTER COLUMN description TYPE VARCHAR(8000);
+alter table template_question alter description text not null;
