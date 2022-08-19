@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
 
@@ -13,7 +12,6 @@ import { Button, Icon, Text, TransitionDiv } from 'common/components';
 import ScrollPanel from 'common/components/ScrollPanel';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
-import NoResult from 'service/@shared/components/NoResult';
 import QuestionCard from 'service/@shared/components/QuestionCard';
 import TemplateCard from 'service/template/components/TemplateCard';
 

@@ -20,7 +20,9 @@ public enum URIPattern {
     MemberReviewFindRequestPattern(Pattern.compile("/api/reviews"),
         (request, paramName) -> request.getParameterMap().containsKey(paramName)),
 
-    MemberFindRequestPattern(Pattern.compile("/api/members/[0-9]+"), (request, paramName) -> true);
+    MemberFindRequestPattern(Pattern.compile("/api/members/[0-9]+"), (request, paramName) -> true),
+
+    ReviewFormFindRequestPattern(Pattern.compile("/api/review-forms/[0-9A-Z]+"), (request, paramName) -> true);
 
     private final Pattern pattern;
     private final BiFunction<HttpServletRequest, String, Boolean> containsParam;
