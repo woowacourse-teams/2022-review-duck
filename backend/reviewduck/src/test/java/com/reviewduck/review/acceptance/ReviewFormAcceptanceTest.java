@@ -227,7 +227,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             // given
             String reviewFormCode = createReviewFormAndGetCode(accessToken1);
 
-            get("/api/review-forms/" + reviewFormCode).statusCode(HttpStatus.UNAUTHORIZED.value());
+            get("/api/review-forms/" + reviewFormCode).statusCode(HttpStatus.OK.value());
         }
 
         @Test
