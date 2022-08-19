@@ -25,6 +25,7 @@
   padding: 1.25rem 0;
   color: $THEME_COLOR_STATUS_PRIMARY_600;
   border-bottom: 1px solid $THEME_COLOR_STATUS_PRIMARY_100;
+  line-height: 160%;
 }
 
 .answerContainer {
@@ -40,6 +41,7 @@
 
   .question {
     color: $THEME_COLOR_STATUS_PRIMARY_700;
+    line-height: 160%;
   }
 
   .description {

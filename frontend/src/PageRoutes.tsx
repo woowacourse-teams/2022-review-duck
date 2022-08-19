@@ -34,6 +34,12 @@ function PageRoutes() {
 
         <Route path="/profile/:socialId" element={<ProfilePage />} />
         <Route path="playground" element={<Playground />} />
+
+        {/* 데모 데이용 */}
+        <Route
+          path="/pending"
+          element={<ErrorPage status=";(" title="준비 중인 서비스입니다." description="pending" />}
+        />
       </Route>
 
       <Route element={<ReviewLayout />}>
@@ -63,6 +69,7 @@ function PageRoutes() {
 
       <Route path={PAGE_LIST.AUTHORIZE} element={<Authorize />} />
       <Route path={PAGE_LIST.LOGOUT} element={<Logout />} />
+
       <Route
         path="*"
         element={

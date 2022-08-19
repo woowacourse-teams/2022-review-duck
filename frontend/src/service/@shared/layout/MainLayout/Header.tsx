@@ -44,11 +44,16 @@ function Header() {
         </div>
 
         <ul className={styles.menuList}>
-          <li className={styles.menuItem}>회고덕 소개</li>
+          <Link to="/pending">
+            <li className={styles.menuItem}>회고덕 소개</li>
+          </Link>
           <Link to={PAGE_LIST.TEMPLATE_LIST}>
             <li className={styles.menuItem}>템플릿 탐색</li>
           </Link>
-          <li className={styles.menuItem}>타임라인</li>
+
+          <Link to="/pending">
+            <li className={styles.menuItem}>타임라인</li>
+          </Link>
         </ul>
 
         <div className={cn(styles.navItemContainer, styles.quickMenuContainer)}>
