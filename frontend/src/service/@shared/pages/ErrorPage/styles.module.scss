@@ -90,6 +90,7 @@
     font-size: 4rem;
     color: $GLOBAL_COLOR_WHITE_900;
     text-shadow: 0px 0.1875rem 1.25rem $GLOBAL_COLOR_BLACK_200;
+    text-align: center;
 
     @include animation(0.75s ease) {
       from {

@@ -167,9 +167,12 @@ const FormCopyLink = ({ reviewFormCode }: FormCopyLink) => {
 
 interface FormManageButtonsProps {
   reviewFormCode: string;
+  isMine?: boolean;
 }
 
-const FormManageButtons = ({ reviewFormCode }: FormManageButtonsProps) => {
+const FormManageButtons = ({ reviewFormCode, isMine }: FormManageButtonsProps) => {
+  if (!isMine) return null;
+
   return (
     <FlexContainer className={styles.formManageButtons} gap="small">
       <Text className={styles.title} size={14}>

@@ -154,7 +154,10 @@ function ReviewOverViewPage() {
 
               <ListView.FormCopyLink reviewFormCode={reviewFormCode} />
 
-              <ListView.FormManageButtons reviewFormCode={reviewFormCode} />
+              <ListView.FormManageButtons
+                reviewFormCode={reviewFormCode}
+                isMine={reviewForm?.info.isSelf}
+              />
             </ListView.FormDetail>
           </ListView.SideMenu>
         </ListView>
