@@ -57,4 +57,26 @@
   & > * {
     padding: 3rem;
   }
+
+  & > *:only-child {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(
+        102.36% 71.97% at 92.78% 94.68%,
+        rgba(49, 113, 114, 0.15) 0%,
+        rgba(255, 255, 255, 0) 100%
+      ),
+      radial-gradient(
+        77.78% 54.69% at 10.49% 43.21%,
+        rgba(255, 166, 84, 0.25) 0%,
+        rgba(255, 255, 255, 0) 100%
+      ),
+      $GLOBAL_COLOR_GRAY_950;
+  }
 }

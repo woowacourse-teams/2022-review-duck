@@ -13,14 +13,15 @@ function Container({ children }: ContainerProps) {
 }
 
 interface CoverProfileProps {
+  socialId: number;
   image: string;
   title: string;
   description?: string;
 }
 
-function CoverProfile({ image, title, description }: CoverProfileProps) {
+function CoverProfile({ socialId, image, title, description }: CoverProfileProps) {
   return (
-    <Profile align="center" textAlign="center" textGap="medium">
+    <Profile socialId={socialId} align="center" textAlign="center" textGap="medium">
       <Profile.Image src={image} />
       <Profile.Nickname size={20}>{title}</Profile.Nickname>
       {description && <Profile.Description>{description}</Profile.Description>}
@@ -32,10 +33,10 @@ interface TitleProps {
   children?: string;
 }
 
-function Title({}: TitleProps) {
+function Title({ children }: TitleProps) {
   return (
-    <Text size={24} weight="bold" element="div">
-      타이틀1
+    <Text className={styles.title} size={24} weight="bold" element="h1">
+      {children}
     </Text>
   );
 }
@@ -53,7 +54,7 @@ function EditButtons({ isVisible, onClickEdit, onClickDelete }: EditButtonsProps
     <FlexContainer className={styles.inlineButtons} direction="row" gap="large" justify="right">
       <FlexContainer className={styles.button} direction="row" align="center" onClick={onClickEdit}>
         <Icon className={styles.icon} code="edit_note" type="round" />
-        <Text className={styles.text} size={12}>
+        <Text className={styles.text} size={14}>
           회고 편집
         </Text>
       </FlexContainer>
@@ -65,7 +66,7 @@ function EditButtons({ isVisible, onClickEdit, onClickDelete }: EditButtonsProps
         onClick={onClickDelete}
       >
         <Icon className={styles.icon} code="delete" type="round" />
-        <Text className={styles.text} size={12}>
+        <Text className={styles.text} size={14}>
           회고 삭제
         </Text>
       </FlexContainer>

@@ -44,14 +44,15 @@ const Answers = ({ children }: AnswersProps) => {
 };
 
 interface CreatorProps {
+  socialId: number;
   nickname: string;
   profileImage: string;
 }
 
-const Creator = ({ nickname, profileImage }: CreatorProps) => {
+const Creator = ({ socialId, nickname, profileImage }: CreatorProps) => {
   return (
     <td>
-      <Profile direction="column" align="center" textAlign="center">
+      <Profile socialId={socialId} direction="column" align="center" textAlign="center">
         <Profile.Image src={profileImage} size="small" />
         <Profile.Nickname>{nickname}</Profile.Nickname>
       </Profile>

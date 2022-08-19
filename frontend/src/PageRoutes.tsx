@@ -6,6 +6,7 @@ import RequireAuth from 'service/@shared/components/RequireAuth';
 
 import { PAGE_LIST } from 'service/@shared/constants';
 import MainLayout from 'service/@shared/layout/MainLayout';
+import ErrorPage from 'service/@shared/pages/ErrorPage';
 import ReviewLayout from 'service/review/layout/ReviewLayout';
 import Playground from 'service/review/pages/Playground';
 import ReviewAnswerEditorPage from 'service/review/pages/ReviewAnswerEditorPage';
@@ -62,6 +63,17 @@ function PageRoutes() {
 
       <Route path={PAGE_LIST.AUTHORIZE} element={<Authorize />} />
       <Route path={PAGE_LIST.LOGOUT} element={<Logout />} />
+      <Route
+        path="*"
+        element={
+          <ErrorPage
+            status={404}
+            title="찾을 수 없는 페이지입니다"
+            description="not found
+          "
+          />
+        }
+      />
     </Routes>
   );
 }
