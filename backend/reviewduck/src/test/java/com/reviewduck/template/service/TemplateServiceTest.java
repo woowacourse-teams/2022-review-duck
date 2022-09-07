@@ -136,7 +136,106 @@ public class TemplateServiceTest {
     }
 
     @Nested
-    @DisplayName("최신순 전체 템플릿 조회")
+    @DisplayName("전체 템플릿 조회")
+    class findAll {
+
+        @Test
+        @DisplayName("사용순으로 특정 페이지를 조회한다.")
+        void findAllOrderByTrend() throws InterruptedException {
+            // given
+            // create template
+            List<TemplateQuestionCreateRequest> questions1 = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
+
+            List<TemplateQuestionCreateRequest> questions2 = List.of(
+                new TemplateQuestionCreateRequest("question3", "description3"),
+                new TemplateQuestionCreateRequest("question4", "description4"));
+
+            Template template1 = saveTemplate(member1, "title1", "description1", questions1);
+            Template template2 = saveTemplate(member1, "title2", "description2", questions2);
+
+            // when
+            Integer page = 0;
+            Integer size = 1;
+            String sort = "latest";
+
+            List<Template> templates = templateService.findAll(page, size, sort);
+
+            // then
+            assertAll(
+                () -> assertThat(templates).hasSize(1),
+                () -> assertThat(templates.get(0)).isEqualTo(template2)
+            );
+        }
+
+        @Test
+        @DisplayName(" 특정 페이지를 조회한다.")
+        void findPageOrderByLatest() throws InterruptedException {
+            // given
+            // create template
+            List<TemplateQuestionCreateRequest> questions1 = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
+
+            List<TemplateQuestionCreateRequest> questions2 = List.of(
+                new TemplateQuestionCreateRequest("question3", "description3"),
+                new TemplateQuestionCreateRequest("question4", "description4"));
+
+            Template template1 = saveTemplate(member1, "title1", "description1", questions1);
+            Template template2 = saveTemplate(member1, "title2", "description2", questions2);
+
+            templateService.increaseUsedCount(template1.getId());
+
+            // when
+            Integer page = 0;
+            Integer size = 1;
+            String sort = "trend";
+
+            List<Template> templates = templateService.findAll(page, size, sort);
+
+            // then
+            assertAll(
+                () -> assertThat(templates).hasSize(1),
+                () -> assertThat(templates.get(0)).isEqualTo(template1)
+            );
+        }
+
+        @Test
+        @DisplayName("기본 크기의 페이지를 기본 정렬기준으로 조회한다.")
+        void findPageDefault() throws InterruptedException {
+            // given
+            // create template
+            List<TemplateQuestionCreateRequest> questions1 = List.of(
+                new TemplateQuestionCreateRequest("question1", "description1"),
+                new TemplateQuestionCreateRequest("question2", "description2"));
+
+            List<TemplateQuestionCreateRequest> questions2 = List.of(
+                new TemplateQuestionCreateRequest("question3", "description3"),
+                new TemplateQuestionCreateRequest("question4", "description4"));
+
+            // create 15 template1
+            for (int i = 0; i < 15; i++) {
+                saveTemplate(member1, "title1", "description1", questions1);
+            }
+            // create latestTemplate
+            Template latestTemplate = saveTemplate(member1, "title2", "description2", questions2);
+
+            // when
+            List<Template> templates = templateService.findAll(null, null, null);
+
+            // then
+            assertAll(
+                () -> assertThat(templates).hasSize(10),
+                () -> assertThat(templates.get(0)).isEqualTo(latestTemplate)
+            );
+        }
+
+    }
+
+    @Nested
+    @DisplayName("전체 템플릿 조회")
+    @Deprecated
     class findAllOrderByLatest {
 
         @Test
@@ -165,10 +264,12 @@ public class TemplateServiceTest {
                 () -> assertThat(templates.get(1)).isEqualTo(template1)
             );
         }
+
     }
 
     @Nested
     @DisplayName("사용순 전체 템플릿 조회")
+    @Deprecated
     class findAllOrderByTrend {
 
         @Test

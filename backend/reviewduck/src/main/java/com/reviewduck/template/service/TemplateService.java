@@ -3,6 +3,9 @@ package com.reviewduck.template.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +25,9 @@ import lombok.AllArgsConstructor;
 @Transactional(readOnly = true)
 @AllArgsConstructor
 public class TemplateService {
+
+    private static final int DEFAULT_PAGE = 0;
+    private static final int DEFAULT_SIZE = 10;
 
     private final TemplateRepository templateRepository;
 
@@ -61,6 +67,23 @@ public class TemplateService {
 
     public List<Template> findAllOrderByTrend() {
         return templateRepository.findAllByOrderByUsedCountDesc();
+    }
+
+    public List<Template> findAll(Integer page, Integer size, String sort) {
+        if (page == null) {
+            page = DEFAULT_PAGE;
+        }
+
+        if (size == null) {
+            size = DEFAULT_SIZE;
+        }
+
+        String sortType = SortType.getSortBy(sort);
+
+        Page<Template> templates = templateRepository.findAll(
+            PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType)));
+
+        return templates.getContent();
     }
 
     @Transactional

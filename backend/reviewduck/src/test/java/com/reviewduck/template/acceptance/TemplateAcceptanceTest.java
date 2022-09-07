@@ -121,7 +121,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("최신순 전체 템플릿 조회")
+    @DisplayName("전체 템플릿 조회")
     class findAllOrderByLatest {
 
         @Test
@@ -145,6 +145,21 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         @DisplayName("로그인하지 않은 상태로 조회할 수 있다.")
         void withoutLogin() {
             get("/api/templates?filter=trend").statusCode(HttpStatus.OK.value());
+        }
+
+        @Test
+        @DisplayName("최신순으로 특정 페이지를 조회한다.")
+        void findPageOrderByLatest() {
+            // given
+            saveTemplateAndGetId(accessToken1, "title1");
+            saveTemplateAndGetId(accessToken2, "title2");
+
+            // when, then
+            get("/api/templates?page=0&size=1&sort=latest", accessToken1).statusCode(HttpStatus.OK.value())
+                .assertThat().body("templates", hasSize(1))
+                .assertThat().body("templates[0].info.title", equalTo("title2"))
+                .assertThat().body("templates[0].isCreator", equalTo(false));
+
         }
 
     }
@@ -259,7 +274,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
                 .as(MemberResponse.class);
 
             // when, then
-            MemberTemplatesResponse memberTemplatesResponse = get("/api/templates?member=" + member.getSocialId(), accessToken1)
+            MemberTemplatesResponse memberTemplatesResponse = get("/api/templates?member=" + member.getSocialId(),
+                accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(MemberTemplatesResponse.class);

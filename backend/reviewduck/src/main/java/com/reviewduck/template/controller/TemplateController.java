@@ -67,6 +67,20 @@ public class TemplateController {
         return ReviewFormCodeResponse.from(reviewForm);
     }
 
+    @Operation(summary = "전체 템플릿을 조회한다.")
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public TemplatesResponse findAll(@AuthenticationPrincipal Member member,
+        @RequestParam(required = false) Integer page,
+        @RequestParam(required = false) Integer size,
+        @RequestParam(required = false) String sort) {
+
+        info("/api/templates", "GET", "page=" + page + " size=" + size + " sort=" + sort);
+
+        List<Template> templates = templateService.findAll(page, size, sort);
+        return TemplatesResponse.of(templates, member);
+    }
+
     @Operation(summary = "특정 템플릿을 조회한다.")
     @GetMapping("/{templateId}")
     @ResponseStatus(HttpStatus.OK)

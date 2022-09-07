@@ -14,6 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.config.JpaAuditingConfig;
@@ -94,28 +97,6 @@ public class TemplateRepositoryTest {
     }
 
     @Test
-    @DisplayName("템플릿을 모두 조회한다.")
-    void findAllTemplates() throws InterruptedException {
-        // given
-        List<TemplateQuestion> questions1 = List.of(
-            new TemplateQuestion("question1", "description1"),
-            new TemplateQuestion("question2", "description2")
-        );
-        List<TemplateQuestion> questions2 = List.of(
-            new TemplateQuestion("question1", "description1"),
-            new TemplateQuestion("question2", "description2")
-        );
-        saveTemplate(member1, questions1);
-        saveTemplate(member2, questions2);
-
-        // when
-        List<Template> templates = templateRepository.findAll();
-
-        // then
-        assertThat(templates).hasSize(2);
-    }
-
-    @Test
     @DisplayName("템플릿을 updatedAt 내림차순으로 정렬하여 모두 조회한다.")
     void findAllTemplatesOrderByUpdatedAt() throws InterruptedException {
         // given
@@ -138,6 +119,33 @@ public class TemplateRepositoryTest {
             () -> assertThat(templates).hasSize(2),
             () -> assertThat(templates.get(0)).isEqualTo(template2),
             () -> assertThat(templates.get(1)).isEqualTo(template1)
+        );
+
+    }
+
+    @Test
+    @DisplayName("템플릿을 updatedAt 내림차순으로 정렬된 특정 페이지를 조회한다.")
+    void findPageOfTemplatesOrderByUpdatedAt() throws InterruptedException {
+        // given
+        List<TemplateQuestion> questions1 = List.of(
+            new TemplateQuestion("question1", "description1"),
+            new TemplateQuestion("question2", "description2")
+        );
+        List<TemplateQuestion> questions2 = List.of(
+            new TemplateQuestion("question3", "description3"),
+            new TemplateQuestion("question4", "description4")
+        );
+        Template template1 = saveTemplate(member1, questions1);
+        Template template2 = saveTemplate(member2, questions2);
+
+        // when
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "updatedAt"));
+        List<Template> templates = templateRepository.findAll(pageable).getContent();
+
+        // then
+        assertAll(
+            () -> assertThat(templates).hasSize(1),
+            () -> assertThat(templates.get(0)).isEqualTo(template2)
         );
 
     }
