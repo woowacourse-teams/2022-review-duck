@@ -1,4 +1,4 @@
-package com.reviewduck.template.service;
+package com.reviewduck.common.vo;
 
 import java.util.Arrays;
 

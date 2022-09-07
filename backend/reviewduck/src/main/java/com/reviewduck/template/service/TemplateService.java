@@ -1,5 +1,7 @@
 package com.reviewduck.template.service;
 
+import static com.reviewduck.common.vo.PageConstant.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
+import com.reviewduck.common.vo.SortType;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.template.domain.Template;
@@ -25,9 +28,6 @@ import lombok.AllArgsConstructor;
 @Transactional(readOnly = true)
 @AllArgsConstructor
 public class TemplateService {
-
-    private static final int DEFAULT_PAGE = 0;
-    private static final int DEFAULT_SIZE = 10;
 
     private final TemplateRepository templateRepository;
 
