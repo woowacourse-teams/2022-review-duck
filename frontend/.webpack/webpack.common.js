@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const path = require('path');
-const package = require('../package.json');
+const app = require('../package.json');
 const dotenv = require('dotenv');
 
 module.exports = (env = {}, options = {}) => {
@@ -23,6 +23,12 @@ module.exports = (env = {}, options = {}) => {
     resolve: {
       modules: [path.resolve(__dirname, '../src'), 'node_modules'],
       extensions: ['.tsx', '.ts', '.js'],
+    },
+    output: {
+      path: path.join(__dirname, '../build'),
+      publicPath: process.env.PUBLIC_PATH,
+      filename: `app.${app.version}.js`,
+      clean: true,
     },
     module: {
       rules: [
@@ -60,7 +66,8 @@ module.exports = (env = {}, options = {}) => {
               loader: 'css-loader',
               options: {
                 modules: {
-                  localIdentName: mode === 'development' ? '[local]--[hash:base64:5]' : '[hash:base64:5]',
+                  localIdentName:
+                    mode === 'development' ? '[local]--[hash:base64:5]' : '[hash:base64:5]',
                   exportLocalsConvention: 'camelCase',
                 },
               },
@@ -85,7 +92,7 @@ module.exports = (env = {}, options = {}) => {
         favicon: './public/favicon.ico',
       }),
       new CleanWebpackPlugin(),
-      new MiniCssExtractPlugin({ linkType: false, filename: `css/[name].${package.version}.css` }),
+      new MiniCssExtractPlugin({ linkType: false, filename: `css/[name].${app.version}.css` }),
     ],
   };
 };
