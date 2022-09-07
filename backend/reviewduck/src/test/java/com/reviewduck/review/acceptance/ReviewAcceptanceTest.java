@@ -239,7 +239,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     class findTimelineReview {
 
         @Test
-        @DisplayName("비밀글이 아닌 모든 회고를 updatedAt 내림차순으로 모두 조회한다.")
+        @DisplayName("공개된 모든 회고를 updatedAt 내림차순으로 모두 조회한다.")
         void findAllReviews() {
             // given
             saveReviewAndGetId(accessToken1, false);

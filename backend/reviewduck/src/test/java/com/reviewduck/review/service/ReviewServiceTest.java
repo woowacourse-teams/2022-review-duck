@@ -65,23 +65,6 @@ public class ReviewServiceTest {
         this.reviewForm = reviewFormService.save(member1, createRequest);
     }
 
-    private Review saveReview(Member member, boolean isPrivate) throws InterruptedException {
-        Thread.sleep(1);
-
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, List.of(
-            new ReviewContentCreateRequest(
-                reviewForm.getReviewFormQuestions().get(0).getId(),
-                new AnswerCreateRequest("answer1")
-            ),
-            new ReviewContentCreateRequest(
-                reviewForm.getReviewFormQuestions().get(1).getId(),
-                new AnswerCreateRequest("answer2")
-            )
-        ));
-
-        return reviewService.save(member, reviewForm.getCode(), reviewCreateRequest);
-    }
-
     @Nested
     @DisplayName("회고 저장")
     class saveReview {
@@ -142,8 +125,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 질문입니다.");
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("id로 회고 조회")
     class findById {
@@ -170,8 +153,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 회고입니다.");
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("사용자가 생성한 회고 조회")
     class findMemberReview {
@@ -233,8 +216,8 @@ public class ReviewServiceTest {
                     savedReview.getMember().getNickname())
             );
         }
-    }
 
+    }
     @Nested
     @DisplayName("회고 폼 code로 회고 조회")
     class findByCode {
@@ -264,14 +247,14 @@ public class ReviewServiceTest {
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
-    }
 
+    }
     @Nested
     @DisplayName("최신 순 회고 조회")
     class findTimelineReview {
 
         @Test
-        @DisplayName("비밀글을 제외한 모든 회고 답변을 조회한다.")
+        @DisplayName("공개된 모든 회고 답변을 조회한다.")
         void findAllReviews() throws InterruptedException {
             // given
             saveReview(member1, false);
@@ -287,8 +270,8 @@ public class ReviewServiceTest {
                 () -> assertThat(reviews.get(0).getId()).isEqualTo(3)
             );
         }
-    }
 
+    }
     @Nested
     @DisplayName("회고 수정")
     class updateReview {
@@ -383,8 +366,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 답변 번호입니다.");
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("회고 삭제")
     class deleteReview {
@@ -423,5 +406,22 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 회고입니다.");
         }
 
+
+    }
+    private Review saveReview(Member member, boolean isPrivate) throws InterruptedException {
+        Thread.sleep(1);
+
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, List.of(
+            new ReviewContentCreateRequest(
+                reviewForm.getReviewFormQuestions().get(0).getId(),
+                new AnswerCreateRequest("answer1")
+            ),
+            new ReviewContentCreateRequest(
+                reviewForm.getReviewFormQuestions().get(1).getId(),
+                new AnswerCreateRequest("answer2")
+            )
+        ));
+
+        return reviewService.save(member, reviewForm.getCode(), reviewCreateRequest);
     }
 }

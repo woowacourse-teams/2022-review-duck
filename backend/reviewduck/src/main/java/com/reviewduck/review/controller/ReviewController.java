@@ -65,7 +65,7 @@ public class ReviewController {
     @ResponseStatus(HttpStatus.OK)
     public List<ReviewResponse> findAllPublic(@AuthenticationPrincipal Member member) {
 
-        info("/api/review", "GET", "");
+        info("/api/reviews", "GET", "");
 
         List<Review> reviews = reviewService.findAllPublic();
 

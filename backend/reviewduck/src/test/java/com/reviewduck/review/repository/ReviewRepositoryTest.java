@@ -121,7 +121,7 @@ public class ReviewRepositoryTest {
     }
 
     @Test
-    @DisplayName("비밀글이 아닌 모든 회고를 updatedAt 내림차순으로 정렬하여 조회한다.")
+    @DisplayName("공개된 모든 회고를 updatedAt 내림차순으로 정렬하여 조회한다.")
     void findByIsPrivateFalseOrderByUpdatedAtDesc() throws InterruptedException {
         // given
         saveReview(savedMember, savedReviewForm, false);

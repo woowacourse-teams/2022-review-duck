@@ -42,12 +42,13 @@ public class Review extends BaseDate {
     @ManyToOne(fetch = FetchType.LAZY)
     private ReviewForm reviewForm;
 
+    private boolean isPrivate;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "review_id")
     @OrderBy("position asc")
     private List<QuestionAnswer> questionAnswers;
 
-    private boolean isPrivate;
 
     public Review(String title, Member member, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers,
         boolean isPrivate) {
