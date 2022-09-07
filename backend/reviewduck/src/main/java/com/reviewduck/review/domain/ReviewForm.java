@@ -50,7 +50,7 @@ public class ReviewForm extends BaseDate {
     private List<ReviewFormQuestion> reviewFormQuestions;
 
     @Column(nullable = false)
-    private boolean isActive = true;
+    private final boolean isActive = true;
 
     public ReviewForm(Member member, String title, List<ReviewFormQuestion> questions) {
         validateWhenCreate(member, title, questions);

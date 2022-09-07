@@ -3,6 +3,7 @@ package com.reviewduck.review.controller;
 import static com.reviewduck.common.util.Logging.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -21,6 +22,7 @@ import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
+import com.reviewduck.review.dto.response.ReviewResponse;
 import com.reviewduck.review.dto.response.ReviewSynchronizedResponse;
 import com.reviewduck.review.dto.response.ReviewsResponse;
 import com.reviewduck.review.service.ReviewService;
@@ -56,6 +58,20 @@ public class ReviewController {
         List<Review> reviews = reviewService.findBySocialId(socialId);
 
         return ReviewsResponse.of(reviews, socialId, member);
+    }
+
+    @Operation(summary = "비밀글이 아닌 회고 답변을 최신 순으로 조회한다.")
+    @GetMapping
+    @ResponseStatus(HttpStatus.OK)
+    public List<ReviewResponse> findAllPublic(@AuthenticationPrincipal Member member) {
+
+        info("/api/review", "GET", "");
+
+        List<Review> reviews = reviewService.findAllPublic();
+
+        return reviews.stream()
+            .map(review -> ReviewResponse.of(member, review))
+            .collect(Collectors.toUnmodifiableList());
     }
 
     @Operation(summary = "회고 답변을 수정한다.")

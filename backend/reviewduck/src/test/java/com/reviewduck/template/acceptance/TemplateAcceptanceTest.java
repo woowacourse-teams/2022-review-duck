@@ -259,7 +259,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
                 .as(MemberResponse.class);
 
             // when, then
-            MemberTemplatesResponse memberTemplatesResponse = get("/api/templates?member=" + member.getSocialId(), accessToken1)
+            MemberTemplatesResponse memberTemplatesResponse = get("/api/templates?member=" + member.getSocialId(),
+                accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(MemberTemplatesResponse.class);

@@ -61,6 +61,10 @@ public class ReviewService {
         return reviewRepository.findByReviewForm(reviewForm);
     }
 
+    public List<Review> findAllPublic() {
+        return reviewRepository.findByIsPrivateFalseOrderByUpdatedAtDesc();
+    }
+
     @Transactional
     public Review update(Member member, Long id, ReviewUpdateRequest request) {
         Review review = findById(id);

@@ -49,7 +49,8 @@ public class Review extends BaseDate {
 
     private boolean isPrivate;
 
-    public Review(String title, Member member, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers, boolean isPrivate) {
+    public Review(String title, Member member, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers,
+        boolean isPrivate) {
         validate(title);
         sortQuestionAnswers(questionAnswers);
         this.title = title;

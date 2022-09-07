@@ -58,11 +58,28 @@ public class ReviewServiceTest {
 
         String reviewTitle = "title";
         List<ReviewFormQuestionCreateRequest> questions = List.of(
-            new ReviewFormQuestionCreateRequest("question1","description1"),
-            new ReviewFormQuestionCreateRequest("question2","description2"));
+            new ReviewFormQuestionCreateRequest("question1", "description1"),
+            new ReviewFormQuestionCreateRequest("question2", "description2"));
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
 
         this.reviewForm = reviewFormService.save(member1, createRequest);
+    }
+
+    private Review saveReview(Member member, boolean isPrivate) throws InterruptedException {
+        Thread.sleep(1);
+
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, List.of(
+            new ReviewContentCreateRequest(
+                reviewForm.getReviewFormQuestions().get(0).getId(),
+                new AnswerCreateRequest("answer1")
+            ),
+            new ReviewContentCreateRequest(
+                reviewForm.getReviewFormQuestions().get(1).getId(),
+                new AnswerCreateRequest("answer2")
+            )
+        ));
+
+        return reviewService.save(member, reviewForm.getCode(), reviewCreateRequest);
     }
 
     @Nested
@@ -135,7 +152,7 @@ public class ReviewServiceTest {
         @DisplayName("id로 특정 회고를 조회한다.")
         void findById() throws InterruptedException {
             // given
-            Review saved = saveReview(member1);
+            Review saved = saveReview(member1, false);
 
             // when
             Review actual = reviewService.findById(saved.getId());
@@ -163,8 +180,8 @@ public class ReviewServiceTest {
         @DisplayName("회고를 UpdatedAt 내림차순으로 조회한다.")
         void findMyReviewsOrderByUpdatedAtDesc() throws InterruptedException {
             // given
-            saveReview(member1);
-            Review review = saveReview(member1);
+            saveReview(member1, false);
+            Review review = saveReview(member1, false);
 
             // when
             List<Review> myReviews = reviewService.findBySocialId(member1.getSocialId());
@@ -182,7 +199,7 @@ public class ReviewServiceTest {
         @DisplayName("특정 회고 폼을 삭제해도 자신이 생성한 회고를 조회할 수 있다.")
         void findReviewsByDeletedSpecificReviewForm() throws InterruptedException {
             // given
-            Review savedReview = saveReview(member1);
+            Review savedReview = saveReview(member1, false);
 
             // when
             reviewFormService.deleteByCode(member1, reviewForm.getCode());
@@ -205,7 +222,7 @@ public class ReviewServiceTest {
         @DisplayName("특정 회고 폼을 기반으로 작성된 회고를 모두 조회한다.")
         void findByReviewFormCode() throws InterruptedException {
             // given
-            Review savedReview = saveReview(member1);
+            Review savedReview = saveReview(member1, false);
 
             // when
             List<Review> reviews = reviewService.findAllByCode(reviewForm.getCode());
@@ -226,7 +243,29 @@ public class ReviewServiceTest {
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
+    }
 
+    @Nested
+    @DisplayName("최신 순 회고 조회")
+    class findTimelineReview {
+
+        @Test
+        @DisplayName("비밀글을 제외한 모든 회고 답변을 조회한다.")
+        void findAllReviews() throws InterruptedException {
+            // given
+            saveReview(member1, false);
+            saveReview(member1, true);
+            saveReview(member2, false);
+
+            // when
+            List<Review> reviews = reviewService.findAllPublic();
+
+            // then
+            assertAll(
+                () -> assertThat(reviews).hasSize(2),
+                () -> assertThat(reviews.get(0).getId()).isEqualTo(3)
+            );
+        }
     }
 
     @Nested
@@ -237,7 +276,7 @@ public class ReviewServiceTest {
         @DisplayName("회고를 수정한다.")
         void updateReview() throws InterruptedException {
             // given
-            Review savedReview = saveReview(member1);
+            Review savedReview = saveReview(member1, false);
 
             // when
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(List.of(
@@ -260,7 +299,7 @@ public class ReviewServiceTest {
         @DisplayName("본인이 생성한 회고가 아니면 수정할 수 없다.")
         void notMine() throws InterruptedException {
             // given
-            Review savedReview = saveReview(member1);
+            Review savedReview = saveReview(member1, false);
 
             // when
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(List.of(
@@ -293,7 +332,7 @@ public class ReviewServiceTest {
         @DisplayName("유효하지 않은 질문 번호로 수정할 수 없다.")
         void withInvalidQuestionId() throws InterruptedException {
             // given
-            Review savedReview = saveReview(member1);
+            Review savedReview = saveReview(member1, false);
 
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(List.of(
                 new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
@@ -310,7 +349,7 @@ public class ReviewServiceTest {
         @DisplayName("유효하지 않은 답변 번호로 수정할 수 없다.")
         void withInvalidAnswerId() throws InterruptedException {
             // given
-            Review savedReview = saveReview(member1);
+            Review savedReview = saveReview(member1, false);
 
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(List.of(
                 new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
@@ -333,7 +372,7 @@ public class ReviewServiceTest {
         @DisplayName("회고를 삭제한다.")
         void deleteReview() throws InterruptedException {
             // given
-            Review savedReview = saveReview(member1);
+            Review savedReview = saveReview(member1, false);
 
             // when
             reviewService.delete(member1, savedReview.getId());
@@ -346,7 +385,7 @@ public class ReviewServiceTest {
         @DisplayName("본인이 생성한 회고가 아니면 삭제할 수 없다.")
         void notMine() throws InterruptedException {
             // given
-            Review savedReview = saveReview(member1);
+            Review savedReview = saveReview(member1, false);
 
             // when, then
             assertThatThrownBy(() -> reviewService.delete(member2, savedReview.getId()))
@@ -363,22 +402,5 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 회고입니다.");
         }
 
-    }
-
-    private Review saveReview(Member member) throws InterruptedException {
-        Thread.sleep(1);
-
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, List.of(
-            new ReviewContentCreateRequest(
-                reviewForm.getReviewFormQuestions().get(0).getId(),
-                new AnswerCreateRequest("answer1")
-            ),
-            new ReviewContentCreateRequest(
-                reviewForm.getReviewFormQuestions().get(1).getId(),
-                new AnswerCreateRequest("answer2")
-            )
-        ));
-
-        return reviewService.save(member, reviewForm.getCode(), reviewCreateRequest);
     }
 }
