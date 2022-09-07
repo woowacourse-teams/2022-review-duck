@@ -95,21 +95,8 @@ public class ReviewFormController {
         return ReviewFormResponse.of(reviewForm, member);
     }
 
-    @Operation(summary = "사용자가 작성한 회고 폼을 모두 조회한다.")
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public MemberReviewFormsResponse findReviewFormsBySocialId(@AuthenticationPrincipal Member member,
-        @RequestParam(value = "member") String socialId) {
-
-        info("/api/review-forms?member=" + socialId, "GET", "");
-
-        List<ReviewForm> reviewForms = reviewFormService.findBySocialId(socialId);
-
-        return MemberReviewFormsResponse.of(reviewForms, socialId, member);
-    }
-
     @Operation(summary = "사용자가 작성한 회고 질문지 중 특정 페이지를 조회한다.")
-    @GetMapping(path = "/new")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public MemberReviewFormsResponse findPageOfReviewFormsBySocialId(@AuthenticationPrincipal Member member,
         @RequestParam(value = "member") String socialId,

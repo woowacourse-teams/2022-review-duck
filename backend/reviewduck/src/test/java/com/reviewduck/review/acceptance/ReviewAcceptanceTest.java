@@ -179,7 +179,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             saveReviewAndGetId(accessToken2, false);
 
             // when, then
-            get("/api/reviews/new?member=1", accessToken1).statusCode(HttpStatus.OK.value())
+            get("/api/reviews?member=1", accessToken1).statusCode(HttpStatus.OK.value())
                 .assertThat().body("reviews", hasSize(DEFAULT_SIZE))
                 .assertThat().body("reviews[0].id", equalTo(15));
         }
@@ -191,7 +191,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             saveReviewAndGetId(accessToken1, false);
             saveReviewAndGetId(accessToken1, false);
 
-            get("/api/reviews/new?member=1&page=0&size=1", accessToken1)
+            get("/api/reviews?member=1&page=0&size=1", accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
                 .body("isMine", equalTo(true))
@@ -209,7 +209,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             saveReviewAndGetId(accessToken1, false);
             saveReviewAndGetId(accessToken1, false);
 
-            get("/api/reviews/new?member=1&page=0&size=3", accessToken2)
+            get("/api/reviews?member=1&page=0&size=3", accessToken2)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
                 .body("isMine", equalTo(false))

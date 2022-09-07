@@ -49,9 +49,9 @@ public class ReviewController {
     }
 
     @Operation(summary = "사용자가 작성한 회고 답변을 모두 조회한다.")
-    @GetMapping(path = "/new", params = "member")
+    @GetMapping(params = "member")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewsResponse findAllBySocialId(@AuthenticationPrincipal Member member,
+    public ReviewsResponse findBySocialId(@AuthenticationPrincipal Member member,
         @RequestParam(value = "member") String socialId,
         @RequestParam(required = false) Integer page,
         @RequestParam(required = false) Integer size
@@ -60,19 +60,6 @@ public class ReviewController {
         info("/api/reviews?member=" + socialId + "page=" + page + " size=" + size, "GET", "");
 
         Page<Review> reviews = reviewService.findBySocialId(socialId, member, page, size);
-
-        return ReviewsResponse.of(reviews, socialId, member);
-    }
-
-    @Operation(summary = "사용자가 작성한 회고 답변을 모두 조회한다.")
-    @GetMapping(params = "member")
-    @ResponseStatus(HttpStatus.OK)
-    public ReviewsResponse findBySocialId(@AuthenticationPrincipal Member member,
-        @RequestParam(value = "member") String socialId) {
-
-        info("/api/reviews?member=" + socialId, "GET", "");
-
-        List<Review> reviews = reviewService.findBySocialId(socialId, member);
 
         return ReviewsResponse.of(reviews, socialId, member);
     }
