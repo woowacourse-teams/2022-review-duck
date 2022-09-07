@@ -14,6 +14,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     List<Review> findByMemberOrderByUpdatedAtDesc(Member member);
 
+    List<Review> findByMemberAndIsPrivateFalseOrderByUpdatedAtDesc(Member member);
+
     List<Review> findAllByMember(Member member);
 
     List<Review> findByIsPrivateFalseOrderByUpdatedAtDesc();

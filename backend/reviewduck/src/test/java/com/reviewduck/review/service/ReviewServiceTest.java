@@ -177,14 +177,35 @@ public class ReviewServiceTest {
     class findMemberReview {
 
         @Test
-        @DisplayName("회고를 UpdatedAt 내림차순으로 조회한다.")
+        @DisplayName("자신이 작성한 회고를 UpdatedAt 내림차순으로 조회한다.")
         void findMyReviewsOrderByUpdatedAtDesc() throws InterruptedException {
             // given
             saveReview(member1, false);
+            saveReview(member1, true);
             Review review = saveReview(member1, false);
 
             // when
-            List<Review> myReviews = reviewService.findBySocialId(member1.getSocialId());
+            List<Review> myReviews = reviewService.findBySocialId(member1.getSocialId(), member1);
+
+            // then
+            assertAll(
+                () -> assertThat(myReviews).hasSize(3),
+                () -> assertThat(myReviews.get(0)).isNotNull(),
+                () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo(member1.getNickname()),
+                () -> assertThat(myReviews.get(0).getUpdatedAt()).isEqualTo(review.getUpdatedAt())
+            );
+        }
+
+        @Test
+        @DisplayName("타인이 작성한 회고를 UpdatedAt 내림차순으로 조회한다.")
+        void findOtherReviewsOrderByUpdatedAtDesc() throws InterruptedException {
+            // given
+            saveReview(member1, false);
+            saveReview(member1, true);
+            Review review = saveReview(member1, false);
+
+            // when
+            List<Review> myReviews = reviewService.findBySocialId(member1.getSocialId(), member2);
 
             // then
             assertAll(
@@ -203,7 +224,7 @@ public class ReviewServiceTest {
 
             // when
             reviewFormService.deleteByCode(member1, reviewForm.getCode());
-            List<Review> reviews = reviewService.findBySocialId(member1.getSocialId());
+            List<Review> reviews = reviewService.findBySocialId(member1.getSocialId(), member1);
 
             // then
             assertAll(

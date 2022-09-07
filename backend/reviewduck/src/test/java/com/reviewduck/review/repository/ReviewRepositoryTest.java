@@ -81,21 +81,42 @@ public class ReviewRepositoryTest {
     }
 
     @Test
-    @DisplayName("사용자가 작성한 회고를 updatedAt 내림차순으로 정렬하여 조회한다.")
+    @DisplayName("자신이 작성한 회고를 updatedAt 내림차순으로 정렬하여 조회한다.")
     void findMemberReviewsOrderByUpdatedAtDesc() throws InterruptedException {
         // given
         saveReview(savedMember, savedReviewForm, false);
+        saveReview(savedMember, savedReviewForm, true);
         Review review = saveReview(savedMember, savedReviewForm, false);
 
         //when
-        List<Review> myReviews = reviewRepository.findByMemberOrderByUpdatedAtDesc(savedMember);
+        List<Review> reviews = reviewRepository.findByMemberOrderByUpdatedAtDesc(savedMember);
 
         //then
         assertAll(
-            () -> assertThat(myReviews).hasSize(2),
-            () -> assertThat(myReviews.get(0)).isNotNull(),
-            () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo(savedMember.getNickname()),
-            () -> assertThat(myReviews.get(0).getUpdatedAt()).isEqualTo(review.getUpdatedAt())
+            () -> assertThat(reviews).hasSize(3),
+            () -> assertThat(reviews.get(0)).isNotNull(),
+            () -> assertThat(reviews.get(0).getMember().getNickname()).isEqualTo(savedMember.getNickname()),
+            () -> assertThat(reviews.get(0).getUpdatedAt()).isEqualTo(review.getUpdatedAt())
+        );
+    }
+
+    @Test
+    @DisplayName("타인이 작성한 회고를 updatedAt 내림차순으로 정렬하여 조회한다.")
+    void findMemberPublicReviewsOrderByUpdatedAtDesc() throws InterruptedException {
+        // given
+        saveReview(savedMember, savedReviewForm, false);
+        saveReview(savedMember, savedReviewForm, true);
+        Review review = saveReview(savedMember, savedReviewForm, false);
+
+        //when
+        List<Review> reviews = reviewRepository.findByMemberAndIsPrivateFalseOrderByUpdatedAtDesc(savedMember);
+
+        //then
+        assertAll(
+            () -> assertThat(reviews).hasSize(2),
+            () -> assertThat(reviews.get(0)).isNotNull(),
+            () -> assertThat(reviews.get(0).getMember().getNickname()).isEqualTo(savedMember.getNickname()),
+            () -> assertThat(reviews.get(0).getUpdatedAt()).isEqualTo(review.getUpdatedAt())
         );
     }
 

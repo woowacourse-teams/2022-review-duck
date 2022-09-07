@@ -55,7 +55,7 @@ public class ReviewController {
 
         info("/api/reviews?member=" + socialId, "GET", "");
 
-        List<Review> reviews = reviewService.findBySocialId(socialId);
+        List<Review> reviews = reviewService.findBySocialId(socialId, member);
 
         return ReviewsResponse.of(reviews, socialId, member);
     }

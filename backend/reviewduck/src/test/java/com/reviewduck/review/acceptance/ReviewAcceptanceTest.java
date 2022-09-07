@@ -188,15 +188,15 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         void findAllOtherReviews() {
             // given
             saveReviewAndGetId(accessToken1, false);
-            saveReviewAndGetId(accessToken1, false);
+            saveReviewAndGetId(accessToken1, true);
 
             get("/api/reviews?member=1", accessToken2)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
                 .body("isMine", equalTo(false))
-                .body("reviews", hasSize(2))
-                .body("numberOfReviews", equalTo(2))
-                .body("reviews[0].id", equalTo(2));
+                .body("reviews", hasSize(1))
+                .body("numberOfReviews", equalTo(1))
+                .body("reviews[0].id", equalTo(1));
         }
 
         @Test

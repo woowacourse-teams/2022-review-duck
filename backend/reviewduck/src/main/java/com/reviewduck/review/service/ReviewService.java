@@ -50,10 +50,13 @@ public class ReviewService {
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
     }
 
-    public List<Review> findBySocialId(String socialId) {
-        Member member = memberService.getBySocialId(socialId);
+    public List<Review> findBySocialId(String socialId, Member member) {
+        Member owner = memberService.getBySocialId(socialId);
 
-        return reviewRepository.findByMemberOrderByUpdatedAtDesc(member);
+        if (member.equals(owner)) {
+            return reviewRepository.findByMemberOrderByUpdatedAtDesc(member);
+        }
+        return reviewRepository.findByMemberAndIsPrivateFalseOrderByUpdatedAtDesc(owner);
     }
 
     public List<Review> findAllByCode(String code) {
