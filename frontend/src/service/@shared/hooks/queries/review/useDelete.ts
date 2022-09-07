@@ -1,14 +1,13 @@
 import { useMutation, useQueryClient } from 'react-query';
 
 import { reviewAPI } from 'api';
+import { QUERY_KEY } from 'constant';
 
 import {
   DeleteReviewAnswerResponse,
   DeleteReviewFormResponse,
   UseCustomMutationOptions,
 } from 'service/@shared/types';
-
-import { QUERY_KEY } from 'service/@shared/constants';
 
 function useDeleteReviewForm(mutationOptions?: UseCustomMutationOptions<DeleteReviewFormResponse>) {
   const queryClient = useQueryClient();

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
+import { PAGE_LIST } from 'constant';
 
 import { Question } from 'service/@shared/types';
 
@@ -18,7 +19,6 @@ import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
 import styles from './styles.module.scss';
 
 import useReviewFormEditor from './useReviewFormEditor';
-import { PAGE_LIST } from 'service/@shared/constants';
 import { validateReviewForm } from 'service/@shared/validator';
 
 function ReviewFormEditorPage() {

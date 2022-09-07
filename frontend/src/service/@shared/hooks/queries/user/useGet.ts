@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from 'react-query';
 
 import { userAPI } from 'api';
+import { QUERY_KEY } from 'constant';
 
 import {
   GetUserReviewAnswerResponse,
@@ -8,8 +9,6 @@ import {
   ErrorResponse,
   GetUserProfileResponse,
 } from 'service/@shared/types';
-
-import { QUERY_KEY } from 'service/@shared/constants';
 
 interface UseGetUserProfile {
   socialId: number;

@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 
+import { PAGE_LIST } from 'constant';
+
 import useSnackbar from 'common/hooks/useSnackbar';
 import useAuth from 'service/@shared/hooks/useAuth';
-
-import { PAGE_LIST } from 'service/@shared/constants';
 
 function Logout() {
   const navigate = useNavigate();

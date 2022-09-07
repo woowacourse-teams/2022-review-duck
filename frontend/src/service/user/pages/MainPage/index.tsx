@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 
 import cn from 'classnames';
+import { MODAL_LIST, TEMPLATE_TAB } from 'constant';
+import { PAGE_LIST } from 'constant';
 
 import { TemplateFilterType } from 'service/@shared/types';
 
@@ -16,9 +18,6 @@ import QuestionCard from 'service/@shared/components/QuestionCard';
 import TemplateCard from 'service/template/components/TemplateCard';
 
 import styles from './styles.module.scss';
-
-import { MODAL_LIST, TEMPLATE_TAB } from 'service/@shared/constants';
-import { PAGE_LIST } from 'service/@shared/constants';
 
 function MainPage() {
   const { showModal } = useModal();

@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
+import { PAGE_LIST } from 'constant';
 
 import { ReviewFormAnswer } from 'service/@shared/types';
 
@@ -12,8 +13,6 @@ import { Text, FlexContainer, Button, Icon, TextBox } from 'common/components';
 import ScrollPanel from 'common/components/ScrollPanel';
 
 import styles from './styles.module.scss';
-
-import { PAGE_LIST } from 'service/@shared/constants';
 
 interface ContainerProps {
   children: React.ReactNode;

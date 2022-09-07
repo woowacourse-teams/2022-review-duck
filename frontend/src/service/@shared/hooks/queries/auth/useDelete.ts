@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from 'react-query';
 
+import { QUERY_KEY } from 'constant';
+
 import { UseCustomMutationOptions } from 'service/@shared/types';
 
 import authAPI from 'api/auth';
-import { QUERY_KEY } from 'service/@shared/constants';
 
 function useDeleteRefreshToken(mutationOptions?: UseCustomMutationOptions<null>) {
   const queryClient = useQueryClient();

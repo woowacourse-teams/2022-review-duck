@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from 'react-query';
 
+import { QUERY_KEY } from 'constant';
+
 import {
   CreateFormResponse,
   UseCustomMutationOptions,
@@ -7,7 +9,6 @@ import {
 } from 'service/@shared/types';
 
 import templateAPI from 'api/template';
-import { QUERY_KEY } from 'service/@shared/constants';
 
 function useCreateForm(mutationOptions?: UseCustomMutationOptions<CreateFormResponse>) {
   const queryClient = useQueryClient();

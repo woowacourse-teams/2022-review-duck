@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
+import { GITHUB_OAUTH_LOGIN_URL, PAGE_LIST } from 'constant';
+
 import { Button, FlexContainer, Icon, Text } from 'common/components';
 
 import styles from './styles.module.scss';
-
-import { GITHUB_OAUTH_LOGIN_URL, PAGE_LIST } from 'service/@shared/constants';
 
 interface Props {
   status?: string | number;

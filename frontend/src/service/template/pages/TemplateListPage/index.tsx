@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
+import { PAGE_LIST, TEMPLATE_TAB } from 'constant';
 
 import { TemplateFilterType } from 'service/@shared/types';
 
@@ -16,7 +17,6 @@ import LayoutContainer from 'service/@shared/components/LayoutContainer';
 import styles from './styles.module.scss';
 
 import TemplateListContainer from './TemplateListContainer';
-import { PAGE_LIST, TEMPLATE_TAB } from 'service/@shared/constants';
 
 function TemplateListPage() {
   const navigate = useNavigate();

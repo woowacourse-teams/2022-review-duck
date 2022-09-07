@@ -1,10 +1,9 @@
 import { useMutation, useQueryClient } from 'react-query';
 
 import { userAPI } from 'api';
+import { QUERY_KEY } from 'constant';
 
 import { UseCustomMutationOptions, UpdateProfileResponse } from 'service/@shared/types';
-
-import { QUERY_KEY } from 'service/@shared/constants';
 
 function useUpdateProfile(mutationOptions?: UseCustomMutationOptions<UpdateProfileResponse>) {
   const queryClient = useQueryClient();

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
+import { PAGE_LIST } from 'constant';
 
 import { Question } from 'service/@shared/types/review';
 
@@ -19,7 +20,6 @@ import SmallProfileCard from 'service/@shared/components/SmallProfileCard';
 import styles from './styles.module.scss';
 
 import useTemplateFormEditorPage from './useTemplateFormEditorPage';
-import { PAGE_LIST } from 'service/@shared/constants';
 import { validateReviewForm } from 'service/@shared/validator';
 
 function TemplateFormEditorPage() {

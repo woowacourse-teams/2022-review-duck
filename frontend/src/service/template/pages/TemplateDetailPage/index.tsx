@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import cn from 'classnames';
+import { GITHUB_PROFILE_URL, PAGE_LIST, TEMPLATE_TAB } from 'constant';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
@@ -22,7 +23,6 @@ import GithubIcon from 'assets/images/github.svg';
 import styles from './styles.module.scss';
 
 import useTemplateDetailQueries from './useTemplateDetailQueries';
-import { GITHUB_PROFILE_URL, PAGE_LIST, TEMPLATE_TAB } from 'service/@shared/constants';
 
 function TemplateDetailPage() {
   const { templateId } = useParams();

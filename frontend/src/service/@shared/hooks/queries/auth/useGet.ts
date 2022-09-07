@@ -1,15 +1,16 @@
 import { useQuery, UseQueryOptions } from 'react-query';
 
-import { UserProfileResponse, CreateRefreshResponse } from 'service/@shared/types';
-import { ErrorResponse } from 'service/@shared/types';
-
-import authAPI from 'api/auth';
 import {
   ACCESS_TOKEN_EXPIRE_TIME,
   ACCESS_TOKEN_REFRESH_TIME,
   PERMISSION_VALID_TIME,
   QUERY_KEY,
-} from 'service/@shared/constants';
+} from 'constant';
+
+import { UserProfileResponse, CreateRefreshResponse } from 'service/@shared/types';
+import { ErrorResponse } from 'service/@shared/types';
+
+import authAPI from 'api/auth';
 
 function useGetAccessToken(queryOptions?: UseQueryOptions<CreateRefreshResponse, ErrorResponse>) {
   return useQuery<CreateRefreshResponse, ErrorResponse>(

@@ -1,6 +1,7 @@
 import { useQuery, UseQueryOptions } from 'react-query';
 
 import { reviewAPI } from 'api';
+import { QUERY_KEY } from 'constant';
 
 import {
   ErrorResponse,
@@ -14,8 +15,6 @@ import {
 import 'service/@shared/types';
 
 import { getElapsedTimeText } from 'service/@shared/utils';
-
-import { QUERY_KEY } from 'service/@shared/constants';
 
 function useGetReviewForm(
   reviewFormCode: string,

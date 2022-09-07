@@ -1,12 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 
+import { MODAL_LIST, PAGE_LIST } from 'constant';
+
 import useModal from 'common/hooks/useModal';
 
 import { Button, Icon, Text } from 'common/components';
 
 import styles from './styles.module.scss';
-
-import { MODAL_LIST, PAGE_LIST } from 'service/@shared/constants';
 
 function ModalReviewStart() {
   const navigate = useNavigate();

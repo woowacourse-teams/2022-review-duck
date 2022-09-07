@@ -1,6 +1,6 @@
 import * as ReviewType from '../service/@shared/types/review';
 
-import { API_URI } from '../service/@shared/constants';
+import { API_URI } from '../constant';
 import axiosInstance from 'api/config/axiosInstance';
 
 export const getForm = async (reviewFormCode = ''): Promise<ReviewType.GetReviewFormResponse> => {

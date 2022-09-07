@@ -1,11 +1,11 @@
+import { PAGE_LIST } from 'constant';
+
 import { GetTemplatesResponse } from 'service/@shared/types/template';
 
 import NoResult from 'service/@shared/components/NoResult';
 import TemplateCard from 'service/template/components/TemplateCard';
 
 import styles from './styles.module.scss';
-
-import { PAGE_LIST } from 'service/@shared/constants';
 
 function TemplateListContainer({ templates }: GetTemplatesResponse) {
   if (templates.length === 0) {

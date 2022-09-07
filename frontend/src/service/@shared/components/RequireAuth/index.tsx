@@ -1,8 +1,9 @@
 import { Navigate, Outlet } from 'react-router-dom';
 
+import { ACCESS_PERMISSION, PAGE_LIST } from 'constant';
+
 import useAuth from 'service/@shared/hooks/useAuth';
 
-import { ACCESS_PERMISSION, PAGE_LIST } from 'service/@shared/constants';
 import ErrorPage from 'service/@shared/pages/ErrorPage';
 
 interface Props {
