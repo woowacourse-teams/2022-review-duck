@@ -92,35 +92,15 @@ public class TemplateController {
         return TemplateResponse.of(template, member);
     }
 
-    @Operation(summary = "템플릿을 최신순으로 내림차순 정렬하여 모두 조회한다.")
-    @GetMapping(params = "filter=latest")
-    @ResponseStatus(HttpStatus.OK)
-    public TemplatesResponse findAllOrderByLatest(@AuthenticationPrincipal Member member) {
-
-        info("/api/templates?filter=latest", "GET", "");
-
-        List<Template> templates = templateService.findAllOrderByLatest();
-        return TemplatesResponse.of(templates, member);
-    }
-
-    @Operation(summary = "템플릿을 사용 횟수를 기준으로 내림차순 정렬하여 모두 조회한다.")
-    @GetMapping(params = "filter=trend")
-    @ResponseStatus(HttpStatus.OK)
-    public TemplatesResponse findAllOrderByTrend(@AuthenticationPrincipal Member member) {
-
-        info("/api/templates?filter=trend", "GET", "");
-
-        List<Template> templates = templateService.findAllOrderByTrend();
-        return TemplatesResponse.of(templates, member);
-    }
-
     @Operation(summary = "사용자가 생성한 템플릿을 모두 조회한다.")
     @GetMapping(params = "member")
     @ResponseStatus(HttpStatus.OK)
-    public MemberTemplatesResponse findByMemberId(@AuthenticationPrincipal Member member,
-        @RequestParam(value = "member") String socialId) {
+    public MemberTemplatesResponse findAllByMemberId(@AuthenticationPrincipal Member member,
+        @RequestParam(value = "member") String socialId,
+        @RequestParam(required = false) Integer page,
+        @RequestParam(required = false) Integer size) {
 
-        info("/api/templates?member=" + socialId, "GET", "");
+        info("/api/templates?member=" + socialId, "GET", "page=" + page + " size=" + size);
 
         List<Template> templates = templateService.findBySocialId(socialId);
 
@@ -146,6 +126,46 @@ public class TemplateController {
         info("/api/templates/" + templateId, "DELETE", "");
 
         templateService.deleteById(member, templateId);
+    }
+
+    // deprecated
+
+    @Operation(summary = "템플릿을 최신순으로 내림차순 정렬하여 모두 조회한다.")
+    @Deprecated
+    @GetMapping(params = "filter=latest")
+    @ResponseStatus(HttpStatus.OK)
+    public TemplatesResponse findAllOrderByLatest(@AuthenticationPrincipal Member member) {
+
+        info("/api/templates?filter=latest", "GET", "");
+
+        List<Template> templates = templateService.findAllOrderByLatest();
+        return TemplatesResponse.of(templates, member);
+    }
+
+    @Operation(summary = "템플릿을 사용 횟수를 기준으로 내림차순 정렬하여 모두 조회한다.")
+    @Deprecated
+    @GetMapping(params = "filter=trend")
+    @ResponseStatus(HttpStatus.OK)
+    public TemplatesResponse findAllOrderByTrend(@AuthenticationPrincipal Member member) {
+
+        info("/api/templates?filter=trend", "GET", "");
+
+        List<Template> templates = templateService.findAllOrderByTrend();
+        return TemplatesResponse.of(templates, member);
+    }
+
+    @Operation(summary = "사용자가 생성한 템플릿을 모두 조회한다.")
+    @Deprecated
+    @GetMapping(params = "member")
+    @ResponseStatus(HttpStatus.OK)
+    public MemberTemplatesResponse findByMemberId(@AuthenticationPrincipal Member member,
+        @RequestParam(value = "member") String socialId) {
+
+        info("/api/templates?member=" + socialId, "GET", "");
+
+        List<Template> templates = templateService.findBySocialId(socialId);
+
+        return MemberTemplatesResponse.of(templates, socialId, member);
     }
 
 }
