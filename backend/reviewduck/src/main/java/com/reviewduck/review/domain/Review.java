@@ -47,13 +47,16 @@ public class Review extends BaseDate {
     @OrderBy("position asc")
     private List<QuestionAnswer> questionAnswers;
 
-    public Review(String title, Member member, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers) {
+    private boolean isPrivate;
+
+    public Review(String title, Member member, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers, boolean isPrivate) {
         validate(title);
         sortQuestionAnswers(questionAnswers);
         this.title = title;
         this.member = member;
         this.reviewForm = reviewForm;
         this.questionAnswers = questionAnswers;
+        this.isPrivate = isPrivate;
     }
 
     public void update(List<QuestionAnswer> questionAnswers) {

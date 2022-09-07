@@ -17,7 +17,14 @@ import lombok.ToString;
 @ToString
 public class ReviewCreateRequest {
 
+    @NotNull(message = "공개 여부를 설정해야 합니다.")
+    private boolean isPrivate;
+
     @NotNull(message = "회고 내용은 비어있을 수 없습니다.")
     @Valid
     private List<ReviewContentCreateRequest> contents;
+
+    public boolean getIsPrivate() {
+        return isPrivate;
+    }
 }

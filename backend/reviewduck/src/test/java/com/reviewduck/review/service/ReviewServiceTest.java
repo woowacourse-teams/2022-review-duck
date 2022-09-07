@@ -76,7 +76,7 @@ public class ReviewServiceTest {
             long questionId1 = reviewForm.getReviewFormQuestions().get(0).getId();
             long questionId2 = reviewForm.getReviewFormQuestions().get(1).getId();
 
-            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(List.of(
+            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, List.of(
                 new ReviewContentCreateRequest(questionId1, new AnswerCreateRequest("answer1")),
                 new ReviewContentCreateRequest(questionId2, new AnswerCreateRequest("answer2"))
             ));
@@ -99,7 +99,7 @@ public class ReviewServiceTest {
         @DisplayName("유효하지 않은 입장 코드로 저장할 수 없다.")
         void withInvalidCode() {
             // given
-            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(List.of(
+            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, List.of(
                 new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
                 new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
             ));
@@ -114,7 +114,7 @@ public class ReviewServiceTest {
         @DisplayName("유효하지 않은 질문 번호로 저장할 수 없다.")
         void withInvalidQuestionId() {
             //given
-            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(List.of(
+            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, List.of(
                 new ReviewContentCreateRequest(9999L, new AnswerCreateRequest("answer1")),
                 new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
             ));
@@ -368,7 +368,7 @@ public class ReviewServiceTest {
     private Review saveReview(Member member) throws InterruptedException {
         Thread.sleep(1);
 
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(List.of(
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, List.of(
             new ReviewContentCreateRequest(
                 reviewForm.getReviewFormQuestions().get(0).getId(),
                 new AnswerCreateRequest("answer1")

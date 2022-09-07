@@ -118,7 +118,8 @@ public class ReviewRepositoryTest {
             List.of(
                 new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(0), new Answer("answer1")),
                 new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(1), new Answer("answer2"))
-            )
+            ),
+            false
         );
 
         return reviewRepository.save(review);

@@ -139,7 +139,7 @@ public class ReviewFormControllerTest {
         @NullSource
         @DisplayName("회고 내용에 null 값이 들어갈 경우 예외가 발생한다.")
         void nullReviewContent(List<ReviewContentCreateRequest> review) throws Exception {
-            ReviewCreateRequest request = new ReviewCreateRequest(review);
+            ReviewCreateRequest request = new ReviewCreateRequest(false, review);
 
             // when, then
             assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "회고 내용은 비어있을 수 없습니다.");
@@ -151,7 +151,7 @@ public class ReviewFormControllerTest {
         @DisplayName("질문 번호에 null 값이 들어갈 경우 예외가 발생한다.")
         void nullQuestionId(Long questionId) throws Exception {
             // given
-            ReviewCreateRequest request = new ReviewCreateRequest(List.of(
+            ReviewCreateRequest request = new ReviewCreateRequest(false, List.of(
                 new ReviewContentCreateRequest(questionId, new AnswerCreateRequest("answer1"))
             ));
 
@@ -164,7 +164,7 @@ public class ReviewFormControllerTest {
         @DisplayName("답변에 null 값이 들어갈 경우 예외가 발생한다.")
         void nullAnswerRequest(AnswerCreateRequest answer) throws Exception {
             // given
-            ReviewCreateRequest request = new ReviewCreateRequest(List.of(
+            ReviewCreateRequest request = new ReviewCreateRequest(false, List.of(
                 new ReviewContentCreateRequest(1L, answer)
             ));
 
@@ -177,7 +177,7 @@ public class ReviewFormControllerTest {
         @DisplayName("답변 값에 null 값이 들어갈 경우 예외가 발생한다.")
         void nullAnswer(String answer) throws Exception {
             // given
-            ReviewCreateRequest request = new ReviewCreateRequest(List.of(
+            ReviewCreateRequest request = new ReviewCreateRequest(false, List.of(
                 new ReviewContentCreateRequest(1L, new AnswerCreateRequest(answer))
             ));
             // when, then

@@ -41,7 +41,7 @@ public class ReviewService {
 
         List<QuestionAnswer> questionAnswers = convertToQuestionAnswers(request.getContents());
 
-        Review review = new Review("title", member, reviewForm, questionAnswers);
+        Review review = new Review("title", member, reviewForm, questionAnswers, request.getIsPrivate());
         return reviewRepository.save(review);
     }
 
