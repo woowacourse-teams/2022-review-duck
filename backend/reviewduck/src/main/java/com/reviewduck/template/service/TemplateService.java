@@ -85,7 +85,7 @@ public class TemplateService {
 
         Member member = memberService.getBySocialId(id);
 
-        Page<Template> templates = templateRepository.findAllByMember(
+        Page<Template> templates = templateRepository.findByMember(
             PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType)),
             member);
 
