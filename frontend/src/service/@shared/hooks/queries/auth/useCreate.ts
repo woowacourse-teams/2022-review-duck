@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from 'react-query';
 
 import { CreateRefreshResponse, UseCustomMutationOptions } from 'service/@shared/types';
 
-import authAPI from 'service/@shared/api/auth';
+import authAPI from 'api/auth';
 import { QUERY_KEY } from 'service/@shared/constants';
 
 function useCreateRefreshToken(mutationOptions?: UseCustomMutationOptions<CreateRefreshResponse>) {

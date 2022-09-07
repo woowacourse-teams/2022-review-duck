@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from 'react-query';
 
+import { reviewAPI } from 'api';
+
 import {
   UpdateReviewAnswerResponse,
   UpdateReviewFormResponse,
@@ -7,7 +9,6 @@ import {
   CreateFormByTemplateResponse,
 } from 'service/@shared/types';
 
-import { reviewAPI } from 'service/@shared/api';
 import { QUERY_KEY } from 'service/@shared/constants';
 
 function useCreateReviewForm(mutationOptions?: UseCustomMutationOptions<UpdateReviewFormResponse>) {

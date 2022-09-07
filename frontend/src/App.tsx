@@ -7,7 +7,7 @@ import { RecoilRoot } from 'recoil';
 
 import { ErrorBoundary, ModalProvider, SnackbarProvider } from 'common/components';
 
-import queryClient from 'service/@shared/api/config/queryClient';
+import queryClient from 'api/config/queryClient';
 import ErrorPage from 'service/@shared/pages/ErrorPage';
 import * as modalContentList from 'service/@shared/pages/modals';
 import 'styles/@app.scss';

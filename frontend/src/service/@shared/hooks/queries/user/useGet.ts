@@ -1,5 +1,7 @@
 import { useQuery, UseQueryOptions } from 'react-query';
 
+import { userAPI } from 'api';
+
 import {
   GetUserReviewAnswerResponse,
   GetUserReviewFormsResponse,
@@ -7,7 +9,6 @@ import {
   GetUserProfileResponse,
 } from 'service/@shared/types';
 
-import { userAPI } from 'service/@shared/api';
 import { QUERY_KEY } from 'service/@shared/constants';
 
 interface UseGetUserProfile {

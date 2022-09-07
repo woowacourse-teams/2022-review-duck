@@ -3,10 +3,10 @@ import {
   GetUserReviewAnswerResponse,
   GetUserReviewFormsResponse,
   UpdateProfileResponse,
-} from '../types';
+} from '../service/@shared/types';
 
-import { API_URI } from '../constants';
-import axiosInstance from 'service/@shared/api/config/axiosInstance';
+import { API_URI } from '../service/@shared/constants';
+import axiosInstance from 'api/config/axiosInstance';
 
 export const getUserReviewAnswers = async (
   socialId: number,

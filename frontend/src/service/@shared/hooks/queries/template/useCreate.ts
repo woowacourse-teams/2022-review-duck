@@ -6,7 +6,7 @@ import {
   CreateTemplateResponse,
 } from 'service/@shared/types';
 
-import templateAPI from 'service/@shared/api/template';
+import templateAPI from 'api/template';
 import { QUERY_KEY } from 'service/@shared/constants';
 
 function useCreateForm(mutationOptions?: UseCustomMutationOptions<CreateFormResponse>) {
