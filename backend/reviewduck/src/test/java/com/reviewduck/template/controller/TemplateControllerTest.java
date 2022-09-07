@@ -127,18 +127,6 @@ public class TemplateControllerTest {
     }
 
     @Nested
-    @DisplayName("템플릿 전체 조회")
-    class findAll {
-
-        @Test
-        @DisplayName("파라미터 값이 없을 경우 예외가 발생한다.")
-        void emptyMember() throws Exception {
-            assertBadRequestFromGet("/api/templates", "파라미터 정보가 올바르지 않습니다.");
-        }
-
-    }
-
-    @Nested
     @DisplayName("사용자별 템플릿 전체 조회")
     class findByMemberSocialId {
 
@@ -146,18 +134,6 @@ public class TemplateControllerTest {
         @DisplayName("member 파라미터에 값이 없을 경우 예외가 발생한다.")
         void emptyMember() throws Exception {
             assertBadRequestFromGet("/api/templates?member=", "파라미터 정보가 올바르지 않습니다.");
-        }
-
-    }
-
-    @Nested
-    @DisplayName("정렬된 템플릿 전체 조회")
-    class findAllOrdered {
-
-        @Test
-        @DisplayName("filter 파라미터에 값이 없을 경우 예외가 발생한다.")
-        void emptyFilter() throws Exception {
-            assertBadRequestFromGet("/api/templates?filter=", "파라미터 정보가 올바르지 않습니다.");
         }
 
     }

@@ -32,6 +32,14 @@ import com.reviewduck.template.dto.request.TemplateUpdateRequest;
 @Transactional
 public class TemplateServiceTest {
 
+    private final List<TemplateQuestionCreateRequest> questions1 = List.of(
+        new TemplateQuestionCreateRequest("question1", "description1"),
+        new TemplateQuestionCreateRequest("question2", "description2"));
+
+    private final List<TemplateQuestionCreateRequest> questions2 = List.of(
+        new TemplateQuestionCreateRequest("question3", "description3"),
+        new TemplateQuestionCreateRequest("question4", "description4"));
+
     @Autowired
     private TemplateService templateService;
 
@@ -91,7 +99,7 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("템플릿을 조회한다.")
-        void findTemplate() throws InterruptedException {
+        void findTemplate() {
             // given
             // 템플릿 생성
             String templateTitle = "title";
@@ -144,14 +152,6 @@ public class TemplateServiceTest {
         void findPageOrderByLatest() throws InterruptedException {
             // given
             // create template
-            List<TemplateQuestionCreateRequest> questions1 = List.of(
-                new TemplateQuestionCreateRequest("question1", "description1"),
-                new TemplateQuestionCreateRequest("question2", "description2"));
-
-            List<TemplateQuestionCreateRequest> questions2 = List.of(
-                new TemplateQuestionCreateRequest("question3", "description3"),
-                new TemplateQuestionCreateRequest("question4", "description4"));
-
             Template template1 = saveTemplate(member1, "title1", "description1", questions1);
             Template template2 = saveTemplate(member1, "title2", "description2", questions2);
 
@@ -176,14 +176,6 @@ public class TemplateServiceTest {
         void findAllOrderByTrend() throws InterruptedException {
             // given
             // create template
-            List<TemplateQuestionCreateRequest> questions1 = List.of(
-                new TemplateQuestionCreateRequest("question1", "description1"),
-                new TemplateQuestionCreateRequest("question2", "description2"));
-
-            List<TemplateQuestionCreateRequest> questions2 = List.of(
-                new TemplateQuestionCreateRequest("question3", "description3"),
-                new TemplateQuestionCreateRequest("question4", "description4"));
-
             Template template1 = saveTemplate(member1, "title1", "description1", questions1);
             Template template2 = saveTemplate(member1, "title2", "description2", questions2);
 
@@ -206,13 +198,6 @@ public class TemplateServiceTest {
         void findPageDefault() throws InterruptedException {
             // given
             // create template
-            List<TemplateQuestionCreateRequest> questions1 = List.of(
-                new TemplateQuestionCreateRequest("question1", "description1"),
-                new TemplateQuestionCreateRequest("question2", "description2"));
-
-            List<TemplateQuestionCreateRequest> questions2 = List.of(
-                new TemplateQuestionCreateRequest("question3", "description3"),
-                new TemplateQuestionCreateRequest("question4", "description4"));
 
             // create 15 template1
             for (int i = 0; i < 15; i++) {
@@ -242,13 +227,6 @@ public class TemplateServiceTest {
         void findAllByMember() throws InterruptedException {
             // given
             // create template
-            List<TemplateQuestionCreateRequest> questions1 = List.of(
-                new TemplateQuestionCreateRequest("question1", "description1"),
-                new TemplateQuestionCreateRequest("question2", "description2"));
-
-            List<TemplateQuestionCreateRequest> questions2 = List.of(
-                new TemplateQuestionCreateRequest("question3", "description3"),
-                new TemplateQuestionCreateRequest("question4", "description4"));
 
             Template template1 = saveTemplate(member1, "title1", "description1", questions1);
             Template template2 = saveTemplate(member1, "title2", "description2", questions2);
@@ -290,11 +268,8 @@ public class TemplateServiceTest {
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(
-                new TemplateQuestionCreateRequest("question1", "description1"),
-                new TemplateQuestionCreateRequest("question2", "description2"));
 
-            Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
+            Template template = saveTemplate(member1, templateTitle, templateDescription, questions1);
 
             // when
             List<TemplateQuestionUpdateRequest> newQuestions = List.of(
@@ -338,11 +313,8 @@ public class TemplateServiceTest {
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(
-                new TemplateQuestionCreateRequest("question1", "description1"),
-                new TemplateQuestionCreateRequest("question2", "description2"));
 
-            Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
+            Template template = saveTemplate(member1, templateTitle, templateDescription, questions1);
 
             // when
             List<TemplateQuestionUpdateRequest> newQuestions = List.of(
@@ -382,11 +354,8 @@ public class TemplateServiceTest {
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(
-                new TemplateQuestionCreateRequest("question1", "description1"),
-                new TemplateQuestionCreateRequest("question2", "description2"));
 
-            Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
+            Template template = saveTemplate(member1, templateTitle, templateDescription, questions1);
 
             // when
             templateService.deleteById(member1, template.getId());
@@ -404,11 +373,8 @@ public class TemplateServiceTest {
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(
-                new TemplateQuestionCreateRequest("question1", "description1"),
-                new TemplateQuestionCreateRequest("question2", "description2"));
 
-            Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
+            Template template = saveTemplate(member1, templateTitle, templateDescription, questions1);
 
             assertThatThrownBy(() -> templateService.deleteById(member2, template.getId()))
                 .isInstanceOf(AuthorizationException.class)
@@ -422,147 +388,6 @@ public class TemplateServiceTest {
             assertThatThrownBy(() -> templateService.deleteById(member1, 9999L))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 템플릿입니다.");
-        }
-
-    }
-
-    @Nested
-    @DisplayName("deprecated")
-    class deprecated {
-
-        @Nested
-        @DisplayName("전체 템플릿 조회")
-        class findAllOrderByLatest {
-
-            @Test
-            @DisplayName("전체 템플릿을 최신순으로 조회한다.")
-            void findAllOrderByLatest() throws InterruptedException {
-                // given
-                // create template
-                List<TemplateQuestionCreateRequest> questions1 = List.of(
-                    new TemplateQuestionCreateRequest("question1", "description1"),
-                    new TemplateQuestionCreateRequest("question2", "description2"));
-
-                List<TemplateQuestionCreateRequest> questions2 = List.of(
-                    new TemplateQuestionCreateRequest("question3", "description3"),
-                    new TemplateQuestionCreateRequest("question4", "description4"));
-
-                Template template1 = saveTemplate(member1, "title1", "description1", questions1);
-                Template template2 = saveTemplate(member1, "title2", "description2", questions2);
-
-                // when
-                List<Template> templates = templateService.findAllOrderByLatest();
-
-                // then
-                assertAll(
-                    () -> assertThat(templates).hasSize(2),
-                    () -> assertThat(templates.get(0)).isEqualTo(template2),
-                    () -> assertThat(templates.get(1)).isEqualTo(template1)
-                );
-            }
-
-        }
-
-        @Nested
-        @DisplayName("사용순 전체 템플릿 조회")
-        class findAllOrderByTrend {
-
-            @Test
-            @DisplayName("전체 템플릿을 사용순으로 조회한다.")
-            void findAllOrderByTrend() throws InterruptedException {
-                // given
-                // create template
-                List<TemplateQuestionCreateRequest> questions1 = List.of(
-                    new TemplateQuestionCreateRequest("question1", "description1"),
-                    new TemplateQuestionCreateRequest("question2", "description2"));
-
-                List<TemplateQuestionCreateRequest> questions2 = List.of(
-                    new TemplateQuestionCreateRequest("question3", "description3"),
-                    new TemplateQuestionCreateRequest("question4", "description4"));
-
-                Template template1 = saveTemplate(member1, "title1", "description1", questions1);
-                Template template2 = saveTemplate(member1, "title2", "description2", questions2);
-
-                templateService.increaseUsedCount(template2.getId());
-
-                // when
-                List<Template> templates = templateService.findAllOrderByTrend();
-
-                // then
-                assertAll(
-                    () -> assertThat(templates).hasSize(2),
-                    () -> assertThat(templates.get(0)).isEqualTo(template2),
-                    () -> assertThat(templates.get(1)).isEqualTo(template1)
-                );
-            }
-        }
-
-        @Nested
-        @DisplayName("사용자별 템플릿 조회")
-        class findTemplateByMember {
-
-            @Test
-            @DisplayName("사용자 작성한 템플릿을 수정시각을 기준으로 내림차순 정렬하여 조회한다.")
-            void findBySocialIdOrderByUpdatedAt() throws InterruptedException {
-                // given
-                String templateTitle1 = "title1";
-                String templateDescription1 = "description1";
-                List<TemplateQuestionCreateRequest> questions1 = List.of(
-                    new TemplateQuestionCreateRequest("question1", "description1"),
-                    new TemplateQuestionCreateRequest("question2", "description2"));
-
-                String templateTitle2 = "title2";
-                String templateDescription2 = "description2";
-                List<TemplateQuestionCreateRequest> questions2 = List.of(
-                    new TemplateQuestionCreateRequest("question3", "description3"),
-                    new TemplateQuestionCreateRequest("question4", "description4"));
-
-                String templateTitle3 = "title3";
-                String templateDescription3 = "description3";
-                List<TemplateQuestionCreateRequest> questions3 = List.of(
-                    new TemplateQuestionCreateRequest("question5", "description5"),
-                    new TemplateQuestionCreateRequest("question6", "description6"));
-
-                saveTemplate(member1, templateTitle1, templateDescription1, questions1);
-                saveTemplate(member2, templateTitle2, templateDescription2, questions2);
-                saveTemplate(member1, templateTitle3, templateDescription3, questions3);
-
-                // when
-                List<Template> myTemplates = templateService.findBySocialId(member1.getSocialId());
-
-                List<TemplateQuestion> expectedTemplateQuestions = questions3.stream()
-                    .map(request -> new TemplateQuestion(request.getValue(), request.getDescription()))
-                    .collect(Collectors.toUnmodifiableList());
-
-                int index = 0;
-                for (TemplateQuestion reviewFormQuestion : expectedTemplateQuestions) {
-                    reviewFormQuestion.setPosition(index++);
-                }
-
-                // then
-                assertAll(
-                    () -> assertThat(myTemplates).hasSize(2),
-                    () -> assertThat(myTemplates.get(0)).isNotNull(),
-                    () -> assertThat(myTemplates.get(0).getMember().getNickname()).isEqualTo("제이슨"),
-                    () -> assertThat(myTemplates.get(0).getId()).isNotNull(),
-                    () -> assertThat(myTemplates.get(0).getTemplateTitle()).isEqualTo("title3"),
-                    () -> assertThat(myTemplates.get(0).getTemplateDescription()).isEqualTo("description3"),
-                    () -> assertThat(myTemplates.get(0).getQuestions())
-                        .usingRecursiveComparison()
-                        .ignoringFields("id")
-                        .isEqualTo(expectedTemplateQuestions)
-                );
-            }
-
-            @Test
-            @DisplayName("존재하지 않는 사용자에 대해 조회할 수 없다.")
-            void invalidSocialId() {
-                // when, then
-                assertThatThrownBy(() -> templateService.findBySocialId("999999"))
-                    .isInstanceOf(NotFoundException.class)
-                    .hasMessageContaining("존재하지 않는 사용자입니다.");
-            }
-
         }
 
     }

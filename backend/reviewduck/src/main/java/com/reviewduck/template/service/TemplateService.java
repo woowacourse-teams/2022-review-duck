@@ -130,20 +130,4 @@ public class TemplateService {
         templateRepository.increaseUsedCount(templateId);
     }
 
-    // deprecated
-
-    public List<Template> findBySocialId(String id) {
-        Member member = memberService.getBySocialId(id);
-
-        return templateRepository.findByMemberOrderByUpdatedAtDesc(member);
-    }
-
-    public List<Template> findAllOrderByLatest() {
-        return templateRepository.findAllByOrderByUpdatedAtDesc();
-    }
-
-    public List<Template> findAllOrderByTrend() {
-        return templateRepository.findAllByOrderByUsedCountDesc();
-    }
-
 }
