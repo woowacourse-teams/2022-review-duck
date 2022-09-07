@@ -1,5 +1,6 @@
 import { useQuery, UseQueryOptions } from 'react-query';
 
+import { templateAPI } from 'api';
 import { QUERY_KEY } from 'constant';
 import {
   GetTemplatesResponse,
@@ -7,8 +8,6 @@ import {
   ErrorResponse,
   TemplateFilterType,
 } from 'types';
-
-import templateAPI from 'api/template';
 
 function useGetTemplates(
   filter: TemplateFilterType,

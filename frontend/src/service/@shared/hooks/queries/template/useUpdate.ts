@@ -1,9 +1,8 @@
 import { useMutation, useQueryClient } from 'react-query';
 
+import { templateAPI } from 'api';
 import { QUERY_KEY } from 'constant';
 import { UseCustomMutationOptions } from 'types';
-
-import templateAPI from 'api/template';
 
 function useUpdateTemplate(mutationOptions?: UseCustomMutationOptions<null>) {
   const queryClient = useQueryClient();

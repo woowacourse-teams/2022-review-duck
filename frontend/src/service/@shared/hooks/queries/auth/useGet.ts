@@ -1,5 +1,6 @@
 import { useQuery, UseQueryOptions } from 'react-query';
 
+import { authAPI } from 'api';
 import {
   ACCESS_TOKEN_EXPIRE_TIME,
   ACCESS_TOKEN_REFRESH_TIME,
@@ -8,8 +9,6 @@ import {
 } from 'constant';
 import { UserProfileResponse, CreateRefreshResponse } from 'types';
 import { ErrorResponse } from 'types';
-
-import authAPI from 'api/auth';
 
 function useGetAccessToken(queryOptions?: UseQueryOptions<CreateRefreshResponse, ErrorResponse>) {
   return useQuery<CreateRefreshResponse, ErrorResponse>(
