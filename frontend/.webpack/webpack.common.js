@@ -37,11 +37,10 @@ module.exports = (env = {}, options = {}) => {
         },
         {
           test: /\.(png|jpe?g|gif)$/,
-          use: [
-            {
-              loader: 'file-loader',
-            },
-          ],
+          type: 'asset',
+          generator: {
+            filename: 'static/[name].[hash][ext][query]',
+          },
         },
         {
           test: /\.svg$/,
