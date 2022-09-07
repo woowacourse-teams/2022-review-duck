@@ -132,7 +132,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             saveTemplateAndGetId(accessToken2, "title2");
 
             // when, then
-            get("/api/templates?page=0&size=1&sort=latest", accessToken1).statusCode(HttpStatus.OK.value())
+            get("/api/templates/new?page=0&size=1&sort=latest", accessToken1).statusCode(HttpStatus.OK.value())
                 .assertThat().body("templates", hasSize(1))
                 .assertThat().body("templates[0].info.title", equalTo("title2"))
                 .assertThat().body("templates[0].isCreator", equalTo(false));
@@ -147,10 +147,38 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             post("/api/templates/" + templateId + "/review-forms", accessToken1);
 
             // when, then
-            get("/api/templates?page=0&size=1&sort=trend", accessToken1).statusCode(HttpStatus.OK.value())
+            get("/api/templates/new?page=0&size=1&sort=trend", accessToken1).statusCode(HttpStatus.OK.value())
                 .assertThat().body("templates", hasSize(1))
                 .assertThat().body("templates[0].info.title", equalTo("title1"))
                 .assertThat().body("templates[0].isCreator", equalTo(true));
+        }
+
+    }
+
+    @Nested
+    @DisplayName("사용자별 템플릿 전체 조회")
+    class findAllTemplatesBySocialId {
+
+        @Test
+        @DisplayName("특정 페이지를 조회한다.")
+        void findPageOrderByLatest() {
+            // given
+            saveTemplateAndGetId(accessToken1, "title1");
+            saveTemplateAndGetId(accessToken1, "title2");
+            saveTemplateAndGetId(accessToken2, "title3");
+            saveTemplateAndGetId(accessToken2, "title4");
+            // find memberInfo
+            String socialId = get("/api/members/1", accessToken1)
+                .extract()
+                .as(MemberResponse.class)
+                .getSocialId();
+
+            // when, then
+            get("/api/templates/new?page=0&size=1&member=" + socialId, accessToken2)
+                .statusCode(HttpStatus.OK.value())
+                .assertThat().body("templates", hasSize(1))
+                .assertThat().body("templates[0].info.title", equalTo("title2"))
+                .assertThat().body("templates.isMine", equalTo(false));
         }
 
     }

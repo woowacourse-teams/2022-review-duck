@@ -15,6 +15,8 @@ public interface TemplateRepository extends JpaRepository<Template, Long> {
 
     Page<Template> findAll(Pageable pageable);
 
+    Page<Template> findAllByMember(Pageable pageable, Member member);
+
     List<Template> findByMemberOrderByUpdatedAtDesc(Member member);
 
     List<Template> findAllByOrderByUpdatedAtDesc();

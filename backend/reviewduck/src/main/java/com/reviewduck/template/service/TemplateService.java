@@ -55,20 +55,6 @@ public class TemplateService {
             .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
     }
 
-    public List<Template> findBySocialId(String id) {
-        Member member = memberService.getBySocialId(id);
-
-        return templateRepository.findByMemberOrderByUpdatedAtDesc(member);
-    }
-
-    public List<Template> findAllOrderByLatest() {
-        return templateRepository.findAllByOrderByUpdatedAtDesc();
-    }
-
-    public List<Template> findAllOrderByTrend() {
-        return templateRepository.findAllByOrderByUsedCountDesc();
-    }
-
     public List<Template> findAll(Integer page, Integer size, String sort) {
         if (page == null) {
             page = DEFAULT_PAGE;
@@ -82,6 +68,26 @@ public class TemplateService {
 
         Page<Template> templates = templateRepository.findAll(
             PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType)));
+
+        return templates.getContent();
+    }
+
+    public List<Template> findAllBySocialId(String id, Integer page, Integer size) {
+        if (page == null) {
+            page = DEFAULT_PAGE;
+        }
+
+        if (size == null) {
+            size = DEFAULT_SIZE;
+        }
+
+        String sortType = "updatedAt";
+
+        Member member = memberService.getBySocialId(id);
+
+        Page<Template> templates = templateRepository.findAllByMember(
+            PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType)),
+            member);
 
         return templates.getContent();
     }
@@ -123,4 +129,21 @@ public class TemplateService {
     public void increaseUsedCount(Long templateId) {
         templateRepository.increaseUsedCount(templateId);
     }
+
+    // deprecated
+
+    public List<Template> findBySocialId(String id) {
+        Member member = memberService.getBySocialId(id);
+
+        return templateRepository.findByMemberOrderByUpdatedAtDesc(member);
+    }
+
+    public List<Template> findAllOrderByLatest() {
+        return templateRepository.findAllByOrderByUpdatedAtDesc();
+    }
+
+    public List<Template> findAllOrderByTrend() {
+        return templateRepository.findAllByOrderByUsedCountDesc();
+    }
+
 }

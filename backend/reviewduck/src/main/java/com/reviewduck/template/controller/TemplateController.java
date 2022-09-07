@@ -68,7 +68,7 @@ public class TemplateController {
     }
 
     @Operation(summary = "전체 템플릿을 조회한다.")
-    @GetMapping
+    @GetMapping("/new")
     @ResponseStatus(HttpStatus.OK)
     public TemplatesResponse findAll(@AuthenticationPrincipal Member member,
         @RequestParam(required = false) Integer page,
@@ -81,6 +81,21 @@ public class TemplateController {
         return TemplatesResponse.of(templates, member);
     }
 
+    @Operation(summary = "사용자가 생성한 템플릿을 모두 조회한다.")
+    @GetMapping(path = "/new", params = "member")
+    @ResponseStatus(HttpStatus.OK)
+    public MemberTemplatesResponse findAllByMemberId(@AuthenticationPrincipal Member member,
+        @RequestParam(value = "member") String socialId,
+        @RequestParam(required = false) Integer page,
+        @RequestParam(required = false) Integer size) {
+
+        info("/api/templates?member=" + socialId, "GET", "page=" + page + " size=" + size);
+
+        List<Template> templates = templateService.findAllBySocialId(socialId, page, size);
+
+        return MemberTemplatesResponse.of(templates, socialId, member);
+    }
+
     @Operation(summary = "특정 템플릿을 조회한다.")
     @GetMapping("/{templateId}")
     @ResponseStatus(HttpStatus.OK)
@@ -90,21 +105,6 @@ public class TemplateController {
 
         Template template = templateService.findById(templateId);
         return TemplateResponse.of(template, member);
-    }
-
-    @Operation(summary = "사용자가 생성한 템플릿을 모두 조회한다.")
-    @GetMapping(params = "member")
-    @ResponseStatus(HttpStatus.OK)
-    public MemberTemplatesResponse findAllByMemberId(@AuthenticationPrincipal Member member,
-        @RequestParam(value = "member") String socialId,
-        @RequestParam(required = false) Integer page,
-        @RequestParam(required = false) Integer size) {
-
-        info("/api/templates?member=" + socialId, "GET", "page=" + page + " size=" + size);
-
-        List<Template> templates = templateService.findBySocialId(socialId);
-
-        return MemberTemplatesResponse.of(templates, socialId, member);
     }
 
     @Operation(summary = "템플릿을 수정한다.")
