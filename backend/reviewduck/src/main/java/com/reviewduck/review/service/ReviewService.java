@@ -41,7 +41,7 @@ public class ReviewService {
 
         List<QuestionAnswer> questionAnswers = convertToQuestionAnswers(request.getContents());
 
-        Review review = new Review("title", member, reviewForm, questionAnswers);
+        Review review = new Review("title", member, reviewForm, questionAnswers, request.getIsPrivate());
         return reviewRepository.save(review);
     }
 
@@ -50,15 +50,22 @@ public class ReviewService {
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
     }
 
-    public List<Review> findBySocialId(String socialId) {
-        Member member = memberService.getBySocialId(socialId);
+    public List<Review> findBySocialId(String socialId, Member member) {
+        Member owner = memberService.getBySocialId(socialId);
 
-        return reviewRepository.findByMemberOrderByUpdatedAtDesc(member);
+        if (member.equals(owner)) {
+            return reviewRepository.findByMemberOrderByUpdatedAtDesc(member);
+        }
+        return reviewRepository.findByMemberAndIsPrivateFalseOrderByUpdatedAtDesc(owner);
     }
 
     public List<Review> findAllByCode(String code) {
         ReviewForm reviewForm = reviewFormService.findByCode(code);
         return reviewRepository.findByReviewForm(reviewForm);
+    }
+
+    public List<Review> findAllPublic() {
+        return reviewRepository.findByIsPrivateFalseOrderByUpdatedAtDesc();
     }
 
     @Transactional

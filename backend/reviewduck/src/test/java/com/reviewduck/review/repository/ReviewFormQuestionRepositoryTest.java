@@ -23,7 +23,7 @@ public class ReviewFormQuestionRepositoryTest {
     @DisplayName("질문을 저장한다.")
     void saveQuestion() {
         // given
-        ReviewFormQuestion reviewFormQuestion = new ReviewFormQuestion("new question","description");
+        ReviewFormQuestion reviewFormQuestion = new ReviewFormQuestion("new question", "description");
 
         // when
         ReviewFormQuestion savedReviewFormQuestion = reviewFormQuestionRepository.save(reviewFormQuestion);
