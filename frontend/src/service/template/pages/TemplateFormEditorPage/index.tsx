@@ -4,8 +4,6 @@ import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import cn from 'classnames';
 import { PAGE_LIST } from 'constant';
 
-import { Question } from 'service/@shared/types/review';
-
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/@shared/hooks/useQuestions';
 
@@ -21,6 +19,7 @@ import styles from './styles.module.scss';
 
 import useTemplateFormEditorPage from './useTemplateFormEditorPage';
 import { validateReviewForm } from 'service/@shared/validator';
+import { Question } from 'types/review';
 
 function TemplateFormEditorPage() {
   const [searchParams] = useSearchParams();

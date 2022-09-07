@@ -2,7 +2,6 @@ import { useQuery, UseQueryOptions } from 'react-query';
 
 import { reviewAPI } from 'api';
 import { QUERY_KEY } from 'constant';
-
 import {
   ErrorResponse,
   GetReviewAnswerResponse,
@@ -11,8 +10,8 @@ import {
   ReviewAnswer,
   ReviewForm,
   ReviewFormAnswerList,
-} from 'service/@shared/types';
-import 'service/@shared/types';
+} from 'types';
+import 'types';
 
 import { getElapsedTimeText } from 'service/@shared/utils';
 

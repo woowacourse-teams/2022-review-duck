@@ -1,8 +1,7 @@
 import { useMutation, useQueryClient } from 'react-query';
 
 import { QUERY_KEY } from 'constant';
-
-import { UseCustomMutationOptions } from 'service/@shared/types';
+import { UseCustomMutationOptions } from 'types';
 
 import templateAPI from 'api/template';
 

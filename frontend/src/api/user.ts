@@ -3,7 +3,7 @@ import {
   GetUserReviewAnswerResponse,
   GetUserReviewFormsResponse,
   UpdateProfileResponse,
-} from '../service/@shared/types';
+} from '../types';
 
 import { API_URI } from '../constant';
 import axiosInstance from 'api/config/axiosInstance';

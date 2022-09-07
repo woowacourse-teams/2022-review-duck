@@ -3,8 +3,7 @@ import { useEffect } from 'react';
 import cn from 'classnames';
 import { MODAL_LIST, TEMPLATE_TAB } from 'constant';
 import { PAGE_LIST } from 'constant';
-
-import { TemplateFilterType } from 'service/@shared/types';
+import { TemplateFilterType } from 'types';
 
 import useModal from 'common/hooks/useModal';
 import { useGetTemplates } from 'service/@shared/hooks/queries/template';

@@ -6,7 +6,7 @@ import {
   CreateTemplateRequest,
   CreateTemplateResponse,
   UpdateTemplateRequest,
-} from '../service/@shared/types/template';
+} from '../types/template';
 
 import axiosInstance from './config/axiosInstance';
 

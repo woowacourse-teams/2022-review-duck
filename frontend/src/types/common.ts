@@ -1,6 +1,6 @@
 import { UseMutationOptions } from 'react-query';
 
-import { ErrorResponse } from 'service/@shared/types';
+import { ErrorResponse } from 'types';
 
 export type UseCustomMutationOptions<TData = unknown> = UseMutationOptions<
   TData,

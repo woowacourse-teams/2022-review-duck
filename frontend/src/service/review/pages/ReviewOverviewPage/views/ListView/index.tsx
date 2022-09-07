@@ -3,8 +3,7 @@ import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
 import { PAGE_LIST } from 'constant';
-
-import { ReviewFormAnswer } from 'service/@shared/types';
+import { ReviewFormAnswer } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 

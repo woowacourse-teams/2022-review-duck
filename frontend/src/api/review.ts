@@ -1,4 +1,4 @@
-import * as ReviewType from '../service/@shared/types/review';
+import * as ReviewType from '../types/review';
 
 import { API_URI } from '../constant';
 import axiosInstance from 'api/config/axiosInstance';

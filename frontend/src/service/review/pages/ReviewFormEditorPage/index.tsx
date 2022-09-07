@@ -3,8 +3,7 @@ import { useNavigate, useParams, Link, useSearchParams } from 'react-router-dom'
 
 import cn from 'classnames';
 import { PAGE_LIST } from 'constant';
-
-import { Question } from 'service/@shared/types';
+import { Question } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/@shared/hooks/useQuestions';

@@ -1,6 +1,6 @@
 import { REVIEW_FORM_CODE_REGEX, REVIEW_FORM_TITLE_LENGTH } from 'constant';
 
-import { Question } from '../types';
+import { Question } from '../../../types';
 
 function validateReviewFormCode(reviewFormCode: string) {
   if (!new RegExp(REVIEW_FORM_CODE_REGEX, 'g').test(reviewFormCode)) {

@@ -1,9 +1,4 @@
-import {
-  ErrorResponse,
-  Question,
-  ReviewForm,
-  UpdateReviewAnswerRequest,
-} from 'service/@shared/types';
+import { ErrorResponse, Question, ReviewForm, UpdateReviewAnswerRequest } from 'types';
 
 import { useGetAuthProfile } from 'service/@shared/hooks/queries/auth';
 import {

@@ -3,8 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
 import { PAGE_LIST, TEMPLATE_TAB } from 'constant';
-
-import { TemplateFilterType } from 'service/@shared/types';
+import { TemplateFilterType } from 'types';
 
 import { useGetTemplates } from 'service/@shared/hooks/queries/template/useGet';
 

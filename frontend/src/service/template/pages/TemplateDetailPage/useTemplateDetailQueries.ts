@@ -1,6 +1,5 @@
 import { TEMPLATE_TAB } from 'constant';
-
-import { TemplateFilterType } from 'service/@shared/types';
+import { TemplateFilterType } from 'types';
 
 import { useGetTemplate, useGetTemplates } from 'service/@shared/hooks/queries/template';
 import { useCreateForm } from 'service/@shared/hooks/queries/template/useCreate';

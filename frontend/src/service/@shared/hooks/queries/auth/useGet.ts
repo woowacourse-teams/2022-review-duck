@@ -6,9 +6,8 @@ import {
   PERMISSION_VALID_TIME,
   QUERY_KEY,
 } from 'constant';
-
-import { UserProfileResponse, CreateRefreshResponse } from 'service/@shared/types';
-import { ErrorResponse } from 'service/@shared/types';
+import { UserProfileResponse, CreateRefreshResponse } from 'types';
+import { ErrorResponse } from 'types';
 
 import authAPI from 'api/auth';
 
