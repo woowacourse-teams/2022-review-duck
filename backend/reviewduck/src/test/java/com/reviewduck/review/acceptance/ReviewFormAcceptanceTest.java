@@ -1,5 +1,6 @@
 package com.reviewduck.review.acceptance;
 
+import static com.reviewduck.common.vo.PageConstant.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -244,8 +245,23 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     class findReviewFormsByMember {
 
         @Test
-        @DisplayName("자신이 생성한 회고 폼을 updatedAt 내림차순으로 모두 조회한다.")
-        void findAllMyReviewForms() {
+        @DisplayName("파라미터가 없는 경우 페이지 기본값으로 조회한다.")
+        void findPage() {
+            // given
+            // id 1~15 저장되고 6~15 최신 순으로 6~15 불러온다.
+            for (int i = 0; i < DEFAULT_SIZE + 5; i++) {
+                createReviewFormAndGetCode("reviewTitle", accessToken1);
+            }
+            createReviewFormAndGetCode("reviewTitle", accessToken2);
+
+            // when, then
+            get("/api/review-forms/new?member=1", accessToken1).statusCode(HttpStatus.OK.value())
+                .assertThat().body("reviewForms", hasSize(DEFAULT_SIZE));
+        }
+
+        @Test
+        @DisplayName("자신이 작성한 회고 질문지 중 최신순으로 첫 페이지를 조회한다.")
+        void findPageOfMyReviewForms() {
             // given
             String reviewTitle1 = "title1";
             String reviewFormCode1 = createReviewFormAndGetCode(reviewTitle1, accessToken1);
@@ -258,7 +274,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             assertReviewTitleFromFoundReviewForm(reviewFormCode2, reviewTitle2, accessToken1);
 
             // then
-            get("/api/review-forms?member=1", accessToken1)
+            get("/api/review-forms/new?member=1&page=0&size=2", accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
                 .body("isMine", equalTo(true))
@@ -267,8 +283,8 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("타인이 생성한 회고 폼을 updatedAt 내림차순으로 모두 조회한다.")
-        void findAllOtherReviewForms() {
+        @DisplayName("자신이 작성한 회고 질문지 중 최신순으로 첫 페이지를 조회한다.")
+        void findPageOfOtherReviewForms() {
             // given
             String reviewTitle1 = "title1";
             String reviewFormCode1 = createReviewFormAndGetCode(reviewTitle1, accessToken1);
@@ -281,7 +297,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             assertReviewTitleFromFoundReviewForm(reviewFormCode2, reviewTitle2, accessToken1);
 
             // then
-            get("/api/review-forms?member=1", accessToken2)
+            get("/api/review-forms/new?member=1&page=0&size=2", accessToken2)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
                 .body("isMine", equalTo(false))

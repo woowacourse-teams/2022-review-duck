@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -103,6 +104,22 @@ public class ReviewFormController {
         info("/api/review-forms?member=" + socialId, "GET", "");
 
         List<ReviewForm> reviewForms = reviewFormService.findBySocialId(socialId);
+
+        return MemberReviewFormsResponse.of(reviewForms, socialId, member);
+    }
+
+    @Operation(summary = "사용자가 작성한 회고 질문지 중 특정 페이지를 조회한다.")
+    @GetMapping(path = "/new")
+    @ResponseStatus(HttpStatus.OK)
+    public MemberReviewFormsResponse findPageOfReviewFormsBySocialId(@AuthenticationPrincipal Member member,
+        @RequestParam(value = "member") String socialId,
+        @RequestParam(required = false) Integer page,
+        @RequestParam(required = false) Integer size) {
+
+        info("/api/review-forms?member=" + socialId + "page=" + page + " size=" + size, "GET", "");
+
+
+        Page<ReviewForm> reviewForms = reviewFormService.findBySocialId(socialId, page, size);
 
         return MemberReviewFormsResponse.of(reviewForms, socialId, member);
     }

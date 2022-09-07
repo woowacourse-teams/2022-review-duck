@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import com.reviewduck.config.JpaAuditingConfig;
 import com.reviewduck.member.domain.Member;
@@ -62,14 +64,20 @@ public class ReviewFormRepositoryTest {
     }
 
     @Test
-    @DisplayName("사용자가 작성한 회고 폼을 updatedAt 내림차순으로 정렬하여 조회한다.")
-    void findMemberReviewForms() throws InterruptedException {
+    @DisplayName("자신이 작성한 회고 질문지 중 최신순으로 첫 페이지를 조회한다.")
+    void findPageOfMemberReviewForms() throws InterruptedException {
         // given
         saveReviewForm(member1);
         ReviewForm expected = saveReviewForm(member1);
 
         // when
-        List<ReviewForm> myReviewForms = reviewFormRepository.findByMemberOrderByUpdatedAtDesc(member1);
+        Integer page = 0;
+        Integer size = 3;
+        String sortType = "updatedAt";
+        PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+
+        List<ReviewForm> myReviewForms = reviewFormRepository.findByMember(member1, pageable)
+            .getContent();
 
         // then
         assertAll(

@@ -186,7 +186,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         @Test
         @DisplayName("자신이 작성한 회고중 최신순으로 특정 페이지를 조회한다.")
-        void findAllMyReviews() {
+        void findPageOfMyReviews() {
             // given
             saveReviewAndGetId(accessToken1, false);
             saveReviewAndGetId(accessToken1, false);
@@ -202,7 +202,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         @Test
         @DisplayName("타인이 작성한 회고중 비공개 회고가 아닌 것만 최신순으로 특정 페이지를 조회한다.")
-        void findAllOtherReviews() {
+        void findPageOfOtherReviews() {
             // given
             // id 1~3 저장. 2~3을 불러온다.
             saveReviewAndGetId(accessToken1, true);
@@ -220,7 +220,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         @Test
         @DisplayName("특정 회고 폼을 삭제해도 자신이 작성한 회고를 조회할 수 있다.")
-        void findReviewsByDeletedSpecificReviewForm() {
+        void findPageOfReviewsByDeletedSpecificReviewForm() {
             // given
             // 회고 폼 등록
             List<ReviewFormQuestionCreateRequest> questions = List.of(

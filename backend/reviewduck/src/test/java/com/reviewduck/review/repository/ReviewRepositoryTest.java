@@ -84,7 +84,7 @@ public class ReviewRepositoryTest {
 
     @Test
     @DisplayName("자신이 작성한 회고 중 최신순으로 첫 페이지를 조회한다.")
-    void findMemberReviewsOrderByUpdatedAtDesc() throws InterruptedException {
+    void findPageOfMemberReviewsOrderByUpdatedAtDesc() throws InterruptedException {
         // given
         saveReview(savedMember, savedReviewForm, false);
         saveReview(savedMember, savedReviewForm, true);
@@ -109,7 +109,7 @@ public class ReviewRepositoryTest {
 
     @Test
     @DisplayName("타인이 작성한 회고 중 최신순으로 첫 페이지를 조회한다.")
-    void findMemberPublicReviewsOrderByUpdatedAtDesc() throws InterruptedException {
+    void findPageOfMemberPublicReviewsOrderByUpdatedAtDesc() throws InterruptedException {
         // given
         saveReview(savedMember, savedReviewForm, false);
         saveReview(savedMember, savedReviewForm, true);

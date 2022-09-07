@@ -1,8 +1,13 @@
 package com.reviewduck.review.service;
 
+import static com.reviewduck.common.vo.PageConstant.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,6 +75,23 @@ public class ReviewFormService {
         Member member = memberService.getBySocialId(socialId);
 
         return reviewFormRepository.findByMemberOrderByUpdatedAtDesc(member);
+    }
+
+    public Page<ReviewForm> findBySocialId(String socialId, Integer page, Integer size) {
+        if (page == null) {
+            page = DEFAULT_PAGE;
+        }
+
+        if (size == null) {
+            size = DEFAULT_SIZE;
+        }
+
+        String sortType = "updatedAt";
+
+        Member member = memberService.getBySocialId(socialId);
+        PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+
+        return reviewFormRepository.findByMember(member, pageable);
     }
 
     @Transactional

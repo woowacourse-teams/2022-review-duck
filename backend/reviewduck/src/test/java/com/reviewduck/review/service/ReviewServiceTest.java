@@ -161,7 +161,7 @@ public class ReviewServiceTest {
 
         @Test
         @DisplayName("자신이 작성한 회고 중 최신순으로 첫 페이지를 조회한다.")
-        void findMyReviewsOrderByLatest() throws InterruptedException {
+        void findPageOfMyReviewsOrderByLatest() throws InterruptedException {
             // given
             saveReview(member1, false);
             saveReview(member1, true);
@@ -184,7 +184,7 @@ public class ReviewServiceTest {
 
         @Test
         @DisplayName("타인이 작성한 회고 중 최신순으로 첫 페이지를 조회한다.")
-        void findOtherReviewsOrderByUpdatedAtDesc() throws InterruptedException {
+        void findPageOfOtherReviewsOrderByUpdatedAtDesc() throws InterruptedException {
             // given
             saveReview(member1, false);
             saveReview(member1, true);
@@ -207,7 +207,7 @@ public class ReviewServiceTest {
 
         @Test
         @DisplayName("특정 회고 폼을 삭제해도 자신이 생성한 회고를 조회할 수 있다.")
-        void findReviewsByDeletedSpecificReviewForm() throws InterruptedException {
+        void findPageOfReviewsByDeletedSpecificReviewForm() throws InterruptedException {
             // given
             Review savedReview = saveReview(member1, false);
 
