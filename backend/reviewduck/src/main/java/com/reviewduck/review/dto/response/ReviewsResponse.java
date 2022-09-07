@@ -3,6 +3,8 @@ package com.reviewduck.review.dto.response;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
 
@@ -28,6 +30,16 @@ public class ReviewsResponse {
         boolean isMine = member.getSocialId().equals(socialId);
 
         return new ReviewsResponse(reviews.size(), isMine, reviewResponses);
+    }
+
+    public static ReviewsResponse of(Page<Review> reviews, String socialId, Member member) {
+        List<ReviewSummaryResponse> reviewResponses = reviews.getContent().stream()
+            .map(ReviewSummaryResponse::from)
+            .collect(Collectors.toUnmodifiableList());
+
+        boolean isMine = member.getSocialId().equals(socialId);
+
+        return new ReviewsResponse((int)reviews.getTotalElements(), isMine, reviewResponses);
     }
 
     public boolean getIsMine() {

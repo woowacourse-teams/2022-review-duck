@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import com.reviewduck.config.JpaAuditingConfig;
 import com.reviewduck.member.domain.Member;
@@ -81,7 +83,7 @@ public class ReviewRepositoryTest {
     }
 
     @Test
-    @DisplayName("자신이 작성한 회고를 updatedAt 내림차순으로 정렬하여 조회한다.")
+    @DisplayName("자신이 작성한 회고 중 최신순으로 첫 페이지를 조회한다.")
     void findMemberReviewsOrderByUpdatedAtDesc() throws InterruptedException {
         // given
         saveReview(savedMember, savedReviewForm, false);
@@ -89,7 +91,12 @@ public class ReviewRepositoryTest {
         Review review = saveReview(savedMember, savedReviewForm, false);
 
         //when
-        List<Review> reviews = reviewRepository.findByMemberOrderByUpdatedAtDesc(savedMember);
+        Integer page = 0;
+        Integer size = 3;
+        String sortType = "updatedAt";
+        PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+
+        List<Review> reviews = reviewRepository.findByMember(savedMember, pageable).getContent();
 
         //then
         assertAll(
@@ -101,7 +108,7 @@ public class ReviewRepositoryTest {
     }
 
     @Test
-    @DisplayName("타인이 작성한 회고를 updatedAt 내림차순으로 정렬하여 조회한다.")
+    @DisplayName("타인이 작성한 회고 중 최신순으로 첫 페이지를 조회한다.")
     void findMemberPublicReviewsOrderByUpdatedAtDesc() throws InterruptedException {
         // given
         saveReview(savedMember, savedReviewForm, false);
@@ -109,7 +116,12 @@ public class ReviewRepositoryTest {
         Review review = saveReview(savedMember, savedReviewForm, false);
 
         //when
-        List<Review> reviews = reviewRepository.findByMemberAndIsPrivateFalseOrderByUpdatedAtDesc(savedMember);
+        Integer page = 0;
+        Integer size = 3;
+        String sortType = "updatedAt";
+        PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+        List<Review> reviews = reviewRepository.findByMemberAndIsPrivateFalse(savedMember, pageable)
+            .getContent();
 
         //then
         assertAll(

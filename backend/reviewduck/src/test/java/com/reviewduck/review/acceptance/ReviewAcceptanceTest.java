@@ -1,5 +1,6 @@
 package com.reviewduck.review.acceptance;
 
+import static com.reviewduck.common.vo.PageConstant.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -168,35 +169,53 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     class findMemberReview {
 
         @Test
-        @DisplayName("자신이 작성한 회고를 updatedAt 내림차순으로 모두 조회한다.")
+        @DisplayName("파라미터가 없는 경우 페이지 기본값으로 조회한다.")
+        void findPage() {
+            // given
+            // id 1~15 저장되고 6~15 최신 순으로 6~15 불러온다.
+            for (int i = 0; i < DEFAULT_SIZE + 5; i++) {
+                saveReviewAndGetId(accessToken1, false);
+            }
+            saveReviewAndGetId(accessToken2, false);
+
+            // when, then
+            get("/api/reviews/new?member=1", accessToken1).statusCode(HttpStatus.OK.value())
+                .assertThat().body("reviews", hasSize(DEFAULT_SIZE))
+                .assertThat().body("reviews[0].id", equalTo(15));
+        }
+
+        @Test
+        @DisplayName("자신이 작성한 회고중 최신순으로 특정 페이지를 조회한다.")
         void findAllMyReviews() {
             // given
             saveReviewAndGetId(accessToken1, false);
             saveReviewAndGetId(accessToken1, false);
 
-            get("/api/reviews?member=1", accessToken1)
+            get("/api/reviews/new?member=1&page=0&size=1", accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
                 .body("isMine", equalTo(true))
-                .body("reviews", hasSize(2))
+                .body("reviews", hasSize(1))
                 .body("numberOfReviews", equalTo(2))
                 .body("reviews[0].id", equalTo(2));
         }
 
         @Test
-        @DisplayName("타인이 작성한 회고를 updatedAt 내림차순으로 모두 조회한다.")
+        @DisplayName("타인이 작성한 회고중 비공개 회고가 아닌 것만 최신순으로 특정 페이지를 조회한다.")
         void findAllOtherReviews() {
             // given
-            saveReviewAndGetId(accessToken1, false);
+            // id 1~3 저장. 2~3을 불러온다.
             saveReviewAndGetId(accessToken1, true);
+            saveReviewAndGetId(accessToken1, false);
+            saveReviewAndGetId(accessToken1, false);
 
-            get("/api/reviews?member=1", accessToken2)
+            get("/api/reviews/new?member=1&page=0&size=3", accessToken2)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
                 .body("isMine", equalTo(false))
-                .body("reviews", hasSize(1))
-                .body("numberOfReviews", equalTo(1))
-                .body("reviews[0].id", equalTo(1));
+                .body("reviews", hasSize(2))
+                .body("numberOfReviews", equalTo(2))
+                .body("reviews[0].id", equalTo(3));
         }
 
         @Test

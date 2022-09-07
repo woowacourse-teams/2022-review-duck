@@ -2,7 +2,12 @@ package com.reviewduck.review.repository;
 
 import java.util.List;
 
+import org.hibernate.boot.jaxb.hbm.spi.JaxbHbmFilterDefinitionType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
@@ -19,4 +24,8 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     List<Review> findAllByMember(Member member);
 
     List<Review> findByIsPrivateFalseOrderByUpdatedAtDesc();
+
+    Page<Review> findByMember(Member member, Pageable pageable);
+
+    Page<Review> findByMemberAndIsPrivateFalse(Member member, Pageable pageable);
 }
