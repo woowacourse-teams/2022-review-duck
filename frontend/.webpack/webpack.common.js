@@ -3,7 +3,6 @@ const autoprefixer = require('autoprefixer');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const path = require('path');
 const app = require('../package.json');
@@ -91,7 +90,6 @@ module.exports = (env = {}, options = {}) => {
         template: './public/index.html',
         favicon: './public/favicon.ico',
       }),
-      new CleanWebpackPlugin(),
       new MiniCssExtractPlugin({ linkType: false, filename: `css/[name].${app.version}.css` }),
     ],
   };
