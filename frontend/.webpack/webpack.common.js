@@ -38,6 +38,11 @@ module.exports = (env = {}, options = {}) => {
         {
           test: /\.(png|jpe?g|gif)$/,
           type: 'asset',
+          parser: {
+            dataUrlCondition: {
+              maxSize: 8 * 1024,
+            },
+          },
           generator: {
             filename: 'static/[name].[hash][ext][query]',
           },
