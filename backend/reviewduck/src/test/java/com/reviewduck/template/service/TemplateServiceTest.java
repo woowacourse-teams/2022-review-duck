@@ -162,7 +162,7 @@ public class TemplateServiceTest {
             Integer size = 1;
             String sort = "trend";
 
-            List<Template> templates = templateService.findAll(page, size, sort);
+            List<Template> templates = templateService.findAll(page, size, sort).getContent();
 
             // then
             assertAll(
@@ -184,7 +184,7 @@ public class TemplateServiceTest {
             Integer size = 1;
             String sort = "latest";
 
-            List<Template> templates = templateService.findAll(page, size, sort);
+            List<Template> templates = templateService.findAll(page, size, sort).getContent();
 
             // then
             assertAll(
@@ -207,7 +207,7 @@ public class TemplateServiceTest {
             Template latestTemplate = saveTemplate(member1, "title2", "description2", questions2);
 
             // when
-            List<Template> templates = templateService.findAll(null, null, null);
+            List<Template> templates = templateService.findAll(null, null, null).getContent();
 
             // then
             assertAll(
@@ -237,7 +237,7 @@ public class TemplateServiceTest {
             Integer page = 0;
             Integer size = 1;
 
-            List<Template> templates = templateService.findAllBySocialId("1", page, size);
+            List<Template> templates = templateService.findAllBySocialId("1", page, size).getContent();
 
             // then
             assertAll(

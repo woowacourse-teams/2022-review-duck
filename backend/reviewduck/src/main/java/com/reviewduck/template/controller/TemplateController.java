@@ -2,10 +2,9 @@ package com.reviewduck.template.controller;
 
 import static com.reviewduck.common.util.Logging.*;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,7 +76,7 @@ public class TemplateController {
 
         info("/api/templates", "GET", "page=" + page + " size=" + size + " sort=" + sort);
 
-        List<Template> templates = templateService.findAll(page, size, sort);
+        Page<Template> templates = templateService.findAll(page, size, sort);
         return TemplatesResponse.of(templates, member);
     }
 
@@ -91,7 +90,7 @@ public class TemplateController {
 
         info("/api/templates?member=" + socialId, "GET", " page=" + page + " size=" + size);
 
-        List<Template> templates = templateService.findAllBySocialId(socialId, page, size);
+        Page<Template> templates = templateService.findAllBySocialId(socialId, page, size);
 
         return MemberTemplatesResponse.of(templates, socialId, member);
     }

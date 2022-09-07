@@ -132,6 +132,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
             // when, then
             get("/api/templates", accessToken1).statusCode(HttpStatus.OK.value())
+                .assertThat().body("numberOfTemplates", equalTo(16))
                 .assertThat().body("templates", hasSize(DEFAULT_SIZE))
                 .assertThat().body("templates[0].info.title", equalTo("title2"))
                 .assertThat().body("templates[0].isCreator", equalTo(false));
@@ -146,6 +147,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
             // when, then
             get("/api/templates?page=0&size=1&sort=latest", accessToken1).statusCode(HttpStatus.OK.value())
+                .assertThat().body("numberOfTemplates", equalTo(2))
                 .assertThat().body("templates", hasSize(1))
                 .assertThat().body("templates[0].info.title", equalTo("title2"))
                 .assertThat().body("templates[0].isCreator", equalTo(false));
@@ -161,6 +163,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
             // when, then
             get("/api/templates?page=0&size=1&sort=trend", accessToken1).statusCode(HttpStatus.OK.value())
+                .assertThat().body("numberOfTemplates", equalTo(2))
                 .assertThat().body("templates", hasSize(1))
                 .assertThat().body("templates[0].info.title", equalTo("title1"))
                 .assertThat().body("templates[0].isCreator", equalTo(true));
@@ -189,6 +192,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
             // when, then
             get("/api/templates?member=1", accessToken2).statusCode(HttpStatus.OK.value())
+                .assertThat().body("numberOfTemplates", equalTo(16))
                 .assertThat().body("templates", hasSize(DEFAULT_SIZE))
                 .assertThat().body("templates[0].info.title", equalTo("title2"))
                 .assertThat().body("isMine", equalTo(false));
@@ -206,6 +210,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             // when, then
             get("/api/templates?page=0&size=1&member=1", accessToken2)
                 .statusCode(HttpStatus.OK.value())
+                .assertThat().body("numberOfTemplates", equalTo(2))
                 .assertThat().body("templates", hasSize(1))
                 .assertThat().body("templates[0].info.title", equalTo("title2"))
                 .assertThat().body("isMine", equalTo(false));
