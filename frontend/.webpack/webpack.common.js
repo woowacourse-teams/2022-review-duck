@@ -4,6 +4,8 @@ const autoprefixer = require('autoprefixer');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 const path = require('path');
 const app = require('../package.json');
 const dotenv = require('dotenv');
@@ -95,6 +97,7 @@ module.exports = (env = {}, options = {}) => {
         favicon: './public/favicon.ico',
       }),
       new MiniCssExtractPlugin({ linkType: false, filename: `css/[name].${app.version}.css` }),
+      new BundleAnalyzerPlugin(),
     ],
   };
 };
