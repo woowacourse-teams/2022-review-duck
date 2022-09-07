@@ -149,7 +149,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             assertReviewTitleFromFoundReviewForm(code, reviewTitle, accessToken1);
 
             // 리뷰생성
-            ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(false, List.of(
                 new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
                 new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
             ));
@@ -165,7 +165,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             String code = createReviewFormAndGetCode(accessToken1);
 
             // 리뷰생성
-            ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(false, List.of(
                 new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
                 new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
             ));
@@ -186,7 +186,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             assertReviewTitleFromFoundReviewForm(code, reviewTitle, accessToken1);
 
             // 리뷰생성
-            ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(false, List.of(
                 new ReviewContentCreateRequest(888L, new AnswerCreateRequest("answer1")),
                 new ReviewContentCreateRequest(999L, new AnswerCreateRequest("answer2"))
             ));
@@ -334,7 +334,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             // given
             String code = createReviewFormAndGetCode(accessToken1);
 
-            ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(false, List.of(
                 new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
                 new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
             ));
@@ -368,7 +368,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             // given
             String code = createReviewFormAndGetCode(accessToken1);
 
-            ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(false, List.of(
                 new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
                 new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
             ));
@@ -396,7 +396,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             // given
             String code = createReviewFormAndGetCode(accessToken1);
 
-            ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(false, List.of(
                 new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
                 new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
             ));
@@ -427,7 +427,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             // given
             String code = createReviewFormAndGetCode(accessToken1);
 
-            ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(false, List.of(
                 new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
                 new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
             ));
@@ -464,7 +464,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             // given
             String code = createReviewFormAndGetCode(accessToken1);
 
-            ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(false, List.of(
                 new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
                 new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
             ));
@@ -492,7 +492,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             // given
             String code = createReviewFormAndGetCode(accessToken1);
 
-            ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(false, List.of(
                 new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
                 new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
             ));

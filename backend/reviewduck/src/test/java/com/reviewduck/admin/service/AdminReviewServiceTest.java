@@ -108,7 +108,7 @@ public class AdminReviewServiceTest {
     }
 
     private Review saveReview(Member member) {
-        ReviewCreateRequest createRequest = new ReviewCreateRequest(List.of(
+        ReviewCreateRequest createRequest = new ReviewCreateRequest(false, List.of(
             new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
             new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
         ));

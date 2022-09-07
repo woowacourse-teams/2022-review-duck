@@ -1,5 +1,6 @@
 package com.reviewduck.auth.controller;
 
+import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
@@ -12,23 +13,22 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum URIPattern {
 
-    TemplateFindRequestPattern(Pattern.compile("/api/templates.*"), (request, paramName) -> true),
+    TemplateFindRequestPattern(Pattern.compile("/api/templates.*"), (params, paramName) -> true),
 
-    MemberReviewFormFindRequestPattern(Pattern.compile("/api/review-forms"),
-        (request, paramName) -> request.getParameterMap().containsKey(paramName)),
+    MemberReviewFormFindRequestPattern(Pattern.compile("/api/review-forms"), Map::containsKey),
 
     MemberReviewFindRequestPattern(Pattern.compile("/api/reviews"),
-        (request, paramName) -> request.getParameterMap().containsKey(paramName)),
+        (params, paramName) -> params.containsKey(paramName) || params.isEmpty()),
 
-    MemberFindRequestPattern(Pattern.compile("/api/members/[0-9]+"), (request, paramName) -> true),
+    MemberFindRequestPattern(Pattern.compile("/api/members/[0-9]+"), (params, paramName) -> true),
 
-    ReviewFormFindRequestPattern(Pattern.compile("/api/review-forms/[0-9A-Z]+"), (request, paramName) -> true);
+    ReviewFormFindRequestPattern(Pattern.compile("/api/review-forms/[0-9A-Z]+"), (params, paramName) -> true);
 
     private final Pattern pattern;
-    private final BiFunction<HttpServletRequest, String, Boolean> containsParam;
+    private final BiFunction<Map<String, String[]>, String, Boolean> containsParam;
 
     public boolean match(HttpServletRequest request, String paramName) {
         return pattern.matcher(request.getRequestURI()).matches()
-            && containsParam.apply(request, paramName);
+            && containsParam.apply(request.getParameterMap(), paramName);
     }
 }
