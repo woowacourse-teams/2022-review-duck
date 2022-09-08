@@ -1,9 +1,8 @@
 import { useMutation, useQueryClient } from 'react-query';
 
-import { CreateRefreshResponse, UseCustomMutationOptions } from 'service/@shared/types';
-
-import authAPI from 'service/@shared/api/auth';
-import { QUERY_KEY } from 'service/@shared/constants';
+import { authAPI } from 'api';
+import { QUERY_KEY } from 'constant';
+import { CreateRefreshResponse, UseCustomMutationOptions } from 'types';
 
 function useCreateRefreshToken(mutationOptions?: UseCustomMutationOptions<CreateRefreshResponse>) {
   const queryClient = useQueryClient();

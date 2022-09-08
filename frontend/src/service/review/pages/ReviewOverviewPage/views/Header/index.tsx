@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
+import { PAGE_LIST } from 'constant';
 
 import { Logo, Text, Button, Icon } from 'common/components';
 
@@ -8,7 +9,6 @@ import FlexContainer from 'common/components/FlexContainer';
 
 import styles from './styles.module.scss';
 
-import { PAGE_LIST } from 'service/@shared/constants';
 import pageStyles from 'service/review/pages/ReviewOverviewPage/styles.module.scss';
 
 interface ContainerProps {

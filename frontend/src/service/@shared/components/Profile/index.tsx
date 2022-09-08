@@ -2,6 +2,7 @@ import React, { Children, isValidElement } from 'react';
 import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
+import { PAGE_LIST } from 'constant';
 
 import { Text } from 'common/components';
 
@@ -9,8 +10,6 @@ import FlexContainer, { FlexContainerProps } from 'common/components/FlexContain
 import { TextProps } from 'common/components/Text';
 
 import styles from './styles.module.scss';
-
-import { PAGE_LIST } from 'service/@shared/constants';
 
 const getChildComponent = (children: React.ReactNode, findTarget: JSX.Element) => {
   const target = Children.toArray(children).filter(

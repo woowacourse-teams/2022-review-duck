@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
-import { ErrorResponse } from 'service/@shared/types';
+import { PAGE_LIST } from 'constant';
+import { ErrorResponse } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/@shared/hooks/useQuestions';
@@ -9,7 +10,6 @@ import useQuestions from 'service/@shared/hooks/useQuestions';
 import useAnswerEditorPage from './useAnswerEditorPage';
 import { Editor } from './views/Editor';
 import { Status } from './views/Status';
-import { PAGE_LIST } from 'service/@shared/constants';
 
 /*
   TODO:

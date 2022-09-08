@@ -5,8 +5,8 @@ import {
   UpdateProfileResponse,
 } from '../types';
 
-import { API_URI } from '../constants';
-import axiosInstance from 'service/@shared/api/config/axiosInstance';
+import { API_URI } from '../constant';
+import axiosInstance from 'api/config/axiosInstance';
 
 export const getUserReviewAnswers = async (
   socialId: number,

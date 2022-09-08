@@ -1,10 +1,11 @@
 import { Routes, Route } from 'react-router-dom';
 
+import { PAGE_LIST } from 'constant';
+
 import useAuth from 'service/@shared/hooks/useAuth';
 
 import RequireAuth from 'service/@shared/components/RequireAuth';
 
-import { PAGE_LIST } from 'service/@shared/constants';
 import MainLayout from 'service/@shared/layout/MainLayout';
 import ErrorPage from 'service/@shared/pages/ErrorPage';
 import ReviewLayout from 'service/review/layout/ReviewLayout';

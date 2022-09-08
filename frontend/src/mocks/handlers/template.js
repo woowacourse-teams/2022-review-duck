@@ -1,8 +1,8 @@
+import { TEMPLATE_TAB } from 'constant';
 import { rest } from 'msw';
 
 import { dummyTemplates, dummyTemplate } from 'mocks/data';
 import { reviewduckAPI } from 'mocks/hosts';
-import { TEMPLATE_TAB } from 'service/@shared/constants';
 
 const templateHandlers = [
   rest.get(reviewduckAPI('/api/templates'), (req, res, ctx) => {

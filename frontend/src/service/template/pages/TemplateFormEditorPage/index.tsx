@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
-
-import { Question } from 'service/@shared/types/review';
+import { PAGE_LIST } from 'constant';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/@shared/hooks/useQuestions';
@@ -19,8 +18,8 @@ import SmallProfileCard from 'service/@shared/components/SmallProfileCard';
 import styles from './styles.module.scss';
 
 import useTemplateFormEditorPage from './useTemplateFormEditorPage';
-import { PAGE_LIST } from 'service/@shared/constants';
 import { validateReviewForm } from 'service/@shared/validator';
+import { Question } from 'types/review';
 
 function TemplateFormEditorPage() {
   const [searchParams] = useSearchParams();

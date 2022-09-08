@@ -3,10 +3,11 @@ const autoprefixer = require('autoprefixer');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const path = require('path');
-const package = require('../package.json');
+const app = require('../package.json');
 const dotenv = require('dotenv');
 
 module.exports = (env = {}, options = {}) => {
@@ -24,6 +25,12 @@ module.exports = (env = {}, options = {}) => {
       modules: [path.resolve(__dirname, '../src'), 'node_modules'],
       extensions: ['.tsx', '.ts', '.js'],
     },
+    output: {
+      path: path.join(__dirname, '../build'),
+      publicPath: process.env.PUBLIC_PATH,
+      filename: `app.${app.version}.js`,
+      clean: true,
+    },
     module: {
       rules: [
         {
@@ -32,11 +39,15 @@ module.exports = (env = {}, options = {}) => {
         },
         {
           test: /\.(png|jpe?g|gif)$/,
-          use: [
-            {
-              loader: 'file-loader',
+          type: 'asset',
+          parser: {
+            dataUrlCondition: {
+              maxSize: 8 * 1024,
             },
-          ],
+          },
+          generator: {
+            filename: 'static/[name].[hash][ext][query]',
+          },
         },
         {
           test: /\.svg$/,
@@ -60,7 +71,8 @@ module.exports = (env = {}, options = {}) => {
               loader: 'css-loader',
               options: {
                 modules: {
-                  localIdentName: mode === 'development' ? '[local]--[hash:base64:5]' : '[hash:base64:5]',
+                  localIdentName:
+                    mode === 'development' ? '[local]--[hash:base64:5]' : '[hash:base64:5]',
                   exportLocalsConvention: 'camelCase',
                 },
               },
@@ -84,8 +96,8 @@ module.exports = (env = {}, options = {}) => {
         template: './public/index.html',
         favicon: './public/favicon.ico',
       }),
-      new CleanWebpackPlugin(),
-      new MiniCssExtractPlugin({ linkType: false, filename: `css/[name].${package.version}.css` }),
+      new MiniCssExtractPlugin({ linkType: false, filename: `css/[name].${app.version}.css` }),
+      new BundleAnalyzerPlugin(),
     ],
   };
 };

@@ -1,5 +1,7 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { PAGE_LIST } from 'constant';
+
 import useSnackbar from 'common/hooks/useSnackbar';
 import {
   useDeleteReviewAnswer,
@@ -17,7 +19,6 @@ import styles from './styles.module.scss';
 import { Header } from './views/Header';
 import { ListView } from './views/ListView';
 import { SheetView } from './views/SheetView';
-import { PAGE_LIST } from 'service/@shared/constants';
 
 /*
   TODO:

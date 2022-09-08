@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
+import { GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST, TEMPLATE_TAB } from 'constant';
 
 import useModal from 'common/hooks/useModal';
 import useAuth from 'service/@shared/hooks/useAuth';
@@ -10,13 +11,6 @@ import { Button, Icon, Logo, Text, TextBox, PopupBox } from 'common/components';
 import imageDefaultProfile from 'assets/images/profile.png';
 
 import styles from './styles.module.scss';
-
-import {
-  GITHUB_OAUTH_LOGIN_URL,
-  MODAL_LIST,
-  PAGE_LIST,
-  TEMPLATE_TAB,
-} from 'service/@shared/constants';
 
 function Header() {
   const { isLogin, getUserProfileQuery } = useAuth();

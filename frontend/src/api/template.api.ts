@@ -10,31 +10,33 @@ import {
 
 import axiosInstance from './config/axiosInstance';
 
-const getTemplates = async (filter: TemplateFilterType): Promise<GetTemplatesResponse> => {
+export const getTemplates = async (filter: TemplateFilterType): Promise<GetTemplatesResponse> => {
   const { data } = await axiosInstance.get(`/api/templates?filter=${filter}`);
 
   return data;
 };
 
-const getTemplate = async (templateId: number): Promise<GetTemplateResponse> => {
+export const getTemplate = async (templateId: number): Promise<GetTemplateResponse> => {
   const { data } = await axiosInstance.get(`/api/templates/${templateId}`);
 
   return data;
 };
 
-const createForm = async (templateId: number): Promise<CreateFormResponse> => {
+export const createForm = async (templateId: number): Promise<CreateFormResponse> => {
   const { data } = await axiosInstance.post(`/api/templates/${templateId}/review-forms`);
 
   return data;
 };
 
-const createTemplate = async (query: CreateTemplateRequest): Promise<CreateTemplateResponse> => {
+export const createTemplate = async (
+  query: CreateTemplateRequest,
+): Promise<CreateTemplateResponse> => {
   const { data } = await axiosInstance.post('/api/templates', query);
 
   return data;
 };
 
-const updateTemplate = async ({
+export const updateTemplate = async ({
   templateId,
   templateTitle,
   templateDescription,
@@ -49,19 +51,8 @@ const updateTemplate = async ({
   return data;
 };
 
-const deleteTemplate = async (templateId: number): Promise<null> => {
+export const deleteTemplate = async (templateId: number): Promise<null> => {
   const { data } = await axiosInstance.delete(`/api/templates/${templateId}`);
 
   return data;
 };
-
-const templateAPI = {
-  getTemplates,
-  getTemplate,
-  createForm,
-  createTemplate,
-  updateTemplate,
-  deleteTemplate,
-};
-
-export default templateAPI;

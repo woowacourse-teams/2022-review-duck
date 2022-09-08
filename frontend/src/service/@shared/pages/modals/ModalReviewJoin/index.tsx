@@ -1,13 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { MODAL_LIST, PAGE_LIST } from 'constant';
+
 import useModal from 'common/hooks/useModal';
 
 import { getErrorMessage } from 'service/@shared/utils';
 
 import { Button, FieldSet, Icon, TextBox } from 'common/components';
 
-import { MODAL_LIST, PAGE_LIST } from 'service/@shared/constants';
 import { validateReviewFormCode } from 'service/@shared/validator';
 
 function ModalReviewJoin() {
