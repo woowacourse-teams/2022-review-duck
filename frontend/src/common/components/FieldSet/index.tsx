@@ -1,40 +1,50 @@
-import { ReactNode } from 'react';
-
 import cn from 'classnames';
 
 import Icon from 'common/components/Icon';
+import Text from 'common/components/Text';
 
 import styles from './styles.module.scss';
 
-const propSizeType = ['medium', 'large'] as const;
+import FlexContainer from '../FlexContainer';
 
-interface FieldSetProps {
+interface ContainerProps {
   className?: string;
-  size: typeof propSizeType[number];
-  title: string;
-  description?: string;
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
-function FieldSet({ className, size, title, description, children }: FieldSetProps) {
+function FieldSetContainer({ className, children }: ContainerProps) {
   return (
-    <div className={cn(className, styles.container, styles[`size-${size}`])}>
-      <label className={cn(styles.title)}>{title}</label>
-
+    <FlexContainer className={className} direction="column" gap="medium">
       {children}
-
-      {description && (
-        <div className={cn(styles.description)}>
-          <Icon code="chevron_right" />
-          <span>{description}</span>
-        </div>
-      )}
-    </div>
+    </FlexContainer>
   );
 }
 
-FieldSet.defaultProps = {
-  size: 'medium',
-};
+interface TitleProps {
+  title: string;
+  size?: 'medium' | 'large';
+}
+
+function Title({ title, size = 'medium' }: TitleProps) {
+  return <Text className={cn(styles.title, styles[`size-${size}`])}>{title}</Text>;
+}
+
+interface DescriptionProps {
+  description: string;
+}
+
+function Description({ description }: DescriptionProps) {
+  return (
+    <FlexContainer className={cn(styles.description)} align="center" direction="row">
+      <Icon code="chevron_right" />
+      <span>{description}</span>
+    </FlexContainer>
+  );
+}
+
+const FieldSet = Object.assign(FieldSetContainer, {
+  Title,
+  Description,
+});
 
 export default FieldSet;

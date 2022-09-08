@@ -36,8 +36,10 @@ interface AnswerFieldProps {
 
 const AnswerField = ({ question, description, answer, onChange, onFocus }: AnswerFieldProps) => {
   return (
-    <FieldSet size="large" title={question} description={description}>
+    <FieldSet>
+      <FieldSet.Title size="large" title={question} />
       <Textarea size="large" value={answer} onChange={onChange} onFocus={onFocus} />
+      <FieldSet.Description description={description || ''} />
     </FieldSet>
   );
 };

@@ -200,13 +200,15 @@ function TemplateFormEditorPage() {
 
           {(isTemplateCreateMode || isTemplateEditMode) && (
             <>
-              <FieldSet size="medium" title="템플릿 설명">
+              <FieldSet>
+                <FieldSet.Title title="템플릿 설명" />
                 <Textarea
                   placeholder="생성할 템플릿의 설명을 입력해주세요."
                   maxLength={200}
                   value={description}
                   onChange={handleChangeDescription}
                 />
+                <FieldSet.Description description={description} />
               </FieldSet>
               <hr className={styles.line} />
             </>
