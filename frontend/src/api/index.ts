@@ -1,4 +1,4 @@
-export * as authAPI from './auth';
-export * as reviewAPI from './review';
-export * as userAPI from './user';
-export * as templateAPI from './template';
+export * as authAPI from './auth.api';
+export * as reviewAPI from './review.api';
+export * as userAPI from './user.api';
+export * as templateAPI from './template.api';
