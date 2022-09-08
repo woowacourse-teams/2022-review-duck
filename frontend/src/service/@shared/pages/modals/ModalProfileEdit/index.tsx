@@ -5,9 +5,13 @@ import useSnackbar from 'common/hooks/useSnackbar';
 import { useGetAuthProfile } from 'service/@shared/hooks/queries/auth';
 import { useUpdateProfile } from 'service/@shared/hooks/queries/user/useUpdate';
 
+import { getErrorMessage } from 'service/@shared/utils';
+
 import { Button, FieldSet, Icon, TextBox } from 'common/components';
 
 import styles from './styles.module.scss';
+
+import { validateNickname } from 'service/@shared/validator';
 
 function ModalProfileEdit() {
   const { hideModal } = useModal();
@@ -42,8 +46,12 @@ function ModalProfileEdit() {
   };
 
   const handleEditProfile = () => {
-    if (newNickname.length < 2) {
-      alert('닉네임은 2 ~ 10자 이내로 작성해주세요.');
+    try {
+      validateNickname(newNickname);
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+
+      alert(errorMessage);
       return;
     }
     if (confirm(`${newNickname}으로 닉네임을 변경하시겠습니까?`)) {
