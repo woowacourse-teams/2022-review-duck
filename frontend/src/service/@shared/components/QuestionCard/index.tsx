@@ -6,7 +6,7 @@ import Text from 'common/components/Text';
 
 import styles from './styles.module.scss';
 
-interface Props {
+interface QuestionCardProps {
   className?: string;
   numbering: number;
   type: 'text';
@@ -19,7 +19,7 @@ interface Props {
   type에 따른 질문 타입 텍스트 처리해주기
 */
 
-function QuestionCard({ className, numbering, type, title, description }: Props) {
+function QuestionCard({ className, numbering, type, title, description }: QuestionCardProps) {
   return (
     <FlexContainer className={cn(className, styles.container)} direction="column">
       <FlexContainer className={styles.header} direction="row">

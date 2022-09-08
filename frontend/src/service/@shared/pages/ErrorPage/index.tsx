@@ -7,14 +7,14 @@ import { Button, FlexContainer, Icon, Text } from 'common/components';
 
 import styles from './styles.module.scss';
 
-interface Props {
+interface ErrorPageProps {
   status?: string | number;
   title: string;
   description: string;
   onResetError?: () => void;
 }
 
-function ErrorPage({ status, title, description, onResetError }: Props) {
+function ErrorPage({ status, title, description, onResetError }: ErrorPageProps) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 

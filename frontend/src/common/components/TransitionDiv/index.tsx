@@ -7,7 +7,7 @@ import styles from './styles.module.scss';
 type DisplayState = 'appear' | 'disappear' | 'hidden' | 'visible';
 type EffectType = 'fade' | 'drop' | 'unset';
 
-interface Props extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onAnimationEnd'> {
+interface TransitionDivProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onAnimationEnd'> {
   appear: EffectType;
   disappear: EffectType;
   all?: EffectType;
@@ -31,7 +31,7 @@ function TransitionDiv({
   onDisappear,
   children,
   ...rest
-}: Props) {
+}: TransitionDivProps) {
   const duplicatedChildren = useRef<JSX.Element>();
   const [displayState, setDisplayState] = useState<DisplayState>(isVisible ? 'visible' : 'hidden');
 

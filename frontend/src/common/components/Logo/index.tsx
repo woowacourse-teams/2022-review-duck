@@ -7,7 +7,7 @@ import LogoDefault from 'assets/images/logo-default.svg';
 
 import styles from './styles.module.scss';
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
+interface LogoProps extends React.HTMLAttributes<HTMLDivElement> {
   theme: 'filled' | 'border';
   weight: 'normal' | 'bold';
   size: 'small' | 'medium' | 'large';
@@ -24,7 +24,7 @@ const LOGO_LIST = {
   },
 };
 
-function Logo({ className, theme, weight, size, ...rest }: Props) {
+function Logo({ className, theme, weight, size, ...rest }: LogoProps) {
   const TargetLogo = LOGO_LIST[theme][weight];
 
   return (

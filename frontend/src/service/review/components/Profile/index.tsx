@@ -4,14 +4,14 @@ import { Icon, Text } from 'common/components';
 
 import styles from './styles.module.scss';
 
-interface Props extends React.HTMLAttributes<HTMLDivElement> {
+interface ProfileProps extends React.HTMLAttributes<HTMLDivElement> {
   type: 'square' | 'round';
   image: string;
   title: string;
   description: string;
 }
 
-function Profile({ type, image, title, description, ...rest }: Props) {
+function Profile({ type, image, title, description, ...rest }: ProfileProps) {
   return (
     <div className={cn(styles.container, styles[type])} {...rest}>
       <div className={styles.image} style={{ backgroundImage: 'url(' + image + ')' }}>

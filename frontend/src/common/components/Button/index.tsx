@@ -4,7 +4,7 @@ import cn from 'classnames';
 
 import styles from './styles.module.scss';
 
-interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   size: 'small' | 'medium' | 'large';
   theme: 'default' | 'outlined' | 'circle';
@@ -12,7 +12,7 @@ interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
 }
 
-function Button({ className, size, theme, filled, onClick, children, ...rest }: Props) {
+function Button({ className, size, theme, filled, onClick, children, ...rest }: ButtonProps) {
   const [rippleEffect, setRippleEffect] = useState({ isRippling: false, clickX: -1, clickY: -1 });
 
   const handleRippleEffect = (event: React.MouseEvent<HTMLButtonElement>) => {

@@ -4,13 +4,13 @@ import { Logo } from 'common/components';
 
 import styles from './styles.module.scss';
 
-interface Props {
+interface NoResultProps {
   className?: string;
   size: 'small' | 'medium' | 'large';
   children: string;
 }
 
-function NoResult({ className, size, children }: Props) {
+function NoResult({ className, size, children }: NoResultProps) {
   return (
     <div className={cn(className, styles.container)}>
       <Logo className={styles.logo} theme="border" size={size} weight="normal" />

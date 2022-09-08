@@ -1,9 +1,9 @@
-import React, { Suspense } from 'react';
-import { Component, isValidElement, ReactNode } from 'react';
+import React from 'react';
+import { Component, ReactNode } from 'react';
 
 import axios from 'axios';
 
-interface Props {
+interface ErrorBoundaryProps {
   fallback: React.FunctionComponent<{
     status?: string | number;
     title: string;
@@ -18,10 +18,10 @@ interface States {
   error: unknown;
 }
 
-class ErrorBoundary extends Component<Props, States> {
+class ErrorBoundary extends Component<ErrorBoundaryProps, States> {
   previousPath: string | null = null;
 
-  constructor(props: Props) {
+  constructor(props: ErrorBoundaryProps) {
     super(props);
 
     this.state = { hasError: false, error: null };

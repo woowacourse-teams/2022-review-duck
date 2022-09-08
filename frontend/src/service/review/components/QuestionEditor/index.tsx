@@ -11,7 +11,7 @@ import TextBox from 'common/components/TextBox';
 
 import styles from './styles.module.scss';
 
-interface Props {
+interface QuestionEditorProps {
   numbering: number;
   value?: string;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -19,7 +19,13 @@ interface Props {
   onDeleteQuestion?: (event: MouseEvent | KeyboardEvent) => void;
 }
 
-function QuestionEditor({ numbering, value, onChange, onAddQuestion, onDeleteQuestion }: Props) {
+function QuestionEditor({
+  numbering,
+  value,
+  onChange,
+  onAddQuestion,
+  onDeleteQuestion,
+}: QuestionEditorProps) {
   const handleKeyUpTextBox = (event: KeyboardEvent<HTMLInputElement>) => {
     // TODO: 키보드 입력 버그 고치기 - 한글 입력 후 엔터가 두번 발생되는 문제
 

@@ -7,14 +7,19 @@ import styles from './styles.module.scss';
 
 const propSizeTypes = ['medium', 'large'] as const;
 
-interface Props {
+interface SmallProfileCardProps {
   size?: typeof propSizeTypes[number];
   profileUrl: string;
   primaryText: string;
   secondaryText: string;
 }
 
-function SmallProfileCard({ size = 'medium', primaryText, secondaryText, profileUrl }: Props) {
+function SmallProfileCard({
+  size = 'medium',
+  primaryText,
+  secondaryText,
+  profileUrl,
+}: SmallProfileCardProps) {
   return (
     <div className={styles.container}>
       <div

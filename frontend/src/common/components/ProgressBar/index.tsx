@@ -2,11 +2,11 @@ import cn from 'classnames';
 
 import styles from './styles.module.scss';
 
-interface Props {
+interface ProgressBarProps {
   percent: number;
 }
 
-function ProgressBar({ percent }: Props) {
+function ProgressBar({ percent }: ProgressBarProps) {
   return (
     <div className={cn(styles.container)}>
       <div className={cn(styles.progress)} style={{ width: `${percent}%` }}></div>

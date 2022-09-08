@@ -8,7 +8,7 @@ import styles from './styles.module.scss';
 
 const propSizeType = ['medium', 'large'] as const;
 
-interface Props {
+interface FieldSetProps {
   className?: string;
   size: typeof propSizeType[number];
   title: string;
@@ -16,7 +16,7 @@ interface Props {
   children: ReactNode;
 }
 
-function FieldSet({ className, size, title, description, children }: Props) {
+function FieldSet({ className, size, title, description, children }: FieldSetProps) {
   return (
     <div className={cn(className, styles.container, styles[`size-${size}`])}>
       <label className={cn(styles.title)}>{title}</label>

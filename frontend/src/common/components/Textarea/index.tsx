@@ -4,13 +4,13 @@ import cn from 'classnames';
 
 import styles from './styles.module.scss';
 
-interface Props extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'size'> {
+interface TextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'size'> {
   className?: string;
   size?: 'small' | 'medium' | 'large';
   autoResize?: boolean;
 }
 
-function Textarea({ className, size = 'medium', autoResize, value, ...rest }: Props) {
+function Textarea({ className, size = 'medium', autoResize, value, ...rest }: TextareaProps) {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
