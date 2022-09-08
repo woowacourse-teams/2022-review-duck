@@ -29,17 +29,11 @@ function TemplateDetailPage() {
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
 
-  const { template, templates, isLoadError, loadError, createFormMutation, deleteMutation } =
-    useTemplateDetailQueries(Number(templateId));
+  const { template, templates, createFormMutation, deleteMutation } = useTemplateDetailQueries(
+    Number(templateId),
+  );
 
   const { templates: trendingTemplates } = templates || { templates: [] };
-
-  useEffect(() => {
-    if (isLoadError) {
-      alert(loadError?.message);
-      navigate(-1);
-    }
-  }, [isLoadError, loadError]);
 
   const handleDeleteTemplate = (templateId: number) => () => {
     if (confirm('정말 템플릿을 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) {
