@@ -9,23 +9,6 @@
   }
 }
 
-.flex-container {
-  display: flex;
-
-  &.column {
-    flex-direction: column;
-  }
-
-  &.row {
-    flex-direction: row;
-  }
-
-  &.centered {
-    justify-content: center;
-    align-items: center;
-  }
-}
-
 .global-content-container {
   width: 1056px;
   padding: 0 1rem;

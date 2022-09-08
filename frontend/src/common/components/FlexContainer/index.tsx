@@ -8,7 +8,7 @@ export interface FlexContainerProps extends React.HTMLAttributes<HTMLDivElement 
   direction: 'row' | 'column' | 'rows-reverse' | 'column-reverse';
   justify?: 'left' | 'center' | 'right' | 'space-between';
   align?: 'start' | 'center' | 'end';
-  gap?: 'small' | 'medium' | 'large' | 'xlarge';
+  gap?: 'small' | 'medium' | 'small-large' | 'large' | 'small-xlarge' | 'xlarge';
 }
 
 function FlexContainer({

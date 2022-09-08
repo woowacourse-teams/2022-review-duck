@@ -1,8 +1,6 @@
 @import 'styles/@global.scss';
 
 .container {
-  gap: 2.5rem;
-
   &.sticky {
     position: sticky;
     top: 3rem;
@@ -24,10 +22,6 @@
 .editor-container {
   position: sticky;
   top: 3rem;
-}
-
-.preview-container {
-  gap: 1.5rem;
 }
 
 .item-container {

@@ -2,6 +2,8 @@ import { ChangeEvent, KeyboardEvent, MouseEvent } from 'react';
 
 import cn from 'classnames';
 
+import { FlexContainer } from 'common/components';
+
 import Button from 'common/components/Button';
 import Icon from 'common/components/Icon';
 import Text from 'common/components/Text';
@@ -34,7 +36,7 @@ function QuestionEditor({ numbering, value, onChange, onAddQuestion, onDeleteQue
   };
 
   return (
-    <div className={cn(styles.container, 'flex-container row')}>
+    <FlexContainer direction="row" justify="space-between" gap="medium">
       <Text className={styles.numbering} size={18} weight="bold">
         {`Q${numbering}`}
       </Text>
@@ -48,7 +50,7 @@ function QuestionEditor({ numbering, value, onChange, onAddQuestion, onDeleteQue
         onKeyUp={handleKeyUpTextBox}
       />
 
-      <div className={cn(styles.buttonContainer, 'flex-container row')}>
+      <FlexContainer direction="row" gap="small">
         <Button className={styles.button} theme="circle" size="medium" onClick={onAddQuestion}>
           <Icon code="add" />
         </Button>
@@ -56,8 +58,8 @@ function QuestionEditor({ numbering, value, onChange, onAddQuestion, onDeleteQue
         <Button className={styles.button} theme="circle" size="medium" onClick={onDeleteQuestion}>
           <Icon code="backspace" />
         </Button>
-      </div>
-    </div>
+      </FlexContainer>
+    </FlexContainer>
   );
 }
 

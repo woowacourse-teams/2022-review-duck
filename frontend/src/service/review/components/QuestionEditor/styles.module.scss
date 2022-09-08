@@ -1,36 +1,27 @@
 @import 'styles/@global.scss';
 
-.container {
-  justify-content: space-between;
-  gap: 1rem;
+.numbering {
+  display: flex;
+  align-items: center;
+  color: $THEME_COLOR_THEME_TEXT_400;
+}
 
-  .numbering {
-    display: flex;
-    align-items: center;
-    color: $THEME_COLOR_THEME_TEXT_400;
+.question {
+  width: 70%;
+}
+
+.button {
+  background-color: $THEME_COLOR_STATUS_PRIMARY_500;
+}
+
+@include animation(0.2s ease) {
+  from {
+    opacity: 0;
+    transform: translateX(15%);
   }
 
-  .question {
-    width: 70%;
-  }
-
-  .button-container {
-    gap: 0.5rem;
-  }
-
-  .button {
-    background-color: $THEME_COLOR_STATUS_PRIMARY_500;
-  }
-
-  @include animation(0.2s ease) {
-    from {
-      opacity: 0;
-      transform: translateX(15%);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateX(0%);
-    }
+  to {
+    opacity: 1;
+    transform: translateX(0%);
   }
 }

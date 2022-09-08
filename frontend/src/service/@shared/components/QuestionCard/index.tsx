@@ -1,6 +1,8 @@
 import cn from 'classnames';
 import PropTypes from 'prop-types';
 
+import { FlexContainer } from 'common/components';
+
 import Text from 'common/components/Text';
 
 import styles from './styles.module.scss';
@@ -20,8 +22,8 @@ interface Props {
 
 function QuestionCard({ className, numbering, type, title, description }: Props) {
   return (
-    <section className={cn(className, styles.container, 'flex-container column')}>
-      <div className={cn(styles.header, 'flex-container row')}>
+    <FlexContainer className={cn(className, styles.container)} direction="column">
+      <FlexContainer className={styles.header} direction="row">
         <Text className={cn(styles.numbering)} size={18} weight="bold">
           Q{numbering}
         </Text>
@@ -29,7 +31,7 @@ function QuestionCard({ className, numbering, type, title, description }: Props)
         <Text className={cn(styles.type)} size={12} weight="lighter">
           단답형 질문
         </Text>
-      </div>
+      </FlexContainer>
 
       <hr className={cn(styles.line)} />
 
@@ -37,11 +39,11 @@ function QuestionCard({ className, numbering, type, title, description }: Props)
         {title}
       </Text>
       {description && (
-        <Text size={14} weight="lighter">
+        <Text className={styles.description} size={14} weight="lighter">
           {description}
         </Text>
       )}
-    </section>
+    </FlexContainer>
   );
 }
 
