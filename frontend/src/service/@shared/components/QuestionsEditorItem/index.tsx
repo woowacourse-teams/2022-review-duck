@@ -61,7 +61,7 @@ function QuestionsEditorItem({
         </Text>
 
         <TextBox
-          className={cn('question', styles.question)}
+          className={styles.question}
           placeholder="질문 타이틀을 입력해주세요."
           defaultValue={children}
           onChange={handleChangeQuestion}
