@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import cn from 'classnames';
@@ -63,21 +62,16 @@ function TemplateDetailPage() {
     });
   };
 
-  const handleCreateFormError = ({ message }: Record<'message', string>) => {
-    alert(message);
-  };
-
   const handleStartReview = () => {
-    if (
-      confirm(
-        '템플릿 내용 그대로 회고 답변을 시작하시겠습니까? 계속 진행하면 회고 질문지가 생성됩니다.',
-      )
-    ) {
-      createFormMutation.mutate(Number(templateId), {
-        onSuccess: handleCreateSuccess,
-        onError: handleCreateFormError,
-      });
-    }
+    if (!confirm('이 템플릿으로 회고를 시작하시겠습니까\n계속 진행하면 회고 질문지가 생성됩니다.'))
+      return;
+
+    createFormMutation.mutate(Number(templateId), {
+      onSuccess: handleCreateSuccess,
+      onError: ({ message }) => {
+        showSnackbar({ theme: 'danger', title: '오류가 발생하였습니다.', description: message });
+      },
+    });
   };
 
   return (
