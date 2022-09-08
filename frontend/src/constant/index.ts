@@ -108,6 +108,17 @@ const API_URI = {
     GET_PROFILE: (socialId: numberString) => `/api/members/${socialId}`,
     UPDATE_PROFILE: '/api/members/me',
   },
+  TEMPLATE: {
+    GET_TEMPLATES: '/api/templates',
+    GET_TEMPLATE: (templateId: numberString) => `/api/templates/${templateId}`,
+
+    CREATE_FORM: (templateId: numberString) => `/api/templates/${templateId}/review-forms`,
+    CREATE_TEMPLATE: '/api/templates',
+
+    UPDATE_TEMPLATE: (templateId: numberString) => `/api/templates/${templateId}`,
+
+    DELETE_TEMPLATE: (templateId: numberString) => `/api/templates/${templateId}`,
+  },
 };
 
 export {
