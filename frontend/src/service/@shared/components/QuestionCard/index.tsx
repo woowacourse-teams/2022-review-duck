@@ -1,5 +1,4 @@
 import cn from 'classnames';
-import PropTypes from 'prop-types';
 
 import { FlexContainer } from 'common/components';
 
@@ -46,14 +45,6 @@ function QuestionCard({ className, numbering, type, title, description }: Props)
     </FlexContainer>
   );
 }
-
-QuestionCard.propTypes = {
-  className: PropTypes.string,
-  numbering: PropTypes.number.isRequired,
-  type: PropTypes.oneOf(['text']).isRequired,
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string,
-};
 
 QuestionCard.defaultProps = {
   type: 'text',

@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 
 import cn from 'classnames';
-import PropTypes from 'prop-types';
 
 import Icon from 'common/components/Icon';
 
@@ -33,13 +32,6 @@ function FieldSet({ className, size, title, description, children }: Props) {
     </div>
   );
 }
-
-FieldSet.propTypes = {
-  size: PropTypes.oneOf(propSizeType),
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string,
-  children: PropTypes.element.isRequired,
-};
 
 FieldSet.defaultProps = {
   size: 'medium',

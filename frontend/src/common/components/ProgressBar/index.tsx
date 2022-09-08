@@ -1,5 +1,4 @@
 import cn from 'classnames';
-import PropTypes from 'prop-types';
 
 import styles from './styles.module.scss';
 
@@ -14,10 +13,6 @@ function ProgressBar({ percent }: Props) {
     </div>
   );
 }
-
-ProgressBar.propTypes = {
-  percent: PropTypes.number,
-};
 
 ProgressBar.defaultProps = {
   percent: 0,

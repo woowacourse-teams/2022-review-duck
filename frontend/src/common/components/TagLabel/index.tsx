@@ -1,7 +1,6 @@
 import { ReactNode } from 'react';
 
 import cn from 'classnames';
-import PropTypes from 'prop-types';
 
 import styles from './styles.module.scss';
 
@@ -17,10 +16,5 @@ function TagLabel({ className, children, ...rest }: Props) {
     </div>
   );
 }
-
-TagLabel.propTypes = {
-  className: PropTypes.string,
-  children: PropTypes.element.isRequired,
-};
 
 export default TagLabel;
