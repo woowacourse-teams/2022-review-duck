@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
 import { PAGE_LIST, TEMPLATE_TAB } from 'constant';
