@@ -9,7 +9,7 @@ import styles from './styles.module.scss';
 import FlexContainer from '../FlexContainer';
 import Icon from '../Icon';
 
-interface Props {
+interface ScrollPanelProps {
   className?: string;
   centerDisabled?: boolean;
   children: React.ReactNode;
@@ -21,7 +21,7 @@ interface controlVisible {
   next: boolean;
 }
 
-function ScrollPanel({ className, centerDisabled, children }: Props) {
+function ScrollPanel({ className, centerDisabled, children }: ScrollPanelProps) {
   const [controlHidden, setControlVisible] = useState<controlVisible>({
     previous: true,
     next: false,

@@ -45,3 +45,8 @@
   word-break: break-word;
   color: $THEME_COLOR_STATUS_PRIMARY_700;
 }
+
+.description {
+  white-space: pre-wrap;
+  word-break: break-word;
+}

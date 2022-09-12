@@ -1,11 +1,12 @@
 import cn from 'classnames';
-import PropTypes from 'prop-types';
+
+import { FlexContainer } from 'common/components';
 
 import Text from 'common/components/Text';
 
 import styles from './styles.module.scss';
 
-interface Props {
+interface QuestionCardProps {
   className?: string;
   numbering: number;
   type: 'text';
@@ -18,40 +19,32 @@ interface Props {
   type에 따른 질문 타입 텍스트 처리해주기
 */
 
-function QuestionCard({ className, numbering, type, title, description }: Props) {
+function QuestionCard({ className, numbering, type, title, description }: QuestionCardProps) {
   return (
-    <section className={cn(className, styles.container, 'flex-container column')}>
-      <div className={cn(styles.header, 'flex-container row')}>
-        <Text className={cn(styles.numbering)} size={18} weight="bold">
+    <FlexContainer className={cn(className, styles.container)} direction="column">
+      <FlexContainer className={styles.header} direction="row">
+        <Text className={styles.numbering} size={18} weight="bold">
           Q{numbering}
         </Text>
 
-        <Text className={cn(styles.type)} size={12} weight="lighter">
+        <Text className={styles.type} size={12} weight="lighter">
           단답형 질문
         </Text>
-      </div>
+      </FlexContainer>
 
-      <hr className={cn(styles.line)} />
+      <hr className={styles.line} />
 
-      <Text className={cn(styles.title)} size={20} weight="bold">
+      <Text className={styles.title} size={20} weight="bold">
         {title}
       </Text>
       {description && (
-        <Text size={14} weight="lighter">
+        <Text className={styles.description} size={14} weight="lighter">
           {description}
         </Text>
       )}
-    </section>
+    </FlexContainer>
   );
 }
-
-QuestionCard.propTypes = {
-  className: PropTypes.string,
-  numbering: PropTypes.number.isRequired,
-  type: PropTypes.oneOf(['text']).isRequired,
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string,
-};
 
 QuestionCard.defaultProps = {
   type: 'text',

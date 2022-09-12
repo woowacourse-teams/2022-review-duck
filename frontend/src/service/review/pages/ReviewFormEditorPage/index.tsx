@@ -96,12 +96,12 @@ function ReviewFormEditorPage() {
 
   return (
     <>
-      <div className={cn(styles.container, 'flex-container column')}>
+      <FlexContainer className={styles.container} direction="column">
         <Link to={PAGE_LIST.HOME}>
           <Logo />
         </Link>
 
-        <div className={cn(styles.previewContainer, 'flex-container column')}>
+        <FlexContainer direction="column" gap="small">
           {questions.map(
             (question, index) =>
               question.value && (
@@ -114,8 +114,8 @@ function ReviewFormEditorPage() {
                 />
               ),
           )}
-        </div>
-      </div>
+        </FlexContainer>
+      </FlexContainer>
 
       <div>
         <FlexContainer className={cn(styles.container, styles.sticky)} direction="column">

@@ -2,13 +2,13 @@ import cn from 'classnames';
 
 import styles from './styles.module.scss';
 
-interface Props {
+interface PopupBoxProps {
   className?: string;
   fallback: React.ReactNode;
   children: React.ReactNode;
 }
 
-function PopupBox({ className, fallback, children }: Props) {
+function PopupBox({ className, fallback, children }: PopupBoxProps) {
   return (
     <div className={styles.container}>
       {fallback}

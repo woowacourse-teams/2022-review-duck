@@ -80,7 +80,10 @@ const REVIEW_FORM_TITLE_LENGTH = 100;
 
 const REVIEW_FORM_CODE_LENGTH = 8;
 
-const REVIEW_FORM_CODE_REGEX = `(?=.*[A-Za-z])(?=.*[0-9])[a-zA-Z0-9]{${REVIEW_FORM_CODE_LENGTH}}$`;
+const REGEX = {
+  REVIEW_FORM_CODE: `(?=.*[A-Za-z])(?=.*[0-9])[a-zA-Z0-9]{${REVIEW_FORM_CODE_LENGTH}}$`,
+  NICKNAME: '^[a-zA-Z0-9]{2,10}$',
+};
 
 const API_URI = {
   AUTH: {
@@ -108,6 +111,17 @@ const API_URI = {
     GET_PROFILE: (socialId: numberString) => `/api/members/${socialId}`,
     UPDATE_PROFILE: '/api/members/me',
   },
+  TEMPLATE: {
+    GET_TEMPLATES: '/api/templates',
+    GET_TEMPLATE: (templateId: numberString) => `/api/templates/${templateId}`,
+
+    CREATE_FORM: (templateId: numberString) => `/api/templates/${templateId}/review-forms`,
+    CREATE_TEMPLATE: '/api/templates',
+
+    UPDATE_TEMPLATE: (templateId: numberString) => `/api/templates/${templateId}`,
+
+    DELETE_TEMPLATE: (templateId: numberString) => `/api/templates/${templateId}`,
+  },
 };
 
 export {
@@ -126,5 +140,5 @@ export {
   PERMISSION_VALID_TIME,
   REVIEW_FORM_TITLE_LENGTH,
   REVIEW_FORM_CODE_LENGTH,
-  REVIEW_FORM_CODE_REGEX,
+  REGEX,
 };

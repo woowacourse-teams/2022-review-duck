@@ -3,11 +3,11 @@ import { useRecoilState } from 'recoil';
 import Modal from '../Modal';
 import modalAtom from 'common/recoil/modal';
 
-interface Props {
+interface ModalProviderProps {
   contentList: Record<string, (props: unknown) => JSX.Element>;
 }
 
-function ModalProvider({ contentList }: Props) {
+function ModalProvider({ contentList }: ModalProviderProps) {
   const [modalState, setModal] = useRecoilState(modalAtom);
 
   const { key: modalKey, isVisible } = modalState;

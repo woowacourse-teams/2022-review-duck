@@ -9,7 +9,16 @@ import useQuestions from 'service/@shared/hooks/useQuestions';
 
 import { getErrorMessage } from 'service/@shared/utils';
 
-import { Button, Icon, Logo, TextBox, Text, Textarea, FieldSet } from 'common/components';
+import {
+  Button,
+  Icon,
+  Logo,
+  TextBox,
+  Text,
+  Textarea,
+  FieldSet,
+  FlexContainer,
+} from 'common/components';
 
 import QuestionCard from 'service/@shared/components/QuestionCard';
 import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
@@ -134,7 +143,7 @@ function TemplateFormEditorPage() {
 
   return (
     <>
-      <div className={cn(styles.container, 'flex-container column')}>
+      <FlexContainer className={styles.container} direction="column" gap="small">
         <div className={styles.header}>
           <Link to={PAGE_LIST.HOME}>
             <Logo />
@@ -152,7 +161,7 @@ function TemplateFormEditorPage() {
           )}
         </div>
 
-        <div className={cn(styles.previewContainer, 'flex-container column')}>
+        <FlexContainer direction="column" gap="small">
           {questions.map(
             (question, index) =>
               question.value && (
@@ -165,11 +174,15 @@ function TemplateFormEditorPage() {
                 />
               ),
           )}
-        </div>
-      </div>
+        </FlexContainer>
+      </FlexContainer>
 
       <div>
-        <div className={cn(styles.container, styles.sticky, 'flex-container column')}>
+        <FlexContainer
+          className={cn(styles.container, styles.sticky)}
+          direction="column"
+          gap="large"
+        >
           <TextBox
             theme="underline"
             size="large"
@@ -180,13 +193,15 @@ function TemplateFormEditorPage() {
 
           {(isTemplateCreateMode || isTemplateEditMode) && (
             <>
-              <FieldSet size="medium" title="템플릿 설명">
+              <FieldSet>
+                <FieldSet.Title>템플릿 설명</FieldSet.Title>
                 <Textarea
                   placeholder="생성할 템플릿의 설명을 입력해주세요."
                   maxLength={200}
                   value={description}
                   onChange={handleChangeDescription}
                 />
+                <FieldSet.Description>{description}</FieldSet.Description>
               </FieldSet>
               <hr className={styles.line} />
             </>
@@ -205,7 +220,7 @@ function TemplateFormEditorPage() {
               <span>생성하기</span>
             </Button>
           </div>
-        </div>
+        </FlexContainer>
       </div>
     </>
   );

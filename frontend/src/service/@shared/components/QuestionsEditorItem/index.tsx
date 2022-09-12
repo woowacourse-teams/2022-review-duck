@@ -11,7 +11,7 @@ import styles from './styles.module.scss';
 
 type UpdateQuestionEvent = React.MouseEvent | React.KeyboardEvent<HTMLInputElement>;
 
-interface Props {
+interface QuestionsEditorItemProps {
   numbering: number;
   description: string;
   children?: string;
@@ -29,7 +29,7 @@ function QuestionsEditorItem({
   onChangeDescription,
   onAddQuestion,
   onDeleteQuestion,
-}: Props) {
+}: QuestionsEditorItemProps) {
   const handleChangeQuestion = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChangeQuestion && onChangeQuestion(event);
   };
