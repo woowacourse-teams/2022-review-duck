@@ -23,18 +23,18 @@ function QuestionCard({ className, numbering, type, title, description }: Questi
   return (
     <FlexContainer className={cn(className, styles.container)} direction="column">
       <FlexContainer className={styles.header} direction="row">
-        <Text className={cn(styles.numbering)} size={18} weight="bold">
+        <Text className={styles.numbering} size={18} weight="bold">
           Q{numbering}
         </Text>
 
-        <Text className={cn(styles.type)} size={12} weight="lighter">
+        <Text className={styles.type} size={12} weight="lighter">
           단답형 질문
         </Text>
       </FlexContainer>
 
-      <hr className={cn(styles.line)} />
+      <hr className={styles.line} />
 
-      <Text className={cn(styles.title)} size={20} weight="bold">
+      <Text className={styles.title} size={20} weight="bold">
         {title}
       </Text>
       {description && (
