@@ -65,7 +65,7 @@ function ModalProfileEdit() {
   return (
     <div className={styles.container}>
       <FieldSet>
-        <FieldSet.Title size="large" title="닉네임 수정" />
+        <FieldSet.Title size="large">닉네임 수정</FieldSet.Title>
         <TextBox
           minLength={2}
           maxLength={10}
@@ -73,7 +73,7 @@ function ModalProfileEdit() {
           value={newNickname}
           onChange={handleChangeNewNickname}
         />
-        <FieldSet.Description description="10자 이내로 변경할 닉네임을 입력해주세요." />
+        <FieldSet.Description>10자 이내로 변경할 닉네임을 입력해주세요.</FieldSet.Description>
       </FieldSet>
 
       <div className={styles.buttons}>

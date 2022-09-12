@@ -41,13 +41,13 @@ function ModalReviewJoin() {
   return (
     <form onSubmit={onSubmitReviewFormCode}>
       <FieldSet>
-        <FieldSet.Title title="참여 코드" />
+        <FieldSet.Title>참여 코드</FieldSet.Title>
         <TextBox
           name="reviewFormCode"
           maxLength={8}
           placeholder="영문과 숫자로 이루어진 코드 8자리를 입력해주세요."
         />
-        <FieldSet.Description description="회고 참여를 위한 코드를 입력해주세요." />
+        <FieldSet.Description>회고 참여를 위한 코드를 입력해주세요.</FieldSet.Description>
       </FieldSet>
 
       <div className="button-container horizontal">
