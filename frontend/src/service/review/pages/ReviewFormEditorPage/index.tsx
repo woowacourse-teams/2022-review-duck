@@ -101,7 +101,7 @@ function ReviewFormEditorPage() {
           <Logo />
         </Link>
 
-        <FlexContainer direction="column" gap="small-large">
+        <FlexContainer direction="column" gap="small">
           {questions.map(
             (question, index) =>
               question.value && (

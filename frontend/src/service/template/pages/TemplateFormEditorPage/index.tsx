@@ -150,7 +150,7 @@ function TemplateFormEditorPage() {
 
   return (
     <>
-      <FlexContainer className={styles.container} direction="column" gap="small-xlarge">
+      <FlexContainer className={styles.container} direction="column" gap="small">
         <div className={styles.header}>
           <Link to={PAGE_LIST.HOME}>
             <Logo />
@@ -168,7 +168,7 @@ function TemplateFormEditorPage() {
           )}
         </div>
 
-        <FlexContainer direction="column" gap="small-large">
+        <FlexContainer direction="column" gap="small">
           {questions.map(
             (question, index) =>
               question.value && (
@@ -188,7 +188,7 @@ function TemplateFormEditorPage() {
         <FlexContainer
           className={cn(styles.container, styles.sticky)}
           direction="column"
-          gap="small-xlarge"
+          gap="large"
         >
           <TextBox
             theme="underline"
@@ -201,14 +201,14 @@ function TemplateFormEditorPage() {
           {(isTemplateCreateMode || isTemplateEditMode) && (
             <>
               <FieldSet>
-                <FieldSet.Title title="템플릿 설명" />
+                <FieldSet.Title>템플릿 설명</FieldSet.Title>
                 <Textarea
                   placeholder="생성할 템플릿의 설명을 입력해주세요."
                   maxLength={200}
                   value={description}
                   onChange={handleChangeDescription}
                 />
-                <FieldSet.Description description={description} />
+                <FieldSet.Description>{description}</FieldSet.Description>
               </FieldSet>
               <hr className={styles.line} />
             </>
