@@ -1,9 +1,9 @@
-import { REVIEW_FORM_CODE_REGEX, REVIEW_FORM_TITLE_LENGTH } from 'constant';
+import { REGEX, REVIEW_FORM_TITLE_LENGTH } from 'constant';
 
 import { Question } from '../../../types';
 
 function validateReviewFormCode(reviewFormCode: string) {
-  if (!new RegExp(REVIEW_FORM_CODE_REGEX, 'g').test(reviewFormCode)) {
+  if (!new RegExp(REGEX.REVIEW_FORM_CODE, 'g').test(reviewFormCode)) {
     throw new Error('참여코드를 정확히 입력하여주세요.');
   }
 }
