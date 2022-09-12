@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import cn from 'classnames';
 
-import useDebounce from 'common/hooks/useDebounce';
+import useDebounceCallback from 'common/hooks/useDebounceCallback';
 
 import styles from './styles.module.scss';
 
@@ -39,7 +39,7 @@ function ScrollPanel({ className, centerDisabled, children }: ScrollPanelProps) 
     childElementWidth.current = $firstChildElement.clientWidth;
   }, []);
 
-  const handleChangeScroll = useDebounce(({ target }: React.UIEvent<HTMLDivElement>) => {
+  const handleChangeScroll = useDebounceCallback(({ target }: React.UIEvent<HTMLDivElement>) => {
     const { scrollWidth, scrollLeft, clientWidth } = target as HTMLDivElement;
     const updateControlHidden = { ...controlHidden };
 

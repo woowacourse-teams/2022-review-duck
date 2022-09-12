@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
@@ -37,7 +37,7 @@ function TemplateFormEditorPage() {
   const templateId = searchParams.get('templateId') || '';
   const templateEditMode = searchParams.get('templateEditMode') || '';
 
-  const { template, isLoadError, loadError, isSubmitLoading, templateMutation, createReviewForm } =
+  const { template, isSubmitLoading, templateMutation, createReviewForm } =
     useTemplateFormEditorPage(templateId, templateEditMode);
 
   const [title, setTitle] = useState(template.info.title);
@@ -51,13 +51,6 @@ function TemplateFormEditorPage() {
   const isTemplateEditMode = templateId && templateEditMode;
   const isReviewFormCreateMode = templateId && !templateEditMode;
   const isTemplateCreateMode = !templateId && !templateEditMode;
-
-  useEffect(() => {
-    if (isLoadError) {
-      alert(loadError?.message);
-      navigate(redirectUri || `${PAGE_LIST.TEMPLATE_DETAIL}/${templateId}`, { replace: true });
-    }
-  }, [isLoadError, loadError]);
 
   const handleChangeReviewTitle = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(target.value);
