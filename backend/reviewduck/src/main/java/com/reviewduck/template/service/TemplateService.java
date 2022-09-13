@@ -65,7 +65,7 @@ public class TemplateService {
         Member member = memberService.getBySocialId(id);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
 
-        return templateRepository.findAllByMember(pageRequest, member);
+        return templateRepository.findByMember(pageRequest, member);
     }
 
     @Transactional

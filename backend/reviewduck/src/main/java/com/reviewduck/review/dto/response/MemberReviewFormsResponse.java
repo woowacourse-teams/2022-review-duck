@@ -16,19 +16,9 @@ import lombok.Getter;
 @Getter
 public class MemberReviewFormsResponse {
 
-    private int numberOfReviewForms;
+    private long numberOfReviewForms;
     private boolean isMine;
     private List<MemberReviewFormResponse> reviewForms;
-
-    public static MemberReviewFormsResponse of(List<ReviewForm> reviewForms, String socialId, Member member) {
-        List<MemberReviewFormResponse> reviewFormResponses = reviewForms.stream()
-            .map(MemberReviewFormResponse::from)
-            .collect(Collectors.toUnmodifiableList());
-
-        boolean isMine = member.getSocialId().equals(socialId);
-
-        return new MemberReviewFormsResponse(reviewForms.size(), isMine, reviewFormResponses);
-    }
 
     public static MemberReviewFormsResponse of(Page<ReviewForm> reviewForms, String socialId, Member member) {
         List<MemberReviewFormResponse> reviewFormResponses = reviewForms.getContent().stream()

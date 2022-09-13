@@ -135,7 +135,7 @@ public class TemplateRepositoryTest {
 
         // when
         Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "updatedAt"));
-        List<Template> templates = templateRepository.findAllByMember(pageable, member1).getContent();
+        List<Template> templates = templateRepository.findByMember(pageable, member1).getContent();
 
         // then
         assertAll(

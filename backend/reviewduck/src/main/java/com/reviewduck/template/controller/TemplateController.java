@@ -75,7 +75,7 @@ public class TemplateController {
         @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size,
         @RequestParam(required = false) String sort) {
 
-        info("/api/templates", "GET", "page=" + page + " size=" + size + " sort=" + sort);
+        info("/api/templates?page=" + page + " size=" + size, "GET", "");
 
         Page<Template> templates = templateService.findAll(page, size, sort);
         return TemplatesResponse.of(templates, member);
@@ -89,7 +89,7 @@ public class TemplateController {
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
         @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size) {
 
-        info("/api/templates?member=" + socialId, "GET", " page=" + page + " size=" + size);
+        info("/api/templates?member=" + socialId + " page=" + page + " size=" + size, "GET", "");
 
         Page<Template> templates = templateService.findAllBySocialId(socialId, page, size);
 
