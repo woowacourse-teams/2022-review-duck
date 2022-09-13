@@ -1,6 +1,6 @@
 package com.reviewduck.review.acceptance;
 
-import static com.reviewduck.common.vo.PageConstant.*;
+import static com.reviewduck.acceptance.TestPageConstant.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -55,6 +55,31 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
         accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember1.getId()));
         accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember2.getId()));
+    }
+
+    private String createReviewFormAndGetCode(String accessToken) {
+        return createReviewFormAndGetCode("title", accessToken);
+    }
+
+    private String createReviewFormAndGetCode(String reviewTitle, String accessToken) {
+        List<ReviewFormQuestionCreateRequest> questions = List.of(
+            new ReviewFormQuestionCreateRequest("question1", "description1"),
+            new ReviewFormQuestionCreateRequest("question2", "description2"));
+
+        ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
+
+        return post("/api/review-forms", request, accessToken)
+            .extract()
+            .as(ReviewFormCodeResponse.class)
+            .getReviewFormCode();
+    }
+
+    private void assertReviewTitleFromFoundReviewForm(String code, String reviewTitle, String accessToken) {
+        ReviewFormResponse reviewFormResponse = get("/api/review-forms/" + code, accessToken)
+            .statusCode(HttpStatus.OK.value())
+            .extract()
+            .as(ReviewFormResponse.class);
+        assertThat(reviewFormResponse.getReviewFormTitle()).isEqualTo(reviewTitle);
     }
 
     @Nested
@@ -260,7 +285,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("자신이 작성한 회고 질문지 중 최신순으로 첫 페이지를 조회한다.")
+        @DisplayName("타인이 작성한 회고 질문지 중 최신순으로 첫 페이지를 조회한다.")
         void findPageOfMyReviewForms() {
             // given
             String reviewTitle1 = "title1";
@@ -658,30 +683,5 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
-    }
-
-    private String createReviewFormAndGetCode(String accessToken) {
-        return createReviewFormAndGetCode("title", accessToken);
-    }
-
-    private String createReviewFormAndGetCode(String reviewTitle, String accessToken) {
-        List<ReviewFormQuestionCreateRequest> questions = List.of(
-            new ReviewFormQuestionCreateRequest("question1", "description1"),
-            new ReviewFormQuestionCreateRequest("question2", "description2"));
-
-        ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
-
-        return post("/api/review-forms", request, accessToken)
-            .extract()
-            .as(ReviewFormCodeResponse.class)
-            .getReviewFormCode();
-    }
-
-    private void assertReviewTitleFromFoundReviewForm(String code, String reviewTitle, String accessToken) {
-        ReviewFormResponse reviewFormResponse = get("/api/review-forms/" + code, accessToken)
-            .statusCode(HttpStatus.OK.value())
-            .extract()
-            .as(ReviewFormResponse.class);
-        assertThat(reviewFormResponse.getReviewFormTitle()).isEqualTo(reviewTitle);
     }
 }

@@ -1,7 +1,5 @@
 package com.reviewduck.review.service;
 
-import static com.reviewduck.common.vo.PageConstant.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +23,6 @@ import com.reviewduck.review.dto.request.ReviewContentUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 import com.reviewduck.review.repository.ReviewRepository;
-import com.reviewduck.template.domain.Template;
 
 import lombok.AllArgsConstructor;
 
@@ -66,24 +63,16 @@ public class ReviewService {
     }
 
     public Page<Review> findBySocialId(String socialId, Member member, Integer page, Integer size) {
-        if (page == null) {
-            page = DEFAULT_PAGE;
-        }
-
-        if (size == null) {
-            size = DEFAULT_SIZE;
-        }
-
         String sortType = "updatedAt";
 
         Member owner = memberService.getBySocialId(socialId);
-        PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
 
         if (member.equals(owner)) {
-            return reviewRepository.findByMember(member, pageable);
+            return reviewRepository.findByMember(member, pageRequest);
         }
 
-        return reviewRepository.findByMemberAndIsPrivateFalse(owner, pageable);
+        return reviewRepository.findByMemberAndIsPrivateFalse(owner, pageRequest);
 
     }
 

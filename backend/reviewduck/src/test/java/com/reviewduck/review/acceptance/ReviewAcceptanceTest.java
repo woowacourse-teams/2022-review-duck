@@ -1,6 +1,6 @@
 package com.reviewduck.review.acceptance;
 
-import static com.reviewduck.common.vo.PageConstant.*;
+import static com.reviewduck.acceptance.TestPageConstant.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;

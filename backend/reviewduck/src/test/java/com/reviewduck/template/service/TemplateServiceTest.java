@@ -1,5 +1,6 @@
 package com.reviewduck.template.service;
 
+import static com.reviewduck.acceptance.TestPageConstant.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -207,11 +208,11 @@ public class TemplateServiceTest {
             Template latestTemplate = saveTemplate(member1, "title2", "description2", questions2);
 
             // when
-            List<Template> templates = templateService.findAll(null, null, null).getContent();
+            List<Template> templates = templateService.findAll(DEFAULT_PAGE, DEFAULT_SIZE, null).getContent();
 
             // then
             assertAll(
-                () -> assertThat(templates).hasSize(10),
+                () -> assertThat(templates).hasSize(DEFAULT_SIZE),
                 () -> assertThat(templates.get(0)).isEqualTo(latestTemplate)
             );
         }

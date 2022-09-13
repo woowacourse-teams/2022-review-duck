@@ -2,6 +2,11 @@ package com.reviewduck.common.vo;
 
 import java.util.Arrays;
 
+/**
+ * ex) sort=latest
+ * param: 요청으로 받는 sort query에 해당하는 query value
+ * sortBy: OrderBy에 사용할 database column
+ */
 public enum SortType {
 
     LATEST("latest", "updatedAt"),

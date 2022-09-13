@@ -1,7 +1,5 @@
 package com.reviewduck.template.service;
 
-import static com.reviewduck.common.vo.PageConstant.*;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,40 +54,18 @@ public class TemplateService {
     }
 
     public Page<Template> findAll(Integer page, Integer size, String sort) {
-        if (page == null) {
-            page = DEFAULT_PAGE;
-        }
-
-        if (size == null) {
-            size = DEFAULT_SIZE;
-        }
-
         String sortType = SortType.getSortBy(sort);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
 
-        Page<Template> templates = templateRepository.findAll(
-            PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType)));
-
-        return templates;
+        return templateRepository.findAll(pageRequest);
     }
 
     public Page<Template> findAllBySocialId(String id, Integer page, Integer size) {
-        if (page == null) {
-            page = DEFAULT_PAGE;
-        }
-
-        if (size == null) {
-            size = DEFAULT_SIZE;
-        }
-
         String sortType = "updatedAt";
-
         Member member = memberService.getBySocialId(id);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
 
-        Page<Template> templates = templateRepository.findAllByMember(
-            PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType)),
-            member);
-
-        return templates;
+        return templateRepository.findAllByMember(pageRequest, member);
     }
 
     @Transactional

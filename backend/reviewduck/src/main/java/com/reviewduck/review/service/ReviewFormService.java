@@ -1,7 +1,5 @@
 package com.reviewduck.review.service;
 
-import static com.reviewduck.common.vo.PageConstant.*;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,16 +76,7 @@ public class ReviewFormService {
     }
 
     public Page<ReviewForm> findBySocialId(String socialId, Integer page, Integer size) {
-        if (page == null) {
-            page = DEFAULT_PAGE;
-        }
-
-        if (size == null) {
-            size = DEFAULT_SIZE;
-        }
-
         String sortType = "updatedAt";
-
         Member member = memberService.getBySocialId(socialId);
         PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
 

@@ -1,6 +1,7 @@
 package com.reviewduck.review.controller;
 
 import static com.reviewduck.common.util.Logging.*;
+import static com.reviewduck.common.vo.PageConstant.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,9 +54,9 @@ public class ReviewController {
     @ResponseStatus(HttpStatus.OK)
     public ReviewsResponse findBySocialId(@AuthenticationPrincipal Member member,
         @RequestParam(value = "member") String socialId,
-        @RequestParam(required = false) Integer page,
-        @RequestParam(required = false) Integer size
-        ) {
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size
+    ) {
 
         info("/api/reviews?member=" + socialId + "page=" + page + " size=" + size, "GET", "");
 

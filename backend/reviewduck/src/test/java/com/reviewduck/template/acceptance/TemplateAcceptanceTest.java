@@ -1,6 +1,6 @@
 package com.reviewduck.template.acceptance;
 
-import static com.reviewduck.common.vo.PageConstant.*;
+import static com.reviewduck.acceptance.TestPageConstant.*;
 import static org.hamcrest.Matchers.*;
 
 import java.util.List;
@@ -42,6 +42,33 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
         accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember1.getId()));
         accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember2.getId()));
+    }
+
+    private long saveTemplateAndGetId(String accessToken) {
+        String templateTitle = "title";
+        String description = "test description";
+        List<TemplateQuestionCreateRequest> questions = List.of(
+            new TemplateQuestionCreateRequest("question1", "description1"),
+            new TemplateQuestionCreateRequest("question2", "description2"));
+        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, description, questions);
+
+        return post("/api/templates", templateCreateRequest, accessToken)
+            .extract()
+            .as(TemplateIdResponse.class)
+            .getTemplateId();
+    }
+
+    private long saveTemplateAndGetId(String accessToken, String title) {
+        String description = "test description";
+        List<TemplateQuestionCreateRequest> questions = List.of(
+            new TemplateQuestionCreateRequest("question1", "description1"),
+            new TemplateQuestionCreateRequest("question2", "description2"));
+        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(title, description, questions);
+
+        return post("/api/templates", templateCreateRequest, accessToken)
+            .extract()
+            .as(TemplateIdResponse.class)
+            .getTemplateId();
     }
 
     @Nested
@@ -385,32 +412,5 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             delete("/api/templates/" + 9999L, accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
         }
 
-    }
-
-    private long saveTemplateAndGetId(String accessToken) {
-        String templateTitle = "title";
-        String description = "test description";
-        List<TemplateQuestionCreateRequest> questions = List.of(
-            new TemplateQuestionCreateRequest("question1", "description1"),
-            new TemplateQuestionCreateRequest("question2", "description2"));
-        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, description, questions);
-
-        return post("/api/templates", templateCreateRequest, accessToken)
-            .extract()
-            .as(TemplateIdResponse.class)
-            .getTemplateId();
-    }
-
-    private long saveTemplateAndGetId(String accessToken, String title) {
-        String description = "test description";
-        List<TemplateQuestionCreateRequest> questions = List.of(
-            new TemplateQuestionCreateRequest("question1", "description1"),
-            new TemplateQuestionCreateRequest("question2", "description2"));
-        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(title, description, questions);
-
-        return post("/api/templates", templateCreateRequest, accessToken)
-            .extract()
-            .as(TemplateIdResponse.class)
-            .getTemplateId();
     }
 }
