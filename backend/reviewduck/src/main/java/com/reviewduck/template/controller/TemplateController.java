@@ -77,7 +77,7 @@ public class TemplateController {
 
         info("/api/templates?page=" + page + " size=" + size, "GET", "");
 
-        Page<Template> templates = templateService.findAll(page, size, sort);
+        Page<Template> templates = templateService.findAll(page - 1, size, sort);
         return TemplatesResponse.of(templates, member);
     }
 
@@ -91,7 +91,7 @@ public class TemplateController {
 
         info("/api/templates?member=" + socialId + " page=" + page + " size=" + size, "GET", "");
 
-        Page<Template> templates = templateService.findAllBySocialId(socialId, page, size);
+        Page<Template> templates = templateService.findAllBySocialId(socialId, page - 1, size);
 
         return MemberTemplatesResponse.of(templates, socialId, member);
     }

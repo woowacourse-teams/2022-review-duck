@@ -299,7 +299,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             assertReviewTitleFromFoundReviewForm(reviewFormCode2, reviewTitle2, accessToken1);
 
             // then
-            get("/api/review-forms?member=1&page=0&size=2", accessToken1)
+            get("/api/review-forms?member=1&page=1&size=2", accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
                 .body("isMine", equalTo(true))
@@ -322,7 +322,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             assertReviewTitleFromFoundReviewForm(reviewFormCode2, reviewTitle2, accessToken1);
 
             // then
-            get("/api/review-forms?member=1&page=0&size=2", accessToken2)
+            get("/api/review-forms?member=1&page=1&size=2", accessToken2)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
                 .body("isMine", equalTo(false))
