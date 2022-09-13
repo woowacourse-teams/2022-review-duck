@@ -1,9 +1,8 @@
-import { useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
-
-import { TemplateFilterType } from 'service/@shared/types';
+import { PAGE_LIST, TEMPLATE_TAB } from 'constant';
+import { TemplateFilterType } from 'types';
 
 import { useGetTemplates } from 'service/@shared/hooks/queries/template/useGet';
 
@@ -16,25 +15,16 @@ import LayoutContainer from 'service/@shared/components/LayoutContainer';
 import styles from './styles.module.scss';
 
 import TemplateListContainer from './TemplateListContainer';
-import { PAGE_LIST, TEMPLATE_TAB } from 'service/@shared/constants';
 
 function TemplateListPage() {
-  const navigate = useNavigate();
   const [searchParam] = useSearchParams();
 
   const tabString = searchParam.get('filter');
   const currentTab = tabString === 'trend' || tabString === 'latest' ? tabString : 'trend';
 
-  const { data, isError, error } = useGetTemplates(currentTab as TemplateFilterType);
+  const { data } = useGetTemplates(currentTab as TemplateFilterType);
 
   const { templates } = data || { templates: [] };
-
-  useEffect(() => {
-    if (isError) {
-      alert(error?.message);
-      navigate(-1);
-    }
-  }, [isError, error]);
 
   return (
     <LayoutContainer>

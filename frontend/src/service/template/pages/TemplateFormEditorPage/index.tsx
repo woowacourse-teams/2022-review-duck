@@ -1,16 +1,24 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
-
-import { Question } from 'service/@shared/types/review';
+import { PAGE_LIST } from 'constant';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/@shared/hooks/useQuestions';
 
 import { getErrorMessage } from 'service/@shared/utils';
 
-import { Button, Icon, Logo, TextBox, Text, Textarea, FieldSet } from 'common/components';
+import {
+  Button,
+  Icon,
+  Logo,
+  TextBox,
+  Text,
+  Textarea,
+  FieldSet,
+  FlexContainer,
+} from 'common/components';
 
 import QuestionCard from 'service/@shared/components/QuestionCard';
 import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
@@ -19,8 +27,8 @@ import SmallProfileCard from 'service/@shared/components/SmallProfileCard';
 import styles from './styles.module.scss';
 
 import useTemplateFormEditorPage from './useTemplateFormEditorPage';
-import { PAGE_LIST } from 'service/@shared/constants';
 import { validateReviewForm } from 'service/@shared/validator';
+import { Question } from 'types/review';
 
 function TemplateFormEditorPage() {
   const [searchParams] = useSearchParams();
@@ -29,7 +37,7 @@ function TemplateFormEditorPage() {
   const templateId = searchParams.get('templateId') || '';
   const templateEditMode = searchParams.get('templateEditMode') || '';
 
-  const { template, isLoadError, loadError, isSubmitLoading, templateMutation, createReviewForm } =
+  const { template, isSubmitLoading, templateMutation, createReviewForm } =
     useTemplateFormEditorPage(templateId, templateEditMode);
 
   const [title, setTitle] = useState(template.info.title);
@@ -43,13 +51,6 @@ function TemplateFormEditorPage() {
   const isTemplateEditMode = templateId && templateEditMode;
   const isReviewFormCreateMode = templateId && !templateEditMode;
   const isTemplateCreateMode = !templateId && !templateEditMode;
-
-  useEffect(() => {
-    if (isLoadError) {
-      alert(loadError?.message);
-      navigate(redirectUri || `${PAGE_LIST.TEMPLATE_DETAIL}/${templateId}`, { replace: true });
-    }
-  }, [isLoadError, loadError]);
 
   const handleChangeReviewTitle = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(target.value);
@@ -142,7 +143,7 @@ function TemplateFormEditorPage() {
 
   return (
     <>
-      <div className={cn(styles.container, 'flex-container column')}>
+      <FlexContainer className={styles.container} direction="column" gap="small">
         <div className={styles.header}>
           <Link to={PAGE_LIST.HOME}>
             <Logo />
@@ -160,7 +161,7 @@ function TemplateFormEditorPage() {
           )}
         </div>
 
-        <div className={cn(styles.previewContainer, 'flex-container column')}>
+        <FlexContainer direction="column" gap="small">
           {questions.map(
             (question, index) =>
               question.value && (
@@ -173,11 +174,15 @@ function TemplateFormEditorPage() {
                 />
               ),
           )}
-        </div>
-      </div>
+        </FlexContainer>
+      </FlexContainer>
 
       <div>
-        <div className={cn(styles.container, styles.sticky, 'flex-container column')}>
+        <FlexContainer
+          className={cn(styles.container, styles.sticky)}
+          direction="column"
+          gap="large"
+        >
           <TextBox
             theme="underline"
             size="large"
@@ -188,13 +193,15 @@ function TemplateFormEditorPage() {
 
           {(isTemplateCreateMode || isTemplateEditMode) && (
             <>
-              <FieldSet size="medium" title="템플릿 설명">
+              <FieldSet>
+                <FieldSet.Title>템플릿 설명</FieldSet.Title>
                 <Textarea
                   placeholder="생성할 템플릿의 설명을 입력해주세요."
                   maxLength={200}
                   value={description}
                   onChange={handleChangeDescription}
                 />
+                <FieldSet.Description>{description}</FieldSet.Description>
               </FieldSet>
               <hr className={styles.line} />
             </>
@@ -213,7 +220,7 @@ function TemplateFormEditorPage() {
               <span>생성하기</span>
             </Button>
           </div>
-        </div>
+        </FlexContainer>
       </div>
     </>
   );

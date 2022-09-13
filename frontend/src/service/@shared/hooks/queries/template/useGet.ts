@@ -1,14 +1,13 @@
 import { useQuery, UseQueryOptions } from 'react-query';
 
+import { templateAPI } from 'api';
+import { QUERY_KEY } from 'constant';
 import {
   GetTemplatesResponse,
   GetTemplateResponse,
   ErrorResponse,
   TemplateFilterType,
-} from 'service/@shared/types';
-
-import templateAPI from 'service/@shared/api/template';
-import { QUERY_KEY } from 'service/@shared/constants';
+} from 'types';
 
 function useGetTemplates(
   filter: TemplateFilterType,

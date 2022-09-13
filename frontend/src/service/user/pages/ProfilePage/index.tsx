@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
+import { USER_PROFILE_TAB, GITHUB_PROFILE_URL, PAGE_LIST, MODAL_LIST } from 'constant';
 
 import useModal from 'common/hooks/useModal';
 
@@ -13,12 +14,6 @@ import styles from './styles.module.scss';
 
 import ReviewList from './containers/ReviewList';
 import useProfilePageQueries from './useProfilePageQueries';
-import {
-  USER_PROFILE_TAB,
-  GITHUB_PROFILE_URL,
-  PAGE_LIST,
-  MODAL_LIST,
-} from 'service/@shared/constants';
 
 function ProfilePage() {
   const navigate = useNavigate();

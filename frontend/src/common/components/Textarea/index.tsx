@@ -1,19 +1,16 @@
 import { useEffect, useRef } from 'react';
 
 import cn from 'classnames';
-import PropTypes from 'prop-types';
 
 import styles from './styles.module.scss';
 
-const propSizeType = ['small', 'medium', 'large'] as const;
-
-interface Props extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'size'> {
+interface TextareaProps extends Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'size'> {
   className?: string;
-  size?: typeof propSizeType[number];
+  size?: 'small' | 'medium' | 'large';
   autoResize?: boolean;
 }
 
-function Textarea({ className, size = 'medium', autoResize, value, ...rest }: Props) {
+function Textarea({ className, size = 'medium', autoResize, value, ...rest }: TextareaProps) {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
@@ -32,11 +29,6 @@ function Textarea({ className, size = 'medium', autoResize, value, ...rest }: Pr
     />
   );
 }
-
-Textarea.propTypes = {
-  size: PropTypes.oneOf(propSizeType),
-  autoResize: PropTypes.bool,
-};
 
 Textarea.defaultProps = {
   size: 'medium',

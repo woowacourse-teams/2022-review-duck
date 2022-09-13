@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 
-import { Logo } from 'common/components';
+import { FlexContainer, Logo } from 'common/components';
 
 import Skeleton from 'common/components/Skeleton';
 
@@ -14,14 +14,14 @@ function ReviewLayout() {
         <Suspense
           fallback={
             <>
-              <div className="flex-container column" style={{ gap: '2rem' }}>
+              <FlexContainer direction="column" gap="large">
                 <Logo />
                 <Skeleton line={3} />
-              </div>
+              </FlexContainer>
 
-              <div className="flex-container column" style={{ gap: '2rem' }}>
+              <FlexContainer direction="column" gap="large">
                 <Skeleton line={4} />
-              </div>
+              </FlexContainer>
             </>
           }
         >

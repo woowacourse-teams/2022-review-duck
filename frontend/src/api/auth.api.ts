@@ -2,7 +2,7 @@ import { CreateRefreshTokenRequest, CreateRefreshResponse, UserProfileResponse }
 
 import axiosInstance from './config/axiosInstance';
 
-const createRefreshToken = async (
+export const createRefreshToken = async (
   query: CreateRefreshTokenRequest,
 ): Promise<CreateRefreshResponse> => {
   const { data } = await axiosInstance.post('/api/login', query);
@@ -10,24 +10,20 @@ const createRefreshToken = async (
   return data;
 };
 
-const deleteRefreshToken = async (): Promise<null> => {
+export const deleteRefreshToken = async (): Promise<null> => {
   const { data } = await axiosInstance.post('/api/logout');
 
   return data;
 };
 
-const getRefreshedAccessToken = async (): Promise<CreateRefreshResponse> => {
+export const getRefreshedAccessToken = async (): Promise<CreateRefreshResponse> => {
   const { data } = await axiosInstance.get('/api/login/refresh');
 
   return data;
 };
 
-const getProfile = async (): Promise<UserProfileResponse> => {
+export const getProfile = async (): Promise<UserProfileResponse> => {
   const { data } = await axiosInstance.get('/api/members/me');
 
   return data;
 };
-
-const authAPI = { createRefreshToken, deleteRefreshToken, getRefreshedAccessToken, getProfile };
-
-export default authAPI;

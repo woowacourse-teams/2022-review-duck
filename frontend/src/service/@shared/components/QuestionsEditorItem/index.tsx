@@ -11,7 +11,7 @@ import styles from './styles.module.scss';
 
 type UpdateQuestionEvent = React.MouseEvent | React.KeyboardEvent<HTMLInputElement>;
 
-interface Props {
+interface QuestionsEditorItemProps {
   numbering: number;
   description: string;
   children?: string;
@@ -29,7 +29,7 @@ function QuestionsEditorItem({
   onChangeDescription,
   onAddQuestion,
   onDeleteQuestion,
-}: Props) {
+}: QuestionsEditorItemProps) {
   const handleChangeQuestion = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChangeQuestion && onChangeQuestion(event);
   };
@@ -39,8 +39,6 @@ function QuestionsEditorItem({
   };
 
   const handleKeyUpTextBox = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    // TODO: 키보드 입력 버그 고치기 - 한글 입력 후 엔터가 두번 발생되는 문제
-
     if (event.key !== 'Enter') return;
 
     onAddQuestion && onAddQuestion(event);
@@ -61,7 +59,7 @@ function QuestionsEditorItem({
         </Text>
 
         <TextBox
-          className={cn('question', styles.question)}
+          className={styles.question}
           placeholder="질문 타이틀을 입력해주세요."
           defaultValue={children}
           onChange={handleChangeQuestion}

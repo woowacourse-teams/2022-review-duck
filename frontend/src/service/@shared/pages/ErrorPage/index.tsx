@@ -1,20 +1,20 @@
 import { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
+import { GITHUB_OAUTH_LOGIN_URL, PAGE_LIST } from 'constant';
+
 import { Button, FlexContainer, Icon, Text } from 'common/components';
 
 import styles from './styles.module.scss';
 
-import { GITHUB_OAUTH_LOGIN_URL, PAGE_LIST } from 'service/@shared/constants';
-
-interface Props {
+interface ErrorPageProps {
   status?: string | number;
   title: string;
   description: string;
   onResetError?: () => void;
 }
 
-function ErrorPage({ status, title, description, onResetError }: Props) {
+function ErrorPage({ status, title, description, onResetError }: ErrorPageProps) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 

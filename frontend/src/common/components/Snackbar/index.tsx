@@ -1,17 +1,14 @@
 import React, { useState } from 'react';
 
 import cn from 'classnames';
-import PropTypes from 'prop-types';
 
 import { TransitionDiv, Icon, Text } from 'common/components';
 
 import styles from './styles.module.scss';
 
-const propThemeType = ['primary', 'success', 'warning', 'danger'] as const;
-
 export interface SnackbarProps {
   icon?: string;
-  theme?: typeof propThemeType[number];
+  theme?: 'primary' | 'success' | 'warning' | 'danger';
   title: string;
   description?: string;
   duration?: number;
@@ -79,15 +76,6 @@ function Snackbar({
     </TransitionDiv>
   );
 }
-
-Snackbar.propTypes = {
-  icon: PropTypes.string,
-  theme: PropTypes.oneOf(propThemeType),
-  title: PropTypes.string,
-  description: PropTypes.string,
-  duration: PropTypes.number,
-  onDisappear: PropTypes.func,
-};
 
 Snackbar.defaultType = {
   icon: 'circle_notifications',

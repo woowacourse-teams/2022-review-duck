@@ -1,27 +1,28 @@
 import * as ReviewType from '../types/review';
 
-import { API_URI } from '../constants';
-import axiosInstance from 'service/@shared/api/config/axiosInstance';
+import { API_URI } from '../constant';
+import * as transformer from './review.transformer';
+import axiosInstance from 'api/config/axiosInstance';
 
-export const getForm = async (reviewFormCode = ''): Promise<ReviewType.GetReviewFormResponse> => {
+export const getForm = async (reviewFormCode = ''): Promise<ReviewType.ReviewForm> => {
   const { data } = await axiosInstance.get(API_URI.REVIEW.GET_FORM(reviewFormCode));
 
-  return data;
+  return transformer.transformForm(data);
 };
 
-export const getAnswer = async (reviewId: number): Promise<ReviewType.GetReviewAnswerResponse> => {
+export const getAnswer = async (reviewId: number): Promise<ReviewType.ReviewAnswer> => {
   const { data } = await axiosInstance.get(API_URI.REVIEW.GET_ANSWER(reviewId));
 
-  return data;
+  return transformer.transformAnswer(data);
 };
 
 export const getFormAnswer = async (
   reviewFormCode = '',
   display = 'list',
-): Promise<ReviewType.GetReviewFormAnswerResponse> => {
+): Promise<ReviewType.ReviewFormAnswerList> => {
   const { data } = await axiosInstance.get(API_URI.REVIEW.GET_FORM_ANSWER(reviewFormCode, display));
 
-  return data;
+  return transformer.transformFormAnswer(data);
 };
 
 export const createForm = async (

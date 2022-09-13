@@ -1,5 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 
+import { PAGE_LIST, USER_PROFILE_TAB } from 'constant';
+
 import useSnackbar from 'common/hooks/useSnackbar';
 
 import { Text } from 'common/components';
@@ -10,7 +12,6 @@ import Questions from 'service/@shared/components/Questions';
 import styles from './styles.module.scss';
 
 import useProfilePageQueries from '../../useProfilePageQueries';
-import { PAGE_LIST, USER_PROFILE_TAB } from 'service/@shared/constants';
 
 interface ReviewList {
   socialId: string;

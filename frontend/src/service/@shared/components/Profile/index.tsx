@@ -1,7 +1,9 @@
-import React, { Children, isValidElement } from 'react';
 import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
+import { PAGE_LIST } from 'constant';
+
+import { getChildComponent } from 'service/@shared/utils';
 
 import { Text } from 'common/components';
 
@@ -9,16 +11,6 @@ import FlexContainer, { FlexContainerProps } from 'common/components/FlexContain
 import { TextProps } from 'common/components/Text';
 
 import styles from './styles.module.scss';
-
-import { PAGE_LIST } from 'service/@shared/constants';
-
-const getChildComponent = (children: React.ReactNode, findTarget: JSX.Element) => {
-  const target = Children.toArray(children).filter(
-    (child) => isValidElement(child) && child.type === findTarget.type,
-  );
-
-  return target.length > 0 && target.splice(0, 1);
-};
 
 interface ImageProps {
   className?: string;
@@ -74,7 +66,7 @@ interface ContainerProps extends Partial<FlexContainerProps> {
   socialId: number;
   textAlign?: 'left' | 'center' | 'right';
   textGap?: Pick<FlexContainerProps, 'gap'>['gap'];
-  children?: React.ReactNode;
+  children: React.ReactNode;
 }
 
 function ProfileContainer({

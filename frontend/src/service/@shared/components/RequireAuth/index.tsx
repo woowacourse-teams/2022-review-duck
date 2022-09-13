@@ -1,11 +1,12 @@
 import { Navigate, Outlet } from 'react-router-dom';
 
+import { ACCESS_PERMISSION, PAGE_LIST } from 'constant';
+
 import useAuth from 'service/@shared/hooks/useAuth';
 
-import { ACCESS_PERMISSION, PAGE_LIST } from 'service/@shared/constants';
 import ErrorPage from 'service/@shared/pages/ErrorPage';
 
-interface Props {
+interface RequireAuthProps {
   permission?: boolean;
   isDeniedPageEnabled?: boolean;
 }
@@ -13,7 +14,7 @@ interface Props {
 function RequireAuth({
   permission = ACCESS_PERMISSION.LOGIN_USER,
   isDeniedPageEnabled = true,
-}: Props) {
+}: RequireAuthProps) {
   const { isLogin } = useAuth();
 
   if (isLogin === permission) {

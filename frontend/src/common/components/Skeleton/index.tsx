@@ -1,5 +1,3 @@
-import propTypes from 'prop-types';
-
 import styles from './styles.module.scss';
 
 function Skeleton({ line }: Record<'line', number>) {
@@ -19,10 +17,6 @@ function Skeleton({ line }: Record<'line', number>) {
 
 Skeleton.defaultProps = {
   line: 1,
-};
-
-Skeleton.propTypes = {
-  line: propTypes.number,
 };
 
 export default Skeleton;

@@ -1,22 +1,18 @@
 import { useState } from 'react';
 
 import cn from 'classnames';
-import PropTypes from 'prop-types';
 
 import styles from './styles.module.scss';
 
-const propSizeType = ['small', 'medium', 'large'] as const;
-const propThemeType = ['default', 'outlined', 'circle'] as const;
-
-interface Props extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
-  size: typeof propSizeType[number];
-  theme: typeof propThemeType[number];
+  size: 'small' | 'medium' | 'large';
+  theme: 'default' | 'outlined' | 'circle';
   filled: boolean;
   children: React.ReactNode;
 }
 
-function Button({ className, size, theme, filled, onClick, children, ...rest }: Props) {
+function Button({ className, size, theme, filled, onClick, children, ...rest }: ButtonProps) {
   const [rippleEffect, setRippleEffect] = useState({ isRippling: false, clickX: -1, clickY: -1 });
 
   const handleRippleEffect = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -54,15 +50,7 @@ function Button({ className, size, theme, filled, onClick, children, ...rest }: 
   );
 }
 
-Button.propTypes = {
-  theme: PropTypes.oneOf(propThemeType),
-  size: PropTypes.oneOf(propSizeType),
-  filled: PropTypes.bool,
-  disabled: PropTypes.bool,
-};
-
 Button.defaultProps = {
-  type: 'button',
   theme: 'default',
   size: 'medium',
   filled: false,
