@@ -86,6 +86,7 @@ module.exports = (env = {}, options = {}) => {
     plugins: [
       new webpack.DefinePlugin({
         'process.env': JSON.stringify(parsedEnv),
+        __MSW_DIR__: JSON.stringify(parsedEnv.MOCKING ? './mocks/browser.js' : ''),
       }),
       new webpack.LoaderOptionsPlugin({
         options: {
@@ -97,7 +98,6 @@ module.exports = (env = {}, options = {}) => {
         favicon: './public/favicon.ico',
       }),
       new MiniCssExtractPlugin({ linkType: false, filename: `css/[name].${app.version}.css` }),
-      new BundleAnalyzerPlugin(),
     ],
   };
 };
