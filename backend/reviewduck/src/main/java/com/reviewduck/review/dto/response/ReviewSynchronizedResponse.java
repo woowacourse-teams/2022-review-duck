@@ -38,7 +38,7 @@ public class ReviewSynchronizedResponse {
 
     }
 
-    public boolean isPrivate() {
+    public boolean getIsPrivate() {
         return isPrivate;
     }
 
