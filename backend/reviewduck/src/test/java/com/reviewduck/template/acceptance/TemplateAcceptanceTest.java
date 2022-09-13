@@ -174,7 +174,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             saveTemplateAndGetId(accessToken2, "title2");
 
             // when, then
-            get("/api/templates?page=0&size=1&sort=latest", accessToken1).statusCode(HttpStatus.OK.value())
+            get("/api/templates?page=1&size=1&sort=latest", accessToken1).statusCode(HttpStatus.OK.value())
                 .assertThat().body("numberOfTemplates", equalTo(2))
                 .assertThat().body("templates", hasSize(1))
                 .assertThat().body("templates[0].info.title", equalTo("title2"))
@@ -190,7 +190,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             post("/api/templates/" + templateId + "/review-forms", accessToken1);
 
             // when, then
-            get("/api/templates?page=0&size=1&sort=trend", accessToken1).statusCode(HttpStatus.OK.value())
+            get("/api/templates?page=1&size=1&sort=trend", accessToken1).statusCode(HttpStatus.OK.value())
                 .assertThat().body("numberOfTemplates", equalTo(2))
                 .assertThat().body("templates", hasSize(1))
                 .assertThat().body("templates[0].info.title", equalTo("title1"))
@@ -236,7 +236,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             saveTemplateAndGetId(accessToken2, "title4");
 
             // when, then
-            get("/api/templates?page=0&size=1&member=1", accessToken2)
+            get("/api/templates?page=1&size=1&member=1", accessToken2)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat().body("numberOfTemplates", equalTo(2))
                 .assertThat().body("templates", hasSize(1))
