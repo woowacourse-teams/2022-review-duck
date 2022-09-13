@@ -21,6 +21,7 @@ import lombok.NoArgsConstructor;
 public class ReviewSynchronizedResponse {
 
     private String reviewTitle;
+    private boolean isPrivate;
     private List<ReviewContentResponse> contents;
 
     public static ReviewSynchronizedResponse from(Review review) {
@@ -33,7 +34,12 @@ public class ReviewSynchronizedResponse {
             .map(question -> ReviewContentResponse.of(question, reviewMap.getOrDefault(question, null)))
             .collect(Collectors.toUnmodifiableList());
 
-        return new ReviewSynchronizedResponse(review.getTitle(), contents);
+        return new ReviewSynchronizedResponse(review.getTitle(), review.isPrivate(), contents);
+
+    }
+
+    public boolean isPrivate() {
+        return isPrivate;
     }
 
 }
