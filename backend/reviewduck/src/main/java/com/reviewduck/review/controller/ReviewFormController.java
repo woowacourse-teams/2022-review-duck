@@ -106,7 +106,7 @@ public class ReviewFormController {
 
         info("/api/review-forms?member=" + socialId + "page=" + page + " size=" + size, "GET", "");
 
-        Page<ReviewForm> reviewForms = reviewFormService.findBySocialId(socialId, page, size);
+        Page<ReviewForm> reviewForms = reviewFormService.findBySocialId(socialId, --page, size);
 
         return MemberReviewFormsResponse.of(reviewForms, socialId, member);
     }

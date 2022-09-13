@@ -60,7 +60,7 @@ public class ReviewController {
 
         info("/api/reviews?member=" + socialId + "page=" + page + " size=" + size, "GET", "");
 
-        Page<Review> reviews = reviewService.findBySocialId(socialId, member, page, size);
+        Page<Review> reviews = reviewService.findBySocialId(socialId, member, --page, size);
 
         return ReviewsResponse.of(reviews, socialId, member);
     }
