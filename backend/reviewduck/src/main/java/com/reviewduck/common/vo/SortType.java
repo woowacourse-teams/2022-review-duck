@@ -24,7 +24,7 @@ public enum SortType {
         return Arrays.stream(values())
             .filter(s -> s.param.equals(input))
             .findAny()
-            .orElse(LATEST)
+            .orElse(TREND)
             .sortBy;
     }
 }

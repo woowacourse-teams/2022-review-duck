@@ -1,6 +1,5 @@
 package com.reviewduck.template.service;
 
-import static com.reviewduck.acceptance.TestPageConstant.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -191,29 +190,6 @@ public class TemplateServiceTest {
             assertAll(
                 () -> assertThat(templates).hasSize(1),
                 () -> assertThat(templates.get(0)).isEqualTo(template2)
-            );
-        }
-
-        @Test
-        @DisplayName("기본 크기의 페이지를 기본 정렬기준으로 조회한다.")
-        void findPageDefault() throws InterruptedException {
-            // given
-            // create template
-
-            // create 15 template1
-            for (int i = 0; i < 15; i++) {
-                saveTemplate(member1, "title1", "description1", questions1);
-            }
-            // create latestTemplate
-            Template latestTemplate = saveTemplate(member1, "title2", "description2", questions2);
-
-            // when
-            List<Template> templates = templateService.findAll(DEFAULT_PAGE, DEFAULT_SIZE, null).getContent();
-
-            // then
-            assertAll(
-                () -> assertThat(templates).hasSize(DEFAULT_SIZE),
-                () -> assertThat(templates.get(0)).isEqualTo(latestTemplate)
             );
         }
 

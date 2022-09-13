@@ -155,11 +155,12 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             for (int i = 0; i < DEFAULT_SIZE + 5; i++) {
                 saveTemplateAndGetId(accessToken1, "title1");
             }
-            saveTemplateAndGetId(accessToken2, "title2");
+            long templateId = saveTemplateAndGetId(accessToken2, "title2");
+            post("/api/templates/" + templateId + "/review-forms", accessToken1);
 
             // when, then
             get("/api/templates", accessToken1).statusCode(HttpStatus.OK.value())
-                .assertThat().body("numberOfTemplates", equalTo(16))
+                .assertThat().body("numberOfTemplates", equalTo(DEFAULT_SIZE + 6))
                 .assertThat().body("templates", hasSize(DEFAULT_SIZE))
                 .assertThat().body("templates[0].info.title", equalTo("title2"))
                 .assertThat().body("templates[0].isCreator", equalTo(false));
@@ -219,7 +220,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
             // when, then
             get("/api/templates?member=1", accessToken2).statusCode(HttpStatus.OK.value())
-                .assertThat().body("numberOfTemplates", equalTo(16))
+                .assertThat().body("numberOfTemplates", equalTo(DEFAULT_SIZE + 6))
                 .assertThat().body("templates", hasSize(DEFAULT_SIZE))
                 .assertThat().body("templates[0].info.title", equalTo("title2"))
                 .assertThat().body("isMine", equalTo(false));
