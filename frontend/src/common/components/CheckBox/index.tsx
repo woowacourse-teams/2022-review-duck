@@ -1,3 +1,5 @@
+import cn from 'classnames';
+
 import styles from './styles.module.scss';
 
 import FlexContainer from '../FlexContainer';
@@ -5,12 +7,13 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export interface CheckboxProps extends React.HTMLAttributes<HTMLInputElement> {
+  className?: string;
   children: string;
 }
 
-function CheckBox({ children, ...rest }: CheckboxProps) {
+function CheckBox({ className, children, ...rest }: CheckboxProps) {
   return (
-    <label className={styles.componentCheckbox}>
+    <label className={cn(styles.componentCheckbox, className)}>
       <input type="checkbox" className={styles.input} {...rest} />
 
       <FlexContainer className={styles.checkbox} align="center" justify="center">
