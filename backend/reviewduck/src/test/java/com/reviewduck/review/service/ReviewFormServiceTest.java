@@ -327,14 +327,17 @@ public class ReviewFormServiceTest {
     class findMemberReviewForm {
 
         @Test
-        @DisplayName("회고 폼을 UpdatedAt 내림차순으로 조회한다.")
-        void findMyReviewsFormOrderByUpdatedAtDesc() throws InterruptedException {
+        @DisplayName("자신이 작성한 회고 질문지 중 최신순으로 첫 페이지를 조회한다.")
+        void findPageOfReviewsFromsOrderByLatest() throws InterruptedException {
             // given
             saveReviewForm(member1);
             ReviewForm expected = saveReviewForm(member1);
 
             // when
-            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId());
+            Integer page = 0;
+            Integer size = 3;
+            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page ,size)
+                .getContent();
 
             // then
             assertAll(

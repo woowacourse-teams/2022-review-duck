@@ -3,11 +3,15 @@ package com.reviewduck.template.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
+import com.reviewduck.common.vo.SortType;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.template.domain.Template;
@@ -49,18 +53,19 @@ public class TemplateService {
             .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
     }
 
-    public List<Template> findBySocialId(String id) {
+    public Page<Template> findAll(Integer page, Integer size, String sort) {
+        String sortType = SortType.getSortBy(sort);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+
+        return templateRepository.findAll(pageRequest);
+    }
+
+    public Page<Template> findAllBySocialId(String id, Integer page, Integer size) {
+        String sortType = "updatedAt";
         Member member = memberService.getBySocialId(id);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
 
-        return templateRepository.findByMemberOrderByUpdatedAtDesc(member);
-    }
-
-    public List<Template> findAllOrderByLatest() {
-        return templateRepository.findAllByOrderByUpdatedAtDesc();
-    }
-
-    public List<Template> findAllOrderByTrend() {
-        return templateRepository.findAllByOrderByUsedCountDesc();
+        return templateRepository.findByMember(pageRequest, member);
     }
 
     @Transactional
@@ -100,4 +105,5 @@ public class TemplateService {
     public void increaseUsedCount(Long templateId) {
         templateRepository.increaseUsedCount(templateId);
     }
+
 }

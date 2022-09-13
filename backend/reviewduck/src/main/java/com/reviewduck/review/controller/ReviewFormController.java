@@ -1,12 +1,14 @@
 package com.reviewduck.review.controller;
 
 import static com.reviewduck.common.util.Logging.*;
+import static com.reviewduck.common.vo.PageConstant.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -94,15 +96,17 @@ public class ReviewFormController {
         return ReviewFormResponse.of(reviewForm, member);
     }
 
-    @Operation(summary = "사용자가 작성한 회고 폼을 모두 조회한다.")
+    @Operation(summary = "사용자가 작성한 회고 질문지 중 특정 페이지를 조회한다.")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public MemberReviewFormsResponse findReviewFormsBySocialId(@AuthenticationPrincipal Member member,
-        @RequestParam(value = "member") String socialId) {
+    public MemberReviewFormsResponse findPageOfReviewFormsBySocialId(@AuthenticationPrincipal Member member,
+        @RequestParam(value = "member") String socialId,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size) {
 
-        info("/api/review-forms?member=" + socialId, "GET", "");
+        info("/api/review-forms?member=" + socialId + "page=" + page + " size=" + size, "GET", "");
 
-        List<ReviewForm> reviewForms = reviewFormService.findBySocialId(socialId);
+        Page<ReviewForm> reviewForms = reviewFormService.findBySocialId(socialId, page, size);
 
         return MemberReviewFormsResponse.of(reviewForms, socialId, member);
     }

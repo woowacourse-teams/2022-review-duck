@@ -160,15 +160,18 @@ public class ReviewServiceTest {
     class findMemberReview {
 
         @Test
-        @DisplayName("자신이 작성한 회고를 UpdatedAt 내림차순으로 조회한다.")
-        void findMyReviewsOrderByUpdatedAtDesc() throws InterruptedException {
+        @DisplayName("자신이 작성한 회고 중 최신순으로 첫 페이지를 조회한다.")
+        void findPageOfMyReviewsOrderByLatest() throws InterruptedException {
             // given
             saveReview(member1, false);
             saveReview(member1, true);
             Review review = saveReview(member1, false);
 
             // when
-            List<Review> myReviews = reviewService.findBySocialId(member1.getSocialId(), member1);
+            Integer page = 0;
+            Integer size = 3;
+            List<Review> myReviews = reviewService.findBySocialId(member1.getSocialId(), member1, page, size)
+                .getContent();
 
             // then
             assertAll(
@@ -180,15 +183,18 @@ public class ReviewServiceTest {
         }
 
         @Test
-        @DisplayName("타인이 작성한 회고를 UpdatedAt 내림차순으로 조회한다.")
-        void findOtherReviewsOrderByUpdatedAtDesc() throws InterruptedException {
+        @DisplayName("타인이 작성한 회고 중 최신순으로 첫 페이지를 조회한다.")
+        void findPageOfOtherReviewsOrderByUpdatedAtDesc() throws InterruptedException {
             // given
             saveReview(member1, false);
             saveReview(member1, true);
             Review review = saveReview(member1, false);
 
             // when
-            List<Review> myReviews = reviewService.findBySocialId(member1.getSocialId(), member2);
+            Integer page = 0;
+            Integer size = 3;
+            List<Review> myReviews = reviewService.findBySocialId(member1.getSocialId(), member2, page, size)
+                .getContent();
 
             // then
             assertAll(
@@ -201,13 +207,16 @@ public class ReviewServiceTest {
 
         @Test
         @DisplayName("특정 회고 폼을 삭제해도 자신이 생성한 회고를 조회할 수 있다.")
-        void findReviewsByDeletedSpecificReviewForm() throws InterruptedException {
+        void findPageOfReviewsByDeletedSpecificReviewForm() throws InterruptedException {
             // given
             Review savedReview = saveReview(member1, false);
 
             // when
             reviewFormService.deleteByCode(member1, reviewForm.getCode());
-            List<Review> reviews = reviewService.findBySocialId(member1.getSocialId(), member1);
+            Integer page = 0;
+            Integer size = 3;
+            List<Review> reviews = reviewService.findBySocialId(member1.getSocialId(), member1, page, size)
+                .getContent();
 
             // then
             assertAll(

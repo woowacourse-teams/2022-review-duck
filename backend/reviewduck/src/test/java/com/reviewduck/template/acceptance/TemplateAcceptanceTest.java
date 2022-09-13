@@ -1,8 +1,7 @@
 package com.reviewduck.template.acceptance;
 
-import static org.assertj.core.api.Assertions.*;
+import static com.reviewduck.acceptance.TestPageConstant.*;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
@@ -16,13 +15,11 @@ import org.springframework.http.HttpStatus;
 import com.reviewduck.acceptance.AcceptanceTest;
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
-import com.reviewduck.template.dto.response.MemberTemplatesResponse;
 import com.reviewduck.template.dto.response.TemplateIdResponse;
 
 public class TemplateAcceptanceTest extends AcceptanceTest {
@@ -45,6 +42,33 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
 
         accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember1.getId()));
         accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember2.getId()));
+    }
+
+    private long saveTemplateAndGetId(String accessToken) {
+        String templateTitle = "title";
+        String description = "test description";
+        List<TemplateQuestionCreateRequest> questions = List.of(
+            new TemplateQuestionCreateRequest("question1", "description1"),
+            new TemplateQuestionCreateRequest("question2", "description2"));
+        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, description, questions);
+
+        return post("/api/templates", templateCreateRequest, accessToken)
+            .extract()
+            .as(TemplateIdResponse.class)
+            .getTemplateId();
+    }
+
+    private long saveTemplateAndGetId(String accessToken, String title) {
+        String description = "test description";
+        List<TemplateQuestionCreateRequest> questions = List.of(
+            new TemplateQuestionCreateRequest("question1", "description1"),
+            new TemplateQuestionCreateRequest("question2", "description2"));
+        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(title, description, questions);
+
+        return post("/api/templates", templateCreateRequest, accessToken)
+            .extract()
+            .as(TemplateIdResponse.class)
+            .getTemplateId();
     }
 
     @Nested
@@ -121,61 +145,115 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("최신순 전체 템플릿 조회")
-    class findAllOrderByLatest {
+    @DisplayName("템플릿 전체 조회")
+    class findAllTemplates {
 
         @Test
-        @DisplayName("전체 템플릿을 최신순으로 조회한다.")
-        void findAllOrderByLatest() {
+        @DisplayName("파라미터가 없는 경우 페이지 기본값으로 조회한다.")
+        void findPage() {
+            // given
+            for (int i = 0; i < DEFAULT_SIZE + 5; i++) {
+                saveTemplateAndGetId(accessToken1, "title1");
+            }
+            long templateId = saveTemplateAndGetId(accessToken2, "title2");
+            post("/api/templates/" + templateId + "/review-forms", accessToken1);
+
+            // when, then
+            get("/api/templates", accessToken1).statusCode(HttpStatus.OK.value())
+                .assertThat().body("numberOfTemplates", equalTo(DEFAULT_SIZE + 6))
+                .assertThat().body("templates", hasSize(DEFAULT_SIZE))
+                .assertThat().body("templates[0].info.title", equalTo("title2"))
+                .assertThat().body("templates[0].isCreator", equalTo(false));
+        }
+
+        @Test
+        @DisplayName("최신순으로 특정 페이지를 조회한다.")
+        void findPageOrderByLatest() {
             // given
             saveTemplateAndGetId(accessToken1, "title1");
             saveTemplateAndGetId(accessToken2, "title2");
 
             // when, then
-            get("/api/templates?filter=latest", accessToken1).statusCode(HttpStatus.OK.value())
-                .assertThat().body("templates", hasSize(2))
+            get("/api/templates?page=0&size=1&sort=latest", accessToken1).statusCode(HttpStatus.OK.value())
+                .assertThat().body("numberOfTemplates", equalTo(2))
+                .assertThat().body("templates", hasSize(1))
                 .assertThat().body("templates[0].info.title", equalTo("title2"))
-                .assertThat().body("templates[0].isCreator", equalTo(false))
-                .assertThat().body("templates[1].info.title", equalTo("title1"))
-                .assertThat().body("templates[1].isCreator", equalTo(true));
+                .assertThat().body("templates[0].isCreator", equalTo(false));
+        }
 
+        @Test
+        @DisplayName("인기순으로 특정 페이지를 조회한다.")
+        void findPageOrderByTrend() {
+            // given
+            long templateId = saveTemplateAndGetId(accessToken1, "title1");
+            saveTemplateAndGetId(accessToken2, "title2");
+            post("/api/templates/" + templateId + "/review-forms", accessToken1);
+
+            // when, then
+            get("/api/templates?page=0&size=1&sort=trend", accessToken1).statusCode(HttpStatus.OK.value())
+                .assertThat().body("numberOfTemplates", equalTo(2))
+                .assertThat().body("templates", hasSize(1))
+                .assertThat().body("templates[0].info.title", equalTo("title1"))
+                .assertThat().body("templates[0].isCreator", equalTo(true));
         }
 
         @Test
         @DisplayName("로그인하지 않은 상태로 조회할 수 있다.")
         void withoutLogin() {
-            get("/api/templates?filter=trend").statusCode(HttpStatus.OK.value());
+            get("/api/templates").statusCode(HttpStatus.OK.value());
         }
 
     }
 
     @Nested
-    @DisplayName("사용순 전체 템플릿 조회")
-    class findAllOrderByTrend {
+    @DisplayName("사용자별 템플릿 전체 조회")
+    class findAllTemplatesBySocialId {
 
         @Test
-        @DisplayName("전체 템플릿을 사용순으로 조회한다.")
-        void findAllOrderByTrend() {
+        @DisplayName("파라미터가 없는 경우 페이지 기본값으로 조회한다.")
+        void findPage() {
             // given
-            // save template 1,2,3
-            saveTemplateAndGetId(accessToken1, "title1");
-            Long templateId = saveTemplateAndGetId(accessToken2, "title2");
-            saveTemplateAndGetId(accessToken1, "title3");
-
-            // use template2
-            post("/api/templates/" + templateId + "/review-forms", accessToken1);
+            for (int i = 0; i < DEFAULT_SIZE + 5; i++) {
+                saveTemplateAndGetId(accessToken1, "title1");
+            }
+            saveTemplateAndGetId(accessToken1, "title2");
 
             // when, then
-            get("/api/templates?filter=trend", accessToken1).statusCode(HttpStatus.OK.value())
-                .assertThat().body("templates", hasSize(3))
-                .assertThat().body("templates[0].info.title", equalTo("title2"));
+            get("/api/templates?member=1", accessToken2).statusCode(HttpStatus.OK.value())
+                .assertThat().body("numberOfTemplates", equalTo(DEFAULT_SIZE + 6))
+                .assertThat().body("templates", hasSize(DEFAULT_SIZE))
+                .assertThat().body("templates[0].info.title", equalTo("title2"))
+                .assertThat().body("isMine", equalTo(false));
+        }
 
+        @Test
+        @DisplayName("특정 페이지를 조회한다.")
+        void findPageOrderByLatest() {
+            // given
+            saveTemplateAndGetId(accessToken1, "title1");
+            saveTemplateAndGetId(accessToken1, "title2");
+            saveTemplateAndGetId(accessToken2, "title3");
+            saveTemplateAndGetId(accessToken2, "title4");
+
+            // when, then
+            get("/api/templates?page=0&size=1&member=1", accessToken2)
+                .statusCode(HttpStatus.OK.value())
+                .assertThat().body("numberOfTemplates", equalTo(2))
+                .assertThat().body("templates", hasSize(1))
+                .assertThat().body("templates[0].info.title", equalTo("title2"))
+                .assertThat().body("isMine", equalTo(false));
         }
 
         @Test
         @DisplayName("로그인하지 않은 상태로 조회할 수 있다.")
         void withoutLogin() {
-            get("/api/templates?filter=latest").statusCode(HttpStatus.OK.value());
+            get("/api/templates?member=1").statusCode(HttpStatus.OK.value());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 사용자에 대해 조회할 수 없다.")
+        void invalidId() {
+            get("/api/templates?member=12345", accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
         }
 
     }
@@ -213,77 +291,6 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         void invalidId() {
             // when, then
             get("/api/templates/" + 9999L, accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
-        }
-
-    }
-
-    @Nested
-    @DisplayName("사용자가 작성한 템플릿 조회")
-    class findMemberBySocialId {
-
-        @Test
-        @DisplayName("사용자가 작성한 템플릿을 최근 수정시각을 기준으로 내림차순 정렬하여 조회한다.")
-        void findMemberBySocialIdOrderByUpdatedAt() {
-            // given
-            // save template
-            String templateTitle1 = "title1";
-            String templateDescription1 = "test description1";
-            List<TemplateQuestionCreateRequest> questions1 = List.of(
-                new TemplateQuestionCreateRequest("question1", "description1"),
-                new TemplateQuestionCreateRequest("question2", "description2"));
-            TemplateCreateRequest request1 = new TemplateCreateRequest(templateTitle1, templateDescription1,
-                questions1);
-            post("/api/templates", request1, accessToken1);
-
-            String templateTitle2 = "title2";
-            String templateDescription2 = "test description2";
-            List<TemplateQuestionCreateRequest> questions2 = List.of(
-                new TemplateQuestionCreateRequest("question3", "description3"),
-                new TemplateQuestionCreateRequest("question4", "description4"));
-            TemplateCreateRequest request2 = new TemplateCreateRequest(templateTitle2, templateDescription2,
-                questions2);
-            post("/api/templates", request2, accessToken2);
-
-            String templateTitle3 = "title3";
-            String templateDescription3 = "test description3";
-            List<TemplateQuestionCreateRequest> questions3 = List.of
-                (new TemplateQuestionCreateRequest("question5", "description5"),
-                    new TemplateQuestionCreateRequest("question6", "description6"));
-            TemplateCreateRequest request3 = new TemplateCreateRequest(templateTitle3, templateDescription3,
-                questions3);
-            post("/api/templates", request3, accessToken1);
-
-            // find memberInfo
-            MemberResponse member = get("/api/members/1", accessToken1)
-                .extract()
-                .as(MemberResponse.class);
-
-            // when, then
-            MemberTemplatesResponse memberTemplatesResponse = get("/api/templates?member=" + member.getSocialId(),
-                accessToken1)
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .as(MemberTemplatesResponse.class);
-
-            assertAll(
-                () -> assertThat(memberTemplatesResponse.getNumberOfTemplates()).isEqualTo(2),
-                () -> assertThat(memberTemplatesResponse.getTemplates()).hasSize(2),
-                () -> assertThat(memberTemplatesResponse.getTemplates().get(0).getInfo().getTitle())
-                    .isEqualTo(templateTitle3)
-            );
-
-        }
-
-        @Test
-        @DisplayName("로그인하지 않은 상태로 조회할 수 있다.")
-        void withoutLogin() {
-            get("/api/templates?member=1").statusCode(HttpStatus.OK.value());
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 사용자에 대해 조회할 수 없다.")
-        void invalidId() {
-            get("/api/templates?member=12345", accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
         }
 
     }
@@ -406,32 +413,5 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             delete("/api/templates/" + 9999L, accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
         }
 
-    }
-
-    private long saveTemplateAndGetId(String accessToken) {
-        String templateTitle = "title";
-        String description = "test description";
-        List<TemplateQuestionCreateRequest> questions = List.of(
-            new TemplateQuestionCreateRequest("question1", "description1"),
-            new TemplateQuestionCreateRequest("question2", "description2"));
-        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, description, questions);
-
-        return post("/api/templates", templateCreateRequest, accessToken)
-            .extract()
-            .as(TemplateIdResponse.class)
-            .getTemplateId();
-    }
-
-    private long saveTemplateAndGetId(String accessToken, String title) {
-        String description = "test description";
-        List<TemplateQuestionCreateRequest> questions = List.of(
-            new TemplateQuestionCreateRequest("question1", "description1"),
-            new TemplateQuestionCreateRequest("question2", "description2"));
-        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(title, description, questions);
-
-        return post("/api/templates", templateCreateRequest, accessToken)
-            .extract()
-            .as(TemplateIdResponse.class)
-            .getTemplateId();
     }
 }

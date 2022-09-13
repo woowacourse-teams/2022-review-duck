@@ -1,12 +1,14 @@
 package com.reviewduck.review.controller;
 
 import static com.reviewduck.common.util.Logging.*;
+import static com.reviewduck.common.vo.PageConstant.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,11 +53,14 @@ public class ReviewController {
     @GetMapping(params = "member")
     @ResponseStatus(HttpStatus.OK)
     public ReviewsResponse findBySocialId(@AuthenticationPrincipal Member member,
-        @RequestParam(value = "member") String socialId) {
+        @RequestParam(value = "member") String socialId,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size
+    ) {
 
-        info("/api/reviews?member=" + socialId, "GET", "");
+        info("/api/reviews?member=" + socialId + "page=" + page + " size=" + size, "GET", "");
 
-        List<Review> reviews = reviewService.findBySocialId(socialId, member);
+        Page<Review> reviews = reviewService.findBySocialId(socialId, member, page, size);
 
         return ReviewsResponse.of(reviews, socialId, member);
     }

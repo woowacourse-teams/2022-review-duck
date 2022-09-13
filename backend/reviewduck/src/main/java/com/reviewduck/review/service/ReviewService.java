@@ -3,6 +3,9 @@ package com.reviewduck.review.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +60,20 @@ public class ReviewService {
             return reviewRepository.findByMemberOrderByUpdatedAtDesc(member);
         }
         return reviewRepository.findByMemberAndIsPrivateFalseOrderByUpdatedAtDesc(owner);
+    }
+
+    public Page<Review> findBySocialId(String socialId, Member member, Integer page, Integer size) {
+        String sortType = "updatedAt";
+
+        Member owner = memberService.getBySocialId(socialId);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+
+        if (member.equals(owner)) {
+            return reviewRepository.findByMember(member, pageRequest);
+        }
+
+        return reviewRepository.findByMemberAndIsPrivateFalse(owner, pageRequest);
+
     }
 
     public List<Review> findAllByCode(String code) {
