@@ -16,7 +16,7 @@ function useGetTemplates(
   queryOptions?: UseQueryOptions<GetTemplatesResponse, ErrorResponse>,
 ) {
   return useQuery<GetTemplatesResponse, ErrorResponse>(
-    [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_TEMPLATES, { filter, pageNumber }],
+    [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_TEMPLATES, { filter, pageNumber, itemCount }],
     () => templateAPI.getTemplates(filter, pageNumber, itemCount),
     {
       ...queryOptions,
