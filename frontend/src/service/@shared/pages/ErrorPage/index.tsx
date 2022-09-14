@@ -54,7 +54,7 @@ function ErrorPage({ status, title, description, onResetError }: ErrorPageProps)
       </FlexContainer>
 
       <FlexContainer className={styles.textContainer} gap="medium">
-        <Text className={styles.title} size={32} element="h1">
+        <Text as="h1" className={styles.title} size={32}>
           {title}
         </Text>
       </FlexContainer>

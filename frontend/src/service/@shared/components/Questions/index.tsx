@@ -35,7 +35,7 @@ interface TitleProps {
 
 function Title({ children }: TitleProps) {
   return (
-    <Text className={styles.title} size={24} weight="bold" element="h1">
+    <Text as="h1" className={styles.title} size={24} weight="bold">
       {children}
     </Text>
   );

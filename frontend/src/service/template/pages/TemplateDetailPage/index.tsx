@@ -78,7 +78,7 @@ function TemplateDetailPage() {
     <LayoutContainer>
       <section className={styles.header}>
         <div className={styles.titleContainer}>
-          <Text className={styles.title} size={28} weight="bold" element="h1">
+          <Text as="h1" className={styles.title} size={28} weight="bold">
             {template.info.title}
           </Text>
           <div className={styles.info}>
@@ -115,7 +115,7 @@ function TemplateDetailPage() {
             <div className={styles.iconButtons}>
               <div className={styles.iconButton} onClick={handleDeleteTemplate(template.info.id)}>
                 <Icon type="round" code="delete" />
-                <Text size={14} element="span">
+                <Text as="span" size={14}>
                   템플릿 삭제
                 </Text>
               </div>
@@ -126,7 +126,7 @@ function TemplateDetailPage() {
                 <div className={styles.iconButton}>
                   <Icon type="round" code="edit" />
 
-                  <Text size={14} element="span">
+                  <Text as="span" size={14}>
                     템플릿 수정
                   </Text>
                 </div>
