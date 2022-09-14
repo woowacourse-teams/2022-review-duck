@@ -4,8 +4,6 @@ import static com.reviewduck.common.util.Logging.*;
 import static com.reviewduck.common.vo.PageConstant.*;
 
 import java.util.List;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -108,10 +106,8 @@ public class ReviewFormController {
 
         List<Review> reviews = reviewService.findAllByCode(reviewFormCode);
 
-        BiFunction<Member, Review, ReviewAbstractResponse> reviewResponseBuilder = DisplayType.builderOf(displayType);
-        return reviews.stream()
-            .map(review -> reviewResponseBuilder.apply(member, review))
-            .collect(Collectors.toUnmodifiableList());
+        return ReviewDisplayBuilder.of(displayType)
+            .createResponseFrom(member, reviews);
     }
 
     @Operation(summary = "회고 폼을 수정한다.")
