@@ -1,5 +1,3 @@
-import { useQuery, UseQueryOptions } from 'react-query';
-
 import { authAPI } from 'api';
 import {
   ACCESS_TOKEN_EXPIRE_TIME,
@@ -9,6 +7,8 @@ import {
 } from 'constant';
 import { UserProfileResponse, CreateRefreshResponse } from 'types';
 import { ErrorResponse } from 'types';
+
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 function useGetAccessToken(queryOptions?: UseQueryOptions<CreateRefreshResponse, ErrorResponse>) {
   return useQuery<CreateRefreshResponse, ErrorResponse>(

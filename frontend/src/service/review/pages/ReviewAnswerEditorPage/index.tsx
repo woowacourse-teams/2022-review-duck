@@ -11,12 +11,6 @@ import useAnswerEditorPage from './useAnswerEditorPage';
 import { Editor } from './views/Editor';
 import { Status } from './views/Status';
 
-/*
-  TODO:
-  - [ ] 상수 분리
-  - [ ] 에러 바운더리 적용
-*/
-
 const EDITOR_MODE = {
   NEW_ANSWER: false,
   UPDATE_ANSWER: true,
@@ -37,6 +31,8 @@ function ReviewAnswerEditorPage() {
   const { questions, answeredCount, isAnswerComplete, updateAnswer } = useQuestions(
     reviewContents.questions,
   );
+
+  const [isPrivate, setPrivate] = useState(!!reviewContents.info.isPrivate);
   const [focusQuestionIndex, setFocusQuestionIndex] = useState(0);
 
   const handleFocusAnswer = (index: number) => () => {
@@ -48,6 +44,10 @@ function ReviewAnswerEditorPage() {
     ({ target }: React.ChangeEvent<HTMLTextAreaElement>) => {
       updateAnswer(index, { value: target.value });
     };
+
+  const handleChangePrivate = () => {
+    setPrivate(!isPrivate);
+  };
 
   const handleSubmitSuccess = () => {
     showSnackbar({
@@ -71,16 +71,22 @@ function ReviewAnswerEditorPage() {
     const isEditorMode = !!reviewId;
 
     isEditorMode === EDITOR_MODE.NEW_ANSWER &&
-      submitCreateAnswer(questions, {
-        onSuccess: handleSubmitSuccess,
-        onError: handleSubmitError,
-      });
+      submitCreateAnswer(
+        { questions, isPrivate },
+        {
+          onSuccess: handleSubmitSuccess,
+          onError: handleSubmitError,
+        },
+      );
 
     isEditorMode === EDITOR_MODE.UPDATE_ANSWER &&
-      submitUpdateAnswer(reviewId, questions, {
-        onSuccess: handleSubmitSuccess,
-        onError: handleSubmitError,
-      });
+      submitUpdateAnswer(
+        { reviewId, questions, isPrivate },
+        {
+          onSuccess: handleSubmitSuccess,
+          onError: handleSubmitError,
+        },
+      );
   };
 
   const handleCancel = () => {
@@ -120,6 +126,8 @@ function ReviewAnswerEditorPage() {
             onChange={handleChangeAnswer(index)}
           />
         ))}
+
+        <Editor.PrivateCheckBox checked={isPrivate} onChange={handleChangePrivate} />
 
         <Editor.ConfirmButtons
           submitDisabled={!isAnswerComplete}

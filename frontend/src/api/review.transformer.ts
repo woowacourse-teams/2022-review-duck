@@ -24,7 +24,7 @@ export const transformForm = (data: GetReviewFormResponse): ReviewForm => {
 };
 
 export const transformAnswer = (data: GetReviewAnswerResponse): ReviewAnswer => {
-  const { id, contents, creator, isCreator, updatedAt } = data;
+  const { id, contents, creator, isCreator, updatedAt, isPrivate } = data;
 
   return {
     id: id,
@@ -38,6 +38,7 @@ export const transformAnswer = (data: GetReviewAnswerResponse): ReviewAnswer => 
       creator,
       isSelf: isCreator,
       updateDate: getElapsedTimeText(updatedAt),
+      isPrivate,
     },
   };
 };
