@@ -49,7 +49,6 @@ public class Review extends BaseDate {
     @OrderBy("position asc")
     private List<QuestionAnswer> questionAnswers;
 
-
     public Review(String title, Member member, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers,
         boolean isPrivate) {
         validate(title);
