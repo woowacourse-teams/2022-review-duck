@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;
-  children: string;
+  children: React.ReactNode;
 }
 
 function CheckBox({ className, children, ...rest }: CheckboxProps) {
