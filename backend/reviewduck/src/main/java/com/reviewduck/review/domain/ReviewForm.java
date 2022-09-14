@@ -45,7 +45,7 @@ public class ReviewForm extends BaseDate {
     private String title;
 
     @Column(nullable = false)
-    private final boolean isActive = true;
+    private boolean isActive = true;
 
     @JoinColumn(name = "review_form_id")
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
