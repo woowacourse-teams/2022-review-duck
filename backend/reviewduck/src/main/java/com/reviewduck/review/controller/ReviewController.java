@@ -29,6 +29,7 @@ import com.reviewduck.review.dto.response.ReviewSynchronizedResponse;
 import com.reviewduck.review.dto.response.ReviewsResponse;
 import com.reviewduck.review.service.ReviewService;
 
+import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 
@@ -53,12 +54,12 @@ public class ReviewController {
     @GetMapping(params = "member")
     @ResponseStatus(HttpStatus.OK)
     public ReviewsResponse findBySocialId(@AuthenticationPrincipal Member member,
-        @RequestParam(value = "member") String socialId,
-        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
-        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size
+        @ApiParam(name = "사용자 socialId") @RequestParam(value = "member") String socialId,
+        @ApiParam(name = "페이지 번호") @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
+        @ApiParam(name = "페이지 당 게시물 수") @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size
     ) {
 
-        info("/api/reviews?member=" + socialId + "page=" + page + " size=" + size, "GET", "");
+        info("/api/reviews?member=" + socialId + "&page=" + page + "&size=" + size, "GET", "");
 
         Page<Review> reviews = reviewService.findBySocialId(socialId, member, page - 1, size);
 
@@ -66,11 +67,11 @@ public class ReviewController {
     }
 
     @Operation(summary = "비밀글이 아닌 회고 답변을 최신 순으로 조회한다.")
-    @GetMapping
+    @GetMapping("/public")
     @ResponseStatus(HttpStatus.OK)
     public List<ReviewResponse> findAllPublic(@AuthenticationPrincipal Member member) {
 
-        info("/api/reviews", "GET", "");
+        info("/api/reviews/public", "GET", "");
 
         List<Review> reviews = reviewService.findAllPublic();
 

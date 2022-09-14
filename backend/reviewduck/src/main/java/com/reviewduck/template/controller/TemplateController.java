@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.ReviewForm;
+import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.template.domain.Template;
@@ -55,6 +56,19 @@ public class TemplateController {
         return TemplateIdResponse.from(template);
     }
 
+    @Operation(summary = "템플릿을 기반으로 작성된 후 수정된 회고 폼을 생성한다.")
+    @PostMapping("/{templateId}/review-forms/edited")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReviewFormCodeResponse createReviewFormByTemplate(@AuthenticationPrincipal Member member,
+        @PathVariable Long templateId,
+        @RequestBody @Valid ReviewFormCreateRequest request) {
+
+        info("/api/templates/" + templateId + "/review-forms/edited", "POST", request.toString());
+
+        ReviewForm reviewForm = reviewFormService.saveFromTemplate(member, templateId, request);
+        return ReviewFormCodeResponse.from(reviewForm);
+    }
+
     @Operation(summary = "템플릿을 기반으로 회고 폼을 생성한다.")
     @PostMapping("/{templateId}/review-forms")
     @ResponseStatus(HttpStatus.CREATED)
@@ -68,7 +82,7 @@ public class TemplateController {
     }
 
     @Operation(summary = "전체 템플릿을 조회한다.")
-    @GetMapping
+    @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     public TemplatesResponse findAll(@AuthenticationPrincipal Member member,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,

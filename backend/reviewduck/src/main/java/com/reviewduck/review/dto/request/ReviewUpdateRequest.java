@@ -15,6 +15,9 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ReviewUpdateRequest {
 
+    @NotNull(message = "공개 여부를 설정해야 합니다.")
+    private boolean isPrivate;
+
     @NotNull(message = "회고 답변 관련 오류가 발생했습니다.")
     @Valid
     private List<ReviewContentUpdateRequest> contents;

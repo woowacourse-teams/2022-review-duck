@@ -292,7 +292,7 @@ public class ReviewServiceTest {
             Review savedReview = saveReview(member1, false);
 
             // when
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(List.of(
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
                 new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
                 new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
             ));
@@ -315,7 +315,7 @@ public class ReviewServiceTest {
             Review savedReview = saveReview(member1, false);
 
             // when
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(List.of(
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
                 new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
                 new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
             ));
@@ -330,7 +330,7 @@ public class ReviewServiceTest {
         @DisplayName("존재하지 않는 회고는 수정할 수 없다.")
         void invalidId() {
             // given
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(List.of(
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
                 new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
                 new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
             ));
@@ -347,7 +347,7 @@ public class ReviewServiceTest {
             // given
             Review savedReview = saveReview(member1, false);
 
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(List.of(
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
                 new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
                 new ReviewContentUpdateRequest(999L, new AnswerUpdateRequest(2L, "editedAnswer2"))
             ));
@@ -364,7 +364,7 @@ public class ReviewServiceTest {
             // given
             Review savedReview = saveReview(member1, false);
 
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(List.of(
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
                 new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
                 new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(9999L, "editedAnswer2"))
             ));

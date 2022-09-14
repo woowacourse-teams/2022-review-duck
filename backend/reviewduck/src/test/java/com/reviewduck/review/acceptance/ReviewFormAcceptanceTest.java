@@ -343,25 +343,71 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     class findReviewsByCodeWithDisplayType {
 
         @Test
-        @DisplayName("파라미터 값이 없으면 접근할 수 없다.")
+        @DisplayName("파라미터 값이 없으면 목록형으로 조회한다.")
         void withNoParam() {
             // given
             String code = createReviewFormAndGetCode(accessToken1);
 
-            // when, then
-            get("/api/review-forms/" + code + "/reviews?displayType=")
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(false, List.of(
+                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+            ));
+
+            post("/api/review-forms/" + code, createRequest, accessToken1);
+
+            String newReviewTitle = "new title";
+            List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
+                new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
+            ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
+
+            put("/api/review-forms/" + code, updateRequest, accessToken1);
+
+            // when
+            List<ReviewResponse> response = get("/api/review-forms/" + code + "/reviews?displayType=",
+                accessToken1)
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .body()
+                .jsonPath().getList(".", ReviewResponse.class);
+
+            ReviewResponse reviewResponse = response.get(0);
+
+            // then
+            assertThat(reviewResponse.getContents()).hasSize(2);
         }
 
         @Test
-        @DisplayName("파라미터 값이 적절하지 않으면 접근할 수 없다.")
+        @DisplayName("파라미터 값이 적절하지 않으면 목록형으로 조회한다.")
         void withInvalidParam() {
             // given
             String code = createReviewFormAndGetCode(accessToken1);
 
-            // when, then
-            get("/api/review-forms/" + code + "/reviews?displayType=invalid")
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(false, List.of(
+                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+            ));
+
+            post("/api/review-forms/" + code, createRequest, accessToken1);
+
+            String newReviewTitle = "new title";
+            List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
+                new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
+            ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
+
+            put("/api/review-forms/" + code, updateRequest, accessToken1);
+
+            // when
+            List<ReviewResponse> response = get("/api/review-forms/" + code + "/reviews?displayType=wrong",
+                accessToken1)
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .body()
+                .jsonPath().getList(".", ReviewResponse.class);
+
+            ReviewResponse reviewResponse = response.get(0);
+
+            // then
+            assertThat(reviewResponse.getContents()).hasSize(2);
         }
     }
 

@@ -5,8 +5,10 @@ name: backend-sonarqube
 on:
   push:
     branches: ["develop"]
+    types : [ labeled ]
   pull_request:
     branches: ["develop", "main"]
+    types : [ labeled ]
 
 # job 의 공통된 옵션
 defaults:
@@ -18,6 +20,8 @@ defaults:
 jobs:
   # Job의 이름 설정, 빌드 수행, Scanner 발동
   analysis:
+    # 라벨 설정
+    if : ${{ github.event.label.name == 'back-end'}}
     # ubuntu 환경에서 실행, 환경은 GitHub 이 제공
     runs-on: ubuntu-latest
     # 현재 Job에서 사용할 환경변수, repository setting secrets 에서 설정한 환경변수 사용
