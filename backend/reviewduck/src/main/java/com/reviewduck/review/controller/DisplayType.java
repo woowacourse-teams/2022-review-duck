@@ -13,17 +13,18 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum DisplayType {
-    List("list", ReviewSheetResponse::of),
-    Sheet("sheet", ReviewResponse::of);
+
+    LIST("list", ReviewResponse::of),
+    SHEET("sheet", ReviewSheetResponse::of);
 
     private final String value;
     private final BiFunction<Member, Review, ReviewAbstractResponse> responseBuilder;
 
-    public static BiFunction<Member, Review, ReviewAbstractResponse> of(String displayType){
+    public static BiFunction<Member, Review, ReviewAbstractResponse> builderOf(String displayType) {
         return Arrays.stream(values())
             .filter(it -> displayType.equals(it.value))
             .findFirst()
-            .orElse(List)
+            .orElse(LIST)
             .responseBuilder;
     }
 }

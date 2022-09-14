@@ -119,19 +119,6 @@ public class ReviewFormControllerTest {
     }
 
     @Nested
-    @DisplayName("템플릿을 기반으로 작성된 후 수정된 회고 폼을 생성시")
-    class createReviewFormByTemplate {
-
-        @Test
-        @DisplayName("파라미터 값이 없을 경우 예외가 발생한다.")
-        void emptyTemplateId() throws Exception {
-            ReviewFormCreateRequest request = new ReviewFormCreateRequest("title", List.of());
-
-            assertBadRequestFromPost("/api/review-forms?templateId=", request, "파라미터 정보가 올바르지 않습니다.");
-        }
-    }
-
-    @Nested
     @DisplayName("회고 답변 생성시")
     class createReview {
 

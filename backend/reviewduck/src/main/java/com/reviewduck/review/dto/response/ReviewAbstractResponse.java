@@ -11,10 +11,11 @@ import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 
 /*
-    DisplayType 선택을 위한 마크업 인터페이스
+    DisplayType 선택을 위한 abstract class
  */
 public abstract class ReviewAbstractResponse {
-    static List<ReviewContentResponse> getReviewContents(Review review){
+
+    static List<ReviewContentResponse> getReviewContents(Review review) {
         ReviewForm reviewForm = review.getReviewForm();
 
         Map<ReviewFormQuestion, Answer> reviewMap = review.getQuestionAnswers().stream()

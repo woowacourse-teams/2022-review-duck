@@ -63,7 +63,7 @@ public class TemplateController {
         @PathVariable Long templateId,
         @RequestBody @Valid ReviewFormCreateRequest request) {
 
-        info("/api/templates/" + templateId + "/review-forms/edited","POST", request.toString());
+        info("/api/templates/" + templateId + "/review-forms/edited", "POST", request.toString());
 
         ReviewForm reviewForm = reviewFormService.saveFromTemplate(member, templateId, request);
         return ReviewFormCodeResponse.from(reviewForm);

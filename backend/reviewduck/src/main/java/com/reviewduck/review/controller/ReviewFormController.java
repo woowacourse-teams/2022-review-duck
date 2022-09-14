@@ -4,7 +4,6 @@ import static com.reviewduck.common.util.Logging.*;
 import static com.reviewduck.common.vo.PageConstant.*;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reviewduck.auth.support.AuthenticationPrincipal;
-import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
@@ -35,8 +33,6 @@ import com.reviewduck.review.dto.response.MemberReviewFormsResponse;
 import com.reviewduck.review.dto.response.ReviewAbstractResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
-import com.reviewduck.review.dto.response.ReviewResponse;
-import com.reviewduck.review.dto.response.ReviewSheetResponse;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
@@ -112,7 +108,7 @@ public class ReviewFormController {
 
         List<Review> reviews = reviewService.findAllByCode(reviewFormCode);
 
-        BiFunction<Member, Review, ReviewAbstractResponse> reviewResponseBuilder = DisplayType.of(displayType);
+        BiFunction<Member, Review, ReviewAbstractResponse> reviewResponseBuilder = DisplayType.builderOf(displayType);
         return reviews.stream()
             .map(review -> reviewResponseBuilder.apply(member, review))
             .collect(Collectors.toUnmodifiableList());

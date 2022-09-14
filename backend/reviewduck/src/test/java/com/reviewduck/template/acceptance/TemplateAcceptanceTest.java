@@ -159,7 +159,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             post("/api/templates/" + templateId + "/review-forms", accessToken1);
 
             // when, then
-            get("/api/templates", accessToken1).statusCode(HttpStatus.OK.value())
+            get("/api/templates/all", accessToken1).statusCode(HttpStatus.OK.value())
                 .assertThat().body("numberOfTemplates", equalTo(DEFAULT_SIZE + 6))
                 .assertThat().body("templates", hasSize(DEFAULT_SIZE))
                 .assertThat().body("templates[0].info.title", equalTo("title2"))
@@ -174,7 +174,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             saveTemplateAndGetId(accessToken2, "title2");
 
             // when, then
-            get("/api/templates?page=1&size=1&sort=latest", accessToken1).statusCode(HttpStatus.OK.value())
+            get("/api/templates/all?page=1&size=1&sort=latest", accessToken1).statusCode(HttpStatus.OK.value())
                 .assertThat().body("numberOfTemplates", equalTo(2))
                 .assertThat().body("templates", hasSize(1))
                 .assertThat().body("templates[0].info.title", equalTo("title2"))
@@ -190,7 +190,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             post("/api/templates/" + templateId + "/review-forms", accessToken1);
 
             // when, then
-            get("/api/templates?page=1&size=1&sort=trend", accessToken1).statusCode(HttpStatus.OK.value())
+            get("/api/templates/all?page=1&size=1&sort=trend", accessToken1).statusCode(HttpStatus.OK.value())
                 .assertThat().body("numberOfTemplates", equalTo(2))
                 .assertThat().body("templates", hasSize(1))
                 .assertThat().body("templates[0].info.title", equalTo("title1"))
@@ -200,7 +200,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         @Test
         @DisplayName("로그인하지 않은 상태로 조회할 수 있다.")
         void withoutLogin() {
-            get("/api/templates").statusCode(HttpStatus.OK.value());
+            get("/api/templates/all").statusCode(HttpStatus.OK.value());
         }
 
     }
