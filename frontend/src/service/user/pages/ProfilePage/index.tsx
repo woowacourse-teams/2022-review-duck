@@ -6,9 +6,9 @@ import { USER_PROFILE_TAB, GITHUB_PROFILE_URL, PAGE_LIST, MODAL_LIST, PAGE_OPTIO
 
 import useModal from 'common/hooks/useModal';
 
-import { Button, Icon, PaginationNavigator, Text } from 'common/components';
+import { Button, Icon, PaginationBar, Text } from 'common/components';
 
-import { PaginationNavigatorProps } from 'common/components/PaginationNavigator';
+import { PaginationBarProps } from 'common/components/PaginationBar';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
 
@@ -21,7 +21,7 @@ function ProfilePage() {
   const navigate = useNavigate();
 
   const { socialId = '' } = useParams();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { showModal } = useModal();
 
   const currentTab = searchParams.get('tab') || USER_PROFILE_TAB.REVIEWS;
@@ -44,6 +44,11 @@ function ProfilePage() {
 
   const handleEditProfile = () => {
     showModal(MODAL_LIST.PROFILE_EDIT);
+  };
+
+  const movePage = (pageNumber: number) => {
+    setSearchParams({ tab: currentTab, page: String(pageNumber) });
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -137,9 +142,9 @@ function ProfilePage() {
 
         <div className={styles.mainContent}>
           <ReviewList socialId={socialId} filter={currentTab} pageNumber={pageNumber} />
-          <PaginationNavigator
+          <PaginationBar
             visiblePageButtonLength={
-              PAGE_OPTION.REVIEW_BUTTON_LENGTH as PaginationNavigatorProps['visiblePageButtonLength']
+              PAGE_OPTION.REVIEW_BUTTON_LENGTH as PaginationBarProps['visiblePageButtonLength']
             }
             itemCountInPage={PAGE_OPTION.REVIEW_ITEM_SIZE}
             totalItemCount={
@@ -147,7 +152,8 @@ function ProfilePage() {
                 ? userReviews.numberOfReviews
                 : userReviewForms.numberOfReviewForms
             }
-            pathname={location.pathname}
+            focusedPage={Number(pageNumber)}
+            onClickPageButton={movePage}
           />
         </div>
       </LayoutContainer>

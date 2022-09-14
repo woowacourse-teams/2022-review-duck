@@ -69,7 +69,12 @@ function TemplateListPage() {
           </Link>
         </div>
       </FlexContainer>
-      <TemplateListContainer templates={templates} numberOfTemplates={numberOfTemplates} />
+      <TemplateListContainer
+        templates={templates}
+        numberOfTemplates={numberOfTemplates}
+        currentTab={currentTab}
+        pageNumber={pageNumber}
+      />
     </LayoutContainer>
   );
 }
