@@ -7,6 +7,8 @@ import { ErrorResponse } from 'types';
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/@shared/hooks/useQuestions';
 
+import { CheckBox } from 'common/components';
+
 import useAnswerEditorPage from './useAnswerEditorPage';
 import { Editor } from './views/Editor';
 import { Status } from './views/Status';
@@ -37,6 +39,8 @@ function ReviewAnswerEditorPage() {
   const { questions, answeredCount, isAnswerComplete, updateAnswer } = useQuestions(
     reviewContents.questions,
   );
+
+  const [isPrivate, setPrivate] = useState(!!reviewContents.info.isPrivate);
   const [focusQuestionIndex, setFocusQuestionIndex] = useState(0);
 
   const handleFocusAnswer = (index: number) => () => {
@@ -71,16 +75,22 @@ function ReviewAnswerEditorPage() {
     const isEditorMode = !!reviewId;
 
     isEditorMode === EDITOR_MODE.NEW_ANSWER &&
-      submitCreateAnswer(questions, {
-        onSuccess: handleSubmitSuccess,
-        onError: handleSubmitError,
-      });
+      submitCreateAnswer(
+        { questions, isPrivate },
+        {
+          onSuccess: handleSubmitSuccess,
+          onError: handleSubmitError,
+        },
+      );
 
     isEditorMode === EDITOR_MODE.UPDATE_ANSWER &&
-      submitUpdateAnswer(reviewId, questions, {
-        onSuccess: handleSubmitSuccess,
-        onError: handleSubmitError,
-      });
+      submitUpdateAnswer(
+        { reviewId, questions, isPrivate },
+        {
+          onSuccess: handleSubmitSuccess,
+          onError: handleSubmitError,
+        },
+      );
   };
 
   const handleCancel = () => {
@@ -120,6 +130,10 @@ function ReviewAnswerEditorPage() {
             onChange={handleChangeAnswer(index)}
           />
         ))}
+
+        <CheckBox checked={isPrivate} onChange={() => setPrivate(!isPrivate)}>
+          이 회고 답변을 비공개로 설정하기
+        </CheckBox>
 
         <Editor.ConfirmButtons
           submitDisabled={!isAnswerComplete}
