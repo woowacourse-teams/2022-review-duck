@@ -53,7 +53,7 @@ type PrivateCheckBoxProps = Omit<CheckboxProps, 'children'>;
 
 const PrivateCheckBox = ({ ...rest }: PrivateCheckBoxProps) => {
   return (
-    <ToolTip text="회고를 비공개로 설정할 시 프로필 페이지와 타임라인에서 출력되지 않습니다">
+    <ToolTip text="회고를 비공개로 설정할 시 프로필 페이지와 타임라인에서 보이지 않습니다">
       <CheckBox className={styles.privateCheckBox} {...rest}>
         이 회고를 다른 사용자에게 공개하지 않기
         <FontAwesomeIcon className={styles.tipIcon} icon={faCircleQuestion} />
