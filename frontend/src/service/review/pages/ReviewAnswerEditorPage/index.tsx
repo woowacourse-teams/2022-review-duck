@@ -7,17 +7,9 @@ import { ErrorResponse } from 'types';
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/@shared/hooks/useQuestions';
 
-import { CheckBox } from 'common/components';
-
 import useAnswerEditorPage from './useAnswerEditorPage';
 import { Editor } from './views/Editor';
 import { Status } from './views/Status';
-
-/*
-  TODO:
-  - [ ] 상수 분리
-  - [ ] 에러 바운더리 적용
-*/
 
 const EDITOR_MODE = {
   NEW_ANSWER: false,
@@ -52,6 +44,10 @@ function ReviewAnswerEditorPage() {
     ({ target }: React.ChangeEvent<HTMLTextAreaElement>) => {
       updateAnswer(index, { value: target.value });
     };
+
+  const handleChangePrivate = () => {
+    setPrivate(!isPrivate);
+  };
 
   const handleSubmitSuccess = () => {
     showSnackbar({
@@ -131,9 +127,7 @@ function ReviewAnswerEditorPage() {
           />
         ))}
 
-        <CheckBox checked={isPrivate} onChange={() => setPrivate(!isPrivate)}>
-          이 회고 답변을 비공개로 설정하기
-        </CheckBox>
+        <Editor.PrivateCheckBox checked={isPrivate} onChange={handleChangePrivate} />
 
         <Editor.ConfirmButtons
           submitDisabled={!isAnswerComplete}

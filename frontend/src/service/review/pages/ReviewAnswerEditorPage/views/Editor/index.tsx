@@ -1,6 +1,11 @@
-import { Text, FieldSet, Textarea, Button, Icon } from 'common/components';
+import { Text, FieldSet, Textarea, Button, Icon, ToolTip, CheckBox } from 'common/components';
+
+import { CheckboxProps } from 'common/components/CheckBox';
 
 import styles from './styles.module.scss';
+
+import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface ContainerProps extends React.HTMLAttributes<HTMLFormElement> {
   children: React.ReactNode;
@@ -44,6 +49,19 @@ const AnswerField = ({ question, description, answer, onChange, onFocus }: Answe
   );
 };
 
+type PrivateCheckBoxProps = Omit<CheckboxProps, 'children'>;
+
+const PrivateCheckBox = ({ ...rest }: PrivateCheckBoxProps) => {
+  return (
+    <ToolTip text="회고를 비공개로 설정할 시 프로필 페이지와 타임라인에서 출력되지 않습니다">
+      <CheckBox className={styles.privateCheckBox} {...rest}>
+        이 회고를 다른 사용자에게 공개하지 않기
+        <FontAwesomeIcon className={styles.tipIcon} icon={faCircleQuestion} />
+      </CheckBox>
+    </ToolTip>
+  );
+};
+
 interface ConfirmButtonsProps {
   submitDisabled: boolean;
   onSubmit: React.FormEventHandler;
@@ -69,5 +87,6 @@ const ConfirmButtons = ({ submitDisabled, onSubmit, onCancel }: ConfirmButtonsPr
 export const Editor = Object.assign(Container, {
   Title,
   AnswerField,
+  PrivateCheckBox,
   ConfirmButtons,
 });

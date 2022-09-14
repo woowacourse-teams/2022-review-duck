@@ -11,6 +11,13 @@
   margin-bottom: 1rem;
 }
 
+.private-check-box {
+  .tip-icon {
+    font-size: 0.9em;
+    color: $THEME_COLOR_THEME_TEXT_150;
+    margin-left: 0.5rem;
+  }
+}
 .confirm-buttons {
   display: grid;
   grid-template-columns: 47.5% 47.5%;
