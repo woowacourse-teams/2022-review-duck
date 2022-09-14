@@ -18,28 +18,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class ReviewSynchronizedResponse {
+public class ReviewSynchronizedResponse extends ReviewAbstractResponse {
 
     private String reviewTitle;
     private boolean isPrivate;
     private List<ReviewContentResponse> contents;
 
     public static ReviewSynchronizedResponse from(Review review) {
-        ReviewForm reviewForm = review.getReviewForm();
-
-        Map<ReviewFormQuestion, Answer> reviewMap = review.getQuestionAnswers().stream()
-            .collect(Collectors.toUnmodifiableMap(QuestionAnswer::getReviewFormQuestion, QuestionAnswer::getAnswer));
-
-        List<ReviewContentResponse> contents = reviewForm.getReviewFormQuestions().stream()
-            .map(question -> ReviewContentResponse.of(question, reviewMap.getOrDefault(question, null)))
-            .collect(Collectors.toUnmodifiableList());
+        List<ReviewContentResponse> contents = getReviewContents(review);
 
         return new ReviewSynchronizedResponse(review.getTitle(), review.isPrivate(), contents);
-
     }
 
     public boolean getIsPrivate() {
         return isPrivate;
     }
-
 }

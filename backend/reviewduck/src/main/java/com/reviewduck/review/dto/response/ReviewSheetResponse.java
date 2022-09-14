@@ -18,7 +18,7 @@ import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class ReviewSheetResponse {
+public class ReviewSheetResponse extends ReviewAbstractResponse{
 
     private Long id;
     private String reviewTitle;
@@ -28,14 +28,7 @@ public class ReviewSheetResponse {
     private List<ReviewContentResponse> contents;
 
     public static ReviewSheetResponse of(Member member, Review review) {
-        ReviewForm reviewForm = review.getReviewForm();
-
-        Map<ReviewFormQuestion, Answer> reviewMap = review.getQuestionAnswers().stream()
-            .collect(Collectors.toUnmodifiableMap(QuestionAnswer::getReviewFormQuestion, QuestionAnswer::getAnswer));
-
-        List<ReviewContentResponse> contents = reviewForm.getReviewFormQuestions().stream()
-            .map(question -> ReviewContentResponse.of(question, reviewMap.getOrDefault(question, null)))
-            .collect(Collectors.toUnmodifiableList());
+        List<ReviewContentResponse> contents = getReviewContents(review);
 
         return new ReviewSheetResponse(
             review.getId(),

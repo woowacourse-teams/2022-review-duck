@@ -13,7 +13,7 @@ import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class ReviewResponse {
+public class ReviewResponse extends ReviewAbstractResponse {
 
     private Long id;
     private String reviewTitle;
