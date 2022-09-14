@@ -1,5 +1,3 @@
-import { UseMutationResult, useQueryClient } from 'react-query';
-
 import { QUERY_KEY } from 'constant';
 import {
   ErrorResponse,
@@ -13,6 +11,8 @@ import { useCreateFormByTemplate } from 'service/@shared/hooks/queries/review';
 import { useGetTemplate } from 'service/@shared/hooks/queries/template';
 import { useCreateTemplate } from 'service/@shared/hooks/queries/template/useCreate';
 import { useUpdateTemplate } from 'service/@shared/hooks/queries/template/useUpdate';
+
+import { UseMutationResult, useQueryClient } from '@tanstack/react-query';
 
 type SubmitReviewFormResult = UseMutationResult<
   { reviewFormCode: string },

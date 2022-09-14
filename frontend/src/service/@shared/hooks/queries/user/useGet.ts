@@ -1,5 +1,3 @@
-import { useQuery, UseQueryOptions } from 'react-query';
-
 import { userAPI } from 'api';
 import { QUERY_KEY } from 'constant';
 import {
@@ -8,6 +6,8 @@ import {
   ErrorResponse,
   GetUserProfileResponse,
 } from 'types';
+
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 interface UseGetUserProfile {
   socialId: number;
