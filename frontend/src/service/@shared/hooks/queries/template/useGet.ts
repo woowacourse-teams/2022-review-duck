@@ -11,13 +11,16 @@ import {
 
 function useGetTemplates(
   filter: TemplateFilterType,
+  pageNumber: string,
+  itemCount?: number,
   queryOptions?: UseQueryOptions<GetTemplatesResponse, ErrorResponse>,
 ) {
   return useQuery<GetTemplatesResponse, ErrorResponse>(
-    [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_TEMPLATES, { filter }],
-    () => templateAPI.getTemplates(filter),
+    [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_TEMPLATES, { filter, pageNumber }],
+    () => templateAPI.getTemplates(filter, pageNumber, itemCount),
     {
       ...queryOptions,
+      keepPreviousData: true,
     },
   );
 }

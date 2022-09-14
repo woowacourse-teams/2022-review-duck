@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import cn from 'classnames';
-import { MODAL_LIST, TEMPLATE_TAB } from 'constant';
+import { MODAL_LIST, PAGE_OPTION, TEMPLATE_TAB } from 'constant';
 import { PAGE_LIST } from 'constant';
 import { TemplateFilterType } from 'types';
 
@@ -23,7 +23,11 @@ function MainPage() {
   const onClickReviewStart = () => {
     showModal(MODAL_LIST.REVIEW_START);
   };
-  const { data, isError, error } = useGetTemplates(TEMPLATE_TAB.TREND as TemplateFilterType);
+  const { data, isError, error } = useGetTemplates(
+    TEMPLATE_TAB.TREND as TemplateFilterType,
+    String(1),
+    PAGE_OPTION.TEMPLATE_TREND_ITEM_SIZE,
+  );
   const { templates } = data || { templates: [] };
 
   useEffect(() => {

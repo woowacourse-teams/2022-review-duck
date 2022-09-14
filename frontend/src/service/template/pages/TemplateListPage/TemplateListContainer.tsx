@@ -1,4 +1,8 @@
-import { PAGE_LIST } from 'constant';
+import { PAGE_LIST, PAGE_OPTION } from 'constant';
+
+import { PaginationNavigator } from 'common/components';
+
+import { PaginationNavigatorProps } from 'common/components/PaginationNavigator';
 
 import NoResult from 'service/@shared/components/NoResult';
 import TemplateCard from 'service/template/components/TemplateCard';
@@ -7,7 +11,7 @@ import styles from './styles.module.scss';
 
 import { GetTemplatesResponse } from 'types/template';
 
-function TemplateListContainer({ templates }: GetTemplatesResponse) {
+function TemplateListContainer({ templates, numberOfTemplates }: GetTemplatesResponse) {
   if (templates.length === 0) {
     return <NoResult>템플릿이 없습니다.</NoResult>;
   }
@@ -31,6 +35,15 @@ function TemplateListContainer({ templates }: GetTemplatesResponse) {
           />
         </TemplateCard>
       ))}
+      <PaginationNavigator
+        visiblePageButtonLength={
+          PAGE_OPTION.TEMPLATE_BUTTON_LENGTH as PaginationNavigatorProps['visiblePageButtonLength']
+        }
+        itemCountInPage={PAGE_OPTION.TEMPLATE_ITEM_SIZE}
+        totalItemCount={numberOfTemplates}
+        pathname={location.pathname}
+        search={location.search}
+      />
     </div>
   );
 }

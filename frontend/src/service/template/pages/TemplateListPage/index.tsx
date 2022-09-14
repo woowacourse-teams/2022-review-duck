@@ -21,10 +21,15 @@ function TemplateListPage() {
 
   const tabString = searchParam.get('filter');
   const currentTab = tabString === 'trend' || tabString === 'latest' ? tabString : 'trend';
+  const pageNumber = searchParam.get('page') || String(1);
 
-  const { data } = useGetTemplates(currentTab as TemplateFilterType);
+  const initialTemplates = {
+    numberOfTemplates: 0,
+    templates: [],
+  };
+  const { data } = useGetTemplates(currentTab as TemplateFilterType, pageNumber);
 
-  const { templates } = data || { templates: [] };
+  const { numberOfTemplates, templates } = data || initialTemplates;
 
   return (
     <LayoutContainer>
@@ -64,7 +69,7 @@ function TemplateListPage() {
           </Link>
         </div>
       </FlexContainer>
-      <TemplateListContainer templates={templates} />
+      <TemplateListContainer templates={templates} numberOfTemplates={numberOfTemplates} />
     </LayoutContainer>
   );
 }
