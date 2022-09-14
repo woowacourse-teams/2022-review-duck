@@ -20,6 +20,7 @@ export interface UserContentRequireField {
   creator: UserProfile;
   isSelf: boolean;
   updateDate: string;
+  isPrivate?: boolean;
 }
 
 export interface ReviewForm {
@@ -85,6 +86,7 @@ export interface GetReviewAnswerResponse {
     question: ServerQuestionRequireId;
     answer: ServerAnswerRequireId;
   }>;
+  isPrivate: boolean;
 }
 
 export type GetReviewFormAnswerResponse = Array<{
@@ -110,6 +112,7 @@ export interface CreateReviewAnswerRequest {
     questionId: number;
     answer: ServerAnswer;
   }>;
+  isPrivate: boolean;
 }
 
 export interface CreateFormByTemplateRequest {
@@ -136,6 +139,7 @@ export interface UpdateReviewAnswerRequest {
     questionId: number;
     answer: ServerAnswer;
   }>;
+  isPrivate: boolean;
 }
 
 export type UpdateReviewAnswerResponse = null;

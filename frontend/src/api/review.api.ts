@@ -49,9 +49,11 @@ export const createFormByTemplate = async ({
 export const createAnswer = async ({
   reviewFormCode,
   contents,
+  isPrivate,
 }: ReviewType.CreateReviewAnswerRequest): Promise<ReviewType.CreateReviewAnswerResponse> => {
   const { data } = await axiosInstance.post(API_URI.REVIEW.CREATE_ANSWER(reviewFormCode), {
     contents,
+    isPrivate,
   });
 
   return data;
@@ -73,9 +75,11 @@ export const updateForm = async ({
 export const updateAnswer = async ({
   reviewId,
   contents,
+  isPrivate,
 }: ReviewType.UpdateReviewAnswerRequest): Promise<ReviewType.UpdateReviewAnswerResponse> => {
   const { data } = await axiosInstance.put(API_URI.REVIEW.UPDATE_ANSWER(reviewId), {
     contents,
+    isPrivate,
   });
 
   return data;
