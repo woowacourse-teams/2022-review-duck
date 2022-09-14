@@ -1,9 +1,9 @@
-import { useQuery, UseQueryOptions } from 'react-query';
-
 import { reviewAPI } from 'api';
 import { QUERY_KEY } from 'constant';
 import { ErrorResponse, ReviewAnswer, ReviewForm, ReviewFormAnswerList } from 'types';
 import 'types';
+
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 function useGetReviewForm(
   reviewFormCode: string,

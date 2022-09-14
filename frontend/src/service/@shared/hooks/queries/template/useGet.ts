@@ -1,5 +1,3 @@
-import { useQuery, UseQueryOptions } from 'react-query';
-
 import { templateAPI } from 'api';
 import { QUERY_KEY } from 'constant';
 import {
@@ -8,6 +6,8 @@ import {
   ErrorResponse,
   TemplateFilterType,
 } from 'types';
+
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 function useGetTemplates(
   filter: TemplateFilterType,
