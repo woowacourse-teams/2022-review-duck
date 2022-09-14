@@ -27,7 +27,7 @@ public class MemberReviewFormsResponse {
 
         boolean isMine = member.getSocialId().equals(socialId);
 
-        return new MemberReviewFormsResponse(reviewForms.getNumberOfElements(), isMine, reviewFormResponses);
+        return new MemberReviewFormsResponse(reviewForms.getTotalElements(), isMine, reviewFormResponses);
     }
 
     public boolean getIsMine() {
