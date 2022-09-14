@@ -28,26 +28,30 @@ function useGetUserProfile(
 
 function useGetUserReviewForms(
   socialId: number,
+  pageNumber: string,
   queryOptions?: UseQueryOptions<GetUserReviewFormsResponse, ErrorResponse>,
 ) {
   return useQuery<GetUserReviewFormsResponse, ErrorResponse>(
-    [QUERY_KEY.DATA.REVIEW_FORM, QUERY_KEY.API.GET_MY_REVIEW_FORMS, { socialId }],
-    () => userAPI.getUserReviewForms(socialId),
+    [QUERY_KEY.DATA.REVIEW_FORM, QUERY_KEY.API.GET_MY_REVIEW_FORMS, { socialId, pageNumber }],
+    () => userAPI.getUserReviewForms(socialId, pageNumber),
     {
       ...queryOptions,
+      keepPreviousData: true,
     },
   );
 }
 
 function useGetUserReviewAnswer(
   socialId: number,
+  pageNumber: string,
   queryOptions?: UseQueryOptions<GetUserReviewAnswerResponse, ErrorResponse>,
 ) {
   return useQuery<GetUserReviewAnswerResponse, ErrorResponse>(
-    [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_MY_REVIEWS, { socialId }],
-    () => userAPI.getUserReviewAnswers(socialId),
+    [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_MY_REVIEWS, { socialId, pageNumber }],
+    () => userAPI.getUserReviewAnswers(socialId, pageNumber),
     {
       ...queryOptions,
+      keepPreviousData: true,
     },
   );
 }

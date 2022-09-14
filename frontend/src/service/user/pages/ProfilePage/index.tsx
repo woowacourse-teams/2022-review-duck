@@ -2,11 +2,13 @@ import { useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
-import { USER_PROFILE_TAB, GITHUB_PROFILE_URL, PAGE_LIST, MODAL_LIST } from 'constant';
+import { USER_PROFILE_TAB, GITHUB_PROFILE_URL, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
 
 import useModal from 'common/hooks/useModal';
 
-import { Button, Icon, Text } from 'common/components';
+import { Button, Icon, PaginationNavigator, Text } from 'common/components';
+
+import { PaginationNavigatorProps } from 'common/components/PaginationNavigator';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
 
@@ -23,8 +25,12 @@ function ProfilePage() {
   const { showModal } = useModal();
 
   const currentTab = searchParams.get('tab') || USER_PROFILE_TAB.REVIEWS;
+  const pageNumber = searchParams.get('page') || String(1);
 
-  const { myReviews, myReviewForms, userProfile, isError, error } = useProfilePageQueries(socialId);
+  const { userReviews, userReviewForms, userProfile, isError, error } = useProfilePageQueries(
+    socialId,
+    pageNumber,
+  );
 
   useEffect(() => {
     if (isError) {
@@ -116,13 +122,13 @@ function ProfilePage() {
           <div className={styles.counterContainer}>
             <div className={styles.counter}>
               <Text className={styles.number} size={24} weight="bold">
-                {myReviews.numberOfReviews}
+                {userReviews.numberOfReviews}
               </Text>
               <Text size={12}>회고 작성</Text>
             </div>
             <div className={styles.counter}>
               <Text className={styles.number} size={24} weight="bold">
-                {myReviewForms.numberOfReviewForms}
+                {userReviewForms.numberOfReviewForms}
               </Text>
               <Text size={12}>생성</Text>
             </div>
@@ -130,7 +136,19 @@ function ProfilePage() {
         </aside>
 
         <div className={styles.mainContent}>
-          <ReviewList socialId={socialId} filter={currentTab} />
+          <ReviewList socialId={socialId} filter={currentTab} pageNumber={pageNumber} />
+          <PaginationNavigator
+            visiblePageButtonLength={
+              PAGE_OPTION.REVIEW_BUTTON_LENGTH as PaginationNavigatorProps['visiblePageButtonLength']
+            }
+            itemCountInPage={PAGE_OPTION.REVIEW_ITEM_SIZE}
+            totalItemCount={
+              currentTab === USER_PROFILE_TAB.REVIEWS
+                ? userReviews.numberOfReviews
+                : userReviewForms.numberOfReviewForms
+            }
+            pathname={location.pathname}
+          />
         </div>
       </LayoutContainer>
     </>
