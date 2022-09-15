@@ -60,9 +60,10 @@ public class Review extends BaseDate {
         this.isPrivate = isPrivate;
     }
 
-    public void update(List<QuestionAnswer> questionAnswers) {
+    public void update(boolean isPrivate, List<QuestionAnswer> questionAnswers) {
         sortQuestionAnswers(questionAnswers);
         this.questionAnswers = questionAnswers;
+        this.isPrivate = isPrivate;
         super.renewUpdatedAt();
     }
 
