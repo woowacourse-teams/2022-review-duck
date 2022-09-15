@@ -292,7 +292,7 @@ public class ReviewServiceTest {
             Review savedReview = saveReview(member1, false);
 
             // when
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(true, List.of(
                 new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
                 new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
             ));
@@ -304,7 +304,8 @@ public class ReviewServiceTest {
                 () -> assertThat(updatedReview.getId()).isNotNull(),
                 () -> assertThat(updatedReview.getMember().getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(updatedReview.getQuestionAnswers().get(0).getAnswer().getValue())
-                    .isEqualTo("editedAnswer1")
+                    .isEqualTo("editedAnswer1"),
+                () -> assertThat(updatedReview.isPrivate()).isTrue()
             );
         }
 
