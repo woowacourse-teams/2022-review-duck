@@ -102,7 +102,7 @@ public class ReviewService {
             updateQuestionAnswers.add(new QuestionAnswer(question, answer));
         }
 
-        review.update(request.isPrivate(), updateQuestionAnswers);
+        review.update(request.getIsPrivate(), updateQuestionAnswers);
         return review;
     }
 
