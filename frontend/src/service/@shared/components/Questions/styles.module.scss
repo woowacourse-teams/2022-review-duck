@@ -35,8 +35,8 @@
 
   &:not(:last-child) {
     border-bottom: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
-    padding-bottom: 2rem;
-    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    margin-bottom: 0.5rem;
   }
 
   .question {
@@ -56,5 +56,6 @@
     color: $THEME_COLOR_THEME_TEXT_800;
     white-space: pre-line;
     line-height: 180%;
+    margin-top: 0.5rem;
   }
 }

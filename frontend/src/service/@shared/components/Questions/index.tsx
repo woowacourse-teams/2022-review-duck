@@ -1,3 +1,5 @@
+import cn from 'classnames';
+
 import { FlexContainer, Icon, Text } from 'common/components';
 
 import Profile from 'service/@shared/components/Profile';
@@ -5,11 +7,16 @@ import Profile from 'service/@shared/components/Profile';
 import styles from './styles.module.scss';
 
 interface ContainerProps {
+  className?: string;
   children: React.ReactNode;
 }
 
-function Container({ children }: ContainerProps) {
-  return <FlexContainer gap="medium">{children}</FlexContainer>;
+function Container({ className, children }: ContainerProps) {
+  return (
+    <FlexContainer className={className} gap="small">
+      {children}
+    </FlexContainer>
+  );
 }
 
 interface CoverProfileProps {
@@ -42,16 +49,22 @@ function Title({ children }: TitleProps) {
 }
 
 interface EditButtonsProps {
+  className?: string;
   isVisible?: boolean;
   onClickEdit: React.MouseEventHandler<HTMLDivElement>;
   onClickDelete: React.MouseEventHandler<HTMLDivElement>;
 }
 
-function EditButtons({ isVisible, onClickEdit, onClickDelete }: EditButtonsProps) {
+function EditButtons({ className, isVisible, onClickEdit, onClickDelete }: EditButtonsProps) {
   if (!isVisible) return null;
 
   return (
-    <FlexContainer className={styles.inlineButtons} direction="row" gap="large" justify="right">
+    <FlexContainer
+      className={cn(styles.inlineButtons, className)}
+      direction="row"
+      gap="large"
+      justify="right"
+    >
       <FlexContainer className={styles.button} direction="row" align="center" onClick={onClickEdit}>
         <Icon className={styles.icon} code="edit_note" type="round" />
         <Text className={styles.text} size={14}>
@@ -82,7 +95,7 @@ interface AnswerProps {
 
 function Answer({ question, description, children }: AnswerProps) {
   return (
-    <FlexContainer className={styles.answerContainer} gap="medium">
+    <FlexContainer className={styles.answerContainer}>
       <Text className={styles.question} size={20} weight="bold">
         {question}
       </Text>
