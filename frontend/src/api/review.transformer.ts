@@ -5,6 +5,8 @@ import {
   ReviewForm,
   ReviewAnswer,
   ReviewFormAnswerList,
+  GetReviewPublicAnswerResponse,
+  ReviewPublicAnswerList,
 } from 'types';
 
 import { getElapsedTimeText } from 'service/@shared/utils';
@@ -49,6 +51,30 @@ export const transformFormAnswer = (data: GetReviewFormAnswerResponse): ReviewFo
 
     return {
       id,
+      questions: contents.map((content) => ({
+        id: content.question.id,
+        value: content.question.value,
+        description: content.question.description,
+        answer: content.answer,
+      })),
+      info: {
+        creator,
+        isSelf: isCreator,
+        updateDate: getElapsedTimeText(updatedAt),
+      },
+    };
+  });
+};
+
+export const transformPublicAnswer = (
+  data: GetReviewPublicAnswerResponse,
+): ReviewPublicAnswerList => {
+  return data.map((review) => {
+    const { id, reviewFormCode, contents, creator, isCreator, updatedAt } = review;
+
+    return {
+      id,
+      reviewFormCode,
       questions: contents.map((content) => ({
         id: content.question.id,
         value: content.question.value,
