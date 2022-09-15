@@ -6,7 +6,7 @@ import { USER_PROFILE_TAB, GITHUB_PROFILE_URL, PAGE_LIST, MODAL_LIST, PAGE_OPTIO
 
 import useModal from 'common/hooks/useModal';
 
-import { Button, Icon, PaginationBar, Text } from 'common/components';
+import { Button, PaginationBar, Text } from 'common/components';
 
 import { PaginationBarProps } from 'common/components/PaginationBar';
 
@@ -16,6 +16,8 @@ import styles from './styles.module.scss';
 
 import ReviewList from './containers/ReviewList';
 import useProfilePageQueries from './useProfilePageQueries';
+import { faPenToSquare, faUser } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function ProfilePage() {
   const navigate = useNavigate();
@@ -80,7 +82,7 @@ function ProfilePage() {
           <div className={styles.profileManage}>
             {userProfile.isMine && (
               <Button size="small" onClick={handleEditProfile}>
-                <Icon code="edit_note" />
+                <FontAwesomeIcon icon={faPenToSquare} />
                 <span>Edit</span>
               </Button>
             )}
@@ -91,7 +93,7 @@ function ProfilePage() {
               rel=" noopener noreferrer"
             >
               <Button size="small" theme="outlined">
-                <Icon code="person" />
+                <FontAwesomeIcon icon={faUser} />
                 <span>Github Profile</span>
               </Button>
             </a>

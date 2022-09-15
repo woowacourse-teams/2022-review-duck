@@ -10,6 +10,7 @@ import Questions from 'service/@shared/components/Questions';
 import styles from './styles.module.scss';
 
 import useProfilePageQueries from '../../useProfilePageQueries';
+import { faEraser } from '@fortawesome/free-solid-svg-icons';
 
 interface ReviewList {
   socialId: string;
@@ -33,7 +34,7 @@ function ReviewList({ filter, socialId, pageNumber }: ReviewList) {
       deleteReviewMutation.mutate(reviewId, {
         onSuccess: () => {
           showSnackbar({
-            icon: 'delete',
+            icon: faEraser,
             title: '작성한 회고가 삭제되었습니다.',
             description: '이제 누구도 해당 회고를 볼 수 없습니다.',
           });
@@ -50,7 +51,7 @@ function ReviewList({ filter, socialId, pageNumber }: ReviewList) {
       deleteReviewFormMutation.mutate(reviewFormCode, {
         onSuccess: () => {
           showSnackbar({
-            icon: 'delete',
+            icon: faEraser,
             title: '생성한 회고가 삭제되었습니다.',
             description: '이제 누구도 해당 회고를 볼 수 없습니다.',
           });

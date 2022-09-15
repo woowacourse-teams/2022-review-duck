@@ -7,8 +7,10 @@ import useModal from 'common/hooks/useModal';
 
 import { getErrorMessage } from 'service/@shared/utils';
 
-import { Button, FieldSet, Icon, TextBox } from 'common/components';
+import { Button, FieldSet, TextBox } from 'common/components';
 
+import { faBan, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { validateReviewFormCode } from 'service/@shared/validator';
 
 function ModalReviewJoin() {
@@ -52,12 +54,12 @@ function ModalReviewJoin() {
 
       <div className="button-container horizontal">
         <Button size="medium" theme="outlined" onClick={onCancel}>
-          <Icon code="cancel" />
+          <FontAwesomeIcon icon={faBan} />
           <span>취소하기</span>
         </Button>
 
         <Button type="submit" size="medium" filled>
-          <Icon code="ads_click" />
+          <FontAwesomeIcon icon={faRightToBracket} />
           <span>참여하기</span>
         </Button>
       </div>

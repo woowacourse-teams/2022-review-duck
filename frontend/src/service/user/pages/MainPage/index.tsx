@@ -8,7 +8,7 @@ import { TemplateFilterType } from 'types';
 import useModal from 'common/hooks/useModal';
 import { useGetTemplates } from 'service/@shared/hooks/queries/template';
 
-import { Button, Icon, Text, TransitionDiv } from 'common/components';
+import { Button, Text, TransitionDiv } from 'common/components';
 
 import ScrollPanel from 'common/components/ScrollPanel';
 
@@ -17,6 +17,9 @@ import QuestionCard from 'service/@shared/components/QuestionCard';
 import TemplateCard from 'service/template/components/TemplateCard';
 
 import styles from './styles.module.scss';
+
+import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function MainPage() {
   const { showModal } = useModal();
@@ -55,7 +58,7 @@ function MainPage() {
               size="medium"
               onClick={onClickReviewStart}
             >
-              <Icon code="rate_review" />
+              <FontAwesomeIcon icon={faPenToSquare} />
               회고 시작하기
             </Button>
           </div>

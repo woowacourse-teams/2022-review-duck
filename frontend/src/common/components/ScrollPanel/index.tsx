@@ -7,7 +7,8 @@ import useDebounceCallback from 'common/hooks/useDebounceCallback';
 import styles from './styles.module.scss';
 
 import FlexContainer from '../FlexContainer';
-import Icon from '../Icon';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface ScrollPanelProps {
   className?: string;
@@ -79,7 +80,7 @@ function ScrollPanel({ className, centerDisabled, children }: ScrollPanelProps) 
         align="center"
       >
         <div className={styles.controlButton} onClick={handleClickControlButton('previous')}>
-          <Icon code="arrow_back_ios" />
+          <FontAwesomeIcon icon={faChevronLeft} />
         </div>
       </FlexContainer>
 
@@ -104,7 +105,7 @@ function ScrollPanel({ className, centerDisabled, children }: ScrollPanelProps) 
         align="center"
       >
         <div className={styles.controlButton} onClick={handleClickControlButton('next')}>
-          <Icon code="arrow_forward_ios" />
+          <FontAwesomeIcon icon={faChevronRight} />
         </div>
       </FlexContainer>
     </div>

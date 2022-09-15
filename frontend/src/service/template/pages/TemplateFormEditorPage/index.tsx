@@ -9,16 +9,7 @@ import useQuestions from 'service/@shared/hooks/useQuestions';
 
 import { getErrorMessage } from 'service/@shared/utils';
 
-import {
-  Button,
-  Icon,
-  Logo,
-  TextBox,
-  Text,
-  Textarea,
-  FieldSet,
-  FlexContainer,
-} from 'common/components';
+import { Button, Logo, TextBox, Text, Textarea, FieldSet, FlexContainer } from 'common/components';
 
 import QuestionCard from 'service/@shared/components/QuestionCard';
 import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
@@ -27,6 +18,8 @@ import SmallProfileCard from 'service/@shared/components/SmallProfileCard';
 import styles from './styles.module.scss';
 
 import useTemplateFormEditorPage from './useTemplateFormEditorPage';
+import { faArrowRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { validateReviewForm } from 'service/@shared/validator';
 import { Question } from 'types/review';
 
@@ -211,12 +204,12 @@ function TemplateFormEditorPage() {
 
           <div className={cn('button-container horizontal')}>
             <Button theme="outlined" onClick={handleCancel}>
-              <Icon code="cancel" />
+              <FontAwesomeIcon icon={faArrowRightFromBracket} />
               <span>취소하기</span>
             </Button>
 
             <Button type="button" onClick={handleSubmitReviewForm} disabled={isSubmitLoading}>
-              <Icon code="drive_file_rename_outline" />
+              <FontAwesomeIcon icon={faPenToSquare} />
               <span>생성하기</span>
             </Button>
           </div>

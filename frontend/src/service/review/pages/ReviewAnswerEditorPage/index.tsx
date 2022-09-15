@@ -10,6 +10,7 @@ import useQuestions from 'service/@shared/hooks/useQuestions';
 import useAnswerEditorPage from './useAnswerEditorPage';
 import { Editor } from './views/Editor';
 import { Status } from './views/Status';
+import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 
 const EDITOR_MODE = {
   NEW_ANSWER: false,
@@ -51,7 +52,7 @@ function ReviewAnswerEditorPage() {
 
   const handleSubmitSuccess = () => {
     showSnackbar({
-      icon: 'rate_review',
+      icon: faCircleCheck,
       title: '작성하신 회고가 기록되었습니다.',
       description: '작성한 회고는 마이페이지를 통해 모아볼 수 있습니다.',
     });

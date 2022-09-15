@@ -40,11 +40,11 @@
   align-items: center;
   border-radius: 50%;
 
-  & > *:not(:global(.icon)) {
+  & > *:not(svg) {
     display: none;
   }
 
-  & > :global(.icon) {
+  & > svg {
     margin: 0;
   }
 
