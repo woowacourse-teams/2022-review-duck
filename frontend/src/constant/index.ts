@@ -85,6 +85,14 @@ const REGEX = {
   NICKNAME: '^[a-zA-Z0-9]{2,10}$',
 };
 
+const PAGE_OPTION = {
+  REVIEW_BUTTON_LENGTH: 5,
+  REVIEW_ITEM_SIZE: 5,
+  TEMPLATE_ITEM_SIZE: 16,
+  TEMPLATE_TREND_ITEM_SIZE: 10,
+  TEMPLATE_BUTTON_LENGTH: 10,
+};
+
 const API_URI = {
   AUTH: {
     GET_ACCESS_TOKEN: '/api/login/refresh',
@@ -112,7 +120,7 @@ const API_URI = {
     UPDATE_PROFILE: '/api/members/me',
   },
   TEMPLATE: {
-    GET_TEMPLATES: '/api/templates',
+    GET_TEMPLATES: '/api/templates/all',
     GET_TEMPLATE: (templateId: numberString) => `/api/templates/${templateId}`,
 
     CREATE_FORM: (templateId: numberString) => `/api/templates/${templateId}/review-forms`,
@@ -141,4 +149,5 @@ export {
   REVIEW_FORM_TITLE_LENGTH,
   REVIEW_FORM_CODE_LENGTH,
   REGEX,
+  PAGE_OPTION,
 };

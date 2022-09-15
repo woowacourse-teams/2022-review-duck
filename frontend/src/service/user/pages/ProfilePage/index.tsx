@@ -2,11 +2,13 @@ import { useEffect } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
-import { USER_PROFILE_TAB, GITHUB_PROFILE_URL, PAGE_LIST, MODAL_LIST } from 'constant';
+import { USER_PROFILE_TAB, GITHUB_PROFILE_URL, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
 
 import useModal from 'common/hooks/useModal';
 
-import { Button, Icon, Text } from 'common/components';
+import { Button, Icon, PaginationBar, Text } from 'common/components';
+
+import { PaginationBarProps } from 'common/components/PaginationBar';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
 
@@ -19,12 +21,16 @@ function ProfilePage() {
   const navigate = useNavigate();
 
   const { socialId = '' } = useParams();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { showModal } = useModal();
 
   const currentTab = searchParams.get('tab') || USER_PROFILE_TAB.REVIEWS;
+  const pageNumber = searchParams.get('page') || String(1);
 
-  const { myReviews, myReviewForms, userProfile, isError, error } = useProfilePageQueries(socialId);
+  const { userReviews, userReviewForms, userProfile, isError, error } = useProfilePageQueries(
+    socialId,
+    pageNumber,
+  );
 
   useEffect(() => {
     if (isError) {
@@ -38,6 +44,11 @@ function ProfilePage() {
 
   const handleEditProfile = () => {
     showModal(MODAL_LIST.PROFILE_EDIT);
+  };
+
+  const movePage = (pageNumber: number) => {
+    setSearchParams({ tab: currentTab, page: String(pageNumber) });
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -116,13 +127,13 @@ function ProfilePage() {
           <div className={styles.counterContainer}>
             <div className={styles.counter}>
               <Text className={styles.number} size={24} weight="bold">
-                {myReviews.numberOfReviews}
+                {userReviews.numberOfReviews}
               </Text>
               <Text size={12}>회고 작성</Text>
             </div>
             <div className={styles.counter}>
               <Text className={styles.number} size={24} weight="bold">
-                {myReviewForms.numberOfReviewForms}
+                {userReviewForms.numberOfReviewForms}
               </Text>
               <Text size={12}>생성</Text>
             </div>
@@ -130,7 +141,20 @@ function ProfilePage() {
         </aside>
 
         <div className={styles.mainContent}>
-          <ReviewList socialId={socialId} filter={currentTab} />
+          <ReviewList socialId={socialId} filter={currentTab} pageNumber={pageNumber} />
+          <PaginationBar
+            visiblePageButtonLength={
+              PAGE_OPTION.REVIEW_BUTTON_LENGTH as PaginationBarProps['visiblePageButtonLength']
+            }
+            itemCountInPage={PAGE_OPTION.REVIEW_ITEM_SIZE}
+            totalItemCount={
+              currentTab === USER_PROFILE_TAB.REVIEWS
+                ? userReviews.numberOfReviews
+                : userReviewForms.numberOfReviewForms
+            }
+            focusedPage={Number(pageNumber)}
+            onClickPageButton={movePage}
+          />
         </div>
       </LayoutContainer>
     </>

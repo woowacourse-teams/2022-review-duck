@@ -25,6 +25,7 @@ export interface CreateTemplateRequest {
 }
 
 export interface GetTemplatesResponse {
+  numberOfTemplates: number;
   templates: Template[];
 }
 

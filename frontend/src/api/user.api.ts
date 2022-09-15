@@ -5,19 +5,27 @@ import {
   UpdateProfileResponse,
 } from '../types';
 
-import { API_URI } from '../constant';
+import { API_URI, PAGE_OPTION } from '../constant';
 import axiosInstance from 'api/config/axiosInstance';
 
 export const getUserReviewAnswers = async (
   socialId: number,
+  pageNumber: string,
 ): Promise<GetUserReviewAnswerResponse> => {
-  const { data } = await axiosInstance.get(`${API_URI.USER.GET_REVIEW_ANSWERS}?member=${socialId}`);
+  const { data } = await axiosInstance.get(
+    `${API_URI.USER.GET_REVIEW_ANSWERS}?member=${socialId}&page=${pageNumber}&size=${PAGE_OPTION.REVIEW_ITEM_SIZE}`,
+  );
 
   return data;
 };
 
-export const getUserReviewForms = async (socialId: number): Promise<GetUserReviewFormsResponse> => {
-  const { data } = await axiosInstance.get(`${API_URI.USER.GET_REVIEW_FORMS}?member=${socialId}`);
+export const getUserReviewForms = async (
+  socialId: number,
+  pageNumber: string,
+): Promise<GetUserReviewFormsResponse> => {
+  const { data } = await axiosInstance.get(
+    `${API_URI.USER.GET_REVIEW_FORMS}?member=${socialId}&page=${pageNumber}&size=${PAGE_OPTION.REVIEW_ITEM_SIZE}`,
+  );
 
   return data;
 };

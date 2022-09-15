@@ -1,4 +1,4 @@
-import { API_URI } from 'constant';
+import { API_URI, PAGE_OPTION } from 'constant';
 
 import {
   GetTemplatesResponse,
@@ -12,8 +12,16 @@ import {
 
 import axiosInstance from './config/axiosInstance';
 
-export const getTemplates = async (filter: TemplateFilterType): Promise<GetTemplatesResponse> => {
-  const { data } = await axiosInstance.get(`${API_URI.TEMPLATE.GET_TEMPLATES}?filter=${filter}`);
+export const getTemplates = async (
+  filter: TemplateFilterType,
+  pageNumber: string,
+  itemCount?: number,
+): Promise<GetTemplatesResponse> => {
+  const { data } = await axiosInstance.get(
+    `${API_URI.TEMPLATE.GET_TEMPLATES}?page=${pageNumber}&size=${
+      itemCount || PAGE_OPTION.TEMPLATE_ITEM_SIZE
+    }&sort=${filter}`,
+  );
 
   return data;
 };
