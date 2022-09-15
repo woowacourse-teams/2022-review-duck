@@ -9,6 +9,7 @@ const PAGE_LIST = {
   TEMPLATE_DETAIL: '/template/view',
   TEMPLATE_FORM: '/template/review-form',
   USER_PROFILE: '/profile',
+  TIMELINE: '/timeline',
 };
 
 const MODAL_LIST = {
@@ -36,6 +37,7 @@ const QUERY_KEY = {
     GET_REVIEWS: 'getReviews',
     GET_REVIEW: 'getReview',
     GET_REVIEW_FORM: 'getReviewForm',
+    GET_REVIEW_PUBLIC_ANSWER: 'getReviewPublicAnswer',
 
     GET_MY_REVIEWS: 'getMyReviews',
     GET_MY_REVIEW_FORMS: 'getMyReviewForms',
@@ -103,6 +105,7 @@ const API_URI = {
     GET_ANSWER: (reviewId: numberString) => `/api/reviews/${reviewId}`,
     GET_FORM_ANSWER: (reviewFormCode: string, display: string) =>
       `/api/review-forms/${reviewFormCode}/reviews?displayType=${display}`,
+    GET_PUBLIC_ANSWER: '/api/reviews/public',
 
     CREATE_FORM: '/api/review-forms',
     CREATE_ANSWER: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
