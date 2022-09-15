@@ -16,5 +16,5 @@ export { default as PopupBox } from './PopupBox';
 export { default as Modal } from './Modal';
 export { default as ModalProvider } from './ModalProvider';
 export { default as FlexContainer } from './FlexContainer';
-export { default as PaginationNavigator } from './PaginationNavigator';
+export { default as PaginationBar } from './PaginationBar';
 export { default as ToolTip } from './ToolTip';

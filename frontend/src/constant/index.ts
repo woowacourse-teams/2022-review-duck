@@ -120,7 +120,7 @@ const API_URI = {
     UPDATE_PROFILE: '/api/members/me',
   },
   TEMPLATE: {
-    GET_TEMPLATES: '/api/templates',
+    GET_TEMPLATES: '/api/templates/all',
     GET_TEMPLATE: (templateId: numberString) => `/api/templates/${templateId}`,
 
     CREATE_FORM: (templateId: numberString) => `/api/templates/${templateId}/review-forms`,
