@@ -1,0 +1,45 @@
+@import 'styles/@global.scss';
+
+.component-pagination-bar {
+  width: 100%;
+
+  .page-button-container {
+    border-radius: $GLOBAL_BORDERRADIUS_SMALL;
+    border: 1px solid $LIGHT_COLOR_STATUS_PRIMARY_100;
+  }
+
+  .page-button {
+    background-color: transparent;
+    border: none;
+    border-right: 1px solid $LIGHT_COLOR_STATUS_PRIMARY_100;
+    padding: 0.5rem 0.7rem;
+    color: $THEME_COLOR_THEME_TEXT_600;
+    cursor: pointer;
+
+    &:last-child {
+      border-right: none;
+    }
+
+    &:hover:not(.current-page):not(.disabled) {
+      opacity: 0.7;
+      background-color: $THEME_COLOR_STATUS_PRIMARY_100;
+    }
+  }
+
+  .disabled {
+    cursor: default;
+    opacity: 0.5;
+
+    &:hover {
+      opacity: 0.5;
+      background-color: transparent;
+    }
+  }
+
+  .current-page {
+    font-weight: bold;
+    background-color: $THEME_COLOR_STATUS_PRIMARY_400;
+    color: $THEME_COLOR_STATUS_PRIMARY_100;
+    cursor: default;
+  }
+}
