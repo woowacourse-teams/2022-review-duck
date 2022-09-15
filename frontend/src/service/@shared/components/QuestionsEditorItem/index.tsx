@@ -1,5 +1,3 @@
-import cn from 'classnames';
-
 import { FlexContainer, Textarea } from 'common/components';
 
 import Button from 'common/components/Button';
