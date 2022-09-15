@@ -55,7 +55,7 @@ function PaginationBar({
   };
 
   return (
-    <FlexContainer className={styles.container} direction="row" justify="center">
+    <FlexContainer className={styles.componentPaginationBar} direction="row" justify="center">
       <div className={styles.pageButtonContainer}>
         <button
           className={cn(styles.pageButton, { [styles.disabled]: isFirstPage })}
