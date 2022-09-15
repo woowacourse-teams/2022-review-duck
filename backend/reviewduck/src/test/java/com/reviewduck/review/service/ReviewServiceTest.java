@@ -289,10 +289,10 @@ public class ReviewServiceTest {
         @DisplayName("회고를 수정한다.")
         void updateReview() throws InterruptedException {
             // given
-            Review savedReview = saveReview(member1, false);
+            Review savedReview = saveReview(member1, true);
 
             // when
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(true, List.of(
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
                 new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
                 new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
             ));
@@ -305,7 +305,7 @@ public class ReviewServiceTest {
                 () -> assertThat(updatedReview.getMember().getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(updatedReview.getQuestionAnswers().get(0).getAnswer().getValue())
                     .isEqualTo("editedAnswer1"),
-                () -> assertThat(updatedReview.isPrivate()).isTrue()
+                () -> assertThat(updatedReview.isPrivate()).isFalse()
             );
         }
 
