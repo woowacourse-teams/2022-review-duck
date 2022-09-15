@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import cn from 'classnames';
 
 import styles from './styles.module.scss';
@@ -20,25 +22,33 @@ function PaginationBar({
   onClickPageButton,
 }: PaginationBarProps) {
   const totalPageLength = Math.ceil(totalItemCount / itemCountInPage);
-  const firstPageButtonValue =
-    (Math.floor(focusedPage / visiblePageButtonLength) -
-      (focusedPage % visiblePageButtonLength === 0 ? 1 : 0)) *
-      visiblePageButtonLength +
-    1;
 
   const isFirstPage = focusedPage === 1;
   const isLastPage = focusedPage === totalPageLength;
   const isCurrentPage = (pageNumber: number) => focusedPage === pageNumber;
 
-  const getPageButtonLength = () => {
-    if (
-      Math.ceil(totalPageLength / visiblePageButtonLength) ===
-      Math.ceil(focusedPage / visiblePageButtonLength)
-    ) {
-      return totalPageLength % visiblePageButtonLength;
-    }
-    return visiblePageButtonLength;
-  };
+  const currentPageNumbers: number[] = useMemo(() => {
+    const totalPageStack = Math.ceil(totalPageLength / visiblePageButtonLength);
+    const currentPageStack = Math.ceil(focusedPage / visiblePageButtonLength);
+
+    const lastPageNumber =
+      totalPageStack === currentPageStack
+        ? totalPageLength % visiblePageButtonLength
+        : visiblePageButtonLength;
+
+    const firstPageNumber =
+      (Math.floor(focusedPage / visiblePageButtonLength) -
+        (focusedPage % visiblePageButtonLength === 0 ? 1 : 0)) *
+        visiblePageButtonLength +
+      1;
+
+    return Array.from(
+      {
+        length: lastPageNumber,
+      },
+      (_, index) => index + firstPageNumber,
+    );
+  }, [totalPageLength, visiblePageButtonLength, focusedPage]);
 
   const handleClickPageButton = (pageNumber: number) => () => {
     onClickPageButton(pageNumber);
@@ -61,18 +71,20 @@ function PaginationBar({
         >
           이전
         </button>
-        {new Array(getPageButtonLength()).fill(0).map((_, index) => (
+
+        {currentPageNumbers.map((pageNumber) => (
           <button
-            key={index}
+            key={pageNumber}
             className={cn(styles.pageButton, {
-              [styles.currentPage]: isCurrentPage(firstPageButtonValue + index),
+              [styles.currentPage]: isCurrentPage(pageNumber),
             })}
-            onClick={handleClickPageButton(firstPageButtonValue + index)}
-            disabled={isCurrentPage(firstPageButtonValue + index)}
+            onClick={handleClickPageButton(pageNumber)}
+            disabled={isCurrentPage(pageNumber)}
           >
-            {firstPageButtonValue + index}
+            {pageNumber}
           </button>
         ))}
+
         <button
           className={cn(styles.pageButton, { [styles.disabled]: isLastPage })}
           onClick={handleClickPageButton(focusedPage + 1)}
