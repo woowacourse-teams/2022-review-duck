@@ -25,8 +25,15 @@ const initialReviewContents: ReviewForm = {
     },
     isSelf: false,
     updateDate: '0일 전',
+    isPrivate: false,
   },
 };
+
+interface CreateParameters {
+  reviewId?: string;
+  questions: Question[];
+  isPrivate: boolean;
+}
 
 const changeRequestBody = (questions: Question[]) =>
   questions.map(({ id, answer }) => ({
@@ -46,7 +53,10 @@ function useAnswerEditorPage(reviewFormCode: string, reviewId: string) {
 
   const reviewContents = reviewAnswerQuery.data || reviewFormQuery.data || initialReviewContents;
 
-  const submitCreateAnswer = (questions: Question[], handler: SubmitHandler) => {
+  const submitCreateAnswer = (
+    { questions, isPrivate }: CreateParameters,
+    handler: SubmitHandler,
+  ) => {
     const { onSuccess, onError } = handler;
     const requestContents = changeRequestBody(questions);
 
@@ -54,6 +64,7 @@ function useAnswerEditorPage(reviewFormCode: string, reviewId: string) {
       {
         reviewFormCode,
         contents: requestContents,
+        isPrivate,
       },
       {
         onSuccess,
@@ -62,12 +73,15 @@ function useAnswerEditorPage(reviewFormCode: string, reviewId: string) {
     );
   };
 
-  const submitUpdateAnswer = (reviewId: string, questions: Question[], handler: SubmitHandler) => {
+  const submitUpdateAnswer = (
+    { reviewId, questions, isPrivate }: CreateParameters,
+    handler: SubmitHandler,
+  ) => {
     const { onSuccess, onError } = handler;
     const requestContents = changeRequestBody(questions);
 
     updateMutation.mutate(
-      { reviewId: Number(reviewId), contents: requestContents },
+      { reviewId: Number(reviewId), contents: requestContents, isPrivate },
       { onSuccess, onError },
     );
   };

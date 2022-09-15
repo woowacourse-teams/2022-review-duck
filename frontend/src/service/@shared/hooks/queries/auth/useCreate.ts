@@ -1,8 +1,8 @@
-import { useMutation, useQueryClient } from 'react-query';
-
 import { authAPI } from 'api';
 import { QUERY_KEY } from 'constant';
 import { CreateRefreshResponse, UseCustomMutationOptions } from 'types';
+
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 function useCreateRefreshToken(mutationOptions?: UseCustomMutationOptions<CreateRefreshResponse>) {
   const queryClient = useQueryClient();

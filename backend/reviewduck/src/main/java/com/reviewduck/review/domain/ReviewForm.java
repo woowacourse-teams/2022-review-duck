@@ -52,7 +52,6 @@ public class ReviewForm extends BaseDate {
     @OrderBy("position asc")
     private List<ReviewFormQuestion> reviewFormQuestions;
 
-
     public ReviewForm(Member member, String title, List<ReviewFormQuestion> questions) {
         validateWhenCreate(member, title, questions);
 

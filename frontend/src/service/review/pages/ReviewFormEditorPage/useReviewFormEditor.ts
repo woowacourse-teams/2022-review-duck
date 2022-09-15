@@ -1,5 +1,3 @@
-import { UseMutationResult } from 'react-query';
-
 import { ReviewForm, CreateReviewFormRequest, UpdateReviewFormRequest, ErrorResponse } from 'types';
 
 import {
@@ -7,6 +5,8 @@ import {
   useGetReviewForm,
   useUpdateReviewForm,
 } from 'service/@shared/hooks/queries/review';
+
+import { UseMutationResult } from '@tanstack/react-query';
 
 type SubmitMutationResult = UseMutationResult<
   { reviewFormCode: string },

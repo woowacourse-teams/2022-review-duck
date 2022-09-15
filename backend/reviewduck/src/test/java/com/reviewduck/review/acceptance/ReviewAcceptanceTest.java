@@ -265,7 +265,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             saveReviewAndGetId(accessToken1, true);
             Long reviewId = saveReviewAndGetId(accessToken1, false);
 
-            List<ReviewResponse> reviewResponses = get("/api/reviews")
+            List<ReviewResponse> reviewResponses = get("/api/reviews/public")
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .body()
@@ -287,7 +287,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 Long reviewId = saveReviewAndGetId(accessToken1, false);
 
                 //when, then
-                ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(List.of(
+                ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
                     new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
                     new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(1L, "editedAnswer2"))
                 ));
@@ -302,7 +302,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 Long reviewId = saveReviewAndGetId(accessToken1, false);
 
                 //when, then
-                ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(List.of(
+                ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
                     new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
                     new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(1L, "editedAnswer2"))
                 ));
@@ -315,7 +315,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             @DisplayName("존재하지 않는 회고를 수정할 수 없다.")
             void invalidReviewId() {
                 // when, then
-                ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(List.of(
+                ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
                     new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
                     new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(1L, "editedAnswer2"))
                 ));
@@ -330,7 +330,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 Long reviewId = saveReviewAndGetId(accessToken1, false);
 
                 //when, then
-                ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(List.of(
+                ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
                     new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
                     new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(1L, "editedAnswer2"))
                 ));

@@ -27,7 +27,8 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
         registry.addInterceptor(new AuthInterceptor(jwtTokenProvider))
             .addPathPatterns("/api/**")
             .excludePathPatterns("/api/login/**")
-            .excludePathPatterns("/api/review-forms/*/reviews");
+            .excludePathPatterns("/api/review-forms/*/reviews")
+            .excludePathPatterns("/api/reviews/public");
     }
 
     @Override
