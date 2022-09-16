@@ -32,9 +32,9 @@ public class AdminReviewFormService {
 
     @Transactional
     public void deleteReviewFormById(Long reviewFormId) {
-        reviewFormRepository.findById(reviewFormId)
+        ReviewForm reviewForm = reviewFormRepository.findById(reviewFormId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고 폼입니다."));
 
-        reviewFormRepository.delete(reviewFormId);
+        reviewFormRepository.delete(reviewForm);
     }
 }
