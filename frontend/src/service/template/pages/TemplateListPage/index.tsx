@@ -8,13 +8,13 @@ import { useGetTemplates } from 'service/@shared/hooks/queries/template/useGet';
 
 import { Button, FlexContainer } from 'common/components';
 
-import Icon from 'common/components/Icon';
-
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
 
 import styles from './styles.module.scss';
 
 import TemplateListContainer from './TemplateListContainer';
+import { faArrowUp, faBarsStaggered, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function TemplateListPage() {
   const [searchParam] = useSearchParams();
@@ -42,7 +42,7 @@ function TemplateListPage() {
                   [styles.focus]: currentTab === TEMPLATE_TAB.TREND,
                 })}
               >
-                <Icon className={styles.icon} code="local_fire_department" />
+                <FontAwesomeIcon className={styles.icon} icon={faArrowUp} />
                 트랜딩
               </div>
             </button>
@@ -54,7 +54,7 @@ function TemplateListPage() {
                   [styles.focus]: currentTab === TEMPLATE_TAB.LATEST,
                 })}
               >
-                <Icon className={styles.icon} code="playlist_add_check_circle" />
+                <FontAwesomeIcon className={styles.icon} icon={faBarsStaggered} />
                 최신
               </div>
             </button>
@@ -63,7 +63,7 @@ function TemplateListPage() {
         <div className={styles.buttonContainer}>
           <Link to={PAGE_LIST.TEMPLATE_FORM}>
             <Button>
-              <Icon code="rate_review" />
+              <FontAwesomeIcon icon={faPenToSquare} />
               템플릿 만들기
             </Button>
           </Link>

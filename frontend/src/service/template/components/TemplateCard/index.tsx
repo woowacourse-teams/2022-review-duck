@@ -4,13 +4,16 @@ import cn from 'classnames';
 
 import { getElapsedTimeText } from 'service/@shared/utils';
 
-import { FlexContainer, Icon, Text } from 'common/components';
+import { FlexContainer, Text } from 'common/components';
 
 import TagLabel from 'common/components/TagLabel';
 
 import SmallProfileCard from 'service/@shared/components/SmallProfileCard';
 
 import styles from './styles.module.scss';
+
+import { faClock, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface ContainerProps {
   className?: string;
@@ -44,7 +47,7 @@ interface TagProps {
 function Tag({ className, usedCount }: TagProps) {
   return (
     <TagLabel className={className}>
-      <Icon code="download" />
+      <FontAwesomeIcon icon={faDownload} />
       <span>{`${usedCount}회`}</span>
     </TagLabel>
   );
@@ -71,7 +74,7 @@ interface UpdatedAtProps {
 function UpdatedAt({ className, updatedAt }: UpdatedAtProps) {
   return (
     <FlexContainer className={cn(className, styles.info)} direction="row" align="center">
-      <Icon className={styles.icon} code="schedule" />
+      <FontAwesomeIcon className={styles.icon} icon={faClock} />
       <span className={styles.text}>{getElapsedTimeText(updatedAt)}</span>
     </FlexContainer>
   );

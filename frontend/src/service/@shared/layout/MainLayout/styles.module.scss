@@ -109,11 +109,12 @@
 
 .user-menu {
   padding: 0;
-  width: 10rem;
+  width: 8.5rem;
 
   .item {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     align-items: center;
     font-size: 0.875rem;
     gap: 0.5rem;

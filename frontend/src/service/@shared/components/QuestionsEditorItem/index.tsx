@@ -1,11 +1,13 @@
 import { FlexContainer, Textarea } from 'common/components';
 
 import Button from 'common/components/Button';
-import Icon from 'common/components/Icon';
 import Text from 'common/components/Text';
 import TextBox from 'common/components/TextBox';
 
 import styles from './styles.module.scss';
+
+import { faBackspace, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type UpdateQuestionEvent = React.MouseEvent | React.KeyboardEvent<HTMLInputElement>;
 
@@ -67,11 +69,11 @@ function QuestionsEditorItem({
 
         <FlexContainer direction="row" justify="right" gap="small">
           <Button className={styles.button} theme="circle" size="medium" onClick={onAddQuestion}>
-            <Icon code="add" />
+            <FontAwesomeIcon icon={faPlus} />
           </Button>
 
           <Button className={styles.button} theme="circle" size="medium" onClick={onDeleteQuestion}>
-            <Icon code="backspace" />
+            <FontAwesomeIcon icon={faBackspace} />
           </Button>
         </FlexContainer>
       </div>

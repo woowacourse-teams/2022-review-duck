@@ -1,6 +1,8 @@
-import cn from 'classnames';
+import { faBookmark, faHeart } from '@fortawesome/free-regular-svg-icons';
+import { faEraser, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { FlexContainer, Icon, Text } from 'common/components';
+import { FlexContainer, Text } from 'common/components';
 
 import Profile from 'service/@shared/components/Profile';
 
@@ -66,7 +68,7 @@ function EditButtons({ className, isVisible, onClickEdit, onClickDelete }: EditB
       justify="right"
     >
       <FlexContainer className={styles.button} direction="row" align="center" onClick={onClickEdit}>
-        <Icon className={styles.icon} code="edit_note" type="round" />
+        <FontAwesomeIcon icon={faPenToSquare} />
         <Text className={styles.text} size={14}>
           회고 편집
         </Text>
@@ -78,7 +80,7 @@ function EditButtons({ className, isVisible, onClickEdit, onClickDelete }: EditB
         align="center"
         onClick={onClickDelete}
       >
-        <Icon className={styles.icon} code="delete" type="round" />
+        <FontAwesomeIcon icon={faEraser} />
         <Text className={styles.text} size={14}>
           회고 삭제
         </Text>
@@ -122,7 +124,7 @@ function Reaction({ onClickLike, onClickBookmark }: ReactionProps) {
   return (
     <FlexContainer className={styles.inlineButtons} direction="row" gap="large">
       <FlexContainer className={styles.button} direction="row" align="center" onClick={onClickLike}>
-        <Icon className={styles.icon} code="favorite" type="round" />
+        <FontAwesomeIcon className={styles.icon} icon={faHeart} />
         <Text className={styles.text} size={12}>
           좋아요
         </Text>
@@ -134,7 +136,7 @@ function Reaction({ onClickLike, onClickBookmark }: ReactionProps) {
         align="center"
         onClick={onClickBookmark}
       >
-        <Icon className={styles.icon} code="bookmark" type="round" />
+        <FontAwesomeIcon className={styles.icon} icon={faBookmark} />
         <Text className={styles.text} size={12}>
           북마크
         </Text>

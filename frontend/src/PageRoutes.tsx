@@ -41,7 +41,7 @@ function PageRoutes() {
         {/* 데모 데이용 */}
         <Route
           path="/pending"
-          element={<ErrorPage status=";(" title="준비 중인 서비스입니다." description="pending" />}
+          element={<ErrorPage status="!" title="준비 중인 서비스입니다." description="pending" />}
         />
       </Route>
 

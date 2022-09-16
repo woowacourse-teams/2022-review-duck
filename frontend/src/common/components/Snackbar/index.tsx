@@ -2,12 +2,17 @@ import React, { useState } from 'react';
 
 import cn from 'classnames';
 
-import { TransitionDiv, Icon, Text } from 'common/components';
+import { TransitionDiv, Text } from 'common/components';
 
 import styles from './styles.module.scss';
 
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { faBell } from '@fortawesome/free-regular-svg-icons';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 export interface SnackbarProps {
-  icon?: string;
+  icon?: IconProp;
   theme?: 'primary' | 'success' | 'warning' | 'danger';
   title: string;
   description?: string;
@@ -16,7 +21,7 @@ export interface SnackbarProps {
 }
 
 function Snackbar({
-  icon = 'info',
+  icon = faBell,
   theme = 'primary',
   title,
   description,
@@ -52,7 +57,7 @@ function Snackbar({
       isVisible={isVisible}
     >
       <div className={styles.content}>
-        <Icon className={styles.icon} type="outlined" code={icon} />
+        <FontAwesomeIcon className={styles.icon} icon={icon} />
 
         <div className={styles.text}>
           <Text className={styles.title} size={18} weight="bold">
@@ -63,7 +68,7 @@ function Snackbar({
           </Text>
         </div>
 
-        <Icon className={styles.close} code="close" />
+        <FontAwesomeIcon className={styles.close} icon={faClose} />
       </div>
 
       <div className={styles.progress}>
@@ -78,7 +83,7 @@ function Snackbar({
 }
 
 Snackbar.defaultType = {
-  icon: 'circle_notifications',
+  icon: faBell,
   theme: 'primary',
   title: '스낵바 타이틀이 비어있습니다',
   duration: 3000,

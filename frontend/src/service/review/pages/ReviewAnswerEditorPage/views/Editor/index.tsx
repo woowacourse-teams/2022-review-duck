@@ -1,11 +1,18 @@
 import { faCircleQuestion } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { Text, FieldSet, Textarea, Button, Icon, ToolTip, CheckBox } from 'common/components';
+import { Text, FieldSet, Textarea, Button, ToolTip, CheckBox } from 'common/components';
 
 import { CheckboxProps } from 'common/components/CheckBox';
 
 import styles from './styles.module.scss';
+
+import {
+  faArrowRightFromBracket,
+  faCircleQuestion,
+  faPenToSquare,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface ContainerProps extends React.HTMLAttributes<HTMLFormElement> {
   children: React.ReactNode;
@@ -72,12 +79,12 @@ const ConfirmButtons = ({ submitDisabled, onSubmit, onCancel }: ConfirmButtonsPr
   return (
     <div className={styles.confirmButtons}>
       <Button theme="outlined" onClick={onCancel}>
-        <Icon code="cancel" />
+        <FontAwesomeIcon icon={faArrowRightFromBracket} />
         <span>취소하기</span>
       </Button>
 
       <Button type="button" disabled={submitDisabled} onClick={onSubmit}>
-        <Icon code="send" />
+        <FontAwesomeIcon icon={faPenToSquare} />
         <span>제출하기</span>
       </Button>
     </div>
