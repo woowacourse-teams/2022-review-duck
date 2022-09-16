@@ -5,9 +5,9 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.reviewduck.admin.repository.AdminMemberRepository;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.repository.MemberRepository;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ import lombok.AllArgsConstructor;
 @Transactional(readOnly = true)
 public class AdminMemberService {
 
-    private MemberRepository memberRepository;
+    private AdminMemberRepository memberRepository;
 
     public List<Member> findAllMembers() {
         return memberRepository.findAll();

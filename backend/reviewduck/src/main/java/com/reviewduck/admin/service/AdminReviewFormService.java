@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.reviewduck.admin.repository.AdminReviewFormRepository;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.repository.ReviewFormRepository;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ import lombok.AllArgsConstructor;
 public class AdminReviewFormService {
 
     private AdminMemberService adminMemberService;
-    private ReviewFormRepository reviewFormRepository;
+    private AdminReviewFormRepository reviewFormRepository;
 
     public List<ReviewForm> findAllReviewForms() {
         return reviewFormRepository.findAll();
