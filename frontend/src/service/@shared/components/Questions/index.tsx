@@ -2,6 +2,8 @@ import { faBookmark, faHeart } from '@fortawesome/free-regular-svg-icons';
 import { faEraser, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import cn from 'classnames';
+
 import { FlexContainer, Text } from 'common/components';
 
 import Profile from 'service/@shared/components/Profile';
