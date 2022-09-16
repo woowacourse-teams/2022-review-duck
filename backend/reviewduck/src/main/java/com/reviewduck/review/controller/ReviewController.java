@@ -1,11 +1,14 @@
 package com.reviewduck.review.controller;
 
 import static com.reviewduck.common.util.Logging.*;
+import static com.reviewduck.common.vo.PageConstant.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,10 +24,12 @@ import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
+import com.reviewduck.review.dto.response.ReviewResponse;
 import com.reviewduck.review.dto.response.ReviewSynchronizedResponse;
 import com.reviewduck.review.dto.response.ReviewsResponse;
 import com.reviewduck.review.service.ReviewService;
 
+import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 
@@ -49,13 +54,30 @@ public class ReviewController {
     @GetMapping(params = "member")
     @ResponseStatus(HttpStatus.OK)
     public ReviewsResponse findBySocialId(@AuthenticationPrincipal Member member,
-        @RequestParam(value = "member") String socialId) {
+        @ApiParam(name = "사용자 socialId") @RequestParam(value = "member") String socialId,
+        @ApiParam(name = "페이지 번호") @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
+        @ApiParam(name = "페이지 당 게시물 수") @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size
+    ) {
 
-        info("/api/reviews?member=" + socialId, "GET", "");
+        info("/api/reviews?member=" + socialId + "&page=" + page + "&size=" + size, "GET", "");
 
-        List<Review> reviews = reviewService.findBySocialId(socialId);
+        Page<Review> reviews = reviewService.findBySocialId(socialId, member, page - 1, size);
 
         return ReviewsResponse.of(reviews, socialId, member);
+    }
+
+    @Operation(summary = "비밀글이 아닌 회고 답변을 최신 순으로 조회한다.")
+    @GetMapping("/public")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ReviewResponse> findAllPublic(@AuthenticationPrincipal Member member) {
+
+        info("/api/reviews/public", "GET", "");
+
+        List<Review> reviews = reviewService.findAllPublic();
+
+        return reviews.stream()
+            .map(review -> ReviewResponse.of(member, review))
+            .collect(Collectors.toUnmodifiableList());
     }
 
     @Operation(summary = "회고 답변을 수정한다.")

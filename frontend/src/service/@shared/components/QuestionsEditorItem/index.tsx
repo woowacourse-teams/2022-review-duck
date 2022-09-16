@@ -3,15 +3,17 @@ import cn from 'classnames';
 import { FlexContainer, Textarea } from 'common/components';
 
 import Button from 'common/components/Button';
-import Icon from 'common/components/Icon';
 import Text from 'common/components/Text';
 import TextBox from 'common/components/TextBox';
 
 import styles from './styles.module.scss';
 
+import { faBackspace, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 type UpdateQuestionEvent = React.MouseEvent | React.KeyboardEvent<HTMLInputElement>;
 
-interface Props {
+interface QuestionsEditorItemProps {
   numbering: number;
   description: string;
   children?: string;
@@ -29,7 +31,7 @@ function QuestionsEditorItem({
   onChangeDescription,
   onAddQuestion,
   onDeleteQuestion,
-}: Props) {
+}: QuestionsEditorItemProps) {
   const handleChangeQuestion = (event: React.ChangeEvent<HTMLInputElement>) => {
     onChangeQuestion && onChangeQuestion(event);
   };
@@ -39,8 +41,6 @@ function QuestionsEditorItem({
   };
 
   const handleKeyUpTextBox = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    // TODO: 키보드 입력 버그 고치기 - 한글 입력 후 엔터가 두번 발생되는 문제
-
     if (event.key !== 'Enter') return;
 
     onAddQuestion && onAddQuestion(event);
@@ -61,7 +61,7 @@ function QuestionsEditorItem({
         </Text>
 
         <TextBox
-          className={cn('question', styles.question)}
+          className={styles.question}
           placeholder="질문 타이틀을 입력해주세요."
           defaultValue={children}
           onChange={handleChangeQuestion}
@@ -71,11 +71,11 @@ function QuestionsEditorItem({
 
         <FlexContainer direction="row" justify="right" gap="small">
           <Button className={styles.button} theme="circle" size="medium" onClick={onAddQuestion}>
-            <Icon code="add" />
+            <FontAwesomeIcon icon={faPlus} />
           </Button>
 
           <Button className={styles.button} theme="circle" size="medium" onClick={onDeleteQuestion}>
-            <Icon code="backspace" />
+            <FontAwesomeIcon icon={faBackspace} />
           </Button>
         </FlexContainer>
       </div>

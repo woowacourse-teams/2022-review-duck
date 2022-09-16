@@ -1,40 +1,35 @@
-import { useEffect } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
-
-import { TemplateFilterType } from 'service/@shared/types';
+import { PAGE_LIST, TEMPLATE_TAB } from 'constant';
+import { TemplateFilterType } from 'types';
 
 import { useGetTemplates } from 'service/@shared/hooks/queries/template/useGet';
 
 import { Button, FlexContainer } from 'common/components';
-
-import Icon from 'common/components/Icon';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
 
 import styles from './styles.module.scss';
 
 import TemplateListContainer from './TemplateListContainer';
-import { PAGE_LIST, TEMPLATE_TAB } from 'service/@shared/constants';
+import { faArrowUp, faBarsStaggered, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function TemplateListPage() {
-  const navigate = useNavigate();
   const [searchParam] = useSearchParams();
 
   const tabString = searchParam.get('filter');
   const currentTab = tabString === 'trend' || tabString === 'latest' ? tabString : 'trend';
+  const pageNumber = searchParam.get('page') || String(1);
 
-  const { data, isError, error } = useGetTemplates(currentTab as TemplateFilterType);
+  const initialTemplates = {
+    numberOfTemplates: 0,
+    templates: [],
+  };
+  const { data } = useGetTemplates(currentTab as TemplateFilterType, pageNumber);
 
-  const { templates } = data || { templates: [] };
-
-  useEffect(() => {
-    if (isError) {
-      alert(error?.message);
-      navigate(-1);
-    }
-  }, [isError, error]);
+  const { numberOfTemplates, templates } = data || initialTemplates;
 
   return (
     <LayoutContainer>
@@ -47,7 +42,7 @@ function TemplateListPage() {
                   [styles.focus]: currentTab === TEMPLATE_TAB.TREND,
                 })}
               >
-                <Icon className={styles.icon} code="local_fire_department" />
+                <FontAwesomeIcon className={styles.icon} icon={faArrowUp} />
                 트랜딩
               </div>
             </button>
@@ -59,7 +54,7 @@ function TemplateListPage() {
                   [styles.focus]: currentTab === TEMPLATE_TAB.LATEST,
                 })}
               >
-                <Icon className={styles.icon} code="playlist_add_check_circle" />
+                <FontAwesomeIcon className={styles.icon} icon={faBarsStaggered} />
                 최신
               </div>
             </button>
@@ -68,13 +63,18 @@ function TemplateListPage() {
         <div className={styles.buttonContainer}>
           <Link to={PAGE_LIST.TEMPLATE_FORM}>
             <Button>
-              <Icon code="rate_review" />
+              <FontAwesomeIcon icon={faPenToSquare} />
               템플릿 만들기
             </Button>
           </Link>
         </div>
       </FlexContainer>
-      <TemplateListContainer templates={templates} />
+      <TemplateListContainer
+        templates={templates}
+        numberOfTemplates={numberOfTemplates}
+        currentTab={currentTab}
+        pageNumber={pageNumber}
+      />
     </LayoutContainer>
   );
 }

@@ -1,13 +1,16 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { MODAL_LIST, PAGE_LIST } from 'constant';
+
 import useModal from 'common/hooks/useModal';
 
 import { getErrorMessage } from 'service/@shared/utils';
 
-import { Button, FieldSet, Icon, TextBox } from 'common/components';
+import { Button, FieldSet, TextBox } from 'common/components';
 
-import { MODAL_LIST, PAGE_LIST } from 'service/@shared/constants';
+import { faBan, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { validateReviewFormCode } from 'service/@shared/validator';
 
 function ModalReviewJoin() {
@@ -39,22 +42,24 @@ function ModalReviewJoin() {
 
   return (
     <form onSubmit={onSubmitReviewFormCode}>
-      <FieldSet title="참여 코드" description="회고 참여를 위한 코드를 입력해주세요.">
+      <FieldSet>
+        <FieldSet.Title>참여 코드</FieldSet.Title>
         <TextBox
           name="reviewFormCode"
           maxLength={8}
           placeholder="영문과 숫자로 이루어진 코드 8자리를 입력해주세요."
         />
+        <FieldSet.Description>회고 참여를 위한 코드를 입력해주세요.</FieldSet.Description>
       </FieldSet>
 
       <div className="button-container horizontal">
         <Button size="medium" theme="outlined" onClick={onCancel}>
-          <Icon code="cancel" />
+          <FontAwesomeIcon icon={faBan} />
           <span>취소하기</span>
         </Button>
 
         <Button type="submit" size="medium" filled>
-          <Icon code="ads_click" />
+          <FontAwesomeIcon icon={faRightToBracket} />
           <span>참여하기</span>
         </Button>
       </div>

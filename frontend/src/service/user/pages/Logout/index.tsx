@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 
+import { PAGE_LIST } from 'constant';
+
 import useSnackbar from 'common/hooks/useSnackbar';
 import useAuth from 'service/@shared/hooks/useAuth';
 
-import { PAGE_LIST } from 'service/@shared/constants';
+import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 
 function Logout() {
   const navigate = useNavigate();
@@ -17,7 +19,7 @@ function Logout() {
       onSettled: () => navigate(PAGE_LIST.HOME),
       onSuccess: () => {
         showSnackbar({
-          icon: 'exit_to_app',
+          icon: faRightFromBracket,
           title: '로그아웃이 완료되었습니다.',
           description: '회고덕에서 로그아웃 되었습니다.',
         });
@@ -25,7 +27,7 @@ function Logout() {
       onError: ({ message }) => {
         showSnackbar({
           theme: 'warning',
-          icon: 'exit_to_app',
+          icon: faRightFromBracket,
           title: '로그아웃에 실패하였습니다.',
           description: message,
         });

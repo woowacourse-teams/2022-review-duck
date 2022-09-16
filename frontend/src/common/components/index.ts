@@ -1,6 +1,6 @@
 export { default as Button } from './Button';
+export { default as CheckBox } from './CheckBox';
 export { default as FieldSet } from './FieldSet';
-export { default as Icon } from './Icon';
 export { default as Logo } from './Logo';
 export { default as ProgressBar } from './ProgressBar';
 export { default as Text } from './Text';
@@ -15,3 +15,5 @@ export { default as PopupBox } from './PopupBox';
 export { default as Modal } from './Modal';
 export { default as ModalProvider } from './ModalProvider';
 export { default as FlexContainer } from './FlexContainer';
+export { default as PaginationBar } from './PaginationBar';
+export { default as ToolTip } from './ToolTip';

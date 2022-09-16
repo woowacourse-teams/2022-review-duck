@@ -1,13 +1,36 @@
-import { GetTemplatesResponse } from 'service/@shared/types/template';
+import { useSearchParams } from 'react-router-dom';
+
+import { PAGE_LIST, PAGE_OPTION } from 'constant';
+
+import { PaginationBar } from 'common/components';
+
+import { PaginationBarProps } from 'common/components/PaginationBar';
 
 import NoResult from 'service/@shared/components/NoResult';
 import TemplateCard from 'service/template/components/TemplateCard';
 
 import styles from './styles.module.scss';
 
-import { PAGE_LIST } from 'service/@shared/constants';
+import { GetTemplatesResponse } from 'types/template';
 
-function TemplateListContainer({ templates }: GetTemplatesResponse) {
+interface TemplateListContainerProps extends GetTemplatesResponse {
+  currentTab: string;
+  pageNumber: string;
+}
+
+function TemplateListContainer({
+  templates,
+  numberOfTemplates,
+  currentTab,
+  pageNumber,
+}: TemplateListContainerProps) {
+  const [_, setSearchParam] = useSearchParams();
+
+  const movePage = (pageNumber: number) => {
+    setSearchParam({ filter: currentTab, page: String(pageNumber) });
+    window.scrollTo(0, 0);
+  };
+
   if (templates.length === 0) {
     return <NoResult>템플릿이 없습니다.</NoResult>;
   }
@@ -31,6 +54,15 @@ function TemplateListContainer({ templates }: GetTemplatesResponse) {
           />
         </TemplateCard>
       ))}
+      <PaginationBar
+        visiblePageButtonLength={
+          PAGE_OPTION.TEMPLATE_BUTTON_LENGTH as PaginationBarProps['visiblePageButtonLength']
+        }
+        itemCountInPage={PAGE_OPTION.TEMPLATE_ITEM_SIZE}
+        totalItemCount={numberOfTemplates}
+        focusedPage={Number(pageNumber)}
+        onClickPageButton={movePage}
+      />
     </div>
   );
 }

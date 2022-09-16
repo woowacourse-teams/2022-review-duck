@@ -5,9 +5,15 @@ import useSnackbar from 'common/hooks/useSnackbar';
 import { useGetAuthProfile } from 'service/@shared/hooks/queries/auth';
 import { useUpdateProfile } from 'service/@shared/hooks/queries/user/useUpdate';
 
-import { Button, FieldSet, Icon, TextBox } from 'common/components';
+import { getErrorMessage } from 'service/@shared/utils';
+
+import { Button, FieldSet, TextBox } from 'common/components';
 
 import styles from './styles.module.scss';
+
+import { faBan, faUserPen } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { validateNickname } from 'service/@shared/validator';
 
 function ModalProfileEdit() {
   const { hideModal } = useModal();
@@ -42,8 +48,12 @@ function ModalProfileEdit() {
   };
 
   const handleEditProfile = () => {
-    if (newNickname.length < 2) {
-      alert('닉네임은 2 ~ 10자 이내로 작성해주세요.');
+    try {
+      validateNickname(newNickname);
+    } catch (error) {
+      const errorMessage = getErrorMessage(error);
+
+      alert(errorMessage);
       return;
     }
     if (confirm(`${newNickname}으로 닉네임을 변경하시겠습니까?`)) {
@@ -56,11 +66,8 @@ function ModalProfileEdit() {
 
   return (
     <div className={styles.container}>
-      <FieldSet
-        size="large"
-        title="닉네임 수정"
-        description="10자 이내로 변경할 닉네임을 입력해주세요."
-      >
+      <FieldSet>
+        <FieldSet.Title size="large">닉네임 수정</FieldSet.Title>
         <TextBox
           minLength={2}
           maxLength={10}
@@ -68,14 +75,16 @@ function ModalProfileEdit() {
           value={newNickname}
           onChange={handleChangeNewNickname}
         />
+        <FieldSet.Description>10자 이내로 변경할 닉네임을 입력해주세요.</FieldSet.Description>
       </FieldSet>
+
       <div className={styles.buttons}>
         <Button theme="outlined" onClick={hideModal}>
-          <Icon code="cancel" />
+          <FontAwesomeIcon icon={faBan} />
           취소하기
         </Button>
         <Button onClick={handleEditProfile}>
-          <Icon code="edit_note" />
+          <FontAwesomeIcon icon={faUserPen} />
           수정하기
         </Button>
       </div>

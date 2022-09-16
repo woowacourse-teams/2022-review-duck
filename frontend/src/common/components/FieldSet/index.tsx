@@ -1,48 +1,51 @@
-import { ReactNode } from 'react';
-
 import cn from 'classnames';
-import PropTypes from 'prop-types';
 
-import Icon from 'common/components/Icon';
+import { Text } from 'common/components';
 
 import styles from './styles.module.scss';
 
-const propSizeType = ['medium', 'large'] as const;
+import FlexContainer from '../FlexContainer';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-interface Props {
+interface FieldSetContainerProps {
   className?: string;
-  size: typeof propSizeType[number];
-  title: string;
-  description?: string;
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
-function FieldSet({ className, size, title, description, children }: Props) {
+function FieldSetContainer({ className, children }: FieldSetContainerProps) {
   return (
-    <div className={cn(className, styles.container, styles[`size-${size}`])}>
-      <label className={cn(styles.title)}>{title}</label>
-
+    <FlexContainer className={className} direction="column" gap="medium">
       {children}
-
-      {description && (
-        <div className={cn(styles.description)}>
-          <Icon code="chevron_right" />
-          <span>{description}</span>
-        </div>
-      )}
-    </div>
+    </FlexContainer>
   );
 }
 
-FieldSet.propTypes = {
-  size: PropTypes.oneOf(propSizeType),
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string,
-  children: PropTypes.element.isRequired,
-};
+interface FieldSetTitleProps {
+  children: React.ReactNode;
+  size?: 'medium' | 'large';
+}
 
-FieldSet.defaultProps = {
-  size: 'medium',
-};
+function Title({ children, size = 'medium' }: FieldSetTitleProps) {
+  return <Text className={cn(styles.title, styles[`size-${size}`])}>{children}</Text>;
+}
+
+interface FieldSetDescriptionProps {
+  children: React.ReactNode;
+}
+
+function Description({ children }: FieldSetDescriptionProps) {
+  return (
+    <FlexContainer className={styles.description} align="center" direction="row" gap="small">
+      <FontAwesomeIcon icon={faChevronRight} />
+      {children}
+    </FlexContainer>
+  );
+}
+
+const FieldSet = Object.assign(FieldSetContainer, {
+  Title,
+  Description,
+});
 
 export default FieldSet;

@@ -73,7 +73,8 @@ public class AdminReviewController {
     @Operation(summary = "단일 회고 폼을 조회한다")
     @GetMapping("/review-forms/{reviewFormCode}")
     @ResponseStatus(HttpStatus.OK)
-    public AdminReviewFormResponse findReviewForm(@AuthenticationPrincipal Member member, @PathVariable String reviewFormCode) {
+    public AdminReviewFormResponse findReviewForm(@AuthenticationPrincipal Member member,
+        @PathVariable String reviewFormCode) {
 
         Logging.info("api/admin/review-forms/" + reviewFormCode, "GET", "");
 

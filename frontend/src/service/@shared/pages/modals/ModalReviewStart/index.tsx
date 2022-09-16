@@ -1,12 +1,19 @@
 import { useNavigate } from 'react-router-dom';
 
+import { MODAL_LIST, PAGE_LIST } from 'constant';
+
 import useModal from 'common/hooks/useModal';
 
-import { Button, Icon, Text } from 'common/components';
+import { Button, Text } from 'common/components';
 
 import styles from './styles.module.scss';
 
-import { MODAL_LIST, PAGE_LIST } from 'service/@shared/constants';
+import {
+  faArrowRightFromBracket,
+  faFeatherPointed,
+  faRightToBracket,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function ModalReviewStart() {
   const navigate = useNavigate();
@@ -39,7 +46,7 @@ function ModalReviewStart() {
 
       <main className={styles.actionContainer}>
         <div className={styles.actionButton} onClick={onClickCreateButton}>
-          <Icon className={styles.icon} code="rate_review" />
+          <FontAwesomeIcon className={styles.icon} icon={faFeatherPointed} />
 
           <div className={styles.info}>
             <Text className={styles.title} size={20} weight="bold">
@@ -52,7 +59,7 @@ function ModalReviewStart() {
           </div>
         </div>
         <div className={styles.actionButton} onClick={onClickJoinButton}>
-          <Icon className={styles.icon} code="add_task" />
+          <FontAwesomeIcon className={styles.icon} icon={faRightToBracket} />
 
           <div className={styles.info}>
             <Text className={styles.title} size={20} weight="bold">
@@ -72,7 +79,7 @@ function ModalReviewStart() {
 
       <footer className={styles.buttonContainer}>
         <Button theme="outlined" size="large" onClick={onCancel}>
-          <Icon code="exit_to_app" />
+          <FontAwesomeIcon icon={faArrowRightFromBracket} />
           <span>다음에 회고하기</span>
         </Button>
       </footer>

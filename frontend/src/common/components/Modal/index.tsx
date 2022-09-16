@@ -4,13 +4,13 @@ import styles from './styles.module.scss';
 
 import TransitionDiv from '../TransitionDiv';
 
-interface Props {
+interface ModalProps {
   isVisible: boolean;
   onCloseModal: React.MouseEventHandler;
   children: React.ReactNode;
 }
 
-function Modal({ isVisible, onCloseModal, children }: Props) {
+function Modal({ isVisible, onCloseModal, children }: ModalProps) {
   const [isDimmerVisible, setDimmerVisible] = useState(isVisible);
 
   useLayoutEffect(() => {

@@ -1,12 +1,13 @@
 package com.reviewduck.review.controller;
 
 import static com.reviewduck.common.util.Logging.*;
+import static com.reviewduck.common.vo.PageConstant.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +28,9 @@ import com.reviewduck.review.dto.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.dto.response.MemberReviewFormsResponse;
+import com.reviewduck.review.dto.response.ReviewAbstractResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
-import com.reviewduck.review.dto.response.ReviewResponse;
-import com.reviewduck.review.dto.response.ReviewSheetResponse;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
@@ -54,19 +54,6 @@ public class ReviewFormController {
         info("/api/review-forms", "POST", request.toString());
 
         ReviewForm reviewForm = reviewFormService.save(member, request);
-        return ReviewFormCodeResponse.from(reviewForm);
-    }
-
-    @Operation(summary = "템플릿을 기반으로 작성된 후 수정된 회고 폼을 생성한다.")
-    @PostMapping(params = "templateId")
-    @ResponseStatus(HttpStatus.CREATED)
-    public ReviewFormCodeResponse createReviewFormByTemplate(@AuthenticationPrincipal Member member,
-        @RequestParam Long templateId,
-        @RequestBody @Valid ReviewFormCreateRequest request) {
-
-        info("/api/review-forms?templateId=" + templateId, "POST", request.toString());
-
-        ReviewForm reviewForm = reviewFormService.saveFromTemplate(member, templateId, request);
         return ReviewFormCodeResponse.from(reviewForm);
     }
 
@@ -94,47 +81,33 @@ public class ReviewFormController {
         return ReviewFormResponse.of(reviewForm, member);
     }
 
-    @Operation(summary = "사용자가 작성한 회고 폼을 모두 조회한다.")
+    @Operation(summary = "사용자가 작성한 회고 질문지 중 특정 페이지를 조회한다.")
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public MemberReviewFormsResponse findReviewFormsBySocialId(@AuthenticationPrincipal Member member,
-        @RequestParam(value = "member") String socialId) {
+    public MemberReviewFormsResponse findPageOfReviewFormsBySocialId(@AuthenticationPrincipal Member member,
+        @RequestParam(value = "member") String socialId,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size) {
 
-        info("/api/review-forms?member=" + socialId, "GET", "");
+        info("/api/review-forms?member=" + socialId + "page=" + page + " size=" + size, "GET", "");
 
-        List<ReviewForm> reviewForms = reviewFormService.findBySocialId(socialId);
+        Page<ReviewForm> reviewForms = reviewFormService.findBySocialId(socialId, page - 1, size);
 
         return MemberReviewFormsResponse.of(reviewForms, socialId, member);
     }
 
-    @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 모두 조회한다. (목록형 보기)")
-    @GetMapping(value = "/{reviewFormCode}/reviews", params = "displayType=list")
+    @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 모두 조회한다.")
+    @GetMapping(value = "/{reviewFormCode}/reviews")
     @ResponseStatus(HttpStatus.OK)
-    public List<ReviewResponse> findReviewsByCodeAsListDisplay(@AuthenticationPrincipal Member member,
+    public List<ReviewAbstractResponse> findReviewsByCodeAsListDisplay(@AuthenticationPrincipal Member member,
         @PathVariable String reviewFormCode, @RequestParam String displayType) {
 
-        info("/api/review-forms/" + reviewFormCode + "/reviews?displayType=list", "GET", "");
+        info("/api/review-forms/" + reviewFormCode + "/reviews?displayType=" + displayType, "GET", "");
 
         List<Review> reviews = reviewService.findAllByCode(reviewFormCode);
 
-        return reviews.stream()
-            .map((review) -> ReviewResponse.of(member, review))
-            .collect(Collectors.toUnmodifiableList());
-    }
-
-    @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 동기화하여 모두 조회한다. (시트형 보기)")
-    @GetMapping(value = "/{reviewFormCode}/reviews", params = "displayType=sheet")
-    @ResponseStatus(HttpStatus.OK)
-    public List<ReviewSheetResponse> findReviewsByCodeAsSheetDisplay(@AuthenticationPrincipal Member member,
-        @PathVariable String reviewFormCode, @RequestParam String displayType) {
-
-        info("/api/review-forms/" + reviewFormCode + "/reviews?displayType=sheet", "GET", "");
-
-        List<Review> reviews = reviewService.findAllByCode(reviewFormCode);
-
-        return reviews.stream()
-            .map((review) -> ReviewSheetResponse.of(member, review))
-            .collect(Collectors.toUnmodifiableList());
+        return ReviewDisplayBuilder.of(displayType)
+            .createResponseFrom(member, reviews);
     }
 
     @Operation(summary = "회고 폼을 수정한다.")

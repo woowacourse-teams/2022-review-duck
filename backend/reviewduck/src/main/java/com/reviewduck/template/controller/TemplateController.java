@@ -1,11 +1,11 @@
 package com.reviewduck.template.controller;
 
 import static com.reviewduck.common.util.Logging.*;
-
-import java.util.List;
+import static com.reviewduck.common.vo.PageConstant.*;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.ReviewForm;
+import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.template.domain.Template;
@@ -55,6 +56,19 @@ public class TemplateController {
         return TemplateIdResponse.from(template);
     }
 
+    @Operation(summary = "템플릿을 기반으로 작성된 후 수정된 회고 폼을 생성한다.")
+    @PostMapping("/{templateId}/review-forms/edited")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ReviewFormCodeResponse createReviewFormByTemplate(@AuthenticationPrincipal Member member,
+        @PathVariable Long templateId,
+        @RequestBody @Valid ReviewFormCreateRequest request) {
+
+        info("/api/templates/" + templateId + "/review-forms/edited", "POST", request.toString());
+
+        ReviewForm reviewForm = reviewFormService.saveFromTemplate(member, templateId, request);
+        return ReviewFormCodeResponse.from(reviewForm);
+    }
+
     @Operation(summary = "템플릿을 기반으로 회고 폼을 생성한다.")
     @PostMapping("/{templateId}/review-forms")
     @ResponseStatus(HttpStatus.CREATED)
@@ -67,6 +81,35 @@ public class TemplateController {
         return ReviewFormCodeResponse.from(reviewForm);
     }
 
+    @Operation(summary = "전체 템플릿을 조회한다.")
+    @GetMapping("/all")
+    @ResponseStatus(HttpStatus.OK)
+    public TemplatesResponse findAll(@AuthenticationPrincipal Member member,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size,
+        @RequestParam(required = false) String sort) {
+
+        info("/api/templates?page=" + page + " size=" + size, "GET", "");
+
+        Page<Template> templates = templateService.findAll(page - 1, size, sort);
+        return TemplatesResponse.of(templates, member);
+    }
+
+    @Operation(summary = "사용자가 생성한 템플릿을 모두 조회한다.")
+    @GetMapping(params = "member")
+    @ResponseStatus(HttpStatus.OK)
+    public MemberTemplatesResponse findAllByMemberId(@AuthenticationPrincipal Member member,
+        @RequestParam(value = "member") String socialId,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size) {
+
+        info("/api/templates?member=" + socialId + " page=" + page + " size=" + size, "GET", "");
+
+        Page<Template> templates = templateService.findAllBySocialId(socialId, page - 1, size);
+
+        return MemberTemplatesResponse.of(templates, socialId, member);
+    }
+
     @Operation(summary = "특정 템플릿을 조회한다.")
     @GetMapping("/{templateId}")
     @ResponseStatus(HttpStatus.OK)
@@ -76,41 +119,6 @@ public class TemplateController {
 
         Template template = templateService.findById(templateId);
         return TemplateResponse.of(template, member);
-    }
-
-    @Operation(summary = "템플릿을 최신순으로 내림차순 정렬하여 모두 조회한다.")
-    @GetMapping(params = "filter=latest")
-    @ResponseStatus(HttpStatus.OK)
-    public TemplatesResponse findAllOrderByLatest(@AuthenticationPrincipal Member member) {
-
-        info("/api/templates?filter=latest", "GET", "");
-
-        List<Template> templates = templateService.findAllOrderByLatest();
-        return TemplatesResponse.of(templates, member);
-    }
-
-    @Operation(summary = "템플릿을 사용 횟수를 기준으로 내림차순 정렬하여 모두 조회한다.")
-    @GetMapping(params = "filter=trend")
-    @ResponseStatus(HttpStatus.OK)
-    public TemplatesResponse findAllOrderByTrend(@AuthenticationPrincipal Member member) {
-
-        info("/api/templates?filter=trend", "GET", "");
-
-        List<Template> templates = templateService.findAllOrderByTrend();
-        return TemplatesResponse.of(templates, member);
-    }
-
-    @Operation(summary = "사용자가 생성한 템플릿을 모두 조회한다.")
-    @GetMapping(params = "member")
-    @ResponseStatus(HttpStatus.OK)
-    public MemberTemplatesResponse findByMemberId(@AuthenticationPrincipal Member member,
-        @RequestParam(value = "member") String socialId) {
-
-        info("/api/templates?member=" + socialId, "GET", "");
-
-        List<Template> templates = templateService.findBySocialId(socialId);
-
-        return MemberTemplatesResponse.of(templates, socialId, member);
     }
 
     @Operation(summary = "템플릿을 수정한다.")

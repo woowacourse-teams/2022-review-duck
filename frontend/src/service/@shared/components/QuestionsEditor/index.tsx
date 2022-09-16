@@ -2,8 +2,7 @@ import { FormEvent, HTMLAttributes, useEffect } from 'react';
 import { flushSync } from 'react-dom';
 
 import cn from 'classnames';
-
-import { Question } from 'service/@shared/types';
+import { Question } from 'types';
 
 import useQuestions from 'service/@shared/hooks/useQuestions';
 

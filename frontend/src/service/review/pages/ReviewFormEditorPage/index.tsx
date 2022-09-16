@@ -2,15 +2,15 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
-
-import { Question } from 'service/@shared/types';
+import { PAGE_LIST } from 'constant';
+import { Question } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/@shared/hooks/useQuestions';
 
 import { getErrorMessage } from 'service/@shared/utils';
 
-import { Button, FlexContainer, Icon, Logo, TextBox } from 'common/components';
+import { Button, FlexContainer, Logo, TextBox } from 'common/components';
 
 import QuestionCard from 'service/@shared/components/QuestionCard';
 import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
@@ -18,7 +18,8 @@ import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
 import styles from './styles.module.scss';
 
 import useReviewFormEditor from './useReviewFormEditor';
-import { PAGE_LIST } from 'service/@shared/constants';
+import { faArrowRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { validateReviewForm } from 'service/@shared/validator';
 
 function ReviewFormEditorPage() {
@@ -97,12 +98,12 @@ function ReviewFormEditorPage() {
 
   return (
     <>
-      <div className={cn(styles.container, 'flex-container column')}>
+      <FlexContainer className={styles.container} direction="column">
         <Link to={PAGE_LIST.HOME}>
           <Logo />
         </Link>
 
-        <div className={cn(styles.previewContainer, 'flex-container column')}>
+        <FlexContainer direction="column" gap="small">
           {questions.map(
             (question, index) =>
               question.value && (
@@ -115,8 +116,8 @@ function ReviewFormEditorPage() {
                 />
               ),
           )}
-        </div>
-      </div>
+        </FlexContainer>
+      </FlexContainer>
 
       <div>
         <FlexContainer className={cn(styles.container, styles.sticky)} direction="column">
@@ -132,12 +133,12 @@ function ReviewFormEditorPage() {
 
           <div className={cn('button-container horizontal')}>
             <Button theme="outlined" onClick={handleCancel}>
-              <Icon code="cancel" />
+              <FontAwesomeIcon icon={faArrowRightFromBracket} />
               <span>취소하기</span>
             </Button>
 
             <Button type="button" onClick={handleSubmitReviewForm} disabled={isSubmitLoading}>
-              <Icon code="drive_file_rename_outline" />
+              <FontAwesomeIcon icon={faPenToSquare} />
               <span>{isNewReviewForm ? '생성하기' : '수정하기'}</span>
             </Button>
           </div>

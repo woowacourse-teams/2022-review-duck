@@ -1,13 +1,13 @@
-import { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import cn from 'classnames';
+import { GITHUB_PROFILE_URL, PAGE_LIST, TEMPLATE_TAB } from 'constant';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
 import { getElapsedTimeText } from 'service/@shared/utils';
 
-import { Button, FlexContainer, Icon, Text } from 'common/components';
+import { Button, FlexContainer, Text } from 'common/components';
 
 import ScrollPanel from 'common/components/ScrollPanel';
 import TagLabel from 'common/components/TagLabel';
@@ -22,24 +22,28 @@ import GithubIcon from 'assets/images/github.svg';
 import styles from './styles.module.scss';
 
 import useTemplateDetailQueries from './useTemplateDetailQueries';
-import { GITHUB_PROFILE_URL, PAGE_LIST, TEMPLATE_TAB } from 'service/@shared/constants';
+import {
+  faBackspace,
+  faClock,
+  faDownload,
+  faFeatherPointed,
+  faHome,
+  faList,
+  faPenToSquare,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function TemplateDetailPage() {
   const { templateId } = useParams();
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
 
-  const { template, templates, isLoadError, loadError, createFormMutation, deleteMutation } =
-    useTemplateDetailQueries(Number(templateId));
+  const { template, templates, createFormMutation, deleteMutation } = useTemplateDetailQueries(
+    Number(templateId),
+  );
 
   const { templates: trendingTemplates } = templates || { templates: [] };
-
-  useEffect(() => {
-    if (isLoadError) {
-      alert(loadError?.message);
-      navigate(-1);
-    }
-  }, [isLoadError, loadError]);
 
   const handleDeleteTemplate = (templateId: number) => () => {
     if (confirm('정말 템플릿을 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) {
@@ -69,21 +73,16 @@ function TemplateDetailPage() {
     });
   };
 
-  const handleCreateFormError = ({ message }: Record<'message', string>) => {
-    alert(message);
-  };
-
   const handleStartReview = () => {
-    if (
-      confirm(
-        '템플릿 내용 그대로 회고 답변을 시작하시겠습니까? 계속 진행하면 회고 질문지가 생성됩니다.',
-      )
-    ) {
-      createFormMutation.mutate(Number(templateId), {
-        onSuccess: handleCreateSuccess,
-        onError: handleCreateFormError,
-      });
-    }
+    if (!confirm('이 템플릿으로 회고를 시작하시겠습니까\n계속 진행하면 회고 질문지가 생성됩니다.'))
+      return;
+
+    createFormMutation.mutate(Number(templateId), {
+      onSuccess: handleCreateSuccess,
+      onError: ({ message }) => {
+        showSnackbar({ theme: 'danger', title: '오류가 발생하였습니다.', description: message });
+      },
+    });
   };
 
   return (
@@ -95,17 +94,15 @@ function TemplateDetailPage() {
           </Text>
           <div className={styles.info}>
             <TagLabel>
-              <>
-                <Icon code="download" />
-                <span>{`${template.info.usedCount}회`}</span>
-              </>
+              <FontAwesomeIcon icon={faDownload} />
+              <span>{`${template.info.usedCount}회`}</span>
             </TagLabel>
             <div className={styles.iconText}>
-              <Icon code="person" />
+              <FontAwesomeIcon icon={faUser} />
               <span>{template.creator.nickname}</span>
             </div>
             <div className={styles.iconText}>
-              <Icon code="schedule" />
+              <FontAwesomeIcon icon={faClock} />
               <span>{getElapsedTimeText(template.info.updatedAt)}</span>
             </div>
           </div>
@@ -114,19 +111,19 @@ function TemplateDetailPage() {
           <div className={styles.templateButtons}>
             <Link to={`${PAGE_LIST.TEMPLATE_FORM}?templateId=${template.info.id}`}>
               <Button>
-                <Icon code="rate_review" />
+                <FontAwesomeIcon icon={faPenToSquare} />
                 템플릿으로 질문지 만들기
               </Button>
             </Link>
             <Button theme="outlined" onClick={handleStartReview}>
-              <Icon code="add_task" />
+              <FontAwesomeIcon icon={faFeatherPointed} />
               템플릿으로 회고하기
             </Button>
           </div>
           {template.isCreator && (
             <div className={styles.iconButtons}>
               <div className={styles.iconButton} onClick={handleDeleteTemplate(template.info.id)}>
-                <Icon type="round" code="delete" />
+                <FontAwesomeIcon icon={faBackspace} />
                 <Text size={14} element="span">
                   템플릿 삭제
                 </Text>
@@ -136,7 +133,7 @@ function TemplateDetailPage() {
                 to={`${PAGE_LIST.TEMPLATE_FORM}?templateId=${templateId}&templateEditMode=true`}
               >
                 <div className={styles.iconButton}>
-                  <Icon type="round" code="edit" />
+                  <FontAwesomeIcon icon={faPenToSquare} />
 
                   <Text size={14} element="span">
                     템플릿 수정
@@ -186,7 +183,7 @@ function TemplateDetailPage() {
             <GithubIcon className={styles.icon} />
           </a>
           <Link to={`${PAGE_LIST.USER_PROFILE}/${template.creator.id}`}>
-            <Icon className={styles.icon} code="house" type="outlined" />
+            <FontAwesomeIcon className={styles.icon} icon={faHome} />
           </Link>
         </div>
       </div>
@@ -194,7 +191,7 @@ function TemplateDetailPage() {
       <section className={styles.footer}>
         <section className={styles.headerContainer}>
           <div className={styles.alignCenter}>
-            <Icon className={styles.icon} code="local_fire_department" />
+            <FontAwesomeIcon className={styles.icon} icon={faUser} />
             <Text size={18} weight="bold">
               인기 템플릿
             </Text>
@@ -203,13 +200,13 @@ function TemplateDetailPage() {
           <div className={cn(styles.alignCenter, styles.buttonContainer)}>
             <Link to={PAGE_LIST.TEMPLATE_FORM}>
               <Button size="medium">
-                <Icon code="add" />
+                <FontAwesomeIcon icon={faPenToSquare} />
                 <span>새 템플릿 작성</span>
               </Button>
             </Link>
             <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${TEMPLATE_TAB.TREND}`}>
               <Button size="medium" theme="outlined">
-                <Icon code="list" />
+                <FontAwesomeIcon icon={faList} />
                 <span>목록</span>
               </Button>
             </Link>

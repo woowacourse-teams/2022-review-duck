@@ -34,7 +34,8 @@ public class ReviewTest {
                 new QuestionAnswer(new ReviewFormQuestion("question1", "description1"), new Answer("answer1")),
                 new QuestionAnswer(new ReviewFormQuestion("question2", "description2"), new Answer("answer2")),
                 new QuestionAnswer(new ReviewFormQuestion("question3", "description3"), new Answer("answer3"))
-            )));
+            ),
+            false));
     }
 
     @ParameterizedTest
@@ -50,7 +51,8 @@ public class ReviewTest {
                 new QuestionAnswer(new ReviewFormQuestion("question1", "description1"), new Answer("answer1")),
                 new QuestionAnswer(new ReviewFormQuestion("question2", "description2"), new Answer("answer2")),
                 new QuestionAnswer(new ReviewFormQuestion("question3", "description3"), new Answer("answer3"))
-            )))
+            ),
+            false))
             .isInstanceOf(ReviewException.class)
             .hasMessage("회고의 제목은 비어있을 수 없습니다.");
     }
@@ -67,7 +69,8 @@ public class ReviewTest {
                 new QuestionAnswer(new ReviewFormQuestion("question1", "description1"), new Answer("answer1")),
                 new QuestionAnswer(new ReviewFormQuestion("question2", "description2"), new Answer("answer2")),
                 new QuestionAnswer(new ReviewFormQuestion("question3", "description3"), new Answer("answer3"))
-            ));
+            ),
+            false);
 
         List<Integer> actual = review.getQuestionAnswers().stream()
             .map(QuestionAnswer::getPosition)

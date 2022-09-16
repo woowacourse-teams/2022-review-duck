@@ -44,13 +44,13 @@ public class ReviewForm extends BaseDate {
     @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
+    private boolean isActive = true;
+
     @JoinColumn(name = "review_form_id")
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @OrderBy("position asc")
     private List<ReviewFormQuestion> reviewFormQuestions;
-
-    @Column(nullable = false)
-    private boolean isActive = true;
 
     public ReviewForm(Member member, String title, List<ReviewFormQuestion> questions) {
         validateWhenCreate(member, title, questions);

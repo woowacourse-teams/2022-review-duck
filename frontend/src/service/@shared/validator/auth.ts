@@ -1,4 +1,4 @@
-import { GITHUB_OAUTH_ERROR } from 'service/@shared/constants';
+import { GITHUB_OAUTH_ERROR } from 'constant';
 
 function validateGithubOAuth(code: string, error: string) {
   if (!code && !error) {

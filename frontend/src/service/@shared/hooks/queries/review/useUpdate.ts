@@ -1,13 +1,12 @@
-import { useMutation, useQueryClient } from 'react-query';
-
+import { reviewAPI } from 'api';
+import { QUERY_KEY } from 'constant';
 import {
   UpdateReviewAnswerResponse,
   UpdateReviewFormResponse,
   UseCustomMutationOptions,
-} from 'service/@shared/types';
+} from 'types';
 
-import { reviewAPI } from 'service/@shared/api';
-import { QUERY_KEY } from 'service/@shared/constants';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 function useUpdateReviewForm(mutationOptions?: UseCustomMutationOptions<UpdateReviewFormResponse>) {
   const queryClient = useQueryClient();

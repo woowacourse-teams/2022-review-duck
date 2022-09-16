@@ -1,68 +1,32 @@
-import { useQuery, UseQueryOptions } from 'react-query';
+import { reviewAPI } from 'api';
+import { QUERY_KEY } from 'constant';
+import { ErrorResponse, ReviewAnswer, ReviewForm, ReviewFormAnswerList } from 'types';
+import 'types';
 
-import {
-  ErrorResponse,
-  GetReviewAnswerResponse,
-  GetReviewFormAnswerResponse,
-  GetReviewFormResponse,
-  ReviewAnswer,
-  ReviewForm,
-  ReviewFormAnswerList,
-} from 'service/@shared/types';
-import 'service/@shared/types';
-
-import { getElapsedTimeText } from 'service/@shared/utils';
-
-import { reviewAPI } from 'service/@shared/api';
-import { QUERY_KEY } from 'service/@shared/constants';
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 function useGetReviewForm(
   reviewFormCode: string,
-  queryOptions?: UseQueryOptions<GetReviewFormResponse, ErrorResponse, ReviewForm>,
+  queryOptions?: UseQueryOptions<ReviewForm, ErrorResponse>,
 ) {
-  return useQuery<GetReviewFormResponse, ErrorResponse, ReviewForm>(
+  return useQuery<ReviewForm, ErrorResponse>(
     [QUERY_KEY.DATA.REVIEW_FORM, QUERY_KEY.API.GET_REVIEW_FORM, { reviewFormCode }],
     () => reviewAPI.getForm(reviewFormCode),
     {
       ...queryOptions,
-
-      select: (data) => ({
-        title: data.reviewFormTitle,
-        questions: data.questions,
-        info: {
-          creator: data.creator,
-          isSelf: data.isCreator,
-          updateDate: getElapsedTimeText(data.updatedAt),
-        },
-      }),
     },
   );
 }
 
 function useGetReviewAnswer(
   reviewId: number,
-  queryOptions?: UseQueryOptions<GetReviewAnswerResponse, ErrorResponse, ReviewAnswer>,
+  queryOptions?: UseQueryOptions<ReviewAnswer, ErrorResponse>,
 ) {
-  return useQuery<GetReviewAnswerResponse, ErrorResponse, ReviewAnswer>(
+  return useQuery<ReviewAnswer, ErrorResponse>(
     [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEW, { reviewId }],
     () => reviewAPI.getAnswer(reviewId),
     {
       ...queryOptions,
-
-      select: (data) => ({
-        id: data.id,
-        questions: data.contents.map((content) => ({
-          id: content.question.id,
-          value: content.question.value,
-          description: content.question.description,
-          answer: content.answer,
-        })),
-        info: {
-          creator: data.creator,
-          isSelf: data.isCreator,
-          updateDate: getElapsedTimeText(data.updatedAt),
-        },
-      }),
     },
   );
 }
@@ -74,29 +38,13 @@ interface UseGetReviewFormAnswer {
 
 function useGetReviewFormAnswer(
   { reviewFormCode, display }: UseGetReviewFormAnswer,
-  queryOptions?: UseQueryOptions<GetReviewFormAnswerResponse, ErrorResponse, ReviewFormAnswerList>,
+  queryOptions?: UseQueryOptions<ReviewFormAnswerList, ErrorResponse>,
 ) {
-  return useQuery<GetReviewFormAnswerResponse, ErrorResponse, ReviewFormAnswerList>(
+  return useQuery<ReviewFormAnswerList, ErrorResponse>(
     [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEWS, { reviewFormCode, display }],
     () => reviewAPI.getFormAnswer(reviewFormCode, display),
     {
       ...queryOptions,
-
-      select: (data) =>
-        data.map((review) => ({
-          id: review.id,
-          questions: review.contents.map((content) => ({
-            id: content.question.id,
-            value: content.question.value,
-            description: content.question.description,
-            answer: content.answer,
-          })),
-          info: {
-            creator: review.creator,
-            isSelf: review.isCreator,
-            updateDate: getElapsedTimeText(review.updatedAt),
-          },
-        })),
     },
   );
 }

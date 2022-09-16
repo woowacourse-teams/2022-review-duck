@@ -2,18 +2,20 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
-
-import { ReviewFormAnswer } from 'service/@shared/types';
+import { PAGE_LIST } from 'constant';
+import { ReviewFormAnswer } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
-import { Text, FlexContainer, Button, Icon, TextBox } from 'common/components';
+import { Text, FlexContainer, Button, TextBox } from 'common/components';
 
 import ScrollPanel from 'common/components/ScrollPanel';
 
 import styles from './styles.module.scss';
 
-import { PAGE_LIST } from 'service/@shared/constants';
+import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
+import { faPenToSquare, faRightToBracket, faShareNodes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface ContainerProps {
   children: React.ReactNode;
@@ -112,7 +114,7 @@ const JoinButton = ({ reviewFormCode }: JoinButtonProps) => {
   return (
     <Link to={`${PAGE_LIST.REVIEW}/${reviewFormCode}`}>
       <Button className={styles.formAnswerJoinButton} theme="outlined">
-        <Icon code="group_add" />
+        <FontAwesomeIcon icon={faRightToBracket} />
         <span>이 회고에 참여하기</span>
       </Button>
     </Link>
@@ -135,7 +137,7 @@ const FormCopyLink = ({ reviewFormCode }: FormCopyLink) => {
     try {
       await navigator.clipboard.writeText($copyLink.value);
       showSnackbar({
-        icon: 'done',
+        icon: faCircleCheck,
         title: '참여 링크를 클립보드에 복사했습니다.',
         description: '함께 회고할 팀원들에게 공유해주세요.',
       });
@@ -182,13 +184,13 @@ const FormManageButtons = ({ reviewFormCode, isMine }: FormManageButtonsProps) =
       <div className={styles.buttonContainer}>
         <Link to={`${PAGE_LIST.REVIEW_FORM}/${reviewFormCode}`}>
           <Button size="small">
-            <Icon code="edit_note" />
+            <FontAwesomeIcon icon={faPenToSquare} />
             <span>질문 수정</span>
           </Button>
         </Link>
 
         <Button theme="outlined" size="small" disabled={false}>
-          <Icon code="share" />
+          <FontAwesomeIcon icon={faShareNodes} />
           <span>템플릿 공유</span>
         </Button>
       </div>

@@ -1,20 +1,30 @@
 import { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-import { Button, FlexContainer, Icon, Text } from 'common/components';
+import { GITHUB_OAUTH_LOGIN_URL, PAGE_LIST } from 'constant';
+
+import { Button, FlexContainer, Text } from 'common/components';
 
 import styles from './styles.module.scss';
 
-import { GITHUB_OAUTH_LOGIN_URL, PAGE_LIST } from 'service/@shared/constants';
+import {
+  faCircleChevronLeft,
+  faFaceSurprise,
+  faHome,
+  faTriangleExclamation,
+  faUser,
+  faUserLock,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-interface Props {
+interface ErrorPageProps {
   status?: string | number;
   title: string;
   description: string;
   onResetError?: () => void;
 }
 
-function ErrorPage({ status, title, description, onResetError }: Props) {
+function ErrorPage({ status, title, description, onResetError }: ErrorPageProps) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -30,13 +40,13 @@ function ErrorPage({ status, title, description, onResetError }: Props) {
   const errorIcon = () => {
     switch (status) {
       case 403:
-        return 'person_outline';
+        return faUserLock;
 
       case 404:
-        return 'sd_card_alert';
+        return faTriangleExclamation;
 
       default:
-        return 'error_outline';
+        return faFaceSurprise;
     }
   };
 
@@ -44,7 +54,7 @@ function ErrorPage({ status, title, description, onResetError }: Props) {
     <FlexContainer className={styles.container} align="center">
       <FlexContainer className={styles.blurCardContainer} justify="center">
         <FlexContainer className={styles.errorIcon} justify="center" align="center">
-          <Icon code={errorIcon()} />
+          <FontAwesomeIcon icon={errorIcon()} />
         </FlexContainer>
         <div className={styles.errorNumber}>{status}</div>
 
@@ -63,21 +73,21 @@ function ErrorPage({ status, title, description, onResetError }: Props) {
         {status === 403 ? (
           <a href={GITHUB_OAUTH_LOGIN_URL}>
             <Button>
-              <Icon code="person" />
-              <span>{'회고덕 로그인'}</span>
+              <FontAwesomeIcon icon={faUser} />
+              <span>회고덕 로그인</span>
             </Button>
           </a>
         ) : (
           <Link to={PAGE_LIST.HOME} onClick={onResetError}>
             <Button>
-              <Icon code="home" />
-              <span>{'회고덕 홈 화면'}</span>
+              <FontAwesomeIcon icon={faHome} />
+              <span>회고덕 홈 화면</span>
             </Button>
           </Link>
         )}
 
         <Button theme="outlined" onClick={handlePreviousPage}>
-          <Icon code="keyboard_return" />
+          <FontAwesomeIcon icon={faCircleChevronLeft} />
           <span>이전 화면</span>
         </Button>
       </FlexContainer>

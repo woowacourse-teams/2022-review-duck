@@ -1,8 +1,8 @@
+import { API_URI } from 'constant';
 import { rest } from 'msw';
 
 import { DUMMY_USER } from 'mocks/data';
 import { reviewduckAPI } from 'mocks/hosts';
-import { API_URI } from 'service/@shared/constants';
 
 const userHandlers = [
   rest.get(reviewduckAPI(API_URI.USER.GET_REVIEW_FORMS), (req, res, ctx) =>

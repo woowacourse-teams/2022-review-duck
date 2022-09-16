@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
-import { ErrorResponse } from 'service/@shared/types';
+import { PAGE_LIST } from 'constant';
+import { ErrorResponse } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/@shared/hooks/useQuestions';
@@ -9,13 +10,7 @@ import useQuestions from 'service/@shared/hooks/useQuestions';
 import useAnswerEditorPage from './useAnswerEditorPage';
 import { Editor } from './views/Editor';
 import { Status } from './views/Status';
-import { PAGE_LIST } from 'service/@shared/constants';
-
-/*
-  TODO:
-  - [ ] 상수 분리
-  - [ ] 에러 바운더리 적용
-*/
+import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 
 const EDITOR_MODE = {
   NEW_ANSWER: false,
@@ -37,6 +32,8 @@ function ReviewAnswerEditorPage() {
   const { questions, answeredCount, isAnswerComplete, updateAnswer } = useQuestions(
     reviewContents.questions,
   );
+
+  const [isPrivate, setPrivate] = useState(!!reviewContents.info.isPrivate);
   const [focusQuestionIndex, setFocusQuestionIndex] = useState(0);
 
   const handleFocusAnswer = (index: number) => () => {
@@ -49,9 +46,13 @@ function ReviewAnswerEditorPage() {
       updateAnswer(index, { value: target.value });
     };
 
+  const handleChangePrivate = () => {
+    setPrivate(!isPrivate);
+  };
+
   const handleSubmitSuccess = () => {
     showSnackbar({
-      icon: 'rate_review',
+      icon: faCircleCheck,
       title: '작성하신 회고가 기록되었습니다.',
       description: '작성한 회고는 마이페이지를 통해 모아볼 수 있습니다.',
     });
@@ -71,16 +72,22 @@ function ReviewAnswerEditorPage() {
     const isEditorMode = !!reviewId;
 
     isEditorMode === EDITOR_MODE.NEW_ANSWER &&
-      submitCreateAnswer(questions, {
-        onSuccess: handleSubmitSuccess,
-        onError: handleSubmitError,
-      });
+      submitCreateAnswer(
+        { questions, isPrivate },
+        {
+          onSuccess: handleSubmitSuccess,
+          onError: handleSubmitError,
+        },
+      );
 
     isEditorMode === EDITOR_MODE.UPDATE_ANSWER &&
-      submitUpdateAnswer(reviewId, questions, {
-        onSuccess: handleSubmitSuccess,
-        onError: handleSubmitError,
-      });
+      submitUpdateAnswer(
+        { reviewId, questions, isPrivate },
+        {
+          onSuccess: handleSubmitSuccess,
+          onError: handleSubmitError,
+        },
+      );
   };
 
   const handleCancel = () => {
@@ -120,6 +127,8 @@ function ReviewAnswerEditorPage() {
             onChange={handleChangeAnswer(index)}
           />
         ))}
+
+        <Editor.PrivateCheckBox checked={isPrivate} onChange={handleChangePrivate} />
 
         <Editor.ConfirmButtons
           submitDisabled={!isAnswerComplete}

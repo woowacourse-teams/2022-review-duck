@@ -1,11 +1,10 @@
-import { TemplateFilterType } from 'service/@shared/types';
+import { PAGE_OPTION, TEMPLATE_TAB } from 'constant';
+import { TemplateFilterType } from 'types';
 
 import { useGetTemplate, useGetTemplates } from 'service/@shared/hooks/queries/template';
 import { useCreateForm } from 'service/@shared/hooks/queries/template/useCreate';
 import { useDeleteTemplate } from 'service/@shared/hooks/queries/template/useDelete';
 import { useUpdateTemplate } from 'service/@shared/hooks/queries/template/useUpdate';
-
-import { TEMPLATE_TAB } from 'service/@shared/constants';
 
 function useTemplateDetailQueries(templateId: number) {
   const { data, isError: isTemplateError, error: templateError } = useGetTemplate(templateId);
@@ -13,7 +12,11 @@ function useTemplateDetailQueries(templateId: number) {
     data: templates,
     isError: isTemplatesError,
     error: templatesError,
-  } = useGetTemplates(TEMPLATE_TAB.TREND as TemplateFilterType);
+  } = useGetTemplates(
+    TEMPLATE_TAB.TREND as TemplateFilterType,
+    String(1),
+    PAGE_OPTION.TEMPLATE_TREND_ITEM_SIZE,
+  );
 
   const createFormMutation = useCreateForm();
 

@@ -1,22 +1,18 @@
 import React, { useRef, useState, useLayoutEffect } from 'react';
 
 import cn from 'classnames';
-import PropTypes from 'prop-types';
 
 import styles from './styles.module.scss';
 
-const propEffectType = ['fade', 'drop', 'unset'] as const;
-const propDirectionType = ['up', 'down', 'left', 'right'] as const;
-
 type DisplayState = 'appear' | 'disappear' | 'hidden' | 'visible';
-type EffectType = typeof propEffectType[number];
+type EffectType = 'fade' | 'drop' | 'unset';
 
-interface Props extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onAnimationEnd'> {
+interface TransitionDivProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onAnimationEnd'> {
   appear: EffectType;
   disappear: EffectType;
   all?: EffectType;
   duration: number;
-  direction: typeof propDirectionType[number];
+  direction: 'up' | 'down' | 'left' | 'right';
   isVisible?: boolean;
   onAppear?: React.AnimationEventHandler<HTMLDivElement>;
   onDisappear?: React.AnimationEventHandler<HTMLDivElement>;
@@ -35,7 +31,7 @@ function TransitionDiv({
   onDisappear,
   children,
   ...rest
-}: Props) {
+}: TransitionDivProps) {
   const duplicatedChildren = useRef<JSX.Element>();
   const [displayState, setDisplayState] = useState<DisplayState>(isVisible ? 'visible' : 'hidden');
 
@@ -92,15 +88,6 @@ function TransitionDiv({
     </div>
   );
 }
-
-TransitionDiv.propTypes = {
-  all: PropTypes.oneOf(propEffectType),
-  appear: PropTypes.oneOf(propEffectType),
-  disappear: PropTypes.oneOf(propEffectType),
-  direction: PropTypes.oneOf(propDirectionType),
-  duration: PropTypes.number,
-  isVisible: PropTypes.bool,
-};
 
 TransitionDiv.defaultProps = {
   appear: 'unset',

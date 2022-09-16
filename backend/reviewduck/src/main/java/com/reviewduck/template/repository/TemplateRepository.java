@@ -2,6 +2,8 @@ package com.reviewduck.template.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,11 +13,9 @@ import com.reviewduck.template.domain.Template;
 
 public interface TemplateRepository extends JpaRepository<Template, Long> {
 
-    List<Template> findByMemberOrderByUpdatedAtDesc(Member member);
+    Page<Template> findAll(Pageable pageable);
 
-    List<Template> findAllByOrderByUpdatedAtDesc();
-
-    List<Template> findAllByOrderByUsedCountDesc();
+    Page<Template> findByMember(Pageable pageable, Member member);
 
     List<Template> findAllByMember(Member member);
 

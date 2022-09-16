@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 
 import cn from 'classnames';
-
-import { TemplateFilterType } from 'service/@shared/types';
+import { MODAL_LIST, PAGE_OPTION, TEMPLATE_TAB } from 'constant';
+import { PAGE_LIST } from 'constant';
+import { TemplateFilterType } from 'types';
 
 import useModal from 'common/hooks/useModal';
 import { useGetTemplates } from 'service/@shared/hooks/queries/template';
 
-import { Button, Icon, Text, TransitionDiv } from 'common/components';
+import { Button, Text, TransitionDiv } from 'common/components';
 
 import ScrollPanel from 'common/components/ScrollPanel';
 
@@ -17,15 +18,19 @@ import TemplateCard from 'service/template/components/TemplateCard';
 
 import styles from './styles.module.scss';
 
-import { MODAL_LIST, TEMPLATE_TAB } from 'service/@shared/constants';
-import { PAGE_LIST } from 'service/@shared/constants';
+import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function MainPage() {
   const { showModal } = useModal();
   const onClickReviewStart = () => {
     showModal(MODAL_LIST.REVIEW_START);
   };
-  const { data, isError, error } = useGetTemplates(TEMPLATE_TAB.TREND as TemplateFilterType);
+  const { data, isError, error } = useGetTemplates(
+    TEMPLATE_TAB.TREND as TemplateFilterType,
+    String(1),
+    PAGE_OPTION.TEMPLATE_TREND_ITEM_SIZE,
+  );
   const { templates } = data || { templates: [] };
 
   useEffect(() => {
@@ -53,7 +58,7 @@ function MainPage() {
               size="medium"
               onClick={onClickReviewStart}
             >
-              <Icon code="rate_review" />
+              <FontAwesomeIcon icon={faPenToSquare} />
               회고 시작하기
             </Button>
           </div>

@@ -1,8 +1,8 @@
 import { Link, useNavigate } from 'react-router-dom';
 
-import useSnackbar from 'common/hooks/useSnackbar';
+import { PAGE_LIST, USER_PROFILE_TAB } from 'constant';
 
-import { Text } from 'common/components';
+import useSnackbar from 'common/hooks/useSnackbar';
 
 import NoResult from 'service/@shared/components/NoResult';
 import Questions from 'service/@shared/components/Questions';
@@ -10,20 +10,20 @@ import Questions from 'service/@shared/components/Questions';
 import styles from './styles.module.scss';
 
 import useProfilePageQueries from '../../useProfilePageQueries';
-import { PAGE_LIST, USER_PROFILE_TAB } from 'service/@shared/constants';
+import { faEraser } from '@fortawesome/free-solid-svg-icons';
 
 interface ReviewList {
   socialId: string;
   filter: string;
+  pageNumber: string;
 }
 
-function ReviewList({ filter, socialId }: ReviewList) {
+function ReviewList({ filter, socialId, pageNumber }: ReviewList) {
   const navigate = useNavigate();
 
-  const { myReviews, myReviewForms } = useProfilePageQueries(socialId);
+  const { userReviews, userReviewForms, deleteReviewMutation, deleteReviewFormMutation } =
+    useProfilePageQueries(socialId, pageNumber);
   const { showSnackbar } = useSnackbar();
-
-  const { deleteReviewMutation, deleteReviewFormMutation } = useProfilePageQueries(socialId);
 
   const handleClickEdit = (editLink: string) => () => {
     navigate(editLink);
@@ -34,7 +34,7 @@ function ReviewList({ filter, socialId }: ReviewList) {
       deleteReviewMutation.mutate(reviewId, {
         onSuccess: () => {
           showSnackbar({
-            icon: 'delete',
+            icon: faEraser,
             title: '작성한 회고가 삭제되었습니다.',
             description: '이제 누구도 해당 회고를 볼 수 없습니다.',
           });
@@ -51,7 +51,7 @@ function ReviewList({ filter, socialId }: ReviewList) {
       deleteReviewFormMutation.mutate(reviewFormCode, {
         onSuccess: () => {
           showSnackbar({
-            icon: 'delete',
+            icon: faEraser,
             title: '생성한 회고가 삭제되었습니다.',
             description: '이제 누구도 해당 회고를 볼 수 없습니다.',
           });
@@ -63,29 +63,30 @@ function ReviewList({ filter, socialId }: ReviewList) {
     }
   };
 
-  const noResultInMyReview = filter === USER_PROFILE_TAB.REVIEWS && myReviews.reviews.length === 0;
-  const noResultInMyReviewForm =
-    filter === USER_PROFILE_TAB.REVIEW_FORMS && myReviewForms.reviewForms.length === 0;
+  const noResultUserMyReview =
+    filter === USER_PROFILE_TAB.REVIEWS && userReviews.reviews.length === 0;
+  const noResultInUserReviewForm =
+    filter === USER_PROFILE_TAB.REVIEW_FORMS && userReviewForms.reviewForms.length === 0;
 
-  if (noResultInMyReview) {
+  if (noResultUserMyReview) {
     return <NoResult className={styles.noResult}>작성한 회고가 없습니다.</NoResult>;
   }
 
-  if (noResultInMyReviewForm) {
+  if (noResultInUserReviewForm) {
     return <NoResult className={styles.noResult}>생성한 회고가 없습니다.</NoResult>;
   }
 
   return (
     <>
       {filter === USER_PROFILE_TAB.REVIEWS
-        ? myReviews?.reviews.map((review) => (
+        ? userReviews?.reviews.map((review) => (
             <div className={styles.reviewContainer} key={review.id}>
               <Questions>
                 <Link to={`${PAGE_LIST.REVIEW_OVERVIEW}/${review.reviewForm.code}`}>
                   <Questions.Title>{review.reviewForm.title}</Questions.Title>
                 </Link>
                 <Questions.EditButtons
-                  isVisible={myReviews.isMine}
+                  isVisible={userReviews.isMine}
                   onClickEdit={handleClickEdit(
                     `${PAGE_LIST.REVIEW}/${review.reviewForm.code}/${review.id}`,
                   )}
@@ -104,7 +105,7 @@ function ReviewList({ filter, socialId }: ReviewList) {
               </Questions>
             </div>
           ))
-        : myReviewForms?.reviewForms.map((reviewForm) => (
+        : userReviewForms?.reviewForms.map((reviewForm) => (
             <div className={styles.reviewContainer} key={reviewForm.code}>
               <Questions>
                 <Link to={`${PAGE_LIST.REVIEW_OVERVIEW}/${reviewForm.code}`}>
@@ -112,7 +113,7 @@ function ReviewList({ filter, socialId }: ReviewList) {
                 </Link>
 
                 <Questions.EditButtons
-                  isVisible={myReviews.isMine}
+                  isVisible={userReviews.isMine}
                   onClickEdit={handleClickEdit(
                     `${PAGE_LIST.REVIEW_FORM}/${reviewForm.code}?redirect=${encodeURIComponent(
                       `${PAGE_LIST.USER_PROFILE}/${socialId}`,

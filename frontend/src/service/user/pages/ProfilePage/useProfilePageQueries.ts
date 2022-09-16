@@ -5,22 +5,22 @@ import {
   useGetUserProfile,
 } from 'service/@shared/hooks/queries/user';
 
-function useProfilePageQueries(socialIdPrams: string) {
+function useProfilePageQueries(socialIdPrams: string, pageNumber: string) {
   const socialId = Number(socialIdPrams);
-  const getMyReviewsQuery = useGetUserReviewAnswer(socialId);
-  const getMyReviewFormsQuery = useGetUserReviewForms(socialId);
+  const getMyReviewsQuery = useGetUserReviewAnswer(socialId, pageNumber);
+  const getMyReviewFormsQuery = useGetUserReviewForms(socialId, pageNumber);
 
   const getUserProfileQuery = useGetUserProfile({ socialId });
   const deleteReviewMutation = useDeleteReviewAnswer();
   const deleteReviewFormMutation = useDeleteReviewForm();
 
-  const myReviews = getMyReviewsQuery.data || {
+  const userReviews = getMyReviewsQuery.data || {
     numberOfReviews: 0,
     isMine: false,
     reviews: [],
   };
 
-  const myReviewForms = getMyReviewFormsQuery.data || {
+  const userReviewForms = getMyReviewFormsQuery.data || {
     numberOfReviewForms: 0,
     isMine: false,
     reviewForms: [],
@@ -40,8 +40,8 @@ function useProfilePageQueries(socialIdPrams: string) {
   const { error } = getMyReviewsQuery || getMyReviewFormsQuery || getUserProfileQuery;
 
   return {
-    myReviews,
-    myReviewForms,
+    userReviews,
+    userReviewForms,
     userProfile,
     deleteReviewMutation,
     deleteReviewFormMutation,

@@ -1,9 +1,8 @@
-import { useMutation, useQueryClient } from 'react-query';
+import { templateAPI } from 'api';
+import { QUERY_KEY } from 'constant';
+import { UseCustomMutationOptions } from 'types';
 
-import { UseCustomMutationOptions } from 'service/@shared/types';
-
-import templateAPI from 'service/@shared/api/template';
-import { QUERY_KEY } from 'service/@shared/constants';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 function useDeleteTemplate(mutationOptions?: UseCustomMutationOptions<null>) {
   const queryClient = useQueryClient();

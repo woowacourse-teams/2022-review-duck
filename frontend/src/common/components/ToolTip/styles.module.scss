@@ -1,0 +1,103 @@
+@import 'styles/@global.scss';
+
+.component-tooltip {
+  position: relative;
+  display: inline;
+  overflow: visible;
+
+  &:hover .tooltip-box {
+    visibility: visible;
+    opacity: 1;
+    filter: blur(0);
+  }
+
+  .tooltip-box {
+    position: absolute;
+    visibility: hidden;
+    border-radius: $GLOBAL_BORDERRADIUS_MEDIUM;
+    text-align: center;
+    background-color: $GLOBAL_COLOR_BLACK_700;
+    color: $GLOBAL_COLOR_WHITE_900;
+    white-space: nowrap;
+    padding: 0.425rem;
+    font-size: 0.75rem;
+
+    opacity: 0;
+    transition: all 0.3s ease;
+    filter: blur(1rem);
+
+    z-index: 5;
+
+    &.disabled {
+      display: none;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+    }
+
+    &.align-top {
+      top: -0.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(-100%);
+
+      &::after {
+        border-top: 4px solid $GLOBAL_COLOR_BLACK_700;
+        border-right: 4px solid transparent;
+        border-left: 4px solid transparent;
+        bottom: -4px;
+
+        left: 50%;
+      }
+    }
+
+    &.align-bottom {
+      bottom: -0.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100%);
+
+      &::after {
+        border-bottom: 4px solid $GLOBAL_COLOR_BLACK_700;
+        border-right: 4px solid transparent;
+        border-left: 4px solid transparent;
+        top: -4px;
+
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+
+    &.align-left {
+      top: 50%;
+      left: -0.5rem;
+      transform: translateX(-100%) translateY(-50%);
+
+      &::after {
+        border-bottom: 4px solid transparent;
+        border-top: 4px solid transparent;
+        border-left: 4px solid $GLOBAL_COLOR_BLACK_700;
+
+        top: 50%;
+        transform: translateY(-50%);
+        right: -4px;
+      }
+    }
+
+    &.align-right {
+      top: 50%;
+      right: -0.5rem;
+      transform: translateX(100%) translateY(-50%);
+
+      &::after {
+        border-bottom: 4px solid transparent;
+        border-top: 4px solid transparent;
+        border-right: 4px solid $GLOBAL_COLOR_BLACK_700;
+
+        top: 50%;
+        transform: translateY(-50%);
+        left: -4px;
+      }
+    }
+  }
+}

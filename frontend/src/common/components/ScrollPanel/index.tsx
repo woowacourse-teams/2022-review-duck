@@ -2,14 +2,15 @@ import { useEffect, useRef, useState } from 'react';
 
 import cn from 'classnames';
 
-import useDebounce from 'common/hooks/useDebounce';
+import useDebounceCallback from 'common/hooks/useDebounceCallback';
 
 import styles from './styles.module.scss';
 
 import FlexContainer from '../FlexContainer';
-import Icon from '../Icon';
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-interface Props {
+interface ScrollPanelProps {
   className?: string;
   centerDisabled?: boolean;
   children: React.ReactNode;
@@ -21,7 +22,7 @@ interface controlVisible {
   next: boolean;
 }
 
-function ScrollPanel({ className, centerDisabled, children }: Props) {
+function ScrollPanel({ className, centerDisabled, children }: ScrollPanelProps) {
   const [controlHidden, setControlVisible] = useState<controlVisible>({
     previous: true,
     next: false,
@@ -39,7 +40,7 @@ function ScrollPanel({ className, centerDisabled, children }: Props) {
     childElementWidth.current = $firstChildElement.clientWidth;
   }, []);
 
-  const handleChangeScroll = useDebounce(({ target }: React.UIEvent<HTMLDivElement>) => {
+  const handleChangeScroll = useDebounceCallback(({ target }: React.UIEvent<HTMLDivElement>) => {
     const { scrollWidth, scrollLeft, clientWidth } = target as HTMLDivElement;
     const updateControlHidden = { ...controlHidden };
 
@@ -79,7 +80,7 @@ function ScrollPanel({ className, centerDisabled, children }: Props) {
         align="center"
       >
         <div className={styles.controlButton} onClick={handleClickControlButton('previous')}>
-          <Icon code="arrow_back_ios" />
+          <FontAwesomeIcon icon={faChevronLeft} />
         </div>
       </FlexContainer>
 
@@ -104,7 +105,7 @@ function ScrollPanel({ className, centerDisabled, children }: Props) {
         align="center"
       >
         <div className={styles.controlButton} onClick={handleClickControlButton('next')}>
-          <Icon code="arrow_forward_ios" />
+          <FontAwesomeIcon icon={faChevronRight} />
         </div>
       </FlexContainer>
     </div>

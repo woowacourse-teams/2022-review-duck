@@ -1,4 +1,4 @@
-import { GetReviewFormAnswerResponse, ReviewForm } from 'service/@shared/types';
+import { GetReviewFormAnswerResponse, ReviewForm } from 'types';
 
 import { useGetReviewForm, useGetReviewFormAnswer } from 'service/@shared/hooks/queries/review';
 
