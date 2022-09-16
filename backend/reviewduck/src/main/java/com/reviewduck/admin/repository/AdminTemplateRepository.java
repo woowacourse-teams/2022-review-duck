@@ -9,6 +9,7 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.template.domain.Template;
 
 public interface AdminTemplateRepository extends Repository<Template, Long> {
+
     List<Template> findAll();
 
     List<Template> findAllByMember(Member member);
