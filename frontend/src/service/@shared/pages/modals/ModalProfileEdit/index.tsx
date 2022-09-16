@@ -7,10 +7,12 @@ import { useUpdateProfile } from 'service/@shared/hooks/queries/user/useUpdate';
 
 import { getErrorMessage } from 'service/@shared/utils';
 
-import { Button, FieldSet, Icon, TextBox } from 'common/components';
+import { Button, FieldSet, TextBox } from 'common/components';
 
 import styles from './styles.module.scss';
 
+import { faBan, faUserPen } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { validateNickname } from 'service/@shared/validator';
 
 function ModalProfileEdit() {
@@ -78,11 +80,11 @@ function ModalProfileEdit() {
 
       <div className={styles.buttons}>
         <Button theme="outlined" onClick={hideModal}>
-          <Icon code="cancel" />
+          <FontAwesomeIcon icon={faBan} />
           취소하기
         </Button>
         <Button onClick={handleEditProfile}>
-          <Icon code="edit_note" />
+          <FontAwesomeIcon icon={faUserPen} />
           수정하기
         </Button>
       </div>
