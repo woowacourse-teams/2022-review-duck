@@ -9,55 +9,35 @@ import {
   useGetUserTemplates,
 } from 'service/@shared/hooks/queries/user';
 
-function useProfilePageQueries(currentTab: string, socialIdPrams: string, pageNumber: string) {
+type CurrentTabs = 'reviews' | 'review-forms' | 'templates';
+
+function useProfilePageQueries(currentTab: CurrentTabs, socialIdPrams: string, pageNumber: string) {
   const socialId = Number(socialIdPrams);
-  const getUserReviewsQuery = useGetUserReviewAnswer(socialId, pageNumber, {
-    enabled: currentTab === USER_PROFILE_TAB.REVIEWS,
-  });
-  const getUserReviewFormsQuery = useGetUserReviewForms(socialId, pageNumber, {
-    enabled: currentTab === USER_PROFILE_TAB.REVIEW_FORMS,
-  });
-  const getUserTemplatesQuery = useGetUserTemplates(socialId, pageNumber, {
-    enabled: currentTab === USER_PROFILE_TAB.TEMPLATES,
-  });
 
-  const getUserProfileQuery = useGetUserProfile({ socialId });
-  const deleteReviewMutation = useDeleteReviewAnswer();
-  const deleteReviewFormMutation = useDeleteReviewForm();
-  const deleteTemplateMutation = useDeleteTemplate();
+  const useGetQueries = {
+    [USER_PROFILE_TAB.REVIEWS]: useGetUserReviewAnswer,
+    [USER_PROFILE_TAB.REVIEW_FORMS]: useGetUserReviewForms,
+    [USER_PROFILE_TAB.TEMPLATES]: useGetUserTemplates,
+  };
 
-  const isError =
-    getUserReviewsQuery.isError ||
-    getUserReviewFormsQuery.isError ||
-    getUserTemplatesQuery.isError ||
-    getUserProfileQuery.isError;
+  const useDeleteMutation = {
+    [USER_PROFILE_TAB.REVIEWS]: useDeleteReviewAnswer,
+    [USER_PROFILE_TAB.REVIEW_FORMS]: useDeleteReviewForm,
+    [USER_PROFILE_TAB.TEMPLATES]: useDeleteTemplate,
+  };
 
-  const isLoading =
-    getUserReviewsQuery.isLoading ||
-    getUserReviewFormsQuery.isLoading ||
-    getUserTemplatesQuery.isLoading ||
-    getUserProfileQuery.isLoading;
+  const getUserProfile = useGetUserProfile({ socialId });
+  const getUserArticles = useGetQueries[currentTab](socialId, pageNumber);
 
-  if (isError || isLoading) return false;
+  const isLoading = getUserProfile.isLoading || getUserArticles.isLoading;
+  const isError = getUserProfile.isError || getUserArticles.isError;
 
-  const userReviews = getUserReviewsQuery.data;
-
-  const userReviewForms = getUserReviewFormsQuery.data;
-
-  const userTemplates = getUserTemplatesQuery.data;
-
-  const userProfile = getUserProfileQuery.data;
+  if (isLoading || isError) return false;
 
   return {
-    userReviews,
-    userReviewForms,
-    userTemplates,
-    userProfile,
-    deleteReviewMutation,
-    deleteReviewFormMutation,
-    deleteTemplateMutation,
-    isError,
-    isLoading,
+    userItems: getUserArticles.data,
+    userProfile: getUserProfile.data,
+    mutation: useDeleteMutation[currentTab],
   };
 }
 
