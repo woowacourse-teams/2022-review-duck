@@ -53,7 +53,7 @@ interface FormTextProps {
 
 const Title = ({ children }: FormTextProps) => {
   return (
-    <Text className={styles.formTitle} size={24} element="h4" weight="bold">
+    <Text as="h4" className={styles.formTitle} size={24} weight="bold">
       {children}
     </Text>
   );

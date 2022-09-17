@@ -13,6 +13,7 @@ import Playground from 'service/review/pages/Playground';
 import ReviewAnswerEditorPage from 'service/review/pages/ReviewAnswerEditorPage';
 import ReviewFormEditorPage from 'service/review/pages/ReviewFormEditorPage';
 import ReviewOverviewPage from 'service/review/pages/ReviewOverviewPage';
+import ReviewTimelinePage from 'service/review/pages/ReviewTimelinePage';
 import TemplateDetailPage from 'service/template/pages/TemplateDetailPage';
 import TemplateFormEditorPage from 'service/template/pages/TemplateFormEditorPage';
 import TemplateListPage from 'service/template/pages/TemplateListPage';
@@ -34,6 +35,7 @@ function PageRoutes() {
         <Route path={`${PAGE_LIST.TEMPLATE_DETAIL}/:templateId`} element={<TemplateDetailPage />} />
 
         <Route path="/profile/:socialId" element={<ProfilePage />} />
+        <Route path={PAGE_LIST.TIMELINE} element={<ReviewTimelinePage />} />
         <Route path="playground" element={<Playground />} />
 
         {/* 데모 데이용 */}

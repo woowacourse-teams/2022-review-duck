@@ -41,7 +41,13 @@ export interface ReviewFormAnswer {
   info: UserContentRequireField;
 }
 
+export interface ReviewPublicAnswer extends ReviewFormAnswer {
+  reviewFormCode: string;
+}
+
 export type ReviewFormAnswerList = ReviewFormAnswer[];
+
+export type ReviewPublicAnswerList = ReviewPublicAnswer[];
 
 // API 관련 타입
 
@@ -91,6 +97,18 @@ export interface GetReviewAnswerResponse {
 
 export type GetReviewFormAnswerResponse = Array<{
   id: number;
+  updatedAt: number;
+  creator: UserProfile;
+  isCreator: boolean;
+  contents: Array<{
+    question: ServerQuestionRequireId;
+    answer: ServerAnswerRequireId;
+  }>;
+}>;
+
+export type GetReviewPublicAnswerResponse = Array<{
+  id: number;
+  reviewFormCode: string;
   updatedAt: number;
   creator: UserProfile;
   isCreator: boolean;

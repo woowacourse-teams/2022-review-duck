@@ -110,7 +110,7 @@ function MainPage() {
       </section>
 
       <LayoutContainer className={styles.contentHeader}>
-        <Text size={24} element="h1">
+        <Text as="h1" size={24}>
           인기 템플릿
         </Text>
       </LayoutContainer>

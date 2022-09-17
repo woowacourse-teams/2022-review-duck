@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
-import { GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST, TEMPLATE_TAB } from 'constant';
+import { GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST } from 'constant';
 
 import useModal from 'common/hooks/useModal';
 import useAuth from 'service/@shared/hooks/useAuth';
@@ -53,7 +53,7 @@ function Header() {
             <li className={styles.menuItem}>템플릿 탐색</li>
           </Link>
 
-          <Link to="/pending">
+          <Link to={PAGE_LIST.TIMELINE}>
             <li className={styles.menuItem}>타임라인</li>
           </Link>
         </ul>

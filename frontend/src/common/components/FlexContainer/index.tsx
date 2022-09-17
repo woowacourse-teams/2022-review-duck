@@ -5,6 +5,7 @@ import cn from 'classnames';
 import styles from './styles.module.scss';
 
 export interface FlexContainerProps extends React.HTMLAttributes<HTMLDivElement | HTMLFormElement> {
+  as: 'div' | 'ul' | 'section' | 'header' | 'main' | 'footer' | 'aside';
   direction: 'row' | 'column' | 'rows-reverse' | 'column-reverse';
   justify?: 'left' | 'center' | 'right' | 'space-between';
   align?: 'start' | 'center' | 'end';
@@ -12,6 +13,7 @@ export interface FlexContainerProps extends React.HTMLAttributes<HTMLDivElement 
 }
 
 function FlexContainer({
+  as,
   className,
   direction,
   justify,
@@ -29,14 +31,11 @@ function FlexContainer({
     styles[`gap-${gap}`],
   );
 
-  return (
-    <div className={classNames} {...rest}>
-      {children}
-    </div>
-  );
+  return React.createElement(as, { className: classNames, ...rest }, children);
 }
 
 FlexContainer.defaultProps = {
+  as: 'div',
   direction: 'column',
 };
 

@@ -1,15 +1,15 @@
-import { Text, FieldSet, Textarea, Button, ToolTip, CheckBox } from 'common/components';
-
-import { CheckboxProps } from 'common/components/CheckBox';
-
-import styles from './styles.module.scss';
-
 import {
   faArrowRightFromBracket,
   faCircleQuestion,
   faPenToSquare,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import { Text, FieldSet, Textarea, Button, ToolTip, CheckBox } from 'common/components';
+
+import { CheckboxProps } from 'common/components/CheckBox';
+
+import styles from './styles.module.scss';
 
 interface ContainerProps extends React.HTMLAttributes<HTMLFormElement> {
   children: React.ReactNode;
@@ -48,7 +48,7 @@ const AnswerField = ({ question, description, answer, onChange, onFocus }: Answe
     <FieldSet>
       <FieldSet.Title size="large">{question}</FieldSet.Title>
       <Textarea size="large" value={answer} onChange={onChange} onFocus={onFocus} />
-      <FieldSet.Description>{description || ''}</FieldSet.Description>
+      {description && <FieldSet.Description>{description}</FieldSet.Description>}
     </FieldSet>
   );
 };
