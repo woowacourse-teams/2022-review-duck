@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.reviewduck.admin.repository.AdminTemplateRepository;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.template.domain.Template;
-import com.reviewduck.template.repository.TemplateRepository;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ import lombok.AllArgsConstructor;
 public class AdminTemplateService {
 
     private AdminMemberService adminMemberService;
-    private TemplateRepository templateRepository;
+    private AdminTemplateRepository templateRepository;
 
     public List<Template> findAllTemplates() {
         return templateRepository.findAll();

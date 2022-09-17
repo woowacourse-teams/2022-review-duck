@@ -276,115 +276,115 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(reviewResponses.get(0).getId()).isEqualTo(reviewId)
             );
         }
+    }
 
-        @Nested
-        @DisplayName("회고 수정")
-        class updateReview {
+    @Nested
+    @DisplayName("회고 수정")
+    class updateReview {
 
-            @Test
-            @DisplayName("회고를 수정한다.")
-            void updateReview() {
-                Long reviewId = saveReviewAndGetId(accessToken1, false);
+        @Test
+        @DisplayName("회고를 수정한다.")
+        void updateReview() {
+            Long reviewId = saveReviewAndGetId(accessToken1, false);
 
-                //when, then
-                ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                    new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                    new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(1L, "editedAnswer2"))
-                ));
+            //when, then
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
+                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(1L, "editedAnswer2"))
+            ));
 
-                put("/api/reviews/" + reviewId, updateRequest, accessToken1)
-                    .statusCode(HttpStatus.NO_CONTENT.value());
-            }
-
-            @Test
-            @DisplayName("로그인하지 않은 상태로 회고를 수정할 수 없다")
-            void withoutLogin() {
-                Long reviewId = saveReviewAndGetId(accessToken1, false);
-
-                //when, then
-                ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                    new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                    new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(1L, "editedAnswer2"))
-                ));
-
-                put("/api/reviews/" + reviewId, updateRequest)
-                    .statusCode(HttpStatus.UNAUTHORIZED.value());
-            }
-
-            @Test
-            @DisplayName("존재하지 않는 회고를 수정할 수 없다.")
-            void invalidReviewId() {
-                // when, then
-                ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                    new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                    new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(1L, "editedAnswer2"))
-                ));
-
-                put("/api/reviews/" + invalidReviewId, updateRequest, accessToken1)
-                    .statusCode(HttpStatus.NOT_FOUND.value());
-            }
-
-            @Test
-            @DisplayName("본인이 생성한 회고가 아니면 수정할 수 없다.")
-            void notMine() {
-                Long reviewId = saveReviewAndGetId(accessToken1, false);
-
-                //when, then
-                ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                    new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                    new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(1L, "editedAnswer2"))
-                ));
-
-                put("/api/reviews/" + reviewId, updateRequest, accessToken2)
-                    .statusCode(HttpStatus.UNAUTHORIZED.value());
-            }
-
+            put("/api/reviews/" + reviewId, updateRequest, accessToken1)
+                .statusCode(HttpStatus.NO_CONTENT.value());
         }
 
-        @Nested
-        @DisplayName("회고 삭제")
-        class deleteReview {
+        @Test
+        @DisplayName("로그인하지 않은 상태로 회고를 수정할 수 없다")
+        void withoutLogin() {
+            Long reviewId = saveReviewAndGetId(accessToken1, false);
 
-            @Test
-            @DisplayName("회고를 삭제한다.")
-            void deleteReview() {
-                Long reviewId = saveReviewAndGetId(accessToken1, false);
+            //when, then
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
+                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(1L, "editedAnswer2"))
+            ));
 
-                //when, then
-                delete("/api/reviews/" + reviewId, accessToken1)
-                    .statusCode(HttpStatus.NO_CONTENT.value());
-            }
-
-            @Test
-            @DisplayName("로그인하지 않은 상태로 회고를 삭제할 수 없다")
-            void withoutLogin() {
-                // given
-                Long reviewId = saveReviewAndGetId(accessToken1, false);
-
-                //when, then
-                delete("/api/reviews/" + reviewId)
-                    .statusCode(HttpStatus.UNAUTHORIZED.value());
-            }
-
-            @Test
-            @DisplayName("존재하지 않는 회고를 삭제할 수 없다.")
-            void invalidReviewId() {
-                // when, then
-                delete("/api/reviews/" + invalidReviewId, accessToken1)
-                    .statusCode(HttpStatus.NOT_FOUND.value());
-            }
-
-            @Test
-            @DisplayName("본인이 생성한 회고가 아니면 삭제할 수 없다.")
-            void notMine() {
-                // given
-                Long reviewId = saveReviewAndGetId(accessToken1, false);
-
-                //when, then
-                delete("/api/reviews/" + reviewId, accessToken2)
-                    .statusCode(HttpStatus.UNAUTHORIZED.value());
-            }
-
+            put("/api/reviews/" + reviewId, updateRequest)
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
+
+        @Test
+        @DisplayName("존재하지 않는 회고를 수정할 수 없다.")
+        void invalidReviewId() {
+            // when, then
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
+                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(1L, "editedAnswer2"))
+            ));
+
+            put("/api/reviews/" + invalidReviewId, updateRequest, accessToken1)
+                .statusCode(HttpStatus.NOT_FOUND.value());
+        }
+
+        @Test
+        @DisplayName("본인이 생성한 회고가 아니면 수정할 수 없다.")
+        void notMine() {
+            Long reviewId = saveReviewAndGetId(accessToken1, false);
+
+            //when, then
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
+                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(1L, "editedAnswer2"))
+            ));
+
+            put("/api/reviews/" + reviewId, updateRequest, accessToken2)
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
+
+    }
+
+    @Nested
+    @DisplayName("회고 삭제")
+    class deleteReview {
+
+        @Test
+        @DisplayName("회고를 삭제한다.")
+        void deleteReview() {
+            Long reviewId = saveReviewAndGetId(accessToken1, false);
+
+            //when, then
+            delete("/api/reviews/" + reviewId, accessToken1)
+                .statusCode(HttpStatus.NO_CONTENT.value());
+        }
+
+        @Test
+        @DisplayName("로그인하지 않은 상태로 회고를 삭제할 수 없다")
+        void withoutLogin() {
+            // given
+            Long reviewId = saveReviewAndGetId(accessToken1, false);
+
+            //when, then
+            delete("/api/reviews/" + reviewId)
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 회고를 삭제할 수 없다.")
+        void invalidReviewId() {
+            // when, then
+            delete("/api/reviews/" + invalidReviewId, accessToken1)
+                .statusCode(HttpStatus.NOT_FOUND.value());
+        }
+
+        @Test
+        @DisplayName("본인이 생성한 회고가 아니면 삭제할 수 없다.")
+        void notMine() {
+            // given
+            Long reviewId = saveReviewAndGetId(accessToken1, false);
+
+            //when, then
+            delete("/api/reviews/" + reviewId, accessToken2)
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
+
     }
 }

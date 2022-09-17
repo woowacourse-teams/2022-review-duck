@@ -1,10 +1,12 @@
 import cn from 'classnames';
 
-import { Icon, Text } from 'common/components';
+import { Text } from 'common/components';
 
 import styles from './styles.module.scss';
 
 import FlexContainer from '../FlexContainer';
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface FieldSetContainerProps {
   className?: string;
@@ -34,8 +36,8 @@ interface FieldSetDescriptionProps {
 
 function Description({ children }: FieldSetDescriptionProps) {
   return (
-    <FlexContainer className={styles.description} align="center" direction="row">
-      <Icon code="chevron_right" />
+    <FlexContainer className={styles.description} align="center" direction="row" gap="small">
+      <FontAwesomeIcon icon={faChevronRight} />
       {children}
     </FlexContainer>
   );

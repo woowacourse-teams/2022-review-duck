@@ -1,5 +1,17 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
+import {
+  faBackspace,
+  faClock,
+  faDownload,
+  faFeatherPointed,
+  faHome,
+  faList,
+  faPenToSquare,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import cn from 'classnames';
 import { GITHUB_PROFILE_URL, PAGE_LIST, TEMPLATE_TAB } from 'constant';
 
@@ -7,7 +19,7 @@ import useSnackbar from 'common/hooks/useSnackbar';
 
 import { getElapsedTimeText } from 'service/@shared/utils';
 
-import { Button, FlexContainer, Icon, Text } from 'common/components';
+import { Button, FlexContainer, Text } from 'common/components';
 
 import ScrollPanel from 'common/components/ScrollPanel';
 import TagLabel from 'common/components/TagLabel';
@@ -78,22 +90,20 @@ function TemplateDetailPage() {
     <LayoutContainer>
       <section className={styles.header}>
         <div className={styles.titleContainer}>
-          <Text className={styles.title} size={28} weight="bold" element="h1">
+          <Text as="h1" className={styles.title} size={28} weight="bold">
             {template.info.title}
           </Text>
           <div className={styles.info}>
             <TagLabel>
-              <>
-                <Icon code="download" />
-                <span>{`${template.info.usedCount}회`}</span>
-              </>
+              <FontAwesomeIcon icon={faDownload} />
+              <span>{`${template.info.usedCount}회`}</span>
             </TagLabel>
             <div className={styles.iconText}>
-              <Icon code="person" />
+              <FontAwesomeIcon icon={faUser} />
               <span>{template.creator.nickname}</span>
             </div>
             <div className={styles.iconText}>
-              <Icon code="schedule" />
+              <FontAwesomeIcon icon={faClock} />
               <span>{getElapsedTimeText(template.info.updatedAt)}</span>
             </div>
           </div>
@@ -102,20 +112,20 @@ function TemplateDetailPage() {
           <div className={styles.templateButtons}>
             <Link to={`${PAGE_LIST.TEMPLATE_FORM}?templateId=${template.info.id}`}>
               <Button>
-                <Icon code="rate_review" />
+                <FontAwesomeIcon icon={faPenToSquare} />
                 템플릿으로 질문지 만들기
               </Button>
             </Link>
             <Button theme="outlined" onClick={handleStartReview}>
-              <Icon code="add_task" />
+              <FontAwesomeIcon icon={faFeatherPointed} />
               템플릿으로 회고하기
             </Button>
           </div>
           {template.isCreator && (
             <div className={styles.iconButtons}>
               <div className={styles.iconButton} onClick={handleDeleteTemplate(template.info.id)}>
-                <Icon type="round" code="delete" />
-                <Text size={14} element="span">
+                <FontAwesomeIcon icon={faBackspace} />
+                <Text as="span" size={14}>
                   템플릿 삭제
                 </Text>
               </div>
@@ -124,9 +134,9 @@ function TemplateDetailPage() {
                 to={`${PAGE_LIST.TEMPLATE_FORM}?templateId=${templateId}&templateEditMode=true`}
               >
                 <div className={styles.iconButton}>
-                  <Icon type="round" code="edit" />
+                  <FontAwesomeIcon icon={faPenToSquare} />
 
-                  <Text size={14} element="span">
+                  <Text as="span" size={14}>
                     템플릿 수정
                   </Text>
                 </div>
@@ -174,7 +184,7 @@ function TemplateDetailPage() {
             <GithubIcon className={styles.icon} />
           </a>
           <Link to={`${PAGE_LIST.USER_PROFILE}/${template.creator.id}`}>
-            <Icon className={styles.icon} code="house" type="outlined" />
+            <FontAwesomeIcon className={styles.icon} icon={faHome} />
           </Link>
         </div>
       </div>
@@ -182,7 +192,7 @@ function TemplateDetailPage() {
       <section className={styles.footer}>
         <section className={styles.headerContainer}>
           <div className={styles.alignCenter}>
-            <Icon className={styles.icon} code="local_fire_department" />
+            <FontAwesomeIcon className={styles.icon} icon={faUser} />
             <Text size={18} weight="bold">
               인기 템플릿
             </Text>
@@ -191,13 +201,13 @@ function TemplateDetailPage() {
           <div className={cn(styles.alignCenter, styles.buttonContainer)}>
             <Link to={PAGE_LIST.TEMPLATE_FORM}>
               <Button size="medium">
-                <Icon code="add" />
+                <FontAwesomeIcon icon={faPenToSquare} />
                 <span>새 템플릿 작성</span>
               </Button>
             </Link>
             <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${TEMPLATE_TAB.TREND}`}>
               <Button size="medium" theme="outlined">
-                <Icon code="list" />
+                <FontAwesomeIcon icon={faList} />
                 <span>목록</span>
               </Button>
             </Link>

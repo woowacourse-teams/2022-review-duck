@@ -1,16 +1,24 @@
 import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
-import { GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST, TEMPLATE_TAB } from 'constant';
+import { GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST } from 'constant';
 
 import useModal from 'common/hooks/useModal';
 import useAuth from 'service/@shared/hooks/useAuth';
 
-import { Button, Icon, Logo, Text, TextBox, PopupBox } from 'common/components';
+import { Button, Logo, Text, TextBox, PopupBox } from 'common/components';
 
 import imageDefaultProfile from 'assets/images/profile.png';
 
 import styles from './styles.module.scss';
+
+import {
+  faPenToSquare,
+  faRightFromBracket,
+  faSearch,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function Header() {
   const { isLogin, getUserProfileQuery } = useAuth();
@@ -34,7 +42,7 @@ function Header() {
 
         <div className={styles.navItemContainer}>
           <TextBox placeholder="검색어를 입력해주세요." />
-          <Icon className={styles.searchIcon} code="search" />
+          <FontAwesomeIcon className={styles.searchIcon} icon={faSearch} />
         </div>
 
         <ul className={styles.menuList}>
@@ -45,14 +53,14 @@ function Header() {
             <li className={styles.menuItem}>템플릿 탐색</li>
           </Link>
 
-          <Link to="/pending">
+          <Link to={PAGE_LIST.TIMELINE}>
             <li className={styles.menuItem}>타임라인</li>
           </Link>
         </ul>
 
         <div className={cn(styles.navItemContainer, styles.quickMenuContainer)}>
           <Button theme="outlined" size="small" onClick={onClickReviewStart}>
-            <Icon code="flag" type="outlined" />
+            <FontAwesomeIcon icon={faPenToSquare} />
             <span>회고 시작하기</span>
           </Button>
 
@@ -67,11 +75,11 @@ function Header() {
               }
             >
               <Link className={styles.item} to={`${PAGE_LIST.USER_PROFILE}/${socialId}`}>
-                <Icon code="person" /> <span>마이 페이지</span>
+                <FontAwesomeIcon icon={faUser} /> <span>마이 페이지</span>
               </Link>
 
               <Link className={styles.item} to={PAGE_LIST.LOGOUT}>
-                <Icon code="logout" /> <span>로그아웃</span>
+                <FontAwesomeIcon icon={faRightFromBracket} /> <span>로그아웃</span>
               </Link>
             </PopupBox>
           ) : (

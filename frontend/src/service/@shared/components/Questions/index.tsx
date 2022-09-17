@@ -1,15 +1,26 @@
-import { FlexContainer, Icon, Text } from 'common/components';
+import { faBookmark, faHeart } from '@fortawesome/free-regular-svg-icons';
+import { faEraser, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import cn from 'classnames';
+
+import { FlexContainer, Text } from 'common/components';
 
 import Profile from 'service/@shared/components/Profile';
 
 import styles from './styles.module.scss';
 
 interface ContainerProps {
+  className?: string;
   children: React.ReactNode;
 }
 
-function Container({ children }: ContainerProps) {
-  return <FlexContainer gap="medium">{children}</FlexContainer>;
+function Container({ className, children }: ContainerProps) {
+  return (
+    <FlexContainer className={className} gap="small">
+      {children}
+    </FlexContainer>
+  );
 }
 
 interface CoverProfileProps {
@@ -35,25 +46,31 @@ interface TitleProps {
 
 function Title({ children }: TitleProps) {
   return (
-    <Text className={styles.title} size={24} weight="bold" element="h1">
+    <Text as="h1" className={styles.title} size={24} weight="bold">
       {children}
     </Text>
   );
 }
 
 interface EditButtonsProps {
+  className?: string;
   isVisible?: boolean;
   onClickEdit: React.MouseEventHandler<HTMLDivElement>;
   onClickDelete: React.MouseEventHandler<HTMLDivElement>;
 }
 
-function EditButtons({ isVisible, onClickEdit, onClickDelete }: EditButtonsProps) {
+function EditButtons({ className, isVisible, onClickEdit, onClickDelete }: EditButtonsProps) {
   if (!isVisible) return null;
 
   return (
-    <FlexContainer className={styles.inlineButtons} direction="row" gap="large" justify="right">
+    <FlexContainer
+      className={cn(styles.inlineButtons, className)}
+      direction="row"
+      gap="large"
+      justify="right"
+    >
       <FlexContainer className={styles.button} direction="row" align="center" onClick={onClickEdit}>
-        <Icon className={styles.icon} code="edit_note" type="round" />
+        <FontAwesomeIcon icon={faPenToSquare} />
         <Text className={styles.text} size={14}>
           회고 편집
         </Text>
@@ -65,7 +82,7 @@ function EditButtons({ isVisible, onClickEdit, onClickDelete }: EditButtonsProps
         align="center"
         onClick={onClickDelete}
       >
-        <Icon className={styles.icon} code="delete" type="round" />
+        <FontAwesomeIcon icon={faEraser} />
         <Text className={styles.text} size={14}>
           회고 삭제
         </Text>
@@ -82,7 +99,7 @@ interface AnswerProps {
 
 function Answer({ question, description, children }: AnswerProps) {
   return (
-    <FlexContainer className={styles.answerContainer} gap="medium">
+    <FlexContainer className={styles.answerContainer}>
       <Text className={styles.question} size={20} weight="bold">
         {question}
       </Text>
@@ -109,7 +126,7 @@ function Reaction({ onClickLike, onClickBookmark }: ReactionProps) {
   return (
     <FlexContainer className={styles.inlineButtons} direction="row" gap="large">
       <FlexContainer className={styles.button} direction="row" align="center" onClick={onClickLike}>
-        <Icon className={styles.icon} code="favorite" type="round" />
+        <FontAwesomeIcon className={styles.icon} icon={faHeart} />
         <Text className={styles.text} size={12}>
           좋아요
         </Text>
@@ -121,7 +138,7 @@ function Reaction({ onClickLike, onClickBookmark }: ReactionProps) {
         align="center"
         onClick={onClickBookmark}
       >
-        <Icon className={styles.icon} code="bookmark" type="round" />
+        <FontAwesomeIcon className={styles.icon} icon={faBookmark} />
         <Text className={styles.text} size={12}>
           북마크
         </Text>

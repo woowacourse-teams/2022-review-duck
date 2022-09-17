@@ -1,8 +1,14 @@
 package com.reviewduck.review.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
+
+import org.springframework.data.repository.Repository;
 
 import com.reviewduck.review.domain.ReviewFormQuestion;
 
-public interface ReviewFormQuestionRepository extends JpaRepository<ReviewFormQuestion, Long> {
+public interface ReviewFormQuestionRepository extends Repository<ReviewFormQuestion, Long> {
+
+    ReviewFormQuestion save(ReviewFormQuestion reviewFormQuestion);
+
+    Optional<ReviewFormQuestion> findById(long questionId);
 }

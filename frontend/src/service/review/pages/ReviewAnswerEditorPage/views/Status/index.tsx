@@ -38,11 +38,11 @@ interface FocusQuestionProps {
 const FocusQuestion = ({ description, children }: FocusQuestionProps) => {
   return (
     <FlexContainer className={styles.focusQuestion} gap="medium">
-      <Text key={`title-${children}`} element="h1" className={styles.title} size={40} weight="bold">
+      <Text as="h1" key={`title-${children}`} className={styles.title} size={40} weight="bold">
         {children}
       </Text>
 
-      <Text key={`description-${children}`} element="h3" className={styles.description} size={16}>
+      <Text as="h3" key={`description-${children}`} className={styles.description} size={16}>
         {description}
       </Text>
     </FlexContainer>

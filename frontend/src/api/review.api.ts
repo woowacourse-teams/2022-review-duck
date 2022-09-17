@@ -25,6 +25,12 @@ export const getFormAnswer = async (
   return transformer.transformFormAnswer(data);
 };
 
+export const getPublicAnswer = async (): Promise<ReviewType.ReviewPublicAnswerList> => {
+  const { data } = await axiosInstance.get(API_URI.REVIEW.GET_PUBLIC_ANSWER);
+
+  return transformer.transformPublicAnswer(data);
+};
+
 export const createForm = async (
   query: ReviewType.CreateReviewFormRequest,
 ): Promise<ReviewType.CreateReviewFormResponse> => {

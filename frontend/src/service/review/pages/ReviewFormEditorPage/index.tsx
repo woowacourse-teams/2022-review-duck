@@ -10,7 +10,7 @@ import useQuestions from 'service/@shared/hooks/useQuestions';
 
 import { getErrorMessage } from 'service/@shared/utils';
 
-import { Button, FlexContainer, Icon, Logo, TextBox } from 'common/components';
+import { Button, FlexContainer, Logo, TextBox } from 'common/components';
 
 import QuestionCard from 'service/@shared/components/QuestionCard';
 import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
@@ -18,6 +18,8 @@ import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
 import styles from './styles.module.scss';
 
 import useReviewFormEditor from './useReviewFormEditor';
+import { faArrowRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { validateReviewForm } from 'service/@shared/validator';
 
 function ReviewFormEditorPage() {
@@ -131,12 +133,12 @@ function ReviewFormEditorPage() {
 
           <div className={cn('button-container horizontal')}>
             <Button theme="outlined" onClick={handleCancel}>
-              <Icon code="cancel" />
+              <FontAwesomeIcon icon={faArrowRightFromBracket} />
               <span>취소하기</span>
             </Button>
 
             <Button type="button" onClick={handleSubmitReviewForm} disabled={isSubmitLoading}>
-              <Icon code="drive_file_rename_outline" />
+              <FontAwesomeIcon icon={faPenToSquare} />
               <span>{isNewReviewForm ? '생성하기' : '수정하기'}</span>
             </Button>
           </div>
