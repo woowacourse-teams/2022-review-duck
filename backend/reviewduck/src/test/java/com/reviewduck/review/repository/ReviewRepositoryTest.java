@@ -6,6 +6,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,6 +40,9 @@ public class ReviewRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @PersistenceContext
+    private EntityManager em;
 
     private ReviewForm savedReviewForm;
 
@@ -196,6 +202,7 @@ public class ReviewRepositoryTest {
         // when
         // 초기 수정 시간
         // DB에 들어가서 뒷 자리수가 반올림 된 결과로 비교해야 하기 때문에 조회한다.
+        em.clear();
         LocalDateTime updatedAt = reviewRepository.findById(id).orElseThrow()
             .getUpdatedAt();
 
@@ -204,7 +211,6 @@ public class ReviewRepositoryTest {
         // 좋아요 더한 후 수정 시간
         LocalDateTime updatedAtAfterIncreaseLikes = reviewRepository.findById(id).orElseThrow()
             .getUpdatedAt();
-
         // then
         assertThat(updatedAtAfterIncreaseLikes.isEqual(updatedAt)).isTrue();
     }
