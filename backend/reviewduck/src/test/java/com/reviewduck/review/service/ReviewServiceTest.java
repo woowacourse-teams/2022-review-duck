@@ -125,8 +125,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 질문입니다.");
         }
 
-
     }
+
     @Nested
     @DisplayName("id로 회고 조회")
     class findById {
@@ -153,8 +153,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 회고입니다.");
         }
 
-
     }
+
     @Nested
     @DisplayName("사용자가 생성한 회고 조회")
     class findMemberReview {
@@ -227,6 +227,7 @@ public class ReviewServiceTest {
         }
 
     }
+
     @Nested
     @DisplayName("회고 폼 code로 회고 조회")
     class findByCode {
@@ -258,29 +259,38 @@ public class ReviewServiceTest {
         }
 
     }
+
     @Nested
-    @DisplayName("최신 순 회고 조회")
+    @DisplayName("비밀글이 아닌 회고 답변을 모두 조회한다.")
     class findTimelineReview {
 
         @Test
-        @DisplayName("공개된 모든 회고 답변을 조회한다.")
-        void findAllReviews() throws InterruptedException {
+        @DisplayName("최신순으로 특정 페이지를 조회한다.")
+        void findAllOrderByTrend() throws InterruptedException {
             // given
             saveReview(member1, false);
+            Review review = saveReview(member2, false);
             saveReview(member1, true);
-            saveReview(member2, false);
 
             // when
-            List<Review> reviews = reviewService.findAllPublic();
+            Integer page = 0;
+            Integer size = 1;
+            String sort = "latest";
+
+            List<Review> reviews = reviewService.findAllPublic(page, size, sort).getContent();
+
+            System.out.println(review);
+            System.out.println(reviews.get(0));
 
             // then
             assertAll(
-                () -> assertThat(reviews).hasSize(2),
-                () -> assertThat(reviews.get(0).getId()).isEqualTo(3)
+                () -> assertThat(reviews).hasSize(1),
+                () -> assertThat(reviews.get(0)).isEqualTo(review)
             );
         }
 
     }
+
     @Nested
     @DisplayName("회고 수정")
     class updateReview {
@@ -376,8 +386,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 답변 번호입니다.");
         }
 
-
     }
+
     @Nested
     @DisplayName("회고 삭제")
     class deleteReview {
@@ -416,8 +426,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 회고입니다.");
         }
 
-
     }
+
     private Review saveReview(Member member, boolean isPrivate) throws InterruptedException {
         Thread.sleep(1);
 
