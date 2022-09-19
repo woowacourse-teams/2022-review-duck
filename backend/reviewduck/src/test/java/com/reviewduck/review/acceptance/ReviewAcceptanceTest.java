@@ -32,6 +32,7 @@ import com.reviewduck.review.dto.response.ReviewContentResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewResponse;
 import com.reviewduck.review.dto.response.ReviewSynchronizedResponse;
+import com.reviewduck.review.dto.response.TimelineReviewsResponse;
 
 public class ReviewAcceptanceTest extends AcceptanceTest {
 
@@ -254,28 +255,59 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("최신 순 회고 조회")
+    @DisplayName("타임라인 회고 조회")
     class findTimelineReview {
 
         @Test
-        @DisplayName("공개된 모든 회고를 updatedAt 내림차순으로 모두 조회한다.")
+        @DisplayName("파라미터가 없는 경우 기본값으로 조회한다.")
         void findAllReviews() {
             // given
-            saveReviewAndGetId(accessToken1, false);
-            saveReviewAndGetId(accessToken1, true);
-            Long reviewId = saveReviewAndGetId(accessToken1, false);
+            for (int i = 0; i < DEFAULT_SIZE + 5; i++) {
+                saveReviewAndGetId(accessToken1, false);
+            }
 
-            List<ReviewResponse> reviewResponses = get("/api/reviews/public")
+            Long reviewId = saveReviewAndGetId(accessToken1, false);
+            saveReviewAndGetId(accessToken1, true);
+
+            TimelineReviewsResponse reviewResponses = get("/api/reviews/public")
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .body()
-                .jsonPath().getList(".", ReviewResponse.class);
+                .as(TimelineReviewsResponse.class);
 
             assertAll(
-                () -> assertThat(reviewResponses).hasSize(2),
-                () -> assertThat(reviewResponses.get(0).getId()).isEqualTo(reviewId)
+                () -> assertThat(reviewResponses.getNumberOfReviews()).isEqualTo(DEFAULT_SIZE + 6),
+                () -> assertThat(reviewResponses.getReviews()).hasSize(DEFAULT_SIZE),
+                () -> assertThat(reviewResponses.getReviews().get(0).getId()).isEqualTo(reviewId)
             );
         }
+
+        @Test
+        @DisplayName("최신순으로 특정 페이지를 조회한다.")
+        void findPageOrderByLatest() {
+            saveReviewAndGetId(accessToken1, false);
+            Long reviewId = saveReviewAndGetId(accessToken2, false);
+            saveReviewAndGetId(accessToken2, true);
+
+            TimelineReviewsResponse reviewResponses = get("/api/reviews/public?page=1&size=1&sort=latest")
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .body()
+                .as(TimelineReviewsResponse.class);
+
+            assertAll(
+                () -> assertThat(reviewResponses.getNumberOfReviews()).isEqualTo(2),
+                () -> assertThat(reviewResponses.getReviews()).hasSize(1),
+                () -> assertThat(reviewResponses.getReviews().get(0).getId()).isEqualTo(reviewId)
+            );
+        }
+
+        @Test
+        @DisplayName("로그인하지 않은 상태로 조회할 수 있다.")
+        void withoutLogin() {
+            get("/api/reviews/public").statusCode(HttpStatus.OK.value());
+        }
+
     }
 
     @Nested
