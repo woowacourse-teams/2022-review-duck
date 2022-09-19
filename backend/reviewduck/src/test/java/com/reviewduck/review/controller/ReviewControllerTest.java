@@ -135,25 +135,14 @@ public class ReviewControllerTest {
     @DisplayName("좋아요")
     class likes {
 
-        @ParameterizedTest
-        @NullSource
-        @DisplayName("회고 id에 null 값이 들어갈 경우 예외가 발생한다.")
-        void nullContent(Long reviewId) throws Exception {
-            // given
-            ReviewLikesRequest request = new ReviewLikesRequest(reviewId, 0);
-
-            // when, then
-            assertBadRequestFromPost("/api/reviews/likes", request, "좋아요 요청 중 오류가 발생했습니다.");
-        }
-
         @Test
-        @DisplayName("좋아요 개수는 음수일 수 없습니다.")
+        @DisplayName("좋아요 개수는 음수일 수 없다.")
         void notNegative() throws Exception {
             // given
-            ReviewLikesRequest request = new ReviewLikesRequest(1L, -1);
+            ReviewLikesRequest request = new ReviewLikesRequest(-1);
 
             // when, then
-            assertBadRequestFromPost("/api/reviews/likes", request, "좋아요 개수는 0 이상이어야 합니다.");
+            assertBadRequestFromPost("/api/reviews/1/likes", request, "좋아요 개수는 0 이상이어야 합니다.");
         }
 
     }

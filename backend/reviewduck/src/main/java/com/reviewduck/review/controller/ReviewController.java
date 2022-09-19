@@ -24,7 +24,6 @@ import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.dto.request.ReviewLikesRequest;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 import com.reviewduck.review.dto.response.ReviewLikesResponse;
-import com.reviewduck.review.dto.response.ReviewResponse;
 import com.reviewduck.review.dto.response.ReviewSynchronizedResponse;
 import com.reviewduck.review.dto.response.ReviewsResponse;
 import com.reviewduck.review.dto.response.TimelineReviewsResponse;
@@ -104,13 +103,13 @@ public class ReviewController {
     }
 
     @Operation(summary = "좋아요 개수를 더한다.")
-    @PostMapping("/likes")
+    @PostMapping("/{reviewId}/likes")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewLikesResponse likes(@RequestBody @Valid ReviewLikesRequest request) {
+    public ReviewLikesResponse likes(@PathVariable Long reviewId, @RequestBody @Valid ReviewLikesRequest request) {
 
-        info("/api/reviews/likes", "POST", request.toString());
+        info("/api/reviews/" + reviewId + "/likes", "POST", request.toString());
 
-        int likes = reviewService.increaseLikes(request.getId(), request.getLikes());
+        int likes = reviewService.increaseLikes(reviewId, request.getLikes());
         return new ReviewLikesResponse(likes);
     }
 }

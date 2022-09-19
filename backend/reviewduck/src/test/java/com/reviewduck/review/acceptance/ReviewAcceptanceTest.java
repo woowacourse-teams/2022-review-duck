@@ -430,12 +430,15 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         void increase() {
             // given
             Long reviewId = saveReviewAndGetId(accessToken1, false);
-            ReviewLikesRequest request = new ReviewLikesRequest(reviewId, 50);
+            ReviewLikesRequest request = new ReviewLikesRequest(50);
 
             // when, then
             // 50번씩 두 번 더한다.
-            post("api/reviews/likes", request);
-            post("api/reviews/likes", request)
+            post("api/reviews/" + reviewId + "/likes", request)
+                .statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .body("likes", equalTo(50));
+            post("api/reviews/" + reviewId + "/likes", request)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
                 .body("likes", equalTo(100));
