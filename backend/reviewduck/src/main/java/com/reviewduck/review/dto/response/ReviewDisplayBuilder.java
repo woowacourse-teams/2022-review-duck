@@ -1,4 +1,4 @@
-package com.reviewduck.review.controller;
+package com.reviewduck.review.dto.response;
 
 import java.util.Arrays;
 import java.util.List;
@@ -7,9 +7,6 @@ import java.util.stream.Collectors;
 
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
-import com.reviewduck.review.dto.response.ReviewAbstractResponse;
-import com.reviewduck.review.dto.response.ReviewResponse;
-import com.reviewduck.review.dto.response.ReviewSheetResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

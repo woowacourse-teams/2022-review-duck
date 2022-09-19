@@ -9,6 +9,7 @@ import com.reviewduck.admin.repository.AdminReviewRepository;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
+import com.reviewduck.review.domain.ReviewForm;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,16 +26,24 @@ public class AdminReviewService {
         return reviewRepository.findAll();
     }
 
+    public Review findById(Long reviewId) {
+        return reviewRepository.findById(reviewId)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
+    }
+
     public List<Review> findByMemberId(Long memberId) {
         Member member = adminMemberService.findMemberById(memberId);
         return reviewRepository.findAllByMember(member);
     }
 
+    public List<Review> findAllByReviewForm(ReviewForm reviewForm) {
+        return reviewRepository.findAllByReviewForm(reviewForm);
+    }
+
     @Transactional
     public void deleteReviewById(Long reviewId) {
-        reviewRepository.findById(reviewId)
-            .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
+        Review review = findById(reviewId);
 
-        reviewRepository.deleteById(reviewId);
+        reviewRepository.delete(review);
     }
 }
