@@ -50,7 +50,7 @@ public class Review extends BaseDate {
     private List<QuestionAnswer> questionAnswers;
 
     @Column(nullable = false)
-    private int like;
+    private int likes;
 
     public Review(String title, Member member, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers,
         boolean isPrivate) {
@@ -88,7 +88,7 @@ public class Review extends BaseDate {
     }
 
     public int like(int likeCount) {
-        like += likeCount;
-        return like;
+        likes += likeCount;
+        return likes;
     }
 }

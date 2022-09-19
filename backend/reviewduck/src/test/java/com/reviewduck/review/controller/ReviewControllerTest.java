@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.request.AnswerUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewContentUpdateRequest;
+import com.reviewduck.review.dto.request.ReviewLikesRequest;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 import com.reviewduck.review.service.ReviewService;
 
@@ -50,6 +52,27 @@ public class ReviewControllerTest {
         Member member = new Member("1", "jason", "제이슨", "profileUrl");
         given(jwtTokenProvider.getPayload(any())).willReturn("1");
         given(memberService.findById(any())).willReturn(member);
+    }
+
+    private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws
+        Exception {
+        mockMvc.perform(post(uri)
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(objectMapper.writeValueAsString(request))
+            ).andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message", containsString(errorMessage)));
+    }
+
+    private void assertBadRequestFromPut(String uri, Object request, String errorMessage) throws Exception {
+        mockMvc.perform(put(uri)
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(objectMapper.writeValueAsString(request))
+            ).andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message", containsString(errorMessage)));
     }
 
     @Nested
@@ -108,13 +131,30 @@ public class ReviewControllerTest {
 
     }
 
-    private void assertBadRequestFromPut(String uri, Object request, String errorMessage) throws Exception {
-        mockMvc.perform(put(uri)
-                .header("Authorization", "Bearer " + accessToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(objectMapper.writeValueAsString(request))
-            ).andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message", containsString(errorMessage)));
+    @Nested
+    @DisplayName("좋아요")
+    class likes {
+
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("회고 id에 null 값이 들어갈 경우 예외가 발생한다.")
+        void nullContent(Long reviewId) throws Exception {
+            // given
+            ReviewLikesRequest request = new ReviewLikesRequest(reviewId, 0);
+
+            // when, then
+            assertBadRequestFromPost("/api/reviews/likes", request, "좋아요 요청 중 오류가 발생했습니다.");
+        }
+
+        @Test
+        @DisplayName("좋아요 개수는 음수일 수 없습니다.")
+        void notNegative() throws Exception {
+            // given
+            ReviewLikesRequest request = new ReviewLikesRequest(1L, -1);
+
+            // when, then
+            assertBadRequestFromPost("/api/reviews/likes", request, "좋아요 개수는 0 이상이어야 합니다.");
+        }
+
     }
 }

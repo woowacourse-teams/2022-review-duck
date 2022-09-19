@@ -5,6 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +38,9 @@ public class ReviewRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @PersistenceContext
+    private EntityManager em;
 
     private ReviewForm savedReviewForm;
 
@@ -161,6 +167,29 @@ public class ReviewRepositoryTest {
 
         // then
         assertThat(reviewRepository.findById(savedReview.getId()).isEmpty()).isTrue();
+    }
+
+    @Test
+    @DisplayName("좋아요 수를 입력받아 더한다.")
+    void increaseLikes() throws InterruptedException {
+        // given
+        Review savedReview = saveReview(savedMember, savedReviewForm, false);
+        Long id = savedReview.getId();
+
+        // when
+        int likeCount = 50;
+        // 두 번 증가시킨다
+        reviewRepository.increaseLikes(savedReview, likeCount);
+        reviewRepository.increaseLikes(savedReview, likeCount);
+
+        // DB에 저장된 값과 1차 캐시의 Review를 동기화
+        em.refresh(savedReview);
+
+        Review review = reviewRepository.findById(id).orElseThrow();
+        int actual = review.getLikes();
+
+        // then
+        assertThat(actual).isEqualTo(100);
     }
 
     private Review saveReview(Member member, ReviewForm savedReviewForm, boolean isPrivate) throws

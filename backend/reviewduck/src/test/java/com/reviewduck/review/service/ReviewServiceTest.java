@@ -5,8 +5,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -14,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
@@ -63,6 +63,23 @@ public class ReviewServiceTest {
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
 
         this.reviewForm = reviewFormService.save(member1, createRequest);
+    }
+
+    private Review saveReview(Member member, boolean isPrivate) throws InterruptedException {
+        Thread.sleep(1);
+
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, List.of(
+            new ReviewContentCreateRequest(
+                reviewForm.getReviewFormQuestions().get(0).getId(),
+                new AnswerCreateRequest("answer1")
+            ),
+            new ReviewContentCreateRequest(
+                reviewForm.getReviewFormQuestions().get(1).getId(),
+                new AnswerCreateRequest("answer2")
+            )
+        ));
+
+        return reviewService.save(member, reviewForm.getCode(), reviewCreateRequest);
     }
 
     @Nested
@@ -125,8 +142,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 질문입니다.");
         }
 
-
     }
+
     @Nested
     @DisplayName("id로 회고 조회")
     class findById {
@@ -153,8 +170,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 회고입니다.");
         }
 
-
     }
+
     @Nested
     @DisplayName("사용자가 생성한 회고 조회")
     class findMemberReview {
@@ -227,6 +244,7 @@ public class ReviewServiceTest {
         }
 
     }
+
     @Nested
     @DisplayName("회고 폼 code로 회고 조회")
     class findByCode {
@@ -258,6 +276,7 @@ public class ReviewServiceTest {
         }
 
     }
+
     @Nested
     @DisplayName("최신 순 회고 조회")
     class findTimelineReview {
@@ -281,6 +300,7 @@ public class ReviewServiceTest {
         }
 
     }
+
     @Nested
     @DisplayName("회고 수정")
     class updateReview {
@@ -376,8 +396,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 답변 번호입니다.");
         }
 
-
     }
+
     @Nested
     @DisplayName("회고 삭제")
     class deleteReview {
@@ -416,22 +436,48 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 회고입니다.");
         }
 
+        @Nested
+        @DisplayName("좋아요")
+        class likes {
 
-    }
-    private Review saveReview(Member member, boolean isPrivate) throws InterruptedException {
-        Thread.sleep(1);
+            @Test
+            @DisplayName("좋아요 수를 입력받아 더한다.")
+            @Transactional(propagation = Propagation.NOT_SUPPORTED)
+            void increase() throws InterruptedException {
+                // given
+                Review savedReview = saveReview(member1, false);
+                Long id = savedReview.getId();
 
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, List.of(
-            new ReviewContentCreateRequest(
-                reviewForm.getReviewFormQuestions().get(0).getId(),
-                new AnswerCreateRequest("answer1")
-            ),
-            new ReviewContentCreateRequest(
-                reviewForm.getReviewFormQuestions().get(1).getId(),
-                new AnswerCreateRequest("answer2")
-            )
-        ));
+                // when
+                int likeCount = 50;
+                // 두 번 증가시킨다
+                reviewService.increaseLikes(id, likeCount);
+                int likes = reviewService.increaseLikes(id, likeCount);
 
-        return reviewService.save(member, reviewForm.getCode(), reviewCreateRequest);
+                Review review = reviewService.findById(id);
+                int actual = review.getLikes();
+
+                // then
+                assertAll(
+                    () -> assertThat(actual).isEqualTo(100),
+                    () -> assertThat(actual).isEqualTo(likes)
+                );
+            }
+
+            @Test
+            @DisplayName("존재하지 않는 id의 좋아요를 증가시킬 수 없다.")
+            @Transactional(propagation = Propagation.NOT_SUPPORTED)
+            void withInvalidIdIncrease() {
+                // given
+                long invalidId = 9999L;
+                int likeCount = 50;
+
+                // when, then
+                assertThatThrownBy(() -> reviewService.increaseLikes(invalidId, likeCount))
+                    .isInstanceOf(NotFoundException.class)
+                    .hasMessageContaining("존재하지 않는 회고입니다.");
+            }
+        }
+
     }
 }

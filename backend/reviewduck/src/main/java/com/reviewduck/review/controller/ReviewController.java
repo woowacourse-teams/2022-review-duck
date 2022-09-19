@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
+import com.reviewduck.review.dto.request.ReviewLikesRequest;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
+import com.reviewduck.review.dto.response.ReviewLikesResponse;
 import com.reviewduck.review.dto.response.ReviewResponse;
 import com.reviewduck.review.dto.response.ReviewSynchronizedResponse;
 import com.reviewduck.review.dto.response.ReviewsResponse;
@@ -99,5 +102,16 @@ public class ReviewController {
         info("/api/reviews/" + reviewId, "DELETE", "");
 
         reviewService.delete(member, reviewId);
+    }
+
+    @Operation(summary = "좋아요 개수를 더한다.")
+    @PostMapping("/likes")
+    @ResponseStatus(HttpStatus.OK)
+    public ReviewLikesResponse likes(@RequestBody @Valid ReviewLikesRequest request) {
+
+        info("/api/reviews/likes", "POST", request.toString());
+
+        int likes = reviewService.increaseLikes(request.getId(), request.getLikes());
+        return new ReviewLikesResponse(likes);
     }
 }
