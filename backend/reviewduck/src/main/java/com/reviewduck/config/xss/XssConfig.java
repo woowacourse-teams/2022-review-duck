@@ -23,7 +23,7 @@ public class XssConfig implements WebMvcConfigurer {
         FilterRegistrationBean<XssEscapeServletFilter> filterRegistration = new FilterRegistrationBean<>();
         filterRegistration.setFilter(new XssEscapeServletFilter());
         filterRegistration.setOrder(1);
-        filterRegistration.addUrlPatterns("/*");
+        //filterRegistration.addUrlPatterns("/*");
         return filterRegistration;
     }
 
