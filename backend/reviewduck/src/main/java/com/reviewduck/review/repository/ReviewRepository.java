@@ -19,12 +19,6 @@ public interface ReviewRepository extends Repository<Review, Long> {
 
     List<Review> findByReviewForm(ReviewForm reviewForm);
 
-    List<Review> findByMemberOrderByUpdatedAtDesc(Member member);
-
-    List<Review> findByMemberAndIsPrivateFalseOrderByUpdatedAtDesc(Member member);
-
-    List<Review> findAllByMember(Member member);
-
     List<Review> findByIsPrivateFalseOrderByUpdatedAtDesc();
 
     Page<Review> findByMember(Member member, Pageable pageable);
