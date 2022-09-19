@@ -1,8 +1,13 @@
 package com.reviewduck.template.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
+
+import org.springframework.data.repository.Repository;
 
 import com.reviewduck.template.domain.TemplateQuestion;
 
-public interface TemplateQuestionRepository extends JpaRepository<TemplateQuestion, Long> {
+public interface TemplateQuestionRepository extends Repository<TemplateQuestion, Long> {
+    TemplateQuestion save(TemplateQuestion templateQuestion);
+
+    Optional<TemplateQuestion> findById(long questionId);
 }

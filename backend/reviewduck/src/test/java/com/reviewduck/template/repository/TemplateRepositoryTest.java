@@ -151,11 +151,10 @@ public class TemplateRepositoryTest {
         Template savedTemplate = saveTemplate(member1, questions1);
 
         // when
-        Long templateId = savedTemplate.getId();
-        templateRepository.deleteById(templateId);
+        templateRepository.delete(savedTemplate);
 
         // then
-        assertThat(templateRepository.findById(templateId)).isEmpty();
+        assertThat(templateRepository.findById(savedTemplate.getId())).isEmpty();
     }
 
     @Test
