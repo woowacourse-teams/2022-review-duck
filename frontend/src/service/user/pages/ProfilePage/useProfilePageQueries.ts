@@ -1,4 +1,5 @@
 import { USER_PROFILE_TAB } from 'constant';
+import { Tabs } from 'types';
 
 import { useDeleteReviewAnswer, useDeleteReviewForm } from 'service/@shared/hooks/queries/review';
 import { useDeleteTemplate } from 'service/@shared/hooks/queries/template/useDelete';
@@ -9,9 +10,7 @@ import {
   useGetUserTemplates,
 } from 'service/@shared/hooks/queries/user';
 
-type CurrentTabs = 'reviews' | 'review-forms' | 'templates';
-
-function useProfilePageQueries(currentTab: CurrentTabs, socialIdPrams: string, pageNumber: string) {
+function useProfilePageQueries(currentTab: Tabs, socialIdPrams: string, pageNumber: string) {
   const socialId = Number(socialIdPrams);
 
   const useGetQueries = {
@@ -20,11 +19,9 @@ function useProfilePageQueries(currentTab: CurrentTabs, socialIdPrams: string, p
     [USER_PROFILE_TAB.TEMPLATES]: useGetUserTemplates,
   };
 
-  const useDeleteMutation = {
-    [USER_PROFILE_TAB.REVIEWS]: useDeleteReviewAnswer,
-    [USER_PROFILE_TAB.REVIEW_FORMS]: useDeleteReviewForm,
-    [USER_PROFILE_TAB.TEMPLATES]: useDeleteTemplate,
-  };
+  const deleteReviewMutation = useDeleteReviewAnswer();
+  const deleteReviewFormMutation = useDeleteReviewForm();
+  const deleteTemplateMutation = useDeleteTemplate();
 
   const getUserProfile = useGetUserProfile({ socialId });
   const getUserArticles = useGetQueries[currentTab](socialId, pageNumber);
@@ -37,7 +34,9 @@ function useProfilePageQueries(currentTab: CurrentTabs, socialIdPrams: string, p
   return {
     userItems: getUserArticles.data,
     userProfile: getUserProfile.data,
-    mutation: useDeleteMutation[currentTab],
+    deleteReviewMutation,
+    deleteReviewFormMutation,
+    deleteTemplateMutation,
   };
 }
 

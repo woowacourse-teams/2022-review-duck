@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
 import { GITHUB_PROFILE_URL, USER_PROFILE_TAB } from 'constant';
+import { Tabs } from 'types';
 
 import { Text, Button } from 'common/components';
 
@@ -72,7 +73,7 @@ const ProfileManager = ({ isMyProfile, socialNickname, onClick }: ProfileManager
 };
 
 interface TabNavigatorProps {
-  currentTab: string;
+  currentTab: Tabs;
   onClick: (filter: string) => () => void;
 }
 
@@ -112,31 +113,18 @@ const TabNavigator = ({ currentTab, onClick }: TabNavigatorProps) => {
 };
 
 interface RecordProps {
-  numberOfReviews: number;
-  numberOfReviewForms: number;
-  numberOfTemplates: number;
+  title: string;
+  numberOfItems: number;
 }
 
-const Record = ({ numberOfReviews, numberOfReviewForms, numberOfTemplates }: RecordProps) => {
+const Record = ({ numberOfItems, title }: RecordProps) => {
   return (
     <div className={styles.counterContainer}>
       <div className={styles.counter}>
         <Text className={styles.number} size={24} weight="bold">
-          {numberOfReviews}
+          {numberOfItems}
         </Text>
-        <Text size={12}>회고 작성</Text>
-      </div>
-      <div className={styles.counter}>
-        <Text className={styles.number} size={24} weight="bold">
-          {numberOfReviewForms}
-        </Text>
-        <Text size={12}>생성</Text>
-      </div>
-      <div className={styles.counter}>
-        <Text className={styles.number} size={24} weight="bold">
-          {numberOfTemplates}
-        </Text>
-        <Text size={12}>템플릿</Text>
+        <Text size={12}>{title}</Text>
       </div>
     </div>
   );

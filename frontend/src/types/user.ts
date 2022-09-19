@@ -77,3 +77,5 @@ export interface GetUserProfileResponse {
 }
 
 export type UpdateProfileResponse = null;
+
+export type Tabs = 'reviews' | 'review-forms' | 'templates';

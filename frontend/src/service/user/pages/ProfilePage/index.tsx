@@ -3,6 +3,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { faEraser } from '@fortawesome/free-solid-svg-icons';
 
 import { USER_PROFILE_TAB, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
+import { Tabs } from 'types';
 
 import useModal from 'common/hooks/useModal';
 import useSnackbar from 'common/hooks/useSnackbar';
@@ -30,19 +31,23 @@ function ProfilePage() {
   const currentTab = searchParams.get('tab') || USER_PROFILE_TAB.REVIEWS;
   const pageNumber = searchParams.get('page') || String(1);
 
-  const queries = useProfilePageQueries(currentTab, socialId, pageNumber);
+  const queries = useProfilePageQueries(currentTab as Tabs, socialId, pageNumber);
 
   if (!queries) return <></>;
 
   const {
-    userReviews,
-    userReviewForms,
-    userTemplates,
+    userItems,
     userProfile,
     deleteReviewMutation,
     deleteReviewFormMutation,
     deleteTemplateMutation,
   } = queries;
+
+  const subjectTitle = {
+    [USER_PROFILE_TAB.REVIEWS]: '작성한 회고',
+    [USER_PROFILE_TAB.REVIEW_FORMS]: '생성한 질문지',
+    [USER_PROFILE_TAB.TEMPLATES]: '생성한 템플릿',
+  };
 
   const handleChangeTab = (filter: string) => () => {
     navigate(`${PAGE_LIST.USER_PROFILE}/${socialId}?tab=${filter}`);
@@ -61,61 +66,45 @@ function ProfilePage() {
     navigate(editLink);
   };
 
-  const handleDeleteReview = (reviewId: number | string) => () => {
-    if (confirm('정말 회고를 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) {
-      deleteReviewMutation.mutate(reviewId as number, {
-        onSuccess: () => {
-          showSnackbar({
-            icon: faEraser,
-            title: '작성한 회고가 삭제되었습니다.',
-            description: '이제 누구도 해당 회고를 볼 수 없습니다.',
-          });
-        },
-        onError: ({ message }) => {
-          alert(message);
-        },
-      });
-    }
+  const deleteSuccessOption = () => {
+    showSnackbar({
+      icon: faEraser,
+      title: `${subjectTitle[currentTab].substring(
+        3,
+        subjectTitle[currentTab].length,
+      )}가(이) 삭제되었습니다.`,
+      description: '이제 누구도 해당 회고를 볼 수 없습니다.',
+    });
   };
 
-  const handleDeleteReviewForm = (reviewFormCode: string | number) => () => {
-    if (confirm('정말 회고를 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) {
-      deleteReviewFormMutation.mutate(reviewFormCode as string, {
-        onSuccess: () => {
-          showSnackbar({
-            icon: faEraser,
-            title: '생성한 회고가 삭제되었습니다.',
-            description: '이제 누구도 해당 회고를 볼 수 없습니다.',
-          });
-        },
-        onError: ({ message }) => {
-          alert(message);
-        },
-      });
+  const handleDeleteReview = (index: number | string) => () => {
+    if (
+      confirm(
+        `정말 ${subjectTitle[currentTab].substring(
+          3,
+          subjectTitle[currentTab].length,
+        )}를(을) 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.`,
+      )
+    ) {
+      if (currentTab === USER_PROFILE_TAB.REVIEWS) {
+        deleteReviewMutation.mutate(index as number, {
+          onSuccess: deleteSuccessOption,
+          onError: ({ message }) => alert(message),
+        });
+      }
+      if (currentTab === USER_PROFILE_TAB.REVIEW_FORMS) {
+        deleteReviewFormMutation.mutate(index as string, {
+          onSuccess: deleteSuccessOption,
+          onError: ({ message }) => alert(message),
+        });
+      }
+      if (currentTab === USER_PROFILE_TAB.TEMPLATES) {
+        deleteTemplateMutation.mutate(index as number, {
+          onSuccess: deleteSuccessOption,
+          onError: ({ message }) => alert(message),
+        });
+      }
     }
-  };
-
-  const handleDeleteTemplate = (templateId: number | string) => () => {
-    if (confirm('정말 회고를 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) {
-      deleteTemplateMutation.mutate(templateId as number, {
-        onSuccess: () => {
-          showSnackbar({
-            icon: faEraser,
-            title: '생성한 회고가 삭제되었습니다.',
-            description: '이제 누구도 해당 회고를 볼 수 없습니다.',
-          });
-        },
-        onError: ({ message }) => {
-          alert(message);
-        },
-      });
-    }
-  };
-
-  const getTotalItemCount = () => {
-    if (currentTab === USER_PROFILE_TAB.REVIEWS) return userReviews.totalNumber;
-    if (currentTab === USER_PROFILE_TAB.REVIEW_FORMS) return userReviewForms.totalNumber;
-    return userTemplates.totalNumber;
   };
 
   return (
@@ -138,84 +127,35 @@ function ProfilePage() {
             onClick={handleEditProfile}
           />
           <hr className={styles.line} />
-          <Controller.TabNavigator currentTab={currentTab} onClick={handleChangeTab} />
+          <Controller.TabNavigator currentTab={currentTab as Tabs} onClick={handleChangeTab} />
           <hr className={styles.line} />
           <Controller.Record
-            numberOfReviews={userReviews.totalNumber}
-            numberOfReviewForms={userReviewForms.totalNumber}
-            numberOfTemplates={userTemplates.totalNumber}
+            title={subjectTitle[currentTab]}
+            numberOfItems={userItems.totalNumber}
           />
         </Controller>
 
         <ItemList>
-          {currentTab === USER_PROFILE_TAB.REVIEWS && (
-            <>
-              {userReviews.itemList.map((item) => (
-                <ItemList.Item
-                  key={item.id}
-                  isMine={userReviews.isMine}
-                  item={item}
-                  titleLink={`${PAGE_LIST.REVIEW_OVERVIEW}/${item.reviewFormCode}`}
-                  editUrl={`${PAGE_LIST.REVIEW}/${item.reviewFormCode}/${item.id}`}
-                  onEdit={handleClickEdit}
-                  onDelete={handleDeleteReview}
-                />
-              ))}
-              <ItemList.NoItemResult totalNumber={userReviews.totalNumber}>
-                작성한 회고가 없습니다.
-              </ItemList.NoItemResult>
-            </>
-          )}
-          {currentTab === USER_PROFILE_TAB.REVIEW_FORMS && (
-            <>
-              {userReviewForms.itemList.map((item) => (
-                <ItemList.Item
-                  key={item.reviewFormCode}
-                  isMine={userReviewForms.isMine}
-                  item={item}
-                  titleLink={`${PAGE_LIST.REVIEW_OVERVIEW}/${item.reviewFormCode}`}
-                  editUrl={`${PAGE_LIST.REVIEW_FORM}/${
-                    item.reviewFormCode
-                  }?redirect=${encodeURIComponent(
-                    `${PAGE_LIST.USER_PROFILE}/${socialId}?tab=${USER_PROFILE_TAB.REVIEW_FORMS}`,
-                  )}`}
-                  onEdit={handleClickEdit}
-                  onDelete={handleDeleteReviewForm}
-                />
-              ))}
-              <ItemList.NoItemResult totalNumber={userReviewForms.totalNumber}>
-                생성한 회고가 없습니다.
-              </ItemList.NoItemResult>
-            </>
-          )}
-          {currentTab === USER_PROFILE_TAB.TEMPLATES && (
-            <>
-              {userTemplates.itemList.map((item) => (
-                <ItemList.Item
-                  key={item.id}
-                  isMine={userTemplates.isMine}
-                  item={item}
-                  titleLink={`${PAGE_LIST.TEMPLATE_DETAIL}/${item.id}`}
-                  editUrl={`${PAGE_LIST.TEMPLATE_FORM}?templateId=${
-                    item.id
-                  }&templateEditMode=true&redirect=${encodeURIComponent(
-                    `${PAGE_LIST.USER_PROFILE}/${socialId}?tab=${USER_PROFILE_TAB.TEMPLATES}`,
-                  )}`}
-                  onEdit={handleClickEdit}
-                  onDelete={handleDeleteTemplate}
-                />
-              ))}
-              <ItemList.NoItemResult totalNumber={userTemplates.totalNumber}>
-                생성한 템플릿이 없습니다.
-              </ItemList.NoItemResult>
-            </>
-          )}
+          {userItems.itemList.map((item) => (
+            <ItemList.Item
+              key={item.id || item.reviewFormCode}
+              isMine={userItems.isMine}
+              item={item}
+              titleLink={`${PAGE_LIST.REVIEW_OVERVIEW}/${item.reviewFormCode}`}
+              editUrl={`${PAGE_LIST.REVIEW}/${item.reviewFormCode}/${item.id}`}
+              onEdit={handleClickEdit}
+              onDelete={handleDeleteReview}
+            />
+          ))}
+          <ItemList.NoItemResult totalNumber={userItems.totalNumber}>
+            {`${subjectTitle[currentTab]}가(이) 없습니다.`}
+          </ItemList.NoItemResult>
           <PaginationBar
             visiblePageButtonLength={
               PAGE_OPTION.REVIEW_BUTTON_LENGTH as PaginationBarProps['visiblePageButtonLength']
             }
             itemCountInPage={PAGE_OPTION.REVIEW_ITEM_SIZE}
-            totalItemCount={getTotalItemCount()}
+            totalItemCount={userItems.totalNumber}
             focusedPage={Number(pageNumber)}
             onClickPageButton={movePage}
           />

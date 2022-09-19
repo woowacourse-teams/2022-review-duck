@@ -81,10 +81,8 @@
     }
   }
 
-  .counterContainer {
-    display: grid;
-    grid-template-columns: 36% 25% 30%;
-    gap: 5%;
+  .counter-container {
+    width: 60%;
 
     .counter {
       display: flex;
