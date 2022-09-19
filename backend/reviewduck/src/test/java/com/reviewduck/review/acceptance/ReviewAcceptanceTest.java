@@ -27,6 +27,7 @@ import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
+import com.reviewduck.review.dto.request.ReviewLikesRequest;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 import com.reviewduck.review.dto.response.ReviewContentResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
@@ -416,6 +417,31 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             //when, then
             delete("/api/reviews/" + reviewId, accessToken2)
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
+        }
+
+    }
+
+    @Nested
+    @DisplayName("좋아요")
+    class likes {
+
+        @Test
+        @DisplayName("좋아요를 더한다.")
+        void increase() {
+            // given
+            Long reviewId = saveReviewAndGetId(accessToken1, false);
+            ReviewLikesRequest request = new ReviewLikesRequest(50);
+
+            // when, then
+            // 50번씩 두 번 더한다.
+            post("api/reviews/" + reviewId + "/likes", request)
+                .statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .body("likes", equalTo(50));
+            post("api/reviews/" + reviewId + "/likes", request)
+                .statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .body("likes", equalTo(100));
         }
 
     }

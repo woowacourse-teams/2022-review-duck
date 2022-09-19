@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
 import com.reviewduck.member.domain.Member;
@@ -25,6 +26,10 @@ public interface ReviewRepository extends Repository<Review, Long> {
     Page<Review> findByMember(Member member, Pageable pageable);
 
     Page<Review> findByMemberAndIsPrivateFalse(Member member, Pageable pageable);
+
+    @Modifying(clearAutomatically = true)
+    @Query("update Review r set r.likes = r.likes + :likeCount where r.id = :#{#review.id}")
+    void increaseLikes(Review review, int likeCount);
 
     void deleteById(Long id);
 }

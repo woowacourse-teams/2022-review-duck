@@ -102,6 +102,13 @@ public class ReviewService {
     }
 
     @Transactional
+    public int increaseLikes(Long id, int likeCount) {
+        Review review = findById(id);
+        reviewRepository.increaseLikes(review, likeCount);
+        return findById(id).getLikes();
+    }
+
+    @Transactional
     public void delete(Member member, Long id) {
         Review review = findById(id);
         validateMyReview(member, review, "본인이 생성한 회고가 아니면 삭제할 수 없습니다.");

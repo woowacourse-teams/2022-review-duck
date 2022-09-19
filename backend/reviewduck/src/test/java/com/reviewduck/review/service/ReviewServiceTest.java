@@ -3,9 +3,8 @@ package com.reviewduck.review.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
-
-import javax.transaction.Transactional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
@@ -125,8 +126,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 질문입니다.");
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("id로 회고 조회")
     class findById {
@@ -153,8 +154,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 회고입니다.");
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("사용자가 생성한 회고 조회")
     class findMemberReview {
@@ -226,8 +227,8 @@ public class ReviewServiceTest {
             );
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("회고 폼 code로 회고 조회")
     class findByCode {
@@ -258,8 +259,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("비밀글이 아닌 회고 답변을 모두 조회한다.")
     class findTimelineReview {
@@ -289,8 +290,8 @@ public class ReviewServiceTest {
             );
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("회고 수정")
     class updateReview {
@@ -386,8 +387,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 답변 번호입니다.");
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("회고 삭제")
     class deleteReview {
@@ -424,6 +425,70 @@ public class ReviewServiceTest {
             assertThatThrownBy(() -> reviewService.delete(member1, 99999L))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 회고입니다.");
+        }
+
+
+    }
+    @Nested
+    @DisplayName("좋아요")
+    class likes {
+
+        @Test
+        @DisplayName("좋아요 수를 입력받아 더한다.")
+        @Transactional(propagation = Propagation.NOT_SUPPORTED)
+        void increase() throws InterruptedException {
+            // given
+            Review savedReview = saveReview(member1, false);
+            Long id = savedReview.getId();
+
+            // when
+            int likeCount = 50;
+            // 두 번 증가시킨다
+            reviewService.increaseLikes(id, likeCount);
+            int likes = reviewService.increaseLikes(id, likeCount);
+
+            Review review = reviewService.findById(id);
+            int actual = review.getLikes();
+
+            // then
+            assertAll(
+                () -> assertThat(actual).isEqualTo(100),
+                () -> assertThat(actual).isEqualTo(likes)
+            );
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 id의 좋아요를 더할 수 없다.")
+        @Transactional(propagation = Propagation.NOT_SUPPORTED)
+        void withInvalidIdIncrease() {
+            // given
+            long invalidId = 9999L;
+            int likeCount = 50;
+
+            // when, then
+            assertThatThrownBy(() -> reviewService.increaseLikes(invalidId, likeCount))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("존재하지 않는 회고입니다.");
+        }
+
+        @Test
+        @Transactional(propagation = Propagation.NOT_SUPPORTED)
+        @DisplayName("좋아요를 더해도 수정 시간을 갱신하지 않는다.")
+        void withNotUpdatedAt() throws InterruptedException {
+            // given
+            Review savedReview = saveReview(member1, false);
+            Long id = savedReview.getId();
+
+            // 초기 수정 시간
+            // DB에 들어가서 뒷 자리수가 반올림 된 결과로 비교해야 하기 때문에 조회한다.
+            LocalDateTime updatedAt = reviewService.findById(id).getUpdatedAt();
+            // when
+            reviewService.increaseLikes(id, 50);
+
+            // 좋아요 더한 후 수정 시간
+            LocalDateTime updatedAtAfterIncreaseLikes = reviewService.findById(id).getUpdatedAt();
+            // then
+            assertThat(updatedAtAfterIncreaseLikes.isEqual(updatedAt)).isTrue();
         }
 
     }
