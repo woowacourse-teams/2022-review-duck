@@ -23,7 +23,6 @@ import com.reviewduck.review.exception.ReviewException;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @NoArgsConstructor(access = PROTECTED)
