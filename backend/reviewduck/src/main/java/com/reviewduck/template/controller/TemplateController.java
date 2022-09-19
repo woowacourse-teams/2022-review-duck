@@ -92,7 +92,7 @@ public class TemplateController {
         info("/api/templates?page=" + page + " size=" + size, "GET", "");
 
         Page<Template> templates = templateService.findAll(page - 1, size, sort);
-        return TemplatesResponse.of(templates, member);
+        return TemplatesResponse.of(templates, member, page);
     }
 
     @Operation(summary = "사용자가 생성한 템플릿을 모두 조회한다.")
