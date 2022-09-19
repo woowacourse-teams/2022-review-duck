@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 
+import { faArrowRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import cn from 'classnames';
 import { PAGE_LIST } from 'constant';
 
@@ -18,8 +21,6 @@ import SmallProfileCard from 'service/@shared/components/SmallProfileCard';
 import styles from './styles.module.scss';
 
 import useTemplateFormEditorPage from './useTemplateFormEditorPage';
-import { faArrowRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { validateReviewForm } from 'service/@shared/validator';
 import { Question } from 'types/review';
 
