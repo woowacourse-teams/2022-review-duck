@@ -28,7 +28,6 @@ import lombok.ToString;
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
-@ToString
 public class Review extends BaseDate {
 
     @Id
