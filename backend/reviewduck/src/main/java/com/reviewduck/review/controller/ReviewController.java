@@ -1,10 +1,7 @@
 package com.reviewduck.review.controller;
 
 import static com.reviewduck.common.util.Logging.*;
-import static com.reviewduck.common.vo.PageConstant.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import static com.reviewduck.review.vo.ReviewPageConstant.*;
 
 import javax.validation.Valid;
 
@@ -30,6 +27,7 @@ import com.reviewduck.review.dto.response.ReviewLikesResponse;
 import com.reviewduck.review.dto.response.ReviewResponse;
 import com.reviewduck.review.dto.response.ReviewSynchronizedResponse;
 import com.reviewduck.review.dto.response.ReviewsResponse;
+import com.reviewduck.review.dto.response.TimelineReviewsResponse;
 import com.reviewduck.review.service.ReviewService;
 
 import io.swagger.annotations.ApiParam;
@@ -69,18 +67,19 @@ public class ReviewController {
         return ReviewsResponse.of(reviews, socialId, member);
     }
 
-    @Operation(summary = "비밀글이 아닌 회고 답변을 최신 순으로 조회한다.")
+    @Operation(summary = "비밀글이 아닌 회고 답변을 모두 조회한다.")
     @GetMapping("/public")
     @ResponseStatus(HttpStatus.OK)
-    public List<ReviewResponse> findAllPublic(@AuthenticationPrincipal Member member) {
+    public TimelineReviewsResponse findAllPublic(@AuthenticationPrincipal Member member,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size,
+        @RequestParam(required = false) String sort) {
 
-        info("/api/reviews/public", "GET", "");
+        info("/api/reviews/public?page=" + page + "&size=" + size + "&sort=" + sort, "GET", "");
 
-        List<Review> reviews = reviewService.findAllPublic();
+        Page<Review> reviews = reviewService.findAllPublic(page - 1, size, sort);
 
-        return reviews.stream()
-            .map(review -> ReviewResponse.of(member, review))
-            .collect(Collectors.toUnmodifiableList());
+        return TimelineReviewsResponse.of(reviews, member);
     }
 
     @Operation(summary = "회고 답변을 수정한다.")

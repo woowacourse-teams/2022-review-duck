@@ -65,14 +65,8 @@ public class ReviewFormService {
     }
 
     public ReviewForm findByCode(String code) {
-        return reviewFormRepository.findByCode(code)
+        return reviewFormRepository.findByCodeAndIsActiveTrue(code)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고 폼입니다."));
-    }
-
-    public List<ReviewForm> findBySocialId(String socialId) {
-        Member member = memberService.getBySocialId(socialId);
-
-        return reviewFormRepository.findByMemberOrderByUpdatedAtDesc(member);
     }
 
     public Page<ReviewForm> findBySocialId(String socialId, Integer page, Integer size) {
@@ -80,7 +74,7 @@ public class ReviewFormService {
         Member member = memberService.getBySocialId(socialId);
         PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
 
-        return reviewFormRepository.findByMember(member, pageable);
+        return reviewFormRepository.findByMemberAndIsActiveTrue(member, pageable);
     }
 
     @Transactional

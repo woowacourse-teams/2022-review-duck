@@ -278,24 +278,31 @@ public class ReviewServiceTest {
     }
 
     @Nested
-    @DisplayName("최신 순 회고 조회")
+    @DisplayName("비밀글이 아닌 회고 답변을 모두 조회한다.")
     class findTimelineReview {
 
         @Test
-        @DisplayName("공개된 모든 회고 답변을 조회한다.")
-        void findAllReviews() throws InterruptedException {
+        @DisplayName("최신순으로 특정 페이지를 조회한다.")
+        void findAllOrderByTrend() throws InterruptedException {
             // given
             saveReview(member1, false);
+            Review review = saveReview(member2, false);
             saveReview(member1, true);
-            saveReview(member2, false);
 
             // when
-            List<Review> reviews = reviewService.findAllPublic();
+            Integer page = 0;
+            Integer size = 1;
+            String sort = "latest";
+
+            List<Review> reviews = reviewService.findAllPublic(page, size, sort).getContent();
+
+            System.out.println(review);
+            System.out.println(reviews.get(0));
 
             // then
             assertAll(
-                () -> assertThat(reviews).hasSize(2),
-                () -> assertThat(reviews.get(0).getId()).isEqualTo(3)
+                () -> assertThat(reviews).hasSize(1),
+                () -> assertThat(reviews.get(0)).isEqualTo(review)
             );
         }
 
@@ -436,48 +443,48 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 회고입니다.");
         }
 
-        @Nested
-        @DisplayName("좋아요")
-        class likes {
+    }
 
-            @Test
-            @DisplayName("좋아요 수를 입력받아 더한다.")
-            @Transactional(propagation = Propagation.NOT_SUPPORTED)
-            void increase() throws InterruptedException {
-                // given
-                Review savedReview = saveReview(member1, false);
-                Long id = savedReview.getId();
+    @Nested
+    @DisplayName("좋아요")
+    class likes {
 
-                // when
-                int likeCount = 50;
-                // 두 번 증가시킨다
-                reviewService.increaseLikes(id, likeCount);
-                int likes = reviewService.increaseLikes(id, likeCount);
+        @Test
+        @DisplayName("좋아요 수를 입력받아 더한다.")
+        @Transactional(propagation = Propagation.NOT_SUPPORTED)
+        void increase() throws InterruptedException {
+            // given
+            Review savedReview = saveReview(member1, false);
+            Long id = savedReview.getId();
 
-                Review review = reviewService.findById(id);
-                int actual = review.getLikes();
+            // when
+            int likeCount = 50;
+            // 두 번 증가시킨다
+            reviewService.increaseLikes(id, likeCount);
+            int likes = reviewService.increaseLikes(id, likeCount);
 
-                // then
-                assertAll(
-                    () -> assertThat(actual).isEqualTo(100),
-                    () -> assertThat(actual).isEqualTo(likes)
-                );
-            }
+            Review review = reviewService.findById(id);
+            int actual = review.getLikes();
 
-            @Test
-            @DisplayName("존재하지 않는 id의 좋아요를 증가시킬 수 없다.")
-            @Transactional(propagation = Propagation.NOT_SUPPORTED)
-            void withInvalidIdIncrease() {
-                // given
-                long invalidId = 9999L;
-                int likeCount = 50;
-
-                // when, then
-                assertThatThrownBy(() -> reviewService.increaseLikes(invalidId, likeCount))
-                    .isInstanceOf(NotFoundException.class)
-                    .hasMessageContaining("존재하지 않는 회고입니다.");
-            }
+            // then
+            assertAll(
+                () -> assertThat(actual).isEqualTo(100),
+                () -> assertThat(actual).isEqualTo(likes)
+            );
         }
 
+        @Test
+        @DisplayName("존재하지 않는 id의 좋아요를 증가시킬 수 없다.")
+        @Transactional(propagation = Propagation.NOT_SUPPORTED)
+        void withInvalidIdIncrease() {
+            // given
+            long invalidId = 9999L;
+            int likeCount = 50;
+
+            // when, then
+            assertThatThrownBy(() -> reviewService.increaseLikes(invalidId, likeCount))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("존재하지 않는 회고입니다.");
+        }
     }
 }

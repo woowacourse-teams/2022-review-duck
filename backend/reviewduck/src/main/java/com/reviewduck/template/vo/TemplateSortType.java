@@ -1,4 +1,4 @@
-package com.reviewduck.common.vo;
+package com.reviewduck.template.vo;
 
 import java.util.Arrays;
 
@@ -7,7 +7,7 @@ import java.util.Arrays;
  * param: 요청으로 받는 sort query에 해당하는 query value
  * sortBy: OrderBy에 사용할 database column
  */
-public enum SortType {
+public enum TemplateSortType {
 
     LATEST("latest", "updatedAt"),
     TREND("trend", "usedCount");
@@ -15,14 +15,14 @@ public enum SortType {
     private final String param;
     private final String sortBy;
 
-    SortType(String param, String sortBy) {
+    TemplateSortType(String param, String sortBy) {
         this.param = param;
         this.sortBy = sortBy;
     }
 
     public static String getSortBy(String input) {
         return Arrays.stream(values())
-            .filter(s -> s.param.equals(input))
+            .filter(it -> it.param.equals(input))
             .findAny()
             .orElse(TREND)
             .sortBy;

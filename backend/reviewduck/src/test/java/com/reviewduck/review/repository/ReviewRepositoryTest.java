@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.reviewduck.config.JpaAuditingConfig;
@@ -38,9 +39,6 @@ public class ReviewRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
-
-    @PersistenceContext
-    private EntityManager em;
 
     private ReviewForm savedReviewForm;
 
@@ -139,19 +137,20 @@ public class ReviewRepositoryTest {
     }
 
     @Test
-    @DisplayName("공개된 모든 회고를 updatedAt 내림차순으로 정렬하여 조회한다.")
-    void findByIsPrivateFalseOrderByUpdatedAtDesc() throws InterruptedException {
+    @DisplayName("공개된 모든 회고 중 updatedAt 내림차순으로 정렬된 특정 페이지를 조회한다.")
+    void findByIsPrivateFalse() throws InterruptedException {
         // given
         saveReview(savedMember, savedReviewForm, false);
         saveReview(savedMember, savedReviewForm, true);
         Review review = saveReview(savedMember, savedReviewForm, false);
 
         //when
-        List<Review> reviews = reviewRepository.findByIsPrivateFalseOrderByUpdatedAtDesc();
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "updatedAt"));
+        List<Review> reviews = reviewRepository.findByIsPrivateFalse(pageable).getContent();
 
         //then
         assertAll(
-            () -> assertThat(reviews).hasSize(2),
+            () -> assertThat(reviews).hasSize(1),
             () -> assertThat(reviews.get(0).getId()).isEqualTo(review.getId())
         );
     }
@@ -181,9 +180,6 @@ public class ReviewRepositoryTest {
         // 두 번 증가시킨다
         reviewRepository.increaseLikes(savedReview, likeCount);
         reviewRepository.increaseLikes(savedReview, likeCount);
-
-        // DB에 저장된 값과 1차 캐시의 Review를 동기화
-        em.refresh(savedReview);
 
         Review review = reviewRepository.findById(id).orElseThrow();
         int actual = review.getLikes();

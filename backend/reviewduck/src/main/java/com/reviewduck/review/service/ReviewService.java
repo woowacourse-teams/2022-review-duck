@@ -23,6 +23,7 @@ import com.reviewduck.review.dto.request.ReviewContentUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 import com.reviewduck.review.repository.ReviewRepository;
+import com.reviewduck.review.vo.ReviewSortType;
 
 import lombok.AllArgsConstructor;
 
@@ -53,15 +54,6 @@ public class ReviewService {
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
     }
 
-    public List<Review> findBySocialId(String socialId, Member member) {
-        Member owner = memberService.getBySocialId(socialId);
-
-        if (member.equals(owner)) {
-            return reviewRepository.findByMemberOrderByUpdatedAtDesc(member);
-        }
-        return reviewRepository.findByMemberAndIsPrivateFalseOrderByUpdatedAtDesc(owner);
-    }
-
     public Page<Review> findBySocialId(String socialId, Member member, Integer page, Integer size) {
         String sortType = "updatedAt";
 
@@ -81,8 +73,11 @@ public class ReviewService {
         return reviewRepository.findByReviewForm(reviewForm);
     }
 
-    public List<Review> findAllPublic() {
-        return reviewRepository.findByIsPrivateFalseOrderByUpdatedAtDesc();
+    public Page<Review> findAllPublic(int page, int size, String sort) {
+        String sortType = ReviewSortType.getSortBy(sort);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+
+        return reviewRepository.findByIsPrivateFalse(pageRequest);
     }
 
     @Transactional
