@@ -22,7 +22,7 @@ public enum ReviewSortType {
 
     public static String getSortBy(String input) {
         return Arrays.stream(values())
-            .filter(s -> s.param.equals(input))
+            .filter(it -> it.param.equals(input))
             .findAny()
             .orElse(LATEST)
             .sortBy;
