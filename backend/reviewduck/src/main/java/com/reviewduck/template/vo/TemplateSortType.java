@@ -22,7 +22,7 @@ public enum TemplateSortType {
 
     public static String getSortBy(String input) {
         return Arrays.stream(values())
-            .filter(s -> s.param.equals(input))
+            .filter(it -> it.param.equals(input))
             .findAny()
             .orElse(TREND)
             .sortBy;
