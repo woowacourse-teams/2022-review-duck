@@ -11,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
-import com.reviewduck.common.vo.SortType;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.template.domain.Template;
@@ -19,6 +18,7 @@ import com.reviewduck.template.domain.TemplateQuestion;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
 import com.reviewduck.template.repository.TemplateRepository;
+import com.reviewduck.template.vo.TemplateSortType;
 
 import lombok.AllArgsConstructor;
 
@@ -54,7 +54,7 @@ public class TemplateService {
     }
 
     public Page<Template> findAll(Integer page, Integer size, String sort) {
-        String sortType = SortType.getSortBy(sort);
+        String sortType = TemplateSortType.getSortBy(sort);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
 
         return templateRepository.findAll(pageRequest);

@@ -1,6 +1,6 @@
-package com.reviewduck.common.vo;
+package com.reviewduck.review.vo;
 
-public class PageConstant {
+public class ReviewPageConstant {
 
     public static final String DEFAULT_PAGE = "1";
 
