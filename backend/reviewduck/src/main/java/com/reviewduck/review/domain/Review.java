@@ -49,6 +49,9 @@ public class Review extends BaseDate {
     @OrderBy("position asc")
     private List<QuestionAnswer> questionAnswers;
 
+    @Column(nullable = false)
+    private int like;
+
     public Review(String title, Member member, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers,
         boolean isPrivate) {
         validate(title);
@@ -82,5 +85,10 @@ public class Review extends BaseDate {
         if (Objects.isNull(title) || title.isBlank()) {
             throw new ReviewException("회고의 제목은 비어있을 수 없습니다.");
         }
+    }
+
+    public int like(int likeCount) {
+        like += likeCount;
+        return like;
     }
 }
