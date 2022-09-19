@@ -54,27 +54,6 @@ public class ReviewControllerTest {
         given(memberService.findById(any())).willReturn(member);
     }
 
-    private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws
-        Exception {
-        mockMvc.perform(post(uri)
-                .header("Authorization", "Bearer " + accessToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(objectMapper.writeValueAsString(request))
-            ).andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message", containsString(errorMessage)));
-    }
-
-    private void assertBadRequestFromPut(String uri, Object request, String errorMessage) throws Exception {
-        mockMvc.perform(put(uri)
-                .header("Authorization", "Bearer " + accessToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(objectMapper.writeValueAsString(request))
-            ).andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.message", containsString(errorMessage)));
-    }
-
     @Nested
     @DisplayName("회고 수정 시")
     class updateReview {
@@ -129,8 +108,8 @@ public class ReviewControllerTest {
             assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "답변은 비어있을 수 없습니다.");
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("좋아요")
     class likes {
@@ -145,5 +124,27 @@ public class ReviewControllerTest {
             assertBadRequestFromPost("/api/reviews/1/likes", request, "좋아요 개수는 0 이상이어야 합니다.");
         }
 
+
+    }
+
+    private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws
+        Exception {
+        mockMvc.perform(post(uri)
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(objectMapper.writeValueAsString(request))
+            ).andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message", containsString(errorMessage)));
+    }
+
+    private void assertBadRequestFromPut(String uri, Object request, String errorMessage) throws Exception {
+        mockMvc.perform(put(uri)
+                .header("Authorization", "Bearer " + accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(objectMapper.writeValueAsString(request))
+            ).andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message", containsString(errorMessage)));
     }
 }

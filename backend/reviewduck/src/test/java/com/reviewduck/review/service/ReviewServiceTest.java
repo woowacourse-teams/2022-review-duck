@@ -3,6 +3,7 @@ package com.reviewduck.review.service;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -65,23 +66,6 @@ public class ReviewServiceTest {
         this.reviewForm = reviewFormService.save(member1, createRequest);
     }
 
-    private Review saveReview(Member member, boolean isPrivate) throws InterruptedException {
-        Thread.sleep(1);
-
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, List.of(
-            new ReviewContentCreateRequest(
-                reviewForm.getReviewFormQuestions().get(0).getId(),
-                new AnswerCreateRequest("answer1")
-            ),
-            new ReviewContentCreateRequest(
-                reviewForm.getReviewFormQuestions().get(1).getId(),
-                new AnswerCreateRequest("answer2")
-            )
-        ));
-
-        return reviewService.save(member, reviewForm.getCode(), reviewCreateRequest);
-    }
-
     @Nested
     @DisplayName("회고 저장")
     class saveReview {
@@ -142,8 +126,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 질문입니다.");
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("id로 회고 조회")
     class findById {
@@ -170,8 +154,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 회고입니다.");
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("사용자가 생성한 회고 조회")
     class findMemberReview {
@@ -243,8 +227,8 @@ public class ReviewServiceTest {
             );
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("회고 폼 code로 회고 조회")
     class findByCode {
@@ -275,8 +259,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("비밀글이 아닌 회고 답변을 모두 조회한다.")
     class findTimelineReview {
@@ -306,8 +290,8 @@ public class ReviewServiceTest {
             );
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("회고 수정")
     class updateReview {
@@ -403,8 +387,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 답변 번호입니다.");
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("회고 삭제")
     class deleteReview {
@@ -443,8 +427,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 회고입니다.");
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("좋아요")
     class likes {
@@ -474,7 +458,7 @@ public class ReviewServiceTest {
         }
 
         @Test
-        @DisplayName("존재하지 않는 id의 좋아요를 증가시킬 수 없다.")
+        @DisplayName("존재하지 않는 id의 좋아요를 더할 수 없다.")
         @Transactional(propagation = Propagation.NOT_SUPPORTED)
         void withInvalidIdIncrease() {
             // given
@@ -486,5 +470,43 @@ public class ReviewServiceTest {
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 회고입니다.");
         }
+
+        @Test
+        @Transactional(propagation = Propagation.NOT_SUPPORTED)
+        @DisplayName("좋아요를 더해도 수정 시간을 갱신하지 않는다.")
+        void withNotUpdatedAt() throws InterruptedException {
+            // given
+            Review savedReview = saveReview(member1, false);
+            Long id = savedReview.getId();
+
+            // 초기 수정 시간
+            // DB에 들어가서 뒷 자리수가 반올림 된 결과로 비교해야 하기 때문에 조회한다.
+            LocalDateTime updatedAt = reviewService.findById(id).getUpdatedAt();
+            // when
+            reviewService.increaseLikes(id, 50);
+
+            // 좋아요 더한 후 수정 시간
+            LocalDateTime updatedAtAfterIncreaseLikes = reviewService.findById(id).getUpdatedAt();
+            // then
+            assertThat(updatedAtAfterIncreaseLikes.isEqual(updatedAt)).isTrue();
+        }
+
+    }
+
+    private Review saveReview(Member member, boolean isPrivate) throws InterruptedException {
+        Thread.sleep(1);
+
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, List.of(
+            new ReviewContentCreateRequest(
+                reviewForm.getReviewFormQuestions().get(0).getId(),
+                new AnswerCreateRequest("answer1")
+            ),
+            new ReviewContentCreateRequest(
+                reviewForm.getReviewFormQuestions().get(1).getId(),
+                new AnswerCreateRequest("answer2")
+            )
+        ));
+
+        return reviewService.save(member, reviewForm.getCode(), reviewCreateRequest);
     }
 }

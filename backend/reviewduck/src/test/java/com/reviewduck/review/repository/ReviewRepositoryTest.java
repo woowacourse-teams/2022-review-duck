@@ -3,10 +3,8 @@ package com.reviewduck.review.repository;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -186,6 +184,29 @@ public class ReviewRepositoryTest {
 
         // then
         assertThat(actual).isEqualTo(100);
+    }
+
+    @Test
+    @DisplayName("좋아요 수를 더해도 수정 시간이 갱신되지 않는다.")
+    void increaseLikesWithNotUpdatedAt() throws InterruptedException {
+        // given
+        Review savedReview = saveReview(savedMember, savedReviewForm, false);
+        Long id = savedReview.getId();
+
+        // when
+        // 초기 수정 시간
+        // DB에 들어가서 뒷 자리수가 반올림 된 결과로 비교해야 하기 때문에 조회한다.
+        LocalDateTime updatedAt = reviewRepository.findById(id).orElseThrow()
+            .getUpdatedAt();
+
+        reviewRepository.increaseLikes(savedReview, 50);
+
+        // 좋아요 더한 후 수정 시간
+        LocalDateTime updatedAtAfterIncreaseLikes = reviewRepository.findById(id).orElseThrow()
+            .getUpdatedAt();
+
+        // then
+        assertThat(updatedAtAfterIncreaseLikes.isEqual(updatedAt)).isTrue();
     }
 
     private Review saveReview(Member member, ReviewForm savedReviewForm, boolean isPrivate) throws
