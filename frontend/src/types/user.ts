@@ -7,10 +7,10 @@ export interface UserProfile {
   profileUrl: string;
 }
 
-export interface UserItemList {
+export interface UserArticleList {
   totalNumber: number;
   isMine: boolean;
-  itemList: Array<{
+  articleList: Array<{
     id?: number;
     reviewFormCode?: string;
     title: string;

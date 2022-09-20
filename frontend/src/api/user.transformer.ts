@@ -1,17 +1,17 @@
 import {
   GetUserReviewAnswerResponse,
-  UserItemList,
+  UserArticleList,
   GetUserReviewFormsResponse,
   GetUserTemplatesResponse,
 } from 'types';
 
-export const transformUserReviews = (data: GetUserReviewAnswerResponse): UserItemList => {
+export const transformUserReviews = (data: GetUserReviewAnswerResponse): UserArticleList => {
   const { numberOfReviews, isMine, reviews } = data;
 
   return {
     totalNumber: numberOfReviews,
     isMine: isMine,
-    itemList: reviews.map((review) => ({
+    articleList: reviews.map((review) => ({
       id: review.id,
       reviewFormCode: review.reviewForm.code,
       title: review.reviewForm.title,
@@ -29,13 +29,13 @@ export const transformUserReviews = (data: GetUserReviewAnswerResponse): UserIte
   };
 };
 
-export const transformUserReviewForms = (data: GetUserReviewFormsResponse): UserItemList => {
+export const transformUserReviewForms = (data: GetUserReviewFormsResponse): UserArticleList => {
   const { numberOfReviewForms, isMine, reviewForms } = data;
 
   return {
     totalNumber: numberOfReviewForms,
     isMine: isMine,
-    itemList: reviewForms.map((reviewForm) => ({
+    articleList: reviewForms.map((reviewForm) => ({
       reviewFormCode: reviewForm.code,
       title: reviewForm.title,
       contents: reviewForm.questions.map((question) => ({
@@ -49,13 +49,13 @@ export const transformUserReviewForms = (data: GetUserReviewFormsResponse): User
   };
 };
 
-export const transformUserTemplates = (data: GetUserTemplatesResponse): UserItemList => {
+export const transformUserTemplates = (data: GetUserTemplatesResponse): UserArticleList => {
   const { numberOfTemplates, isMine, templates } = data;
 
   return {
     totalNumber: numberOfTemplates,
     isMine: isMine,
-    itemList: templates.map((template) => ({
+    articleList: templates.map((template) => ({
       id: template.info.id,
       title: template.info.title,
       contents: template.questions.map((question) => ({

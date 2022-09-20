@@ -32,7 +32,7 @@ function useProfilePageQueries(currentTab: Tabs, socialIdPrams: string, pageNumb
   if (isLoading || isError) return false;
 
   return {
-    userItems: getUserArticles.data,
+    userArticles: getUserArticles.data,
     userProfile: getUserProfile.data,
     deleteReviewMutation,
     deleteReviewFormMutation,

@@ -17,8 +17,8 @@ import LayoutContainer from 'service/@shared/components/LayoutContainer';
 import styles from './styles.module.scss';
 
 import useProfilePageQueries from './useProfilePageQueries';
+import { ArticleList } from './view/ArticleList';
 import { Controller } from './view/Controller';
-import { ItemList } from './view/ItemList';
 import { validateTab } from 'service/@shared/validator';
 
 function ProfilePage() {
@@ -38,7 +38,7 @@ function ProfilePage() {
   if (!queries) return <>{/* Error Boundary, Suspense Used */}</>;
 
   const {
-    userItems,
+    userArticles,
     userProfile,
     deleteReviewMutation,
     deleteReviewFormMutation,
@@ -133,35 +133,35 @@ function ProfilePage() {
           <hr className={styles.line} />
           <Controller.Record
             title={subjectTitle[currentTab]}
-            numberOfItems={userItems.totalNumber}
+            numberOfItems={userArticles.totalNumber}
           />
         </Controller>
 
-        <ItemList>
-          {userItems.itemList.map((item) => (
-            <ItemList.Item
-              key={item.id || item.reviewFormCode}
-              isMine={userItems.isMine}
-              item={item}
-              titleLink={`${PAGE_LIST.REVIEW_OVERVIEW}/${item.reviewFormCode}`}
-              editUrl={`${PAGE_LIST.REVIEW}/${item.reviewFormCode}/${item.id}`}
+        <ArticleList>
+          {userArticles.articleList.map((article) => (
+            <ArticleList.Article
+              key={article.id || article.reviewFormCode}
+              isMine={userArticles.isMine}
+              article={article}
+              titleLink={`${PAGE_LIST.REVIEW_OVERVIEW}/${article.reviewFormCode}`}
+              editUrl={`${PAGE_LIST.REVIEW}/${article.reviewFormCode}/${article.id}`}
               onEdit={handleClickEdit}
               onDelete={handleDeleteReview}
             />
           ))}
-          <ItemList.NoItemResult totalNumber={userItems.totalNumber}>
+          <ArticleList.NoArticleResult totalNumber={userArticles.totalNumber}>
             {`${subjectTitle[currentTab]}가(이) 없습니다.`}
-          </ItemList.NoItemResult>
+          </ArticleList.NoArticleResult>
           <PaginationBar
             visiblePageButtonLength={
               PAGE_OPTION.REVIEW_BUTTON_LENGTH as PaginationBarProps['visiblePageButtonLength']
             }
             itemCountInPage={PAGE_OPTION.REVIEW_ITEM_SIZE}
-            totalItemCount={userItems.totalNumber}
+            totalItemCount={userArticles.totalNumber}
             focusedPage={Number(pageNumber)}
             onClickPageButton={movePage}
           />
-        </ItemList>
+        </ArticleList>
       </LayoutContainer>
     </>
   );

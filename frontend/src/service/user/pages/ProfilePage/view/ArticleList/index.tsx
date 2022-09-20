@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import { UserItemList } from 'types';
+import { UserArticleList } from 'types';
 
 import NoResult from 'service/@shared/components/NoResult';
 import Questions from 'service/@shared/components/Questions';
@@ -14,28 +14,28 @@ const Container = ({ children }: ContainerProps) => {
   return <div className={styles.mainContent}>{children}</div>;
 };
 
-interface ItemProps {
+interface ArticleProps {
   isMine: boolean;
-  item: UserItemList['itemList'][number];
+  article: UserArticleList['articleList'][number];
   titleLink: string;
   editUrl: string;
   onEdit: (editUrl: string) => () => void;
   onDelete: (id: number | string) => () => void;
 }
 
-const Item = ({ isMine, item, titleLink, editUrl, onEdit, onDelete }: ItemProps) => {
+const Article = ({ isMine, article, titleLink, editUrl, onEdit, onDelete }: ArticleProps) => {
   return (
     <div className={styles.reviewContainer}>
       <Questions>
         <Link to={titleLink}>
-          <Questions.Title>{item.title}</Questions.Title>
+          <Questions.Title>{article.title}</Questions.Title>
         </Link>
         <Questions.EditButtons
           isVisible={isMine}
           onClickEdit={onEdit(editUrl)}
-          onClickDelete={onDelete(item.id || item.reviewFormCode || '')}
+          onClickDelete={onDelete(article.id || article.reviewFormCode || '')}
         />
-        {item.contents.map((content) => (
+        {article.contents.map((content) => (
           <Questions.Answer
             key={content.question.id}
             question={content.question.value}
@@ -50,16 +50,16 @@ const Item = ({ isMine, item, titleLink, editUrl, onEdit, onDelete }: ItemProps)
   );
 };
 
-interface NoItemResultProps {
+interface NoArticleResultProps {
   totalNumber: number;
   children: string;
 }
 
-const NoItemResult = ({ totalNumber, children }: NoItemResultProps) => {
+const NoArticleResult = ({ totalNumber, children }: NoArticleResultProps) => {
   if (totalNumber === 0) {
     return <NoResult className={styles.noResult}>{children}</NoResult>;
   }
   return <></>;
 };
 
-export const ItemList = Object.assign(Container, { Item, NoItemResult });
+export const ArticleList = Object.assign(Container, { Article, NoArticleResult });

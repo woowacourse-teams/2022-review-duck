@@ -2,7 +2,7 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { userAPI } from 'api';
 import { QUERY_KEY } from 'constant';
-import { ErrorResponse, GetUserProfileResponse, UserItemList } from 'types';
+import { ErrorResponse, GetUserProfileResponse, UserArticleList } from 'types';
 
 interface UseGetUserProfile {
   socialId: number;
@@ -24,9 +24,9 @@ function useGetUserProfile(
 function useGetUserReviewForms(
   socialId: number,
   pageNumber: string,
-  queryOptions?: UseQueryOptions<UserItemList, ErrorResponse>,
+  queryOptions?: UseQueryOptions<UserArticleList, ErrorResponse>,
 ) {
-  return useQuery<UserItemList, ErrorResponse>(
+  return useQuery<UserArticleList, ErrorResponse>(
     [QUERY_KEY.DATA.REVIEW_FORM, QUERY_KEY.API.GET_USER_REVIEW_FORMS, { socialId, pageNumber }],
     () => userAPI.getUserReviewForms(socialId, pageNumber),
     {
@@ -39,9 +39,9 @@ function useGetUserReviewForms(
 function useGetUserReviewAnswer(
   socialId: number,
   pageNumber: string,
-  queryOptions?: UseQueryOptions<UserItemList, ErrorResponse>,
+  queryOptions?: UseQueryOptions<UserArticleList, ErrorResponse>,
 ) {
-  return useQuery<UserItemList, ErrorResponse>(
+  return useQuery<UserArticleList, ErrorResponse>(
     [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_USER_REVIEWS, { socialId, pageNumber }],
     () => userAPI.getUserReviewAnswers(socialId, pageNumber),
     {
@@ -54,9 +54,9 @@ function useGetUserReviewAnswer(
 function useGetUserTemplates(
   socialId: number,
   pageNumber: string,
-  queryOptions?: UseQueryOptions<UserItemList, ErrorResponse>,
+  queryOptions?: UseQueryOptions<UserArticleList, ErrorResponse>,
 ) {
-  return useQuery<UserItemList, ErrorResponse>(
+  return useQuery<UserArticleList, ErrorResponse>(
     [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_USER_TEMPLATES, { socialId, pageNumber }],
     () => userAPI.getUserTemplates(socialId, pageNumber),
     {

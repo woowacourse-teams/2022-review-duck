@@ -7,7 +7,7 @@ import axiosInstance from 'api/config/axiosInstance';
 export const getUserReviewAnswers = async (
   socialId: number,
   pageNumber: string,
-): Promise<UserType.UserItemList> => {
+): Promise<UserType.UserArticleList> => {
   const { data } = await axiosInstance.get(
     `${API_URI.USER.GET_REVIEW_ANSWERS}?member=${socialId}&page=${pageNumber}&size=${PAGE_OPTION.REVIEW_ITEM_SIZE}`,
   );
@@ -18,7 +18,7 @@ export const getUserReviewAnswers = async (
 export const getUserReviewForms = async (
   socialId: number,
   pageNumber: string,
-): Promise<UserType.UserItemList> => {
+): Promise<UserType.UserArticleList> => {
   const { data } = await axiosInstance.get(
     `${API_URI.USER.GET_REVIEW_FORMS}?member=${socialId}&page=${pageNumber}&size=${PAGE_OPTION.REVIEW_ITEM_SIZE}`,
   );
@@ -29,7 +29,7 @@ export const getUserReviewForms = async (
 export const getUserTemplates = async (
   socialId: number,
   pageNumber: string,
-): Promise<UserType.UserItemList> => {
+): Promise<UserType.UserArticleList> => {
   const { data } = await axiosInstance.get(
     `${API_URI.USER.GET_TEMPLATES(socialId)}&page=${pageNumber}&size=${
       PAGE_OPTION.USER_TEMPLATE_SIZE
