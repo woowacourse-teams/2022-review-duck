@@ -1,0 +1,102 @@
+@import 'styles/@global.scss';
+
+.component-reactions {
+  gap: 1em;
+}
+
+.reaction-button {
+  position: relative;
+
+  button {
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5em;
+
+    appearance: none;
+    border: none;
+    background-color: transparent;
+    color: $THEME_COLOR_THEME_TEXT_150;
+    font-size: 0.9em;
+    transition: all 0.1s ease;
+  }
+
+  .effect-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0px;
+    overflow: visible;
+
+    .icon-effect {
+      position: absolute;
+      left: 0;
+      top: 0;
+      font-size: 1.4em;
+
+      @include animation(1.5s linear forwards) {
+        0% {
+          filter: opacity(1);
+        }
+
+        25% {
+          transform: translate(25%, -200%) rotate(10deg);
+        }
+
+        50% {
+          transform: translate(-25%, -400%);
+        }
+
+        75% {
+          transform: translate(25%, -600%) rotate(-10deg);
+        }
+
+        100% {
+          transform: translate(-25%, -800%);
+          filter: opacity(0);
+        }
+      }
+    }
+  }
+
+  .count {
+    font-size: 0.9em;
+    transition: all 0.2s ease;
+  }
+
+  &:hover {
+    color: $THEME_COLOR_THEME_TEXT_800;
+  }
+
+  &:active button {
+    transform: scale(1.3);
+
+    .count {
+      transform: translateY(-50%);
+      opacity: 0;
+    }
+  }
+}
+
+.reaction-button.like-button {
+  .icon-effect {
+    color: $THEME_COLOR_STATUS_DANGER_400;
+  }
+
+  &:active button {
+    color: $THEME_COLOR_STATUS_DANGER_400;
+  }
+}
+
+.reaction-button.bookmark-button {
+  .icon-effect {
+    color: $THEME_COLOR_STATUS_PRIMARY_500;
+  }
+
+  &:active button {
+    color: $THEME_COLOR_STATUS_PRIMARY_500;
+  }
+}
