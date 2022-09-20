@@ -169,8 +169,8 @@ public class ReviewServiceTest {
             Review review = saveReview(member1, false);
 
             // when
-            Integer page = 0;
-            Integer size = 3;
+            int page = 0;
+            int size = 3;
             List<Review> myReviews = reviewService.findBySocialId(member1.getSocialId(), member1, page, size)
                 .getContent();
 
@@ -192,8 +192,8 @@ public class ReviewServiceTest {
             Review review = saveReview(member1, false);
 
             // when
-            Integer page = 0;
-            Integer size = 3;
+            int page = 0;
+            int size = 3;
             List<Review> myReviews = reviewService.findBySocialId(member1.getSocialId(), member2, page, size)
                 .getContent();
 
@@ -214,8 +214,8 @@ public class ReviewServiceTest {
 
             // when
             reviewFormService.deleteByCode(member1, reviewForm.getCode());
-            Integer page = 0;
-            Integer size = 3;
+            int page = 0;
+            int size = 3;
             List<Review> reviews = reviewService.findBySocialId(member1.getSocialId(), member1, page, size)
                 .getContent();
 
@@ -242,8 +242,8 @@ public class ReviewServiceTest {
             saveReview(member1, true);
 
             // when
-            Integer page = 1;
-            Integer size = 1;
+            int page = 1;
+            int size = 1;
 
             List<Review> reviews = reviewService.findAllByCode(reviewForm.getCode(), page, size).getContent();
 
@@ -278,8 +278,8 @@ public class ReviewServiceTest {
             saveReview(member1, true);
 
             // when
-            Integer page = 0;
-            Integer size = 1;
+            int page = 0;
+            int size = 1;
             String sort = "latest";
 
             List<Review> reviews = reviewService.findAllPublic(page, size, sort).getContent();

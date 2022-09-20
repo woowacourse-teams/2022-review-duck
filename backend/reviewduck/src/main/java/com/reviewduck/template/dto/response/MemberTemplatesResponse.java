@@ -17,20 +17,29 @@ import lombok.Getter;
 public class MemberTemplatesResponse {
 
     private long numberOfTemplates;
+    private boolean isLastPage;
     private boolean isMine;
     private List<MemberTemplateResponse> templates;
 
-    public static MemberTemplatesResponse of(Page<Template> templates, String socialId, Member member) {
+    public static MemberTemplatesResponse of(Page<Template> templates, String socialId, Member member, int page) {
         List<MemberTemplateResponse> memberTemplateResponses = templates.stream()
             .map(MemberTemplateResponse::from)
             .collect(Collectors.toUnmodifiableList());
 
         boolean isMine = member.getSocialId().equals(socialId);
 
-        return new MemberTemplatesResponse(templates.getTotalElements(), isMine, memberTemplateResponses);
+        return new MemberTemplatesResponse(templates.getTotalElements(),
+            page == templates.getTotalPages(),
+            isMine,
+            memberTemplateResponses);
     }
 
     public boolean getIsMine() {
         return isMine;
     }
+
+    public boolean getIsLastPage() {
+        return isLastPage;
+    }
+
 }

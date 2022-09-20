@@ -29,4 +29,9 @@ public class TemplatesResponse {
                 .collect(Collectors.toUnmodifiableList())
         );
     }
+
+    public boolean getIsLastPage() {
+        return isLastPage;
+    }
+
 }

@@ -334,8 +334,8 @@ public class ReviewFormServiceTest {
             ReviewForm expected = saveReviewForm(member1);
 
             // when
-            Integer page = 0;
-            Integer size = 3;
+            int page = 0;
+            int size = 3;
             List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page ,size)
                 .getContent();
 
@@ -364,8 +364,8 @@ public class ReviewFormServiceTest {
             reviewFormService.deleteByCode(member1, reviewForm.getCode());
 
             // when
-            Integer page = 0;
-            Integer size = 3;
+            int page = 0;
+            int size = 3;
             List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page ,size)
                 .getContent();
 

@@ -155,13 +155,15 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             saveReviewAndGetId(accessToken1, false);
             saveReviewAndGetId(accessToken1, false);
 
-            get("/api/reviews?member=1&page=1&size=1", accessToken1)
+            get("/api/reviews?member=1&page=2&size=1", accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
                 .body("isMine", equalTo(true))
                 .body("reviews", hasSize(1))
                 .body("numberOfReviews", equalTo(2))
-                .body("reviews[0].id", equalTo(2));
+                .body("reviews[0].id", equalTo(1))
+                .body("isLastPage", equalTo(true));
+
         }
 
         @Test
@@ -179,7 +181,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 .body("isMine", equalTo(false))
                 .body("reviews", hasSize(2))
                 .body("numberOfReviews", equalTo(2))
-                .body("reviews[0].id", equalTo(3));
+                .body("reviews[0].id", equalTo(3))
+                .body("isLastPage", equalTo(true));
         }
 
         @Test
@@ -254,7 +257,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 .assertThat()
                 .body("numberOfReviews", equalTo(2))
                 .body("reviews", hasSize(1))
-                .body("reviews[0].id", equalTo(reviewId));
+                .body("reviews[0].id", equalTo(reviewId))
+                .body("isLastPage", equalTo(false));
         }
 
         @Test

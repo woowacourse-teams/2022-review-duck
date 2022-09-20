@@ -53,14 +53,14 @@ public class TemplateService {
             .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
     }
 
-    public Page<Template> findAll(Integer page, Integer size, String sort) {
+    public Page<Template> findAll(int page, int size, String sort) {
         String sortType = TemplateSortType.getSortBy(sort);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
 
         return templateRepository.findAll(pageRequest);
     }
 
-    public Page<Template> findAllBySocialId(String id, Integer page, Integer size) {
+    public Page<Template> findAllBySocialId(String id, int page, int size) {
         Member member = memberService.getBySocialId(id);
 
         Sort sort = Sort.by(Sort.Direction.DESC, TemplateSortType.LATEST.getSortBy());
