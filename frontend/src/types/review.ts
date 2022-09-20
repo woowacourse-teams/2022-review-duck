@@ -43,11 +43,15 @@ export interface ReviewFormAnswer {
 
 export interface ReviewPublicAnswer extends ReviewFormAnswer {
   reviewFormCode: string;
+  likes: number;
 }
 
 export type ReviewFormAnswerList = ReviewFormAnswer[];
 
-export type ReviewPublicAnswerList = ReviewPublicAnswer[];
+export interface ReviewPublicAnswerList {
+  numberOfReviews: number;
+  reviews: ReviewPublicAnswer[];
+}
 
 // API 관련 타입
 
@@ -106,17 +110,21 @@ export type GetReviewFormAnswerResponse = Array<{
   }>;
 }>;
 
-export type GetReviewPublicAnswerResponse = Array<{
-  id: number;
-  reviewFormCode: string;
-  updatedAt: number;
-  creator: UserProfile;
-  isCreator: boolean;
-  contents: Array<{
-    question: ServerQuestionRequireId;
-    answer: ServerAnswerRequireId;
+export interface GetReviewPublicAnswerResponse {
+  numberOfReviews: number;
+  reviews: Array<{
+    id: number;
+    reviewFormCode: string;
+    updatedAt: number;
+    likes: number;
+    creator: UserProfile;
+    isCreator: boolean;
+    contents: Array<{
+      question: ServerQuestionRequireId;
+      answer: ServerAnswerRequireId;
+    }>;
   }>;
-}>;
+}
 
 export type CreateReviewFormRequest = ReviewFormResponse;
 
@@ -159,6 +167,13 @@ export interface UpdateReviewAnswerRequest {
   }>;
   isPrivate: boolean;
 }
+
+export interface UpdateReviewLikeRequest {
+  reviewId: number;
+  likes: number;
+}
+
+export type UpdateReviewLikeResponse = Omit<UpdateReviewLikeRequest, 'reviewId'>;
 
 export type UpdateReviewAnswerResponse = null;
 

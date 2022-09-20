@@ -69,8 +69,10 @@ export const transformFormAnswer = (data: GetReviewFormAnswerResponse): ReviewFo
 export const transformPublicAnswer = (
   data: GetReviewPublicAnswerResponse,
 ): ReviewPublicAnswerList => {
-  return data.map((review) => {
-    const { id, reviewFormCode, contents, creator, isCreator, updatedAt } = review;
+  const { numberOfReviews, reviews } = data;
+
+  const transformReviews = reviews.map((review) => {
+    const { id, reviewFormCode, contents, creator, isCreator, updatedAt, likes } = review;
 
     return {
       id,
@@ -81,6 +83,7 @@ export const transformPublicAnswer = (
         description: content.question.description,
         answer: content.answer,
       })),
+      likes,
       info: {
         creator,
         isSelf: isCreator,
@@ -88,4 +91,6 @@ export const transformPublicAnswer = (
       },
     };
   });
+
+  return { numberOfReviews, reviews: transformReviews };
 };
