@@ -91,6 +91,17 @@ export const updateAnswer = async ({
   return data;
 };
 
+export const updateReviewLike = async ({
+  reviewId,
+  likes,
+}: ReviewType.UpdateReviewLikeRequest): Promise<ReviewType.UpdateReviewLikeResponse> => {
+  const { data } = await axiosInstance.post(`/api/reviews/${reviewId}/likes`, {
+    likes,
+  });
+
+  return data;
+};
+
 export const deleteForm = async (
   reviewFormCode = '',
 ): Promise<ReviewType.DeleteReviewFormResponse> => {
