@@ -278,7 +278,8 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
                 .assertThat()
                 .body("isMine", equalTo(true))
                 .body("reviewForms", hasSize(2))
-                .body("reviewForms[0].title", equalTo(reviewTitle2));
+                .body("reviewForms[0].title", equalTo(reviewTitle2))
+                .body("isLastPage", equalTo(true));
         }
 
         @Test
@@ -301,7 +302,8 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
                 .assertThat()
                 .body("isMine", equalTo(false))
                 .body("reviewForms", hasSize(2))
-                .body("reviewForms[0].title", equalTo(reviewTitle2));
+                .body("reviewForms[0].title", equalTo(reviewTitle2))
+                .body("isLastPage", equalTo(true));
         }
 
         @Test
@@ -407,7 +409,8 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
                 .body("numberOfReviews", equalTo(2))
-                .body("reviews", hasSize(1));
+                .body("reviews", hasSize(1))
+                .body("isLastPage", equalTo(false));
         }
 
         @Test
@@ -488,7 +491,8 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             get("/api/review-forms/" + code + "/reviews?displayType=sheet&page=1&size=1", accessToken2)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
-                .body("numberOfReviews", equalTo(2));
+                .body("numberOfReviews", equalTo(2))
+                .body("isLastPage", equalTo(false));
         }
 
         @Test

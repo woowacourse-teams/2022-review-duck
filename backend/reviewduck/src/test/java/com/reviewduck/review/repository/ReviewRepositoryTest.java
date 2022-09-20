@@ -101,8 +101,8 @@ public class ReviewRepositoryTest {
         Review review = saveReview(savedMember, savedReviewForm, false);
 
         //when
-        Integer page = 0;
-        Integer size = 3;
+        int page = 0;
+        int size = 3;
         String sortType = "updatedAt";
         PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
 
@@ -126,8 +126,8 @@ public class ReviewRepositoryTest {
         Review review = saveReview(savedMember, savedReviewForm, false);
 
         //when
-        Integer page = 0;
-        Integer size = 3;
+        int page = 0;
+        int size = 3;
         String sortType = "updatedAt";
         PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
         List<Review> reviews = reviewRepository.findByMemberAndIsPrivateFalse(savedMember, pageable)

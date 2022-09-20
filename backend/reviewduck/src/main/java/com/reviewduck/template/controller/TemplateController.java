@@ -85,8 +85,8 @@ public class TemplateController {
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     public TemplatesResponse findAll(@AuthenticationPrincipal Member member,
-        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
-        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
         @RequestParam(required = false) String sort) {
 
         info("/api/templates?page=" + page + " size=" + size, "GET", "");
@@ -100,14 +100,14 @@ public class TemplateController {
     @ResponseStatus(HttpStatus.OK)
     public MemberTemplatesResponse findAllByMemberId(@AuthenticationPrincipal Member member,
         @RequestParam(value = "member") String socialId,
-        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
-        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size) {
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size) {
 
         info("/api/templates?member=" + socialId + " page=" + page + " size=" + size, "GET", "");
 
         Page<Template> templates = templateService.findAllBySocialId(socialId, page - 1, size);
 
-        return MemberTemplatesResponse.of(templates, socialId, member);
+        return MemberTemplatesResponse.of(templates, socialId, member, page);
     }
 
     @Operation(summary = "특정 템플릿을 조회한다.")

@@ -70,7 +70,7 @@ public class ReviewFormService {
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고 폼입니다."));
     }
 
-    public Page<ReviewForm> findBySocialId(String socialId, Integer page, Integer size) {
+    public Page<ReviewForm> findBySocialId(String socialId, int page, int size) {
         Member member = memberService.getBySocialId(socialId);
 
         Sort sort = Sort.by(Sort.Direction.DESC, ReviewFormSortType.LATEST.getSortBy());

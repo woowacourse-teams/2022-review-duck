@@ -84,14 +84,14 @@ public class ReviewFormController {
     @ResponseStatus(HttpStatus.OK)
     public MemberReviewFormsResponse findPageOfReviewFormsBySocialId(@AuthenticationPrincipal Member member,
         @RequestParam(value = "member") String socialId,
-        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
-        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size) {
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size) {
 
         info("/api/review-forms?member=" + socialId + "page=" + page + " size=" + size, "GET", "");
 
         Page<ReviewForm> reviewForms = reviewFormService.findBySocialId(socialId, page - 1, size);
 
-        return MemberReviewFormsResponse.of(reviewForms, socialId, member);
+        return MemberReviewFormsResponse.of(reviewForms, socialId, member, page);
     }
 
     @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 모두 조회한다.")
@@ -99,15 +99,15 @@ public class ReviewFormController {
     @ResponseStatus(HttpStatus.OK)
     public ReviewsOfReviewFormResponse findReviewsByCode(@AuthenticationPrincipal Member member,
         @PathVariable String reviewFormCode,
-        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
-        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
         @RequestParam String displayType) {
 
         info("/api/review-forms/" + reviewFormCode + "/reviews?displayType=" + displayType, "GET", "");
 
         Page<Review> reviews = reviewService.findAllByCode(reviewFormCode, page - 1, size);
 
-        return ReviewsOfReviewFormResponse.of(member, reviews, displayType);
+        return ReviewsOfReviewFormResponse.of(member, reviews, displayType, page);
     }
 
     @Operation(summary = "회고 폼을 수정한다.")

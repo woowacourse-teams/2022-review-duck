@@ -18,13 +18,21 @@ import lombok.NoArgsConstructor;
 public class ReviewsOfReviewFormResponse {
 
     private long numberOfReviews;
+    private boolean isLastPage;
     private List<ReviewAbstractResponse> reviews;
 
-    public static ReviewsOfReviewFormResponse of(Member member, Page<Review> reviews, String displayType) {
+    public static ReviewsOfReviewFormResponse of(Member member, Page<Review> reviews, String displayType, int page) {
         List<ReviewAbstractResponse> reviewResponses = ReviewDisplayBuilder.of(displayType)
             .createResponseFrom(member, reviews.getContent());
 
-        return new ReviewsOfReviewFormResponse(reviews.getTotalElements(), reviewResponses);
+        return new ReviewsOfReviewFormResponse(
+            reviews.getTotalElements(),
+            page == reviews.getTotalPages(),
+            reviewResponses);
+    }
+
+    public boolean getIsLastPage() {
+        return isLastPage;
     }
 
 }

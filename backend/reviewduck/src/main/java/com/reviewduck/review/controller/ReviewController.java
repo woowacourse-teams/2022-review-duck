@@ -55,30 +55,30 @@ public class ReviewController {
     @ResponseStatus(HttpStatus.OK)
     public ReviewsResponse findBySocialId(@AuthenticationPrincipal Member member,
         @ApiParam(name = "사용자 socialId") @RequestParam(value = "member") String socialId,
-        @ApiParam(name = "페이지 번호") @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
-        @ApiParam(name = "페이지 당 게시물 수") @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size
+        @ApiParam(name = "페이지 번호") @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
+        @ApiParam(name = "페이지 당 게시물 수") @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size
     ) {
 
         info("/api/reviews?member=" + socialId + "&page=" + page + "&size=" + size, "GET", "");
 
         Page<Review> reviews = reviewService.findBySocialId(socialId, member, page - 1, size);
 
-        return ReviewsResponse.of(reviews, socialId, member);
+        return ReviewsResponse.of(reviews, socialId, member, page);
     }
 
     @Operation(summary = "비밀글이 아닌 회고 답변을 모두 조회한다.")
     @GetMapping("/public")
     @ResponseStatus(HttpStatus.OK)
     public TimelineReviewsResponse findAllPublic(@AuthenticationPrincipal Member member,
-        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
-        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
         @RequestParam(required = false) String sort) {
 
         info("/api/reviews/public?page=" + page + "&size=" + size + "&sort=" + sort, "GET", "");
 
         Page<Review> reviews = reviewService.findAllPublic(page - 1, size, sort);
 
-        return TimelineReviewsResponse.of(reviews, member);
+        return TimelineReviewsResponse.of(reviews, member, page);
     }
 
     @Operation(summary = "회고 답변을 수정한다.")

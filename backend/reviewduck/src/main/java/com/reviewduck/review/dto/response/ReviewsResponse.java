@@ -20,19 +20,28 @@ public class ReviewsResponse {
 
     private long numberOfReviews;
     private boolean isMine;
+    private boolean isLastPage;
     private List<ReviewSummaryResponse> reviews;
 
-    public static ReviewsResponse of(Page<Review> reviews, String socialId, Member member) {
+    public static ReviewsResponse of(Page<Review> reviews, String socialId, Member member, int page) {
         List<ReviewSummaryResponse> reviewResponses = reviews.getContent().stream()
             .map(ReviewSummaryResponse::from)
             .collect(Collectors.toUnmodifiableList());
 
         boolean isMine = member.getSocialId().equals(socialId);
 
-        return new ReviewsResponse(reviews.getTotalElements(), isMine, reviewResponses);
+        return new ReviewsResponse(reviews.getTotalElements(),
+            isMine,
+            page == reviews.getTotalPages(),
+            reviewResponses);
     }
 
     public boolean getIsMine() {
         return isMine;
     }
+
+    public boolean getIsLastPage() {
+        return isLastPage;
+    }
+
 }

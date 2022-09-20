@@ -19,14 +19,21 @@ import lombok.NoArgsConstructor;
 public class TimelineReviewsResponse {
 
     private long numberOfReviews;
+    private boolean isLastPage;
     private List<ReviewResponse> reviews;
 
-    public static TimelineReviewsResponse of(Page<Review> reviews, Member member) {
+    public static TimelineReviewsResponse of(Page<Review> reviews, Member member, int page) {
         List<ReviewResponse> reviewResponses = reviews.getContent().stream()
             .map(review -> ReviewResponse.of(member, review))
             .collect(Collectors.toUnmodifiableList());
 
-        return new TimelineReviewsResponse(reviews.getTotalElements(), reviewResponses);
+        return new TimelineReviewsResponse(reviews.getTotalElements(),
+            page == reviews.getTotalPages(),
+            reviewResponses);
+    }
+
+    public boolean getIsLastPage() {
+        return isLastPage;
     }
 
 }

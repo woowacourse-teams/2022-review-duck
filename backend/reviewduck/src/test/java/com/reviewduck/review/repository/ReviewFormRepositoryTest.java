@@ -71,8 +71,8 @@ public class ReviewFormRepositoryTest {
         ReviewForm expected = saveReviewForm(member1);
 
         // when
-        Integer page = 0;
-        Integer size = 3;
+        int page = 0;
+        int size = 3;
         String sortType = "updatedAt";
         PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
 
@@ -98,8 +98,8 @@ public class ReviewFormRepositoryTest {
         reviewFormRepository.delete(reviewForm);
 
         // when
-        Integer page = 0;
-        Integer size = 3;
+        int page = 0;
+        int size = 3;
         String sortType = "updatedAt";
         PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
 
