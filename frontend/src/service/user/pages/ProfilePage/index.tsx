@@ -75,7 +75,7 @@ function ProfilePage() {
         3,
         subjectTitle[currentTab].length,
       )}가(이) 삭제되었습니다.`,
-      description: '이제 누구도 해당 회고를 볼 수 없습니다.',
+      description: '더 이상 조회할 수 없으며, 삭제된 정보는 복구할 수 없습니다.',
     });
   };
 
