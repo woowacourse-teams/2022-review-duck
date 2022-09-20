@@ -234,19 +234,23 @@ public class ReviewServiceTest {
     class findByCode {
 
         @Test
-        @DisplayName("특정 회고 폼을 기반으로 작성된 회고를 모두 조회한다.")
-        void findByReviewFormCode() throws InterruptedException {
+        @DisplayName("최신순으로 특정 페이지를 조회한다.")
+        void findAllOrderByTrend() throws InterruptedException {
             // given
-            Review savedReview = saveReview(member1, false);
+            saveReview(member1, false);
+            Review review = saveReview(member2, true);
+            saveReview(member1, true);
 
             // when
-            List<Review> reviews = reviewService.findAllByCode(reviewForm.getCode());
+            Integer page = 1;
+            Integer size = 1;
+
+            List<Review> reviews = reviewService.findAllByCode(reviewForm.getCode(), page, size).getContent();
 
             // then
             assertAll(
                 () -> assertThat(reviews).hasSize(1),
-                () -> assertThat(reviews.get(0).getMember().getNickname()).isEqualTo(
-                    savedReview.getMember().getNickname())
+                () -> assertThat(reviews.get(0)).isEqualTo(review)
             );
         }
 
@@ -254,7 +258,7 @@ public class ReviewServiceTest {
         @DisplayName("존재하지 않는 회고 폼으로 조회할 수 없다.")
         void invalidCode() {
             // when, then
-            assertThatThrownBy(() -> reviewService.findAllByCode("aaaaaa"))
+            assertThatThrownBy(() -> reviewService.findAllByCode("aaaaaa", 0, 1))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
@@ -279,9 +283,6 @@ public class ReviewServiceTest {
             String sort = "latest";
 
             List<Review> reviews = reviewService.findAllPublic(page, size, sort).getContent();
-
-            System.out.println(review);
-            System.out.println(reviews.get(0));
 
             // then
             assertAll(
@@ -403,7 +404,7 @@ public class ReviewServiceTest {
             reviewService.delete(member1, savedReview.getId());
 
             // then
-            assertThat(reviewService.findAllByCode(reviewForm.getCode())).hasSize(0);
+            assertThat(reviewService.findAllByCode(reviewForm.getCode(), 0, 1)).hasSize(0);
         }
 
         @Test

@@ -54,7 +54,7 @@ public class ReviewService {
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
     }
 
-    public Page<Review> findBySocialId(String socialId, Member member, Integer page, Integer size) {
+    public Page<Review> findBySocialId(String socialId, Member member, int page, int size) {
         String sortType = "updatedAt";
 
         Member owner = memberService.getBySocialId(socialId);
@@ -68,9 +68,13 @@ public class ReviewService {
 
     }
 
-    public List<Review> findAllByCode(String code) {
+    public Page<Review> findAllByCode(String code, int page, int size) {
+        String sortType = "updatedAt";
+
         ReviewForm reviewForm = reviewFormService.findByCode(code);
-        return reviewRepository.findByReviewForm(reviewForm);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+
+        return reviewRepository.findByReviewForm(reviewForm, pageRequest);
     }
 
     public Page<Review> findAllPublic(int page, int size, String sort) {

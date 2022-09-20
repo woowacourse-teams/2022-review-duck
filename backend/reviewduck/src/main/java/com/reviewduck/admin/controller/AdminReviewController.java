@@ -25,8 +25,6 @@ import com.reviewduck.common.util.Logging;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.service.ReviewFormService;
-import com.reviewduck.review.service.ReviewService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -40,8 +38,6 @@ public class AdminReviewController {
 
     private final AdminReviewService adminReviewService;
     private final AdminReviewFormService adminReviewFormService;
-    private final ReviewFormService reviewFormService;
-    private final ReviewService reviewService;
 
     @Operation(summary = "생성된 회고 폼을 모두 조회한다")
     @GetMapping("/review-forms")
@@ -79,8 +75,8 @@ public class AdminReviewController {
         Logging.info("api/admin/review-forms/" + reviewFormCode, "GET", "");
 
         validateAdmin(member);
-        ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
-        List<Review> reviews = reviewService.findAllByCode(reviewFormCode);
+        ReviewForm reviewForm = adminReviewFormService.findByCode(reviewFormCode);
+        List<Review> reviews = adminReviewService.findAllByReviewForm(reviewForm);
 
         return AdminReviewFormResponse.of(reviewForm, reviews);
     }
@@ -117,7 +113,7 @@ public class AdminReviewController {
         Logging.info("api/admin/reviews/" + reviewId, "GET", "");
 
         validateAdmin(member);
-        Review review = reviewService.findById(reviewId);
+        Review review = adminReviewService.findById(reviewId);
 
         return AdminReviewResponse.from(review);
     }

@@ -6,9 +6,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -75,13 +72,15 @@ public class ReviewRepositoryTest {
     }
 
     @Test
-    @DisplayName("특정 회고 폼을 기반으로 작성된 회고를 모두 조회한다.")
+    @DisplayName("특정 회고 폼을 기반으로 작성된 회고 중 특정 페이지를 조회한다.")
     void findReviewsBySpecificReviewForm() throws InterruptedException {
         // given
         Review savedReview = saveReview(savedMember, savedReviewForm, false);
+        saveReview(savedMember, savedReviewForm, true);
 
         // when
-        List<Review> reviews = reviewRepository.findByReviewForm(savedReviewForm);
+        PageRequest pageRequest = PageRequest.of(1, 1);
+        List<Review> reviews = reviewRepository.findByReviewForm(savedReviewForm, pageRequest).getContent();
 
         // then
         assertAll(
