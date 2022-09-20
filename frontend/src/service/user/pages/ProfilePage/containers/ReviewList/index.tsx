@@ -1,5 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 
+import { faEraser } from '@fortawesome/free-solid-svg-icons';
+
 import { PAGE_LIST, USER_PROFILE_TAB } from 'constant';
 
 import useSnackbar from 'common/hooks/useSnackbar';
@@ -10,7 +12,6 @@ import Questions from 'service/@shared/components/Questions';
 import styles from './styles.module.scss';
 
 import useProfilePageQueries from '../../useProfilePageQueries';
-import { faEraser } from '@fortawesome/free-solid-svg-icons';
 
 interface ReviewList {
   socialId: string;
@@ -101,7 +102,11 @@ function ReviewList({ filter, socialId, pageNumber }: ReviewList) {
                     {answer.value}
                   </Questions.Answer>
                 ))}
-                <Questions.Reaction onClickLike={() => null} onClickBookmark={() => null} />
+                <Questions.Reaction
+                  likeCount={0}
+                  onClickLike={() => null}
+                  onClickBookmark={() => null}
+                />
               </Questions>
             </div>
           ))
@@ -128,7 +133,11 @@ function ReviewList({ filter, socialId, pageNumber }: ReviewList) {
                     description={question.description}
                   />
                 ))}
-                <Questions.Reaction onClickLike={() => null} onClickBookmark={() => null} />
+                <Questions.Reaction
+                  likeCount={0}
+                  onClickLike={() => null}
+                  onClickBookmark={() => null}
+                />
               </Questions>
             </div>
           ))}
