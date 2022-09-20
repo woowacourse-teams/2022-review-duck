@@ -27,4 +27,8 @@ public enum TemplateSortType {
             .orElse(TREND)
             .sortBy;
     }
+
+    public String getSortBy() {
+        return sortBy;
+    }
 }

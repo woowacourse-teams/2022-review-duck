@@ -61,9 +61,10 @@ public class TemplateService {
     }
 
     public Page<Template> findAllBySocialId(String id, Integer page, Integer size) {
-        String sortType = "updatedAt";
         Member member = memberService.getBySocialId(id);
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+
+        Sort sort = Sort.by(Sort.Direction.DESC, TemplateSortType.LATEST.getSortBy());
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
 
         return templateRepository.findByMember(pageRequest, member);
     }

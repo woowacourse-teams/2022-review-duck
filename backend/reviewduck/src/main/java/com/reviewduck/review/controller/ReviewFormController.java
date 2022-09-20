@@ -97,7 +97,7 @@ public class ReviewFormController {
     @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 모두 조회한다.")
     @GetMapping(value = "/{reviewFormCode}/reviews")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewsOfReviewFormResponse findReviewsByCodeAsListDisplay(@AuthenticationPrincipal Member member,
+    public ReviewsOfReviewFormResponse findReviewsByCode(@AuthenticationPrincipal Member member,
         @PathVariable String reviewFormCode,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
         @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size,
