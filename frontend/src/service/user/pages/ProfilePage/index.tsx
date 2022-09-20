@@ -19,6 +19,7 @@ import styles from './styles.module.scss';
 import useProfilePageQueries from './useProfilePageQueries';
 import { Controller } from './view/Controller';
 import { ItemList } from './view/ItemList';
+import { validateTab } from 'service/@shared/validator';
 
 function ProfilePage() {
   const navigate = useNavigate();
@@ -31,8 +32,9 @@ function ProfilePage() {
   const currentTab = searchParams.get('tab') || USER_PROFILE_TAB.REVIEWS;
   const pageNumber = searchParams.get('page') || String(1);
 
-  const queries = useProfilePageQueries(currentTab as Tabs, socialId, pageNumber);
+  validateTab(currentTab);
 
+  const queries = useProfilePageQueries(currentTab as Tabs, socialId, pageNumber);
   if (!queries) return <>{/* Error Boundary, Suspense Used */}</>;
 
   const {
