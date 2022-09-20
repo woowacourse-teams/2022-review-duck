@@ -49,14 +49,18 @@ const NameCard = ({ nickname, socialNickname }: NameCardProps) => {
 interface ProfileManagerProps {
   isMyProfile: boolean;
   socialNickname: string;
-  onClick: (event: React.MouseEvent) => void;
+  onEditButtonClick: (event: React.MouseEvent) => void;
 }
 
-const ProfileManager = ({ isMyProfile, socialNickname, onClick }: ProfileManagerProps) => {
+const ProfileManager = ({
+  isMyProfile,
+  socialNickname,
+  onEditButtonClick,
+}: ProfileManagerProps) => {
   return (
     <div className={styles.profileManage}>
       {isMyProfile && (
-        <Button size="small" onClick={onClick}>
+        <Button size="small" onClick={onEditButtonClick}>
           <FontAwesomeIcon icon={faPenToSquare} />
           <span>Edit</span>
         </Button>
@@ -74,10 +78,10 @@ const ProfileManager = ({ isMyProfile, socialNickname, onClick }: ProfileManager
 
 interface TabNavigatorProps {
   currentTab: Tabs;
-  onClick: (filter: string) => () => void;
+  onTabClick: (filter: string) => () => void;
 }
 
-const TabNavigator = ({ currentTab, onClick }: TabNavigatorProps) => {
+const TabNavigator = ({ currentTab, onTabClick }: TabNavigatorProps) => {
   return (
     <ul className={styles.sideMenu}>
       <Text className={styles.title} size={14}>
@@ -88,7 +92,7 @@ const TabNavigator = ({ currentTab, onClick }: TabNavigatorProps) => {
         className={cn(styles.item, {
           [styles.focus]: currentTab === USER_PROFILE_TAB.REVIEWS,
         })}
-        onClick={onClick(USER_PROFILE_TAB.REVIEWS)}
+        onClick={onTabClick(USER_PROFILE_TAB.REVIEWS)}
       >
         작성한 회고글
       </li>
@@ -96,7 +100,7 @@ const TabNavigator = ({ currentTab, onClick }: TabNavigatorProps) => {
         className={cn(styles.item, {
           [styles.focus]: currentTab === USER_PROFILE_TAB.REVIEW_FORMS,
         })}
-        onClick={onClick(USER_PROFILE_TAB.REVIEW_FORMS)}
+        onClick={onTabClick(USER_PROFILE_TAB.REVIEW_FORMS)}
       >
         생성한 질문지
       </li>
@@ -104,7 +108,7 @@ const TabNavigator = ({ currentTab, onClick }: TabNavigatorProps) => {
         className={cn(styles.item, {
           [styles.focus]: currentTab === USER_PROFILE_TAB.TEMPLATES,
         })}
-        onClick={onClick(USER_PROFILE_TAB.TEMPLATES)}
+        onClick={onTabClick(USER_PROFILE_TAB.TEMPLATES)}
       >
         생성한 템플릿
       </li>

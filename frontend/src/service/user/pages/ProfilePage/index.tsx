@@ -126,10 +126,10 @@ function ProfilePage() {
           <Controller.ProfileManager
             isMyProfile={userProfile.isMine}
             socialNickname={userProfile.socialNickname}
-            onClick={handleEditProfile}
+            onEditButtonClick={handleEditProfile}
           />
           <hr className={styles.line} />
-          <Controller.TabNavigator currentTab={currentTab as Tabs} onClick={handleChangeTab} />
+          <Controller.TabNavigator currentTab={currentTab as Tabs} onTabClick={handleChangeTab} />
           <hr className={styles.line} />
           <Controller.Record
             title={subjectTitle[currentTab]}
