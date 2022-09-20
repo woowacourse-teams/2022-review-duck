@@ -55,10 +55,10 @@ public class ReviewService {
     }
 
     public Page<Review> findBySocialId(String socialId, Member member, int page, int size) {
-        String sortType = "updatedAt";
-
         Member owner = memberService.getBySocialId(socialId);
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+
+        Sort sort = Sort.by(Sort.Direction.DESC, ReviewSortType.LATEST.getSortBy());
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
 
         if (member.equals(owner)) {
             return reviewRepository.findByMember(member, pageRequest);
@@ -69,10 +69,10 @@ public class ReviewService {
     }
 
     public Page<Review> findAllByCode(String code, int page, int size) {
-        String sortType = "updatedAt";
-
         ReviewForm reviewForm = reviewFormService.findByCode(code);
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+
+        Sort sort = Sort.by(Sort.Direction.DESC, ReviewSortType.LATEST.getSortBy());
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
 
         return reviewRepository.findByReviewForm(reviewForm, pageRequest);
     }

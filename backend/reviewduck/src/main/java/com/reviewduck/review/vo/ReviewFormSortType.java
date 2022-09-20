@@ -7,15 +7,14 @@ import java.util.Arrays;
  * param: 요청으로 받는 sort query에 해당하는 query value
  * sortBy: OrderBy에 사용할 database column
  */
-public enum ReviewSortType {
+public enum ReviewFormSortType {
 
     LATEST("latest", "updatedAt");
-    // 좋아요 추가 예정
 
     private final String param;
     private final String sortBy;
 
-    ReviewSortType(String param, String sortBy) {
+    ReviewFormSortType(String param, String sortBy) {
         this.param = param;
         this.sortBy = sortBy;
     }
