@@ -46,8 +46,10 @@ export const transformAnswer = (data: GetReviewAnswerResponse): ReviewAnswer => 
 };
 
 export const transformFormAnswer = (data: GetReviewFormAnswerResponse): ReviewFormAnswerList => {
-  return data.map((review) => {
-    const { id, contents, creator, isCreator, updatedAt } = review;
+  const { numberOfReviews, reviews } = data;
+
+  return reviews.map((review) => {
+    const { id, reviewTitle, updatedAt, likes, isCreator, creator, contents } = review;
 
     return {
       id,
