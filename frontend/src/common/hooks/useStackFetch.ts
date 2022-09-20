@@ -20,7 +20,7 @@ function useStackFetch(pendingTime: number) {
 
   const fetchStack = useRef<Record<string, FetchCallbackFunction>>({});
 
-  const startFetchStack = () => {
+  const startFetch = () => {
     Object.entries(fetchStack.current).map(([fetchKey, callback]) => {
       callback();
 
@@ -44,7 +44,7 @@ function useStackFetch(pendingTime: number) {
 
     fetchStack.current[fetchKey] = newFetch;
 
-    setDebounce(() => startFetchStack(), pendingTime, {
+    setDebounce(() => startFetch(), pendingTime, {
       onStart,
     });
 
