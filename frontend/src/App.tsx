@@ -1,12 +1,13 @@
 import { ReactNode, Suspense } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
+import { QueryClientProvider } from '@tanstack/react-query';
+
 import PageRoutes from 'PageRoutes';
 import { RecoilRoot } from 'recoil';
 
 import { ErrorBoundary, ModalProvider, SnackbarProvider } from 'common/components';
 
-import { QueryClientProvider } from '@tanstack/react-query';
 import queryClient from 'api/config/queryClient';
 import ErrorPage from 'service/@shared/pages/ErrorPage';
 import * as modalContentList from 'service/@shared/pages/modals';
