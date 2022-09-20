@@ -33,7 +33,7 @@ function ProfilePage() {
 
   const queries = useProfilePageQueries(currentTab as Tabs, socialId, pageNumber);
 
-  if (!queries) return <></>;
+  if (!queries) return <>{/* Error Boundary, Suspense Used */}</>;
 
   const {
     userItems,
