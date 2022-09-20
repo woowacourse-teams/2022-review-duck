@@ -1,10 +1,13 @@
+import { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { faArrowTrendUp, faHeart, faPenNib } from '@fortawesome/free-solid-svg-icons';
 
-import { PAGE_LIST } from 'constant';
+import { PAGE_LIST, QUERY_KEY } from 'constant';
+import { ReviewPublicAnswer, ReviewPublicAnswerList } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
+import useStackFetch from 'common/hooks/useStackFetch';
 import {
   useDeleteReviewAnswer,
   useGetReviewPublicAnswer,
@@ -17,15 +20,42 @@ import styles from './styles.module.scss';
 
 import Feed from './views/Feed';
 import SideMenu from './views/SideMenu';
+import queryClient from 'api/config/queryClient';
+import { updateReviewLike } from 'api/review.api';
+
+type ReviewId = ReviewPublicAnswer['id'];
 
 function ReviewTimelinePage() {
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
 
   const { mutate: reviewAnswerDelete } = useDeleteReviewAnswer();
+  const { addFetch } = useStackFetch(2000);
+
   const { isError, isLoading, data: publicReviewAnswer } = useGetReviewPublicAnswer();
 
+  const reviewsLikeStack = useRef<Record<ReviewId, number>>({});
+
   if (isError || isLoading) return <>{/* Error Boundary, Suspense Used */}</>;
+
+  const { reviews, numberOfReviews } = publicReviewAnswer;
+
+  const setUpdateLikeCount = (reviewId: number, count: number) => {
+    queryClient.setQueryData<ReviewPublicAnswerList>(
+      [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEW_PUBLIC_ANSWER],
+      (previousData) => {
+        if (!previousData) return previousData;
+
+        const updatedReviews = previousData.reviews.map((review) => {
+          if (review.id !== reviewId) return review;
+
+          return { ...review, likes: count };
+        });
+
+        return { ...previousData, reviews: updatedReviews };
+      },
+    );
+  };
 
   const handleClickEditButton = (reviewFormCode: string, reviewId: number) => () => {
     navigate(
@@ -57,6 +87,23 @@ function ReviewTimelinePage() {
     });
   };
 
+  const handleClickLikeButton = (reviewId: number, likes: number) => () => {
+    if (!reviewsLikeStack.current[reviewId]) {
+      reviewsLikeStack.current[reviewId] = 0;
+    }
+
+    const reviewLikeStack = (reviewsLikeStack.current[reviewId] += 1);
+
+    addFetch(reviewId, () => updateReviewLike({ reviewId, likes: reviewLikeStack }), {
+      onUpdate: () => setUpdateLikeCount(reviewId, likes + 1),
+      onError: () => setUpdateLikeCount(reviewId, likes - reviewLikeStack),
+      onSuccess: ({ likes: latestLikes }) => {
+        setUpdateLikeCount(reviewId, latestLikes);
+        delete reviewsLikeStack.current[reviewId];
+      },
+    });
+  };
+
   return (
     <LayoutContainer className={styles.container}>
       <SideMenu>
@@ -75,39 +122,41 @@ function ReviewTimelinePage() {
         <Feed.Title>타임라인</Feed.Title>
 
         <Feed.List>
-          {publicReviewAnswer.map(
-            ({ id, reviewFormCode, questions, info: { creator, ...info } }) => (
-              <Feed.ReviewAnswer key={id}>
-                <Feed.UserProfile
-                  socialId={creator.id}
-                  profileUrl={creator.profileUrl}
-                  nickname={creator.nickname}
-                  update={info.updateDate}
+          {reviews.map(({ id, reviewFormCode, questions, info: { creator, ...info }, likes }) => (
+            <Feed.ReviewAnswer key={id}>
+              <Feed.UserProfile
+                socialId={creator.id}
+                profileUrl={creator.profileUrl}
+                nickname={creator.nickname}
+                update={info.updateDate}
+              />
+
+              <Questions>
+                <Questions.EditButtons
+                  className={styles.questionEdit}
+                  isVisible={info.isSelf}
+                  onClickEdit={handleClickEditButton(reviewFormCode, id)}
+                  onClickDelete={handleClickDeleteButton(id)}
                 />
 
-                <Questions>
-                  <Questions.EditButtons
-                    className={styles.questionEdit}
-                    isVisible={info.isSelf}
-                    onClickEdit={handleClickEditButton(reviewFormCode, id)}
-                    onClickDelete={handleClickDeleteButton(id)}
-                  />
+                {questions.map(({ answer, ...question }) => (
+                  <Questions.Answer
+                    key={question.id}
+                    question={question.value}
+                    description={question.description}
+                  >
+                    {answer.value}
+                  </Questions.Answer>
+                ))}
 
-                  {questions.map(({ answer, ...question }) => (
-                    <Questions.Answer
-                      key={question.id}
-                      question={question.value}
-                      description={question.description}
-                    >
-                      {answer.value}
-                    </Questions.Answer>
-                  ))}
-
-                  <Questions.Reaction onClickLike={() => null} onClickBookmark={() => null} />
-                </Questions>
-              </Feed.ReviewAnswer>
-            ),
-          )}
+                <Questions.Reaction
+                  likeCount={likes}
+                  onClickLike={handleClickLikeButton(id, likes)}
+                  onClickBookmark={() => null}
+                />
+              </Questions>
+            </Feed.ReviewAnswer>
+          ))}
         </Feed.List>
       </Feed>
     </LayoutContainer>
