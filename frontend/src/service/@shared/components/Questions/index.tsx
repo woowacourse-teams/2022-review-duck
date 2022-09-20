@@ -1,4 +1,3 @@
-import { faBookmark, faHeart } from '@fortawesome/free-regular-svg-icons';
 import { faEraser, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -9,6 +8,8 @@ import { FlexContainer, Text } from 'common/components';
 import Profile from 'service/@shared/components/Profile';
 
 import styles from './styles.module.scss';
+
+import Reactions from '../Reactions';
 
 interface ContainerProps {
   className?: string;
@@ -118,31 +119,21 @@ function Answer({ question, description, children }: AnswerProps) {
 }
 
 interface ReactionProps {
-  onClickLike: React.MouseEventHandler<HTMLDivElement>;
-  onClickBookmark: React.MouseEventHandler<HTMLDivElement>;
+  likeCount: number;
+  onClickLike: React.MouseEventHandler<HTMLButtonElement>;
+  onClickBookmark: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-function Reaction({ onClickLike, onClickBookmark }: ReactionProps) {
+function Reaction({ likeCount, onClickLike, onClickBookmark }: ReactionProps) {
   return (
-    <FlexContainer className={styles.inlineButtons} direction="row" gap="large">
-      <FlexContainer className={styles.button} direction="row" align="center" onClick={onClickLike}>
-        <FontAwesomeIcon className={styles.icon} icon={faHeart} />
-        <Text className={styles.text} size={12}>
-          좋아요
-        </Text>
-      </FlexContainer>
-
-      <FlexContainer
-        className={styles.button}
-        direction="row"
-        align="center"
-        onClick={onClickBookmark}
-      >
-        <FontAwesomeIcon className={styles.icon} icon={faBookmark} />
-        <Text className={styles.text} size={12}>
-          북마크
-        </Text>
-      </FlexContainer>
+    <FlexContainer
+      className={cn(styles.inlineButtons, styles.reaction)}
+      direction="row"
+      gap="large"
+    >
+      <Reactions>
+        <Reactions.LikeButton count={likeCount} onClick={onClickLike} />
+      </Reactions>
     </FlexContainer>
   );
 }
