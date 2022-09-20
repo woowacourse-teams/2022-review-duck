@@ -17,11 +17,13 @@ import lombok.Getter;
 public class TemplatesResponse {
 
     private long numberOfTemplates;
+    private boolean isLastPage;
     private List<TemplateSummaryResponse> templates;
 
-    public static TemplatesResponse of(Page<Template> templates, Member member) {
+    public static TemplatesResponse of(Page<Template> templates, Member member, int page) {
         return new TemplatesResponse(
             templates.getTotalElements(),
+            page == templates.getTotalPages(),
             templates.stream()
                 .map(template -> TemplateSummaryResponse.of(template, member))
                 .collect(Collectors.toUnmodifiableList())

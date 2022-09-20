@@ -1,6 +1,5 @@
 package com.reviewduck.review.repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -16,15 +15,9 @@ public interface ReviewFormRepository extends Repository<ReviewForm, Long> {
 
     ReviewForm save(ReviewForm reviewForm);
 
-    @Query("select r from ReviewForm r where r.code = :code and r.isActive = true")
-    Optional<ReviewForm> findByCode(String code);
+    Optional<ReviewForm> findByCodeAndIsActiveTrue(String code);
 
-    @Query("select r from ReviewForm r where r.member = :member and r.isActive = true order by r.updatedAt desc")
-    List<ReviewForm> findByMemberOrderByUpdatedAtDesc(Member member);
-
-    List<ReviewForm> findAllByMember(Member member);
-
-    Page<ReviewForm> findByMember(Member member, PageRequest pageable);
+    Page<ReviewForm> findByMemberAndIsActiveTrue(Member member, PageRequest pageable);
 
     @Modifying
     @Query("update ReviewForm r set r.isActive = false where r.id = :#{#reviewForm.id}")

@@ -328,7 +328,7 @@ public class ReviewFormServiceTest {
 
         @Test
         @DisplayName("자신이 작성한 회고 질문지 중 최신순으로 첫 페이지를 조회한다.")
-        void findPageOfReviewsFromsOrderByLatest() throws InterruptedException {
+        void findPageOfReviewsFormsOrderByLatest() throws InterruptedException {
             // given
             saveReviewForm(member1);
             ReviewForm expected = saveReviewForm(member1);
@@ -342,6 +342,36 @@ public class ReviewFormServiceTest {
             // then
             assertAll(
                 () -> assertThat(myReviewForms).hasSize(2),
+                () -> assertThat(myReviewForms.get(0)).isNotNull(),
+                () -> assertThat(myReviewForms.get(0).getMember().getNickname()).isEqualTo("제이슨"),
+                () -> assertThat(myReviewForms.get(0).getId()).isNotNull(),
+                () -> assertThat(myReviewForms.get(0).getCode().length()).isEqualTo(8),
+                () -> assertThat(myReviewForms.get(0).getUpdatedAt()).isEqualTo(expected.getUpdatedAt()),
+                () -> assertThat(myReviewForms.get(0).getReviewFormQuestions())
+                    .usingRecursiveComparison()
+                    .ignoringFields("id")
+                    .isEqualTo(expected.getReviewFormQuestions())
+            );
+        }
+
+        @Test
+        @DisplayName("삭제한 회고는 조회 대상에서 제외된다.")
+        void findReviewFormsExceptDeleted() throws InterruptedException {
+            // given
+            ReviewForm expected = saveReviewForm(member1);
+            ReviewForm reviewForm = saveReviewForm(member1);
+
+            reviewFormService.deleteByCode(member1, reviewForm.getCode());
+
+            // when
+            Integer page = 0;
+            Integer size = 3;
+            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page ,size)
+                .getContent();
+
+            // then
+            assertAll(
+                () -> assertThat(myReviewForms).hasSize(1),
                 () -> assertThat(myReviewForms.get(0)).isNotNull(),
                 () -> assertThat(myReviewForms.get(0).getMember().getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(myReviewForms.get(0).getId()).isNotNull(),

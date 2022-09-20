@@ -3,7 +3,11 @@ package com.reviewduck.review.repository;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.reviewduck.config.JpaAuditingConfig;
@@ -35,6 +40,9 @@ public class ReviewRepositoryTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @PersistenceContext
+    private EntityManager em;
 
     private ReviewForm savedReviewForm;
 
@@ -67,13 +75,15 @@ public class ReviewRepositoryTest {
     }
 
     @Test
-    @DisplayName("특정 회고 폼을 기반으로 작성된 회고를 모두 조회한다.")
+    @DisplayName("특정 회고 폼을 기반으로 작성된 회고 중 특정 페이지를 조회한다.")
     void findReviewsBySpecificReviewForm() throws InterruptedException {
         // given
         Review savedReview = saveReview(savedMember, savedReviewForm, false);
+        saveReview(savedMember, savedReviewForm, true);
 
         // when
-        List<Review> reviews = reviewRepository.findByReviewForm(savedReviewForm);
+        PageRequest pageRequest = PageRequest.of(1, 1);
+        List<Review> reviews = reviewRepository.findByReviewForm(savedReviewForm, pageRequest).getContent();
 
         // then
         assertAll(
@@ -133,19 +143,20 @@ public class ReviewRepositoryTest {
     }
 
     @Test
-    @DisplayName("공개된 모든 회고를 updatedAt 내림차순으로 정렬하여 조회한다.")
-    void findByIsPrivateFalseOrderByUpdatedAtDesc() throws InterruptedException {
+    @DisplayName("공개된 모든 회고 중 updatedAt 내림차순으로 정렬된 특정 페이지를 조회한다.")
+    void findByIsPrivateFalse() throws InterruptedException {
         // given
         saveReview(savedMember, savedReviewForm, false);
         saveReview(savedMember, savedReviewForm, true);
         Review review = saveReview(savedMember, savedReviewForm, false);
 
         //when
-        List<Review> reviews = reviewRepository.findByIsPrivateFalseOrderByUpdatedAtDesc();
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "updatedAt"));
+        List<Review> reviews = reviewRepository.findByIsPrivateFalse(pageable).getContent();
 
         //then
         assertAll(
-            () -> assertThat(reviews).hasSize(2),
+            () -> assertThat(reviews).hasSize(1),
             () -> assertThat(reviews.get(0).getId()).isEqualTo(review.getId())
         );
     }
@@ -161,6 +172,49 @@ public class ReviewRepositoryTest {
 
         // then
         assertThat(reviewRepository.findById(savedReview.getId()).isEmpty()).isTrue();
+    }
+
+    @Test
+    @DisplayName("좋아요 수를 입력받아 더한다.")
+    void increaseLikes() throws InterruptedException {
+        // given
+        Review savedReview = saveReview(savedMember, savedReviewForm, false);
+        Long id = savedReview.getId();
+
+        // when
+        int likeCount = 50;
+        // 두 번 증가시킨다
+        reviewRepository.increaseLikes(savedReview, likeCount);
+        reviewRepository.increaseLikes(savedReview, likeCount);
+
+        Review review = reviewRepository.findById(id).orElseThrow();
+        int actual = review.getLikes();
+
+        // then
+        assertThat(actual).isEqualTo(100);
+    }
+
+    @Test
+    @DisplayName("좋아요 수를 더해도 수정 시간이 갱신되지 않는다.")
+    void increaseLikesWithNotUpdatedAt() throws InterruptedException {
+        // given
+        Review savedReview = saveReview(savedMember, savedReviewForm, false);
+        Long id = savedReview.getId();
+
+        // when
+        // 초기 수정 시간
+        // DB에 들어가서 뒷 자리수가 반올림 된 결과로 비교해야 하기 때문에 조회한다.
+        em.clear();
+        LocalDateTime updatedAt = reviewRepository.findById(id).orElseThrow()
+            .getUpdatedAt();
+
+        reviewRepository.increaseLikes(savedReview, 50);
+
+        // 좋아요 더한 후 수정 시간
+        LocalDateTime updatedAtAfterIncreaseLikes = reviewRepository.findById(id).orElseThrow()
+            .getUpdatedAt();
+        // then
+        assertThat(updatedAtAfterIncreaseLikes.isEqual(updatedAt)).isTrue();
     }
 
     private Review saveReview(Member member, ReviewForm savedReviewForm, boolean isPrivate) throws
