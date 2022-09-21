@@ -1,5 +1,13 @@
 import { Link } from 'react-router-dom';
 
+import {
+  faPenToSquare,
+  faRightFromBracket,
+  faSearch,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import cn from 'classnames';
 import { GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST } from 'constant';
 
@@ -11,14 +19,6 @@ import { Button, Logo, Text, TextBox, PopupBox } from 'common/components';
 import imageDefaultProfile from 'assets/images/profile.png';
 
 import styles from './styles.module.scss';
-
-import {
-  faPenToSquare,
-  faRightFromBracket,
-  faSearch,
-  faUser,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function Header() {
   const { isLogin, getUserProfileQuery } = useAuth();
@@ -42,7 +42,9 @@ function Header() {
 
         <div className={styles.navItemContainer}>
           <TextBox placeholder="검색어를 입력해주세요." />
-          <FontAwesomeIcon className={styles.searchIcon} icon={faSearch} />
+          <Link to="/pending">
+            <FontAwesomeIcon className={styles.searchIcon} icon={faSearch} />
+          </Link>
         </div>
 
         <ul className={styles.menuList}>
