@@ -66,23 +66,6 @@ public class ReviewServiceTest {
         this.reviewForm = reviewFormService.save(member1, createRequest);
     }
 
-    private Review saveReview(Member member, boolean isPrivate) throws InterruptedException {
-        Thread.sleep(1);
-
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, List.of(
-            new ReviewContentCreateRequest(
-                reviewForm.getReviewFormQuestions().get(0).getId(),
-                new AnswerCreateRequest("answer1")
-            ),
-            new ReviewContentCreateRequest(
-                reviewForm.getReviewFormQuestions().get(1).getId(),
-                new AnswerCreateRequest("answer2")
-            )
-        ));
-
-        return reviewService.save(member, reviewForm.getCode(), reviewCreateRequest);
-    }
-
     @Nested
     @DisplayName("회고 저장")
     class saveReview {
@@ -533,6 +516,22 @@ public class ReviewServiceTest {
             // then
             assertThat(updatedAtAfterIncreaseLikes.isEqual(updatedAt)).isTrue();
         }
+    }
 
+    private Review saveReview(Member member, boolean isPrivate) throws InterruptedException {
+        Thread.sleep(1);
+
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, List.of(
+            new ReviewContentCreateRequest(
+                reviewForm.getReviewFormQuestions().get(0).getId(),
+                new AnswerCreateRequest("answer1")
+            ),
+            new ReviewContentCreateRequest(
+                reviewForm.getReviewFormQuestions().get(1).getId(),
+                new AnswerCreateRequest("answer2")
+            )
+        ));
+
+        return reviewService.save(member, reviewForm.getCode(), reviewCreateRequest);
     }
 }
