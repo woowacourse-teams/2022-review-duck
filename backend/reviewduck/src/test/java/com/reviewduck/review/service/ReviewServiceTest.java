@@ -66,6 +66,23 @@ public class ReviewServiceTest {
         this.reviewForm = reviewFormService.save(member1, createRequest);
     }
 
+    private Review saveReview(Member member, boolean isPrivate) throws InterruptedException {
+        Thread.sleep(1);
+
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, List.of(
+            new ReviewContentCreateRequest(
+                reviewForm.getReviewFormQuestions().get(0).getId(),
+                new AnswerCreateRequest("answer1")
+            ),
+            new ReviewContentCreateRequest(
+                reviewForm.getReviewFormQuestions().get(1).getId(),
+                new AnswerCreateRequest("answer2")
+            )
+        ));
+
+        return reviewService.save(member, reviewForm.getCode(), reviewCreateRequest);
+    }
+
     @Nested
     @DisplayName("회고 저장")
     class saveReview {
@@ -126,8 +143,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 질문입니다.");
         }
 
-
     }
+
     @Nested
     @DisplayName("id로 회고 조회")
     class findById {
@@ -154,8 +171,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 회고입니다.");
         }
 
-
     }
+
     @Nested
     @DisplayName("사용자가 생성한 회고 조회")
     class findMemberReview {
@@ -227,8 +244,8 @@ public class ReviewServiceTest {
             );
         }
 
-
     }
+
     @Nested
     @DisplayName("회고 폼 code로 회고 조회")
     class findByCode {
@@ -263,15 +280,15 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
 
-
     }
+
     @Nested
     @DisplayName("비밀글이 아닌 회고 답변을 모두 조회한다.")
     class findTimelineReview {
 
         @Test
         @DisplayName("최신순으로 특정 페이지를 조회한다.")
-        void findAllOrderByTrend() throws InterruptedException {
+        void findAllOrderByLatest() throws InterruptedException {
             // given
             saveReview(member1, false);
             Review review = saveReview(member2, false);
@@ -291,8 +308,33 @@ public class ReviewServiceTest {
             );
         }
 
+        @Test
+        @DisplayName("좋아요 수 순으로 특정 페이지를 조회한다.")
+        void findAllOrderByTrend() throws InterruptedException {
+            // given
+            Review review1 = saveReview(member1, false);
+            Review review2 = saveReview(member2, false);
+            saveReview(member1, true);
 
+            // when
+            reviewService.increaseLikes(review1.getId(), 5);
+            reviewService.increaseLikes(review2.getId(), 3);
+
+            int page = 0;
+            int size = 1;
+            String sort = "trend";
+
+            List<Review> reviews = reviewService.findAllPublic(page, size, sort).getContent();
+
+            // then
+            assertAll(
+                () -> assertThat(reviews).hasSize(1),
+                () -> assertThat(reviews.get(0).getId()).isEqualTo(review1.getId()),
+                () -> assertThat(reviews.get(0).getLikes()).isEqualTo(5)
+            );
+        }
     }
+
     @Nested
     @DisplayName("회고 수정")
     class updateReview {
@@ -388,8 +430,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 답변 번호입니다.");
         }
 
-
     }
+
     @Nested
     @DisplayName("회고 삭제")
     class deleteReview {
@@ -428,8 +470,8 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 회고입니다.");
         }
 
-
     }
+
     @Nested
     @DisplayName("좋아요")
     class likes {
@@ -492,22 +534,5 @@ public class ReviewServiceTest {
             assertThat(updatedAtAfterIncreaseLikes.isEqual(updatedAt)).isTrue();
         }
 
-    }
-
-    private Review saveReview(Member member, boolean isPrivate) throws InterruptedException {
-        Thread.sleep(1);
-
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, List.of(
-            new ReviewContentCreateRequest(
-                reviewForm.getReviewFormQuestions().get(0).getId(),
-                new AnswerCreateRequest("answer1")
-            ),
-            new ReviewContentCreateRequest(
-                reviewForm.getReviewFormQuestions().get(1).getId(),
-                new AnswerCreateRequest("answer2")
-            )
-        ));
-
-        return reviewService.save(member, reviewForm.getCode(), reviewCreateRequest);
     }
 }

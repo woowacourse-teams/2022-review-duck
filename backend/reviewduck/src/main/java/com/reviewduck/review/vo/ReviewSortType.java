@@ -9,8 +9,8 @@ import java.util.Arrays;
  */
 public enum ReviewSortType {
 
-    LATEST("latest", "updatedAt");
-    // 좋아요 추가 예정
+    LATEST("latest", "updatedAt"),
+    TREND("trend", "likes");
 
     private final String param;
     private final String sortBy;
