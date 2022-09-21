@@ -7,6 +7,7 @@
 
   .button {
     cursor: pointer;
+    user-select: none;
     color: $THEME_COLOR_THEME_TEXT_150;
     gap: 0.5rem;
     padding: 0.25rem;
@@ -53,5 +54,16 @@
     white-space: pre-line;
     line-height: 180%;
     margin-top: 0.5rem;
+  }
+}
+
+.reaction {
+  .button {
+    transition: all 0.2s ease;
+
+    &:active {
+      transform: scale(1.3);
+      color: $THEME_COLOR_STATUS_DANGER_400;
+    }
   }
 }

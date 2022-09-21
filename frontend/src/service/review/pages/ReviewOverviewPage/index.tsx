@@ -133,7 +133,11 @@ function ReviewOverViewPage() {
                       </Questions.Answer>
                     ))}
 
-                    <Questions.Reaction onClickLike={() => null} onClickBookmark={() => null} />
+                    <Questions.Reaction
+                      likeCount={0}
+                      onClickLike={() => null}
+                      onClickBookmark={() => null}
+                    />
                   </Questions>
                 </ListView.Review>
               ))}
