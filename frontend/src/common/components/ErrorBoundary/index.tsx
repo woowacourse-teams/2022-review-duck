@@ -52,11 +52,20 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, States> {
     const { fallback, children } = this.props;
 
     if (hasError && fallback && axios.isAxiosError(error)) {
-      console.log(error);
+      console.error(error);
       return React.createElement(fallback, {
         status: error.response?.status || ':(',
         title: error.message || '알 수 없는 오류가 발생하였습니다',
         description: error.response?.statusText.toLowerCase() || '알 수 없는 오류',
+        onResetError: this.resetError.bind(this),
+      });
+    }
+    if (hasError && fallback && error instanceof Error) {
+      console.error(error);
+      return React.createElement(fallback, {
+        status: ':(',
+        title: error.message,
+        description: 'not found',
         onResetError: this.resetError.bind(this),
       });
     }

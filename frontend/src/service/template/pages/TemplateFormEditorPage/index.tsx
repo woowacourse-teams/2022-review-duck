@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 
+import { faArrowRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import cn from 'classnames';
 import { PAGE_LIST } from 'constant';
 
@@ -18,8 +21,6 @@ import SmallProfileCard from 'service/@shared/components/SmallProfileCard';
 import styles from './styles.module.scss';
 
 import useTemplateFormEditorPage from './useTemplateFormEditorPage';
-import { faArrowRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { validateReviewForm } from 'service/@shared/validator';
 import { Question } from 'types/review';
 
@@ -136,21 +137,17 @@ function TemplateFormEditorPage() {
 
   return (
     <>
-      <FlexContainer className={styles.container} direction="column" gap="small">
+      <FlexContainer className={styles.container} direction="column" gap="large">
         <div className={styles.header}>
           <Link to={PAGE_LIST.HOME}>
             <Logo />
           </Link>
-          {isReviewFormCreateMode || isTemplateEditMode ? (
+          {(isReviewFormCreateMode || isTemplateEditMode) && (
             <SmallProfileCard
               primaryText="템플릿 생성자"
               secondaryText={template.creator.nickname}
               profileUrl={template.creator.profileUrl}
             />
-          ) : (
-            <Text size={18} weight="bold">
-              템플릿 생성 페이지
-            </Text>
           )}
         </div>
 
@@ -210,7 +207,7 @@ function TemplateFormEditorPage() {
 
             <Button type="button" onClick={handleSubmitReviewForm} disabled={isSubmitLoading}>
               <FontAwesomeIcon icon={faPenToSquare} />
-              <span>생성하기</span>
+              <span>{templateEditMode === 'true' ? '수정하기' : '생성하기'}</span>
             </Button>
           </div>
         </FlexContainer>

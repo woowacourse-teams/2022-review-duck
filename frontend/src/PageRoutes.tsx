@@ -34,7 +34,7 @@ function PageRoutes() {
 
         <Route path={`${PAGE_LIST.TEMPLATE_DETAIL}/:templateId`} element={<TemplateDetailPage />} />
 
-        <Route path="/profile/:socialId" element={<ProfilePage />} />
+        <Route path={`${PAGE_LIST.USER_PROFILE}/:socialId`} element={<ProfilePage />} />
         <Route path={PAGE_LIST.TIMELINE} element={<ReviewTimelinePage />} />
         <Route path="playground" element={<Playground />} />
 

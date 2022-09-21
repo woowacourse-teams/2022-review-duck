@@ -32,7 +32,7 @@ function PaginationBar({
     const currentPageStack = Math.ceil(focusedPage / visiblePageButtonLength);
 
     const pageButtonLength =
-      totalPageStack === currentPageStack
+      totalPageStack === currentPageStack && totalPageLength !== visiblePageButtonLength
         ? totalPageLength % visiblePageButtonLength
         : visiblePageButtonLength;
 
@@ -53,6 +53,8 @@ function PaginationBar({
   const handleClickPageButton = (pageNumber: number) => () => {
     onClickPageButton(pageNumber);
   };
+
+  if (totalItemCount === 0) return <></>;
 
   return (
     <FlexContainer className={styles.componentPaginationBar} direction="row" justify="center">

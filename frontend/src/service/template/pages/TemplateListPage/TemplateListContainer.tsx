@@ -1,6 +1,7 @@
 import { useSearchParams } from 'react-router-dom';
 
 import { PAGE_LIST, PAGE_OPTION } from 'constant';
+import { TemplateFilterType } from 'types';
 
 import { PaginationBar } from 'common/components';
 
@@ -14,7 +15,7 @@ import styles from './styles.module.scss';
 import { GetTemplatesResponse } from 'types/template';
 
 interface TemplateListContainerProps extends GetTemplatesResponse {
-  currentTab: string;
+  currentTab: TemplateFilterType;
   pageNumber: string;
 }
 
