@@ -187,3 +187,5 @@ export type UpdateReviewAnswerResponse = null;
 export type DeleteReviewFormResponse = null;
 
 export type DeleteReviewAnswerResponse = null;
+
+export type TimelineFilterType = 'trend' | 'latest';

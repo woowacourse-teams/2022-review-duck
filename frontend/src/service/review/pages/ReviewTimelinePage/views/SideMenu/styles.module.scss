@@ -37,6 +37,16 @@
       }
     }
 
+    .focus {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: $THEME_COLOR_THEME_TEXT_800;
+
+      svg {
+        color: $THEME_COLOR_STATUS_PRIMARY_500;
+      }
+    }
+
     .menu:hover {
       transform: translateX(3%);
       color: $THEME_COLOR_STATUS_PRIMARY_600;

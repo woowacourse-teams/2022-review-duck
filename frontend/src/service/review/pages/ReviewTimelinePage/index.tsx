@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
-import { faArrowTrendUp, faHeart, faPenNib } from '@fortawesome/free-solid-svg-icons';
+import { faArrowTrendUp, faPenNib } from '@fortawesome/free-solid-svg-icons';
 
-import { PAGE_LIST, PAGE_OPTION, QUERY_KEY } from 'constant';
-import { ReviewPublicAnswer, ReviewPublicAnswerList } from 'types';
+import { PAGE_LIST, PAGE_OPTION, QUERY_KEY, TAB } from 'constant';
+import { ReviewPublicAnswer, ReviewPublicAnswerList, TimelineFilterType } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useStackFetch from 'common/hooks/useStackFetch';
@@ -23,12 +23,18 @@ import Feed from './views/Feed';
 import SideMenu from './views/SideMenu';
 import queryClient from 'api/config/queryClient';
 import { updateReviewLike } from 'api/review.api';
+import { validateTab } from 'service/@shared/validator';
 
 type ReviewId = ReviewPublicAnswer['id'];
 
 function ReviewTimelinePage() {
+  const [searchParam] = useSearchParams();
+
+  const currentTab = searchParam.get('filter') || 'trend';
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
+
+  validateTab(['trend', 'latest'], currentTab);
 
   const { mutate: reviewAnswerDelete } = useDeleteReviewAnswer();
   const { addFetch } = useStackFetch(2000);
@@ -39,7 +45,7 @@ function ReviewTimelinePage() {
     isError,
     fetchNextPage,
     isFetching,
-  } = useGetInfiniteReviewPublicAnswer();
+  } = useGetInfiniteReviewPublicAnswer(currentTab as TimelineFilterType);
 
   const reviewsLikeStack = useRef<Record<ReviewId, number>>({});
 
@@ -123,12 +129,24 @@ function ReviewTimelinePage() {
         <SideMenu.Title>탐색하기</SideMenu.Title>
 
         <SideMenu.List>
-          <SideMenu.Menu icon={faArrowTrendUp}>트랜딩</SideMenu.Menu>
-          <SideMenu.Menu icon={faPenNib}>최신글</SideMenu.Menu>
-          <SideMenu.Menu icon={faHeart}>구독</SideMenu.Menu>
+          <SideMenu.Menu
+            isCurrentTab={currentTab === TAB.TIMELINE.TREND}
+            filter={TAB.TIMELINE.TREND as TimelineFilterType}
+            icon={faArrowTrendUp}
+          >
+            트랜딩
+          </SideMenu.Menu>
+          <SideMenu.Menu
+            isCurrentTab={currentTab === TAB.TIMELINE.LATEST}
+            filter={TAB.TIMELINE.LATEST as TimelineFilterType}
+            icon={faPenNib}
+          >
+            최신글
+          </SideMenu.Menu>
+          {/* <SideMenu.Menu icon={faHeart}>구독</SideMenu.Menu> */}
         </SideMenu.List>
 
-        <SideMenu.Title>나의 구독</SideMenu.Title>
+        {/* <SideMenu.Title>나의 구독</SideMenu.Title> */}
       </SideMenu>
 
       <Feed>

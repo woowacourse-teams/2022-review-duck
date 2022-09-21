@@ -9,6 +9,7 @@ import {
   ReviewForm,
   ReviewFormAnswerList,
   ReviewPublicAnswerList,
+  TimelineFilterType,
 } from 'types';
 import 'types';
 
@@ -56,9 +57,13 @@ function useGetReviewFormAnswer(
   );
 }
 
-function useGetInfiniteReviewPublicAnswer(queryOptions?: any) {
+function useGetInfiniteReviewPublicAnswer(filter: TimelineFilterType, queryOptions?: any) {
   const fetchFunc = async ({ pageParam = 1 }) => {
-    const data = await reviewAPI.getPublicAnswer(String(pageParam), PAGE_OPTION.REVIEW_ITEM_SIZE);
+    const data = await reviewAPI.getPublicAnswer(
+      String(pageParam),
+      PAGE_OPTION.REVIEW_ITEM_SIZE,
+      filter,
+    );
 
     return {
       data,
@@ -67,7 +72,7 @@ function useGetInfiniteReviewPublicAnswer(queryOptions?: any) {
   };
 
   return useInfiniteQuery<InfiniteItem<ReviewPublicAnswerList>>(
-    [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEW_PUBLIC_ANSWER],
+    [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEW_PUBLIC_ANSWER, { filter }],
     fetchFunc,
     {
       getNextPageParam: (lastItem) =>

@@ -25,13 +25,13 @@ export const getFormAnswer = async (
   return transformer.transformFormAnswer(data);
 };
 
-/* TODO: sort 파라미터가 추가돼야 함 */
 export const getPublicAnswer = async (
   pageNumber: string,
   size: number,
+  filter: ReviewType.TimelineFilterType = 'trend',
 ): Promise<ReviewType.ReviewPublicAnswerList> => {
   const { data } = await axiosInstance.get(
-    `${API_URI.REVIEW.GET_PUBLIC_ANSWER}?page=${pageNumber}&size=${size}`,
+    `${API_URI.REVIEW.GET_PUBLIC_ANSWER}?page=${pageNumber}&size=${size}&sort=${filter}`,
   );
 
   return transformer.transformPublicAnswer(data);
