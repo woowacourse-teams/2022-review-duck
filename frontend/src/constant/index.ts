@@ -111,6 +111,8 @@ const API_URI = {
     GET_PUBLIC_ANSWER: '/api/reviews/public',
 
     CREATE_FORM: '/api/review-forms',
+    CREATE_FORM_BY_TEMPLATE: (templateId: numberString) =>
+      `/api/templates/${templateId}/review-forms/edited`,
     CREATE_ANSWER: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
 
     UPDATE_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
