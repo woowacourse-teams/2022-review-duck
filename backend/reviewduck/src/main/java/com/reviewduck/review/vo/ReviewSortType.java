@@ -9,8 +9,8 @@ import java.util.Arrays;
  */
 public enum ReviewSortType {
 
-    LATEST("latest", "updatedAt");
-    // 좋아요 추가 예정
+    LATEST("latest", "updatedAt"),
+    TREND("trend", "likes");
 
     private final String param;
     private final String sortBy;
@@ -24,7 +24,7 @@ public enum ReviewSortType {
         return Arrays.stream(values())
             .filter(it -> it.param.equals(input))
             .findAny()
-            .orElse(LATEST)
+            .orElse(TREND)
             .sortBy;
     }
 
