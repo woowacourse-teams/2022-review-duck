@@ -4,7 +4,7 @@ import { faArrowUp, faBarsStaggered, faPenToSquare } from '@fortawesome/free-sol
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
-import { PAGE_LIST, TEMPLATE_TAB } from 'constant';
+import { PAGE_LIST, TAB } from 'constant';
 import { TemplateFilterType } from 'types';
 
 import { useGetTemplates } from 'service/@shared/hooks/queries/template/useGet';
@@ -16,12 +16,15 @@ import LayoutContainer from 'service/@shared/components/LayoutContainer';
 import styles from './styles.module.scss';
 
 import TemplateListContainer from './TemplateListContainer';
+import { validateTab } from 'service/@shared/validator';
 
 function TemplateListPage() {
   const [searchParam] = useSearchParams();
 
   const currentTab = searchParam.get('filter') || 'trend';
   const pageNumber = searchParam.get('page') || String(1);
+
+  validateTab(['trend', 'latest'], currentTab);
 
   const initialTemplates = {
     numberOfTemplates: 0,
@@ -35,11 +38,11 @@ function TemplateListPage() {
     <LayoutContainer>
       <FlexContainer className={styles.header} direction="row" justify="space-between">
         <FlexContainer direction="row">
-          <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${TEMPLATE_TAB.TREND}`}>
+          <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${TAB.TEMPLATE.TREND}`}>
             <button className={styles.button}>
               <div
                 className={cn(styles.buttonBox, {
-                  [styles.focus]: currentTab === TEMPLATE_TAB.TREND,
+                  [styles.focus]: currentTab === TAB.TEMPLATE.TREND,
                 })}
               >
                 <FontAwesomeIcon className={styles.icon} icon={faArrowUp} />
@@ -47,11 +50,11 @@ function TemplateListPage() {
               </div>
             </button>
           </Link>
-          <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${TEMPLATE_TAB.LATEST}`}>
+          <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${TAB.TEMPLATE.LATEST}`}>
             <button className={styles.button}>
               <div
                 className={cn(styles.buttonBox, {
-                  [styles.focus]: currentTab === TEMPLATE_TAB.LATEST,
+                  [styles.focus]: currentTab === TAB.TEMPLATE.LATEST,
                 })}
               >
                 <FontAwesomeIcon className={styles.icon} icon={faBarsStaggered} />

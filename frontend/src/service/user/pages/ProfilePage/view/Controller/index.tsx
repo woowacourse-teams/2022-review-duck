@@ -4,7 +4,7 @@ import { faPenToSquare, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
-import { GITHUB_PROFILE_URL, USER_PROFILE_TAB } from 'constant';
+import { GITHUB_PROFILE_URL, TAB } from 'constant';
 import { Tabs } from 'types';
 
 import { Text, Button } from 'common/components';
@@ -90,25 +90,25 @@ const TabNavigator = ({ currentTab, onTabClick }: TabNavigatorProps) => {
 
       <li
         className={cn(styles.item, {
-          [styles.focus]: currentTab === USER_PROFILE_TAB.REVIEWS,
+          [styles.focus]: currentTab === TAB.USER_PROFILE.REVIEWS,
         })}
-        onClick={onTabClick(USER_PROFILE_TAB.REVIEWS)}
+        onClick={onTabClick(TAB.USER_PROFILE.REVIEWS)}
       >
         작성한 회고글
       </li>
       <li
         className={cn(styles.item, {
-          [styles.focus]: currentTab === USER_PROFILE_TAB.REVIEW_FORMS,
+          [styles.focus]: currentTab === TAB.USER_PROFILE.REVIEW_FORMS,
         })}
-        onClick={onTabClick(USER_PROFILE_TAB.REVIEW_FORMS)}
+        onClick={onTabClick(TAB.USER_PROFILE.REVIEW_FORMS)}
       >
         생성한 질문지
       </li>
       <li
         className={cn(styles.item, {
-          [styles.focus]: currentTab === USER_PROFILE_TAB.TEMPLATES,
+          [styles.focus]: currentTab === TAB.USER_PROFILE.TEMPLATES,
         })}
-        onClick={onTabClick(USER_PROFILE_TAB.TEMPLATES)}
+        onClick={onTabClick(TAB.USER_PROFILE.TEMPLATES)}
       >
         생성한 템플릿
       </li>

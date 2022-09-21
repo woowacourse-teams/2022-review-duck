@@ -1,4 +1,4 @@
-import { USER_PROFILE_TAB } from 'constant';
+import { TAB } from 'constant';
 import { Tabs } from 'types';
 
 import { useDeleteReviewAnswer, useDeleteReviewForm } from 'service/@shared/hooks/queries/review';
@@ -14,9 +14,9 @@ function useProfilePageQueries(currentTab: Tabs, socialIdPrams: string, pageNumb
   const socialId = Number(socialIdPrams);
 
   const useGetQueries = {
-    [USER_PROFILE_TAB.REVIEWS]: useGetUserReviewAnswer,
-    [USER_PROFILE_TAB.REVIEW_FORMS]: useGetUserReviewForms,
-    [USER_PROFILE_TAB.TEMPLATES]: useGetUserTemplates,
+    [TAB.USER_PROFILE.REVIEWS]: useGetUserReviewAnswer,
+    [TAB.USER_PROFILE.REVIEW_FORMS]: useGetUserReviewForms,
+    [TAB.USER_PROFILE.TEMPLATES]: useGetUserTemplates,
   };
 
   const deleteReviewMutation = useDeleteReviewAnswer();

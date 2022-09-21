@@ -69,15 +69,20 @@ const ACCESS_TOKEN_REFRESH_TIME = ACCESS_TOKEN_EXPIRE_TIME - 60 * 2 * 1000;
 
 const PERMISSION_VALID_TIME = 60 * 1000;
 
-const USER_PROFILE_TAB = {
-  REVIEWS: 'reviews',
-  REVIEW_FORMS: 'review-forms',
-  TEMPLATES: 'templates',
-};
-
-const TEMPLATE_TAB = {
-  TREND: 'trend',
-  LATEST: 'latest',
+const TAB = {
+  USER_PROFILE: {
+    REVIEWS: 'reviews',
+    REVIEW_FORMS: 'review-forms',
+    TEMPLATES: 'templates',
+  },
+  TEMPLATE: {
+    TREND: 'trend',
+    LATEST: 'latest',
+  },
+  TIMELINE: {
+    TREND: 'trend',
+    LATEST: 'latest',
+  },
 };
 
 const REVIEW_FORM_TITLE_LENGTH = 100;
@@ -152,8 +157,7 @@ export {
   ACCESS_PERMISSION,
   ACCESS_TOKEN_EXPIRE_TIME,
   ACCESS_TOKEN_REFRESH_TIME,
-  USER_PROFILE_TAB,
-  TEMPLATE_TAB,
+  TAB,
   PERMISSION_VALID_TIME,
   REVIEW_FORM_TITLE_LENGTH,
   REVIEW_FORM_CODE_LENGTH,

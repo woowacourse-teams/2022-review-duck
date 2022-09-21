@@ -2,7 +2,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { faEraser } from '@fortawesome/free-solid-svg-icons';
 
-import { USER_PROFILE_TAB, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
+import { TAB, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
 import { Tabs } from 'types';
 
 import useModal from 'common/hooks/useModal';
@@ -29,10 +29,10 @@ function ProfilePage() {
   const { showModal } = useModal();
   const { showSnackbar } = useSnackbar();
 
-  const currentTab = searchParams.get('tab') || USER_PROFILE_TAB.REVIEWS;
+  const currentTab = searchParams.get('tab') || TAB.USER_PROFILE.REVIEWS;
   const pageNumber = searchParams.get('page') || String(1);
 
-  validateTab(currentTab);
+  validateTab(['reviews', 'review-forms', 'templates'], currentTab);
 
   const queries = useProfilePageQueries(currentTab as Tabs, socialId, pageNumber);
   if (!queries) return <>{/* Error Boundary, Suspense Used */}</>;
@@ -46,9 +46,9 @@ function ProfilePage() {
   } = queries;
 
   const subjectTitle = {
-    [USER_PROFILE_TAB.REVIEWS]: '작성한 회고',
-    [USER_PROFILE_TAB.REVIEW_FORMS]: '생성한 질문지',
-    [USER_PROFILE_TAB.TEMPLATES]: '생성한 템플릿',
+    [TAB.USER_PROFILE.REVIEWS]: '작성한 회고',
+    [TAB.USER_PROFILE.REVIEW_FORMS]: '생성한 질문지',
+    [TAB.USER_PROFILE.TEMPLATES]: '생성한 템플릿',
   };
 
   const handleChangeTab = (filter: string) => () => {
@@ -88,19 +88,19 @@ function ProfilePage() {
         )}를(을) 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.`,
       )
     ) {
-      if (currentTab === USER_PROFILE_TAB.REVIEWS) {
+      if (currentTab === TAB.USER_PROFILE.REVIEWS) {
         deleteReviewMutation.mutate(index as number, {
           onSuccess: deleteSuccessOption,
           onError: ({ message }) => alert(message),
         });
       }
-      if (currentTab === USER_PROFILE_TAB.REVIEW_FORMS) {
+      if (currentTab === TAB.USER_PROFILE.REVIEW_FORMS) {
         deleteReviewFormMutation.mutate(index as string, {
           onSuccess: deleteSuccessOption,
           onError: ({ message }) => alert(message),
         });
       }
-      if (currentTab === USER_PROFILE_TAB.TEMPLATES) {
+      if (currentTab === TAB.USER_PROFILE.TEMPLATES) {
         deleteTemplateMutation.mutate(index as number, {
           onSuccess: deleteSuccessOption,
           onError: ({ message }) => alert(message),
