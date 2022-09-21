@@ -1,7 +1,7 @@
 package com.reviewduck.review.controller;
 
 import static com.reviewduck.common.util.Logging.*;
-import static com.reviewduck.review.vo.ReviewPageConstant.*;
+import static com.reviewduck.common.vo.PageConstant.*;
 
 import javax.validation.Valid;
 
