@@ -21,7 +21,7 @@ public class MemberReviewFormsResponse {
     private boolean isMine;
     private List<MemberReviewFormResponse> reviewForms;
 
-    public static MemberReviewFormsResponse of(Page<ReviewForm> reviewForms, String socialId, Member member, int page) {
+    public static MemberReviewFormsResponse of(Page<ReviewForm> reviewForms, String socialId, Member member) {
         List<MemberReviewFormResponse> reviewFormResponses = reviewForms.getContent().stream()
             .map(MemberReviewFormResponse::from)
             .collect(Collectors.toUnmodifiableList());
@@ -29,10 +29,7 @@ public class MemberReviewFormsResponse {
         boolean isMine = member.getSocialId().equals(socialId);
 
         return new MemberReviewFormsResponse(
-            reviewForms.getTotalElements(),
-            page == reviewForms.getTotalPages(),
-            isMine,
-            reviewFormResponses);
+            reviewForms.getTotalElements(), reviewForms.isLast(), isMine, reviewFormResponses);
     }
 
     public boolean getIsMine() {

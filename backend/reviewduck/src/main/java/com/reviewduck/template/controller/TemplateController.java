@@ -92,7 +92,7 @@ public class TemplateController {
         info("/api/templates?page=" + page + " size=" + size, "GET", "");
 
         Page<Template> templates = templateService.findAll(page - 1, size, sort);
-        return TemplatesResponse.of(templates, member, page);
+        return TemplatesResponse.of(templates, member);
     }
 
     @Operation(summary = "사용자가 생성한 템플릿을 모두 조회한다.")
@@ -107,7 +107,7 @@ public class TemplateController {
 
         Page<Template> templates = templateService.findAllBySocialId(socialId, page - 1, size);
 
-        return MemberTemplatesResponse.of(templates, socialId, member, page);
+        return MemberTemplatesResponse.of(templates, socialId, member);
     }
 
     @Operation(summary = "특정 템플릿을 조회한다.")

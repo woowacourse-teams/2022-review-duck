@@ -91,7 +91,7 @@ public class ReviewFormController {
 
         Page<ReviewForm> reviewForms = reviewFormService.findBySocialId(socialId, page - 1, size);
 
-        return MemberReviewFormsResponse.of(reviewForms, socialId, member, page);
+        return MemberReviewFormsResponse.of(reviewForms, socialId, member);
     }
 
     @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 모두 조회한다.")
@@ -107,7 +107,7 @@ public class ReviewFormController {
 
         Page<Review> reviews = reviewService.findAllByCode(reviewFormCode, page - 1, size);
 
-        return ReviewsOfReviewFormResponse.of(member, reviews, displayType, page);
+        return ReviewsOfReviewFormResponse.of(member, reviews, displayType);
     }
 
     @Operation(summary = "회고 폼을 수정한다.")

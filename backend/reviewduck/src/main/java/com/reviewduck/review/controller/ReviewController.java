@@ -63,7 +63,7 @@ public class ReviewController {
 
         Page<Review> reviews = reviewService.findBySocialId(socialId, member, page - 1, size);
 
-        return ReviewsResponse.of(reviews, socialId, member, page);
+        return ReviewsResponse.of(reviews, socialId, member);
     }
 
     @Operation(summary = "비밀글이 아닌 회고 답변을 모두 조회한다.")
@@ -78,7 +78,7 @@ public class ReviewController {
 
         Page<Review> reviews = reviewService.findAllPublic(page - 1, size, sort);
 
-        return TimelineReviewsResponse.of(reviews, member, page);
+        return TimelineReviewsResponse.of(reviews, member);
     }
 
     @Operation(summary = "회고 답변을 수정한다.")

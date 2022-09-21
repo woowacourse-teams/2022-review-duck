@@ -21,14 +21,11 @@ public class ReviewsOfReviewFormResponse {
     private boolean isLastPage;
     private List<ReviewAbstractResponse> reviews;
 
-    public static ReviewsOfReviewFormResponse of(Member member, Page<Review> reviews, String displayType, int page) {
+    public static ReviewsOfReviewFormResponse of(Member member, Page<Review> reviews, String displayType) {
         List<ReviewAbstractResponse> reviewResponses = ReviewDisplayBuilder.of(displayType)
             .createResponseFrom(member, reviews.getContent());
 
-        return new ReviewsOfReviewFormResponse(
-            reviews.getTotalElements(),
-            page == reviews.getTotalPages(),
-            reviewResponses);
+        return new ReviewsOfReviewFormResponse(reviews.getTotalElements(), reviews.isLast(), reviewResponses);
     }
 
     public boolean getIsLastPage() {
