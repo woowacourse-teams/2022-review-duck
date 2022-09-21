@@ -24,7 +24,7 @@ public enum ReviewSortType {
         return Arrays.stream(values())
             .filter(it -> it.param.equals(input))
             .findAny()
-            .orElse(LATEST)
+            .orElse(TREND)
             .sortBy;
     }
 
