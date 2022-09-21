@@ -1,16 +1,16 @@
-import { useRef } from 'react';
+import React, { useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { faArrowTrendUp, faHeart, faPenNib } from '@fortawesome/free-solid-svg-icons';
 
-import { PAGE_LIST, QUERY_KEY } from 'constant';
+import { PAGE_LIST, PAGE_OPTION, QUERY_KEY } from 'constant';
 import { ReviewPublicAnswer, ReviewPublicAnswerList } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useStackFetch from 'common/hooks/useStackFetch';
 import {
   useDeleteReviewAnswer,
-  useGetReviewPublicAnswer,
+  useGetInfiniteReviewPublicAnswer,
 } from 'service/@shared/hooks/queries/review';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
@@ -18,6 +18,7 @@ import Questions from 'service/@shared/components/Questions';
 
 import styles from './styles.module.scss';
 
+import useIntersectionObserver from './useIntersectionObserver';
 import Feed from './views/Feed';
 import SideMenu from './views/SideMenu';
 import queryClient from 'api/config/queryClient';
@@ -32,13 +33,25 @@ function ReviewTimelinePage() {
   const { mutate: reviewAnswerDelete } = useDeleteReviewAnswer();
   const { addFetch } = useStackFetch(2000);
 
-  const { isError, isLoading, data: publicReviewAnswer } = useGetReviewPublicAnswer();
+  const {
+    data: reviews,
+    isLoading,
+    isError,
+    fetchNextPage,
+    isFetching,
+  } = useGetInfiniteReviewPublicAnswer();
 
   const reviewsLikeStack = useRef<Record<ReviewId, number>>({});
 
+  const { targetRef } = useIntersectionObserver<ReviewPublicAnswerList, HTMLDivElement>(
+    fetchNextPage,
+    { threshold: 0.75 },
+    reviews,
+  );
+
   if (isError || isLoading) return <>{/* Error Boundary, Suspense Used */}</>;
 
-  const { reviews, numberOfReviews } = publicReviewAnswer;
+  const { pages } = reviews;
 
   const setUpdateLikeCount = (reviewId: number, count: number) => {
     queryClient.setQueryData<ReviewPublicAnswerList>(
@@ -122,40 +135,50 @@ function ReviewTimelinePage() {
         <Feed.Title>타임라인</Feed.Title>
 
         <Feed.List>
-          {reviews.map(({ id, reviewFormCode, questions, info: { creator, ...info }, likes }) => (
-            <Feed.ReviewAnswer key={id}>
-              <Feed.UserProfile
-                socialId={creator.id}
-                profileUrl={creator.profileUrl}
-                nickname={creator.nickname}
-                update={info.updateDate}
-              />
-
-              <Questions>
-                <Questions.EditButtons
-                  className={styles.questionEdit}
-                  isVisible={info.isSelf}
-                  onClickEdit={handleClickEditButton(reviewFormCode, id)}
-                  onClickDelete={handleClickDeleteButton(id)}
-                />
-
-                {questions.map(({ answer, ...question }) => (
-                  <Questions.Answer
-                    key={question.id}
-                    question={question.value}
-                    description={question.description}
+          {pages.map((page, pageIndex) => (
+            <React.Fragment key={pageIndex}>
+              {page.data.reviews.map(
+                ({ id, reviewFormCode, questions, info: { creator, ...info }, likes }, index) => (
+                  <Feed.ReviewAnswer
+                    isLoading={isFetching}
+                    key={id}
+                    ref={index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1 ? targetRef : null}
                   >
-                    {answer.value}
-                  </Questions.Answer>
-                ))}
+                    <Feed.UserProfile
+                      socialId={creator.id}
+                      profileUrl={creator.profileUrl}
+                      nickname={creator.nickname}
+                      update={info.updateDate}
+                    />
 
-                <Questions.Reaction
-                  likeCount={likes}
-                  onClickLike={handleClickLikeButton(id, likes)}
-                  onClickBookmark={() => null}
-                />
-              </Questions>
-            </Feed.ReviewAnswer>
+                    <Questions>
+                      <Questions.EditButtons
+                        className={styles.questionEdit}
+                        isVisible={info.isSelf}
+                        onClickEdit={handleClickEditButton(reviewFormCode, id)}
+                        onClickDelete={handleClickDeleteButton(id)}
+                      />
+
+                      {questions.map(({ answer, ...question }) => (
+                        <Questions.Answer
+                          key={question.id}
+                          question={question.value}
+                          description={question.description}
+                        >
+                          {answer.value}
+                        </Questions.Answer>
+                      ))}
+
+                      <Questions.Reaction
+                        likeCount={likes}
+                        onClickLike={handleClickLikeButton(id, likes)}
+                        onClickBookmark={() => null}
+                      />
+                    </Questions>
+                  </Feed.ReviewAnswer>
+                ),
+              )}
+            </React.Fragment>
           ))}
         </Feed.List>
       </Feed>
