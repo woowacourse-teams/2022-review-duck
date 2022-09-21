@@ -21,13 +21,13 @@ class ReviewSortTypeTest {
     @DisplayName("빈 값을 넘기면 기본 정렬 기준을 반환한다.")
     void defaultSortBy(String input) {
         assertThat(ReviewSortType.getSortBy(input))
-            .isEqualTo("updatedAt");
+            .isEqualTo("likes");
     }
 
     @Test
     @DisplayName("이상한 값을 넘겨도 기본 정렬 기준을 반환한다.")
     void wrongSortBy() {
         assertThat(ReviewSortType.getSortBy("my name is panda"))
-            .isEqualTo("updatedAt");
+            .isEqualTo("likes");
     }
 }
