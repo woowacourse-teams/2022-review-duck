@@ -28,15 +28,11 @@ module.exports = (env = {}, options = {}) => {
     output: {
       path: path.join(__dirname, '../build'),
       publicPath: process.env.PUBLIC_PATH,
-      filename: `app.${app.version}.js`,
+      filename: `app.${app.version}.[contenthash].js`,
       clean: true,
     },
     module: {
       rules: [
-        {
-          test: /\.tsx?$/,
-          use: ['babel-loader', 'ts-loader'],
-        },
         {
           test: /\.(png|jpe?g|gif)$/,
           type: 'asset',
@@ -46,7 +42,7 @@ module.exports = (env = {}, options = {}) => {
             },
           },
           generator: {
-            filename: 'static/[name].[hash][ext][query]',
+            filename: 'static/[name].[contenthash][ext][query]',
           },
         },
         {
@@ -97,7 +93,10 @@ module.exports = (env = {}, options = {}) => {
         template: './public/index.html',
         favicon: './public/favicon.ico',
       }),
-      new MiniCssExtractPlugin({ linkType: false, filename: `css/[name].${app.version}.css` }),
+      new MiniCssExtractPlugin({
+        linkType: false,
+        filename: `css/[name].${app.version}.[contenthash].css`,
+      }),
     ],
   };
 };

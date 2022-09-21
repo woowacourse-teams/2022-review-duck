@@ -45,7 +45,7 @@ const ParticipantList = ({ children }: ParticipantListProps) => {
   return (
     <FlexContainer className={styles.cardBox} direction="column" gap="medium">
       <div className={styles.title}>
-        <Text size={20} element="h5">
+        <Text as="h5" size={20}>
           이 회고에 참여한 사람
         </Text>
       </div>
@@ -159,7 +159,7 @@ const FormCopyLink = ({ reviewFormCode }: FormCopyLink) => {
           readOnly
         />
 
-        <Text size={12} className={styles.copyText} element="div" onClick={handleCopyInviteLink}>
+        <Text as="div" size={12} className={styles.copyText} onClick={handleCopyInviteLink}>
           복사
         </Text>
       </div>

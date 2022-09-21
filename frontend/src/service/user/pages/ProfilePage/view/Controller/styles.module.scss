@@ -1,0 +1,101 @@
+@import 'styles/@global.scss';
+
+.side-content {
+  position: sticky;
+  top: 5.625rem;
+  align-self: start;
+
+  .profile-image {
+    margin: 2.5rem 0;
+    position: relative;
+    width: 12.25rem;
+    height: 12.25rem;
+    overflow: visible;
+
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    background-color: $GLOBAL_COLOR_WHITE_900;
+
+    .active-icon {
+      position: absolute;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      bottom: 0;
+      right: 0;
+      width: 2.625rem;
+      height: 2.625rem;
+      border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+      background-color: $GLOBAL_COLOR_WHITE_300;
+      backdrop-filter: blur(1rem);
+
+      box-shadow: 0 0 1.125rem $GLOBAL_COLOR_BLACK_200;
+    }
+  }
+
+  .name-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 2rem 0 1.5rem;
+    color: $THEME_COLOR_STATUS_PRIMARY_600;
+  }
+
+  .profile-manage {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .line {
+    width: 2rem;
+    margin: 2rem 0;
+    border-color: $THEME_COLOR_STATUS_PRIMARY_100;
+  }
+
+  .side-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+
+    .title {
+      color: $THEME_COLOR_THEME_TEXT_400;
+    }
+
+    .item {
+      cursor: pointer;
+      color: $THEME_COLOR_THEME_TEXT_800;
+      font-size: 1.25rem;
+      transition: color ease 0.2s;
+
+      &.focus {
+        color: $THEME_COLOR_STATUS_PRIMARY_700;
+        font-weight: bold;
+      }
+
+      &:hover {
+        color: $THEME_COLOR_STATUS_PRIMARY_500;
+      }
+    }
+  }
+
+  .counter-container {
+    width: 60%;
+
+    .counter {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1rem;
+
+      border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+      background-color: $THEME_COLOR_THEME_BACKGROUND_200;
+
+      .number {
+        color: $THEME_COLOR_STATUS_PRIMARY_500;
+      }
+    }
+  }
+}

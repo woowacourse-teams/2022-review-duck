@@ -3,8 +3,6 @@ package com.reviewduck.review.controller;
 import static com.reviewduck.common.util.Logging.*;
 import static com.reviewduck.common.vo.PageConstant.*;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -28,9 +26,9 @@ import com.reviewduck.review.dto.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.dto.response.MemberReviewFormsResponse;
-import com.reviewduck.review.dto.response.ReviewAbstractResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
+import com.reviewduck.review.dto.response.ReviewsOfReviewFormResponse;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
@@ -86,8 +84,8 @@ public class ReviewFormController {
     @ResponseStatus(HttpStatus.OK)
     public MemberReviewFormsResponse findPageOfReviewFormsBySocialId(@AuthenticationPrincipal Member member,
         @RequestParam(value = "member") String socialId,
-        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
-        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size) {
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size) {
 
         info("/api/review-forms?member=" + socialId + "page=" + page + " size=" + size, "GET", "");
 
@@ -99,15 +97,17 @@ public class ReviewFormController {
     @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 모두 조회한다.")
     @GetMapping(value = "/{reviewFormCode}/reviews")
     @ResponseStatus(HttpStatus.OK)
-    public List<ReviewAbstractResponse> findReviewsByCodeAsListDisplay(@AuthenticationPrincipal Member member,
-        @PathVariable String reviewFormCode, @RequestParam String displayType) {
+    public ReviewsOfReviewFormResponse findReviewsByCode(@AuthenticationPrincipal Member member,
+        @PathVariable String reviewFormCode,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
+        @RequestParam String displayType) {
 
         info("/api/review-forms/" + reviewFormCode + "/reviews?displayType=" + displayType, "GET", "");
 
-        List<Review> reviews = reviewService.findAllByCode(reviewFormCode);
+        Page<Review> reviews = reviewService.findAllByCode(reviewFormCode, page - 1, size);
 
-        return ReviewDisplayBuilder.of(displayType)
-            .createResponseFrom(member, reviews);
+        return ReviewsOfReviewFormResponse.of(member, reviews, displayType);
     }
 
     @Operation(summary = "회고 폼을 수정한다.")

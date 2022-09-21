@@ -19,6 +19,7 @@ public class ReviewResponse extends ReviewAbstractResponse {
     private Long id;
     private String reviewTitle;
     private long updatedAt;
+    private int likes;
     private CreatorResponse creator;
     private boolean isCreator;
     private List<ReviewContentResponse> contents;
@@ -35,6 +36,7 @@ public class ReviewResponse extends ReviewAbstractResponse {
             review.getId(),
             review.getTitle(),
             Timestamp.valueOf(review.getUpdatedAt()).getTime(),
+            review.getLikes(),
             CreatorResponse.from(review.getMember()),
             review.isMine(member),
             contents,

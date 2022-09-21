@@ -8,6 +8,7 @@
   "endOfLine": "lf",
   "importOrder": [
     "^(react)",
+    "^(@)",
     "^((?!/).)*$",
     "^((.*)/types)(.*|$)",
     "^((.*)/hooks)(.*|$)",

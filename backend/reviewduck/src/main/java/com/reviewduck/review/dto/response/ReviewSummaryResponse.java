@@ -17,6 +17,7 @@ public class ReviewSummaryResponse {
     private Long id;
     private String title;
     private long updatedAt;
+    private int likes;
     private List<ReviewContentResponse> contents;
     private ReviewFormSummaryResponse reviewForm;
 
@@ -29,6 +30,7 @@ public class ReviewSummaryResponse {
             review.getId(),
             review.getTitle(),
             Timestamp.valueOf(review.getUpdatedAt()).getTime(),
+            review.getLikes(),
             contents,
             ReviewFormSummaryResponse.from(review.getReviewForm())
         );

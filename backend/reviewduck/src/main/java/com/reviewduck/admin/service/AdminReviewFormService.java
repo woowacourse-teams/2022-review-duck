@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.reviewduck.admin.repository.AdminReviewFormRepository;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.repository.ReviewFormRepository;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,10 +19,14 @@ import lombok.AllArgsConstructor;
 public class AdminReviewFormService {
 
     private AdminMemberService adminMemberService;
-    private ReviewFormRepository reviewFormRepository;
+    private AdminReviewFormRepository reviewFormRepository;
 
     public List<ReviewForm> findAllReviewForms() {
         return reviewFormRepository.findAll();
+    }
+
+    public ReviewForm findByCode(String reviewFormCode) {
+        return reviewFormRepository.findByCode(reviewFormCode);
     }
 
     public List<ReviewForm> findByMemberId(Long memberId) {
@@ -32,9 +36,9 @@ public class AdminReviewFormService {
 
     @Transactional
     public void deleteReviewFormById(Long reviewFormId) {
-        reviewFormRepository.findById(reviewFormId)
+        ReviewForm reviewForm = reviewFormRepository.findById(reviewFormId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고 폼입니다."));
 
-        reviewFormRepository.delete(reviewFormId);
+        reviewFormRepository.delete(reviewForm);
     }
 }

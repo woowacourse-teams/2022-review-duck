@@ -1,5 +1,8 @@
 import { Link, useSearchParams } from 'react-router-dom';
 
+import { faArrowUp, faBarsStaggered, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import cn from 'classnames';
 import { PAGE_LIST, TEMPLATE_TAB } from 'constant';
 import { TemplateFilterType } from 'types';
@@ -13,14 +16,11 @@ import LayoutContainer from 'service/@shared/components/LayoutContainer';
 import styles from './styles.module.scss';
 
 import TemplateListContainer from './TemplateListContainer';
-import { faArrowUp, faBarsStaggered, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function TemplateListPage() {
   const [searchParam] = useSearchParams();
 
-  const tabString = searchParam.get('filter');
-  const currentTab = tabString === 'trend' || tabString === 'latest' ? tabString : 'trend';
+  const currentTab = searchParam.get('filter') || 'trend';
   const pageNumber = searchParam.get('page') || String(1);
 
   const initialTemplates = {
@@ -72,7 +72,7 @@ function TemplateListPage() {
       <TemplateListContainer
         templates={templates}
         numberOfTemplates={numberOfTemplates}
-        currentTab={currentTab}
+        currentTab={currentTab as TemplateFilterType}
         pageNumber={pageNumber}
       />
     </LayoutContainer>

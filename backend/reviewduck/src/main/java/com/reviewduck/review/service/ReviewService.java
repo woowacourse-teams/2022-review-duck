@@ -23,6 +23,7 @@ import com.reviewduck.review.dto.request.ReviewContentUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 import com.reviewduck.review.repository.ReviewRepository;
+import com.reviewduck.review.vo.ReviewSortType;
 
 import lombok.AllArgsConstructor;
 
@@ -53,20 +54,11 @@ public class ReviewService {
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
     }
 
-    public List<Review> findBySocialId(String socialId, Member member) {
+    public Page<Review> findBySocialId(String socialId, Member member, int page, int size) {
         Member owner = memberService.getBySocialId(socialId);
 
-        if (member.equals(owner)) {
-            return reviewRepository.findByMemberOrderByUpdatedAtDesc(member);
-        }
-        return reviewRepository.findByMemberAndIsPrivateFalseOrderByUpdatedAtDesc(owner);
-    }
-
-    public Page<Review> findBySocialId(String socialId, Member member, Integer page, Integer size) {
-        String sortType = "updatedAt";
-
-        Member owner = memberService.getBySocialId(socialId);
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+        Sort sort = Sort.by(Sort.Direction.DESC, ReviewSortType.LATEST.getSortBy());
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
 
         if (member.equals(owner)) {
             return reviewRepository.findByMember(member, pageRequest);
@@ -76,13 +68,20 @@ public class ReviewService {
 
     }
 
-    public List<Review> findAllByCode(String code) {
+    public Page<Review> findAllByCode(String code, int page, int size) {
         ReviewForm reviewForm = reviewFormService.findByCode(code);
-        return reviewRepository.findByReviewForm(reviewForm);
+
+        Sort sort = Sort.by(Sort.Direction.DESC, ReviewSortType.LATEST.getSortBy());
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+
+        return reviewRepository.findByReviewForm(reviewForm, pageRequest);
     }
 
-    public List<Review> findAllPublic() {
-        return reviewRepository.findByIsPrivateFalseOrderByUpdatedAtDesc();
+    public Page<Review> findAllPublic(int page, int size, String sort) {
+        String sortType = ReviewSortType.getSortBy(sort);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+
+        return reviewRepository.findByIsPrivateFalse(pageRequest);
     }
 
     @Transactional
@@ -104,6 +103,13 @@ public class ReviewService {
 
         review.update(request.getIsPrivate(), updateQuestionAnswers);
         return review;
+    }
+
+    @Transactional
+    public int increaseLikes(Long id, int likeCount) {
+        Review review = findById(id);
+        reviewRepository.increaseLikes(review, likeCount);
+        return findById(id).getLikes();
     }
 
     @Transactional

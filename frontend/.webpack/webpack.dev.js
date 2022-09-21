@@ -10,4 +10,13 @@ module.exports = (env, options) =>
       port: 3000,
       hot: true,
     },
+    module: {
+      rules: [
+        {
+          test: /\.tsx?$/,
+          exclude: /node_modules/,
+          use: ['ts-loader'],
+        },
+      ],
+    },
   });

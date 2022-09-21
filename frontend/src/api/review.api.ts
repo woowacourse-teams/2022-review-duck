@@ -25,6 +25,12 @@ export const getFormAnswer = async (
   return transformer.transformFormAnswer(data);
 };
 
+export const getPublicAnswer = async (): Promise<ReviewType.ReviewPublicAnswerList> => {
+  const { data } = await axiosInstance.get(API_URI.REVIEW.GET_PUBLIC_ANSWER);
+
+  return transformer.transformPublicAnswer(data);
+};
+
 export const createForm = async (
   query: ReviewType.CreateReviewFormRequest,
 ): Promise<ReviewType.CreateReviewFormResponse> => {
@@ -38,7 +44,7 @@ export const createFormByTemplate = async ({
   reviewFormTitle,
   questions,
 }: ReviewType.CreateFormByTemplateRequest) => {
-  const { data } = await axiosInstance.post(`/api/review-forms?templateId=${templateId}`, {
+  const { data } = await axiosInstance.post(API_URI.REVIEW.CREATE_FORM_BY_TEMPLATE(templateId), {
     reviewFormTitle,
     questions,
   });
@@ -80,6 +86,17 @@ export const updateAnswer = async ({
   const { data } = await axiosInstance.put(API_URI.REVIEW.UPDATE_ANSWER(reviewId), {
     contents,
     isPrivate,
+  });
+
+  return data;
+};
+
+export const updateReviewLike = async ({
+  reviewId,
+  likes,
+}: ReviewType.UpdateReviewLikeRequest): Promise<ReviewType.UpdateReviewLikeResponse> => {
+  const { data } = await axiosInstance.post(`/api/reviews/${reviewId}/likes`, {
+    likes,
   });
 
   return data;

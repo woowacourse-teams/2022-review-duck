@@ -18,6 +18,7 @@ import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.repository.ReviewFormRepository;
+import com.reviewduck.review.vo.ReviewFormSortType;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.service.TemplateService;
 
@@ -65,22 +66,17 @@ public class ReviewFormService {
     }
 
     public ReviewForm findByCode(String code) {
-        return reviewFormRepository.findByCode(code)
+        return reviewFormRepository.findByCodeAndIsActiveTrue(code)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고 폼입니다."));
     }
 
-    public List<ReviewForm> findBySocialId(String socialId) {
+    public Page<ReviewForm> findBySocialId(String socialId, int page, int size) {
         Member member = memberService.getBySocialId(socialId);
 
-        return reviewFormRepository.findByMemberOrderByUpdatedAtDesc(member);
-    }
+        Sort sort = Sort.by(Sort.Direction.DESC, ReviewFormSortType.LATEST.getSortBy());
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-    public Page<ReviewForm> findBySocialId(String socialId, Integer page, Integer size) {
-        String sortType = "updatedAt";
-        Member member = memberService.getBySocialId(socialId);
-        PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
-
-        return reviewFormRepository.findByMember(member, pageable);
+        return reviewFormRepository.findByMemberAndIsActiveTrue(member, pageRequest);
     }
 
     @Transactional
@@ -102,7 +98,7 @@ public class ReviewFormService {
     public void deleteByCode(Member member, String reviewFormCode) {
         ReviewForm reviewForm = findByCode(reviewFormCode);
         validateReviewFormIsMine(member, reviewForm, "본인이 생성한 회고 폼이 아니면 삭제할 수 없습니다.");
-        reviewFormRepository.delete(reviewForm.getId());
+        reviewFormRepository.delete(reviewForm);
     }
 
     private void validateReviewFormIsMine(Member member, ReviewForm reviewForm, String message) {

@@ -1,5 +1,17 @@
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
+import {
+  faBackspace,
+  faClock,
+  faDownload,
+  faFeatherPointed,
+  faHome,
+  faList,
+  faPenToSquare,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import cn from 'classnames';
 import { GITHUB_PROFILE_URL, PAGE_LIST, TEMPLATE_TAB } from 'constant';
 
@@ -22,17 +34,6 @@ import GithubIcon from 'assets/images/github.svg';
 import styles from './styles.module.scss';
 
 import useTemplateDetailQueries from './useTemplateDetailQueries';
-import {
-  faBackspace,
-  faClock,
-  faDownload,
-  faFeatherPointed,
-  faHome,
-  faList,
-  faPenToSquare,
-  faUser,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 function TemplateDetailPage() {
   const { templateId } = useParams();
@@ -89,7 +90,7 @@ function TemplateDetailPage() {
     <LayoutContainer>
       <section className={styles.header}>
         <div className={styles.titleContainer}>
-          <Text className={styles.title} size={28} weight="bold" element="h1">
+          <Text as="h1" className={styles.title} size={28} weight="bold">
             {template.info.title}
           </Text>
           <div className={styles.info}>
@@ -124,7 +125,7 @@ function TemplateDetailPage() {
             <div className={styles.iconButtons}>
               <div className={styles.iconButton} onClick={handleDeleteTemplate(template.info.id)}>
                 <FontAwesomeIcon icon={faBackspace} />
-                <Text size={14} element="span">
+                <Text as="span" size={14}>
                   템플릿 삭제
                 </Text>
               </div>
@@ -135,7 +136,7 @@ function TemplateDetailPage() {
                 <div className={styles.iconButton}>
                   <FontAwesomeIcon icon={faPenToSquare} />
 
-                  <Text size={14} element="span">
+                  <Text as="span" size={14}>
                     템플릿 수정
                   </Text>
                 </div>

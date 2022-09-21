@@ -1,6 +1,12 @@
 import { reviewAPI } from 'api';
 import { QUERY_KEY } from 'constant';
-import { ErrorResponse, ReviewAnswer, ReviewForm, ReviewFormAnswerList } from 'types';
+import {
+  ErrorResponse,
+  ReviewAnswer,
+  ReviewForm,
+  ReviewFormAnswerList,
+  ReviewPublicAnswerList,
+} from 'types';
 import 'types';
 
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
@@ -49,4 +55,16 @@ function useGetReviewFormAnswer(
   );
 }
 
-export { useGetReviewForm, useGetReviewFormAnswer, useGetReviewAnswer };
+function useGetReviewPublicAnswer(
+  queryOptions?: UseQueryOptions<ReviewPublicAnswerList, ErrorResponse>,
+) {
+  return useQuery<ReviewPublicAnswerList, ErrorResponse>(
+    [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEW_PUBLIC_ANSWER],
+    () => reviewAPI.getPublicAnswer(),
+    {
+      ...queryOptions,
+    },
+  );
+}
+
+export { useGetReviewForm, useGetReviewFormAnswer, useGetReviewAnswer, useGetReviewPublicAnswer };

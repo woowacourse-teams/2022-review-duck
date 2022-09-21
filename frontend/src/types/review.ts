@@ -41,7 +41,17 @@ export interface ReviewFormAnswer {
   info: UserContentRequireField;
 }
 
+export interface ReviewPublicAnswer extends ReviewFormAnswer {
+  reviewFormCode: string;
+  likes: number;
+}
+
 export type ReviewFormAnswerList = ReviewFormAnswer[];
+
+export interface ReviewPublicAnswerList {
+  numberOfReviews: number;
+  reviews: ReviewPublicAnswer[];
+}
 
 // API 관련 타입
 
@@ -89,16 +99,37 @@ export interface GetReviewAnswerResponse {
   isPrivate: boolean;
 }
 
-export type GetReviewFormAnswerResponse = Array<{
-  id: number;
-  updatedAt: number;
-  creator: UserProfile;
-  isCreator: boolean;
-  contents: Array<{
-    question: ServerQuestionRequireId;
-    answer: ServerAnswerRequireId;
+export type GetReviewFormAnswerResponse = {
+  numberOfReviews: number;
+  reviews: Array<{
+    id: number;
+    reviewTitle: string;
+    updatedAt: number;
+    likes: number;
+    isCreator: boolean;
+    creator: UserProfile;
+    contents: Array<{
+      question: ServerQuestionRequireId;
+      answer: ServerAnswerRequireId;
+    }>;
   }>;
-}>;
+};
+
+export interface GetReviewPublicAnswerResponse {
+  numberOfReviews: number;
+  reviews: Array<{
+    id: number;
+    reviewFormCode: string;
+    updatedAt: number;
+    likes: number;
+    creator: UserProfile;
+    isCreator: boolean;
+    contents: Array<{
+      question: ServerQuestionRequireId;
+      answer: ServerAnswerRequireId;
+    }>;
+  }>;
+}
 
 export type CreateReviewFormRequest = ReviewFormResponse;
 
@@ -141,6 +172,13 @@ export interface UpdateReviewAnswerRequest {
   }>;
   isPrivate: boolean;
 }
+
+export interface UpdateReviewLikeRequest {
+  reviewId: number;
+  likes: number;
+}
+
+export type UpdateReviewLikeResponse = Omit<UpdateReviewLikeRequest, 'reviewId'>;
 
 export type UpdateReviewAnswerResponse = null;
 

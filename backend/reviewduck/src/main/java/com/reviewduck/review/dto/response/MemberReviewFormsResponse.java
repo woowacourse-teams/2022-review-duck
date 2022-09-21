@@ -17,6 +17,7 @@ import lombok.Getter;
 public class MemberReviewFormsResponse {
 
     private long numberOfReviewForms;
+    private boolean isLastPage;
     private boolean isMine;
     private List<MemberReviewFormResponse> reviewForms;
 
@@ -27,10 +28,16 @@ public class MemberReviewFormsResponse {
 
         boolean isMine = member.getSocialId().equals(socialId);
 
-        return new MemberReviewFormsResponse(reviewForms.getTotalElements(), isMine, reviewFormResponses);
+        return new MemberReviewFormsResponse(
+            reviewForms.getTotalElements(), reviewForms.isLast(), isMine, reviewFormResponses);
     }
 
     public boolean getIsMine() {
         return isMine;
     }
+
+    public boolean getIsLastPage() {
+        return isLastPage;
+    }
+
 }

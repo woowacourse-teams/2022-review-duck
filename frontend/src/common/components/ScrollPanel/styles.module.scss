@@ -1,11 +1,13 @@
 @import 'styles/@global.scss';
 
-.container {
+.component-scroll-panel {
   position: relative;
   width: 100%;
 }
 
-.scroll-container {
+.component-scroll-panel .scroll-container {
+  @include hide-scroll-bar;
+
   position: relative;
   width: 100%;
   overflow-x: scroll;
@@ -14,36 +16,34 @@
   scroll-snap-type: none;
   scroll-behavior: smooth;
 
-  @include hide-scroll-bar;
-}
-
-.correct-screen {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  overflow-y: visible;
-
-  &:not(.disabled) {
-    transform: translateX(calc(max(100vw, 1024px) / 2 - 524px));
-  }
-
-  &::after {
-    content: '';
+  .correct-screen {
+    position: relative;
     display: flex;
+    flex-direction: row;
+    overflow-y: visible;
 
-    width: 1rem;
-    height: 1rem;
-    flex-shrink: 0;
-  }
+    &:not(.disabled) {
+      transform: translateX(calc(max(100vw, 1024px) / 2 - 524px));
+    }
 
-  > * {
-    flex-shrink: 0;
-    flex-grow: 0;
-    scroll-snap-align: end;
+    &::after {
+      content: '';
+      display: flex;
+
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+    }
+
+    > * {
+      flex-shrink: 0;
+      flex-grow: 0;
+      scroll-snap-align: end;
+    }
   }
 }
 
-.hover-detection {
+.component-scroll-panel .control-wrapper {
   position: absolute;
   top: 0;
 
@@ -88,18 +88,20 @@
     transform: translateY(50%);
     filter: blur(30px);
   }
+}
 
-  &:hover .control-button {
+.component-scroll-panel:hover .control-wrapper {
+  .control-button {
     opacity: 1;
     transform: translateY(0px);
     filter: blur(0px);
   }
 
-  &:hover .control-button:active {
+  .control-button:active {
     transform: scale(1.2);
   }
 
-  &.hidden {
+  .control-button &.hidden {
     visibility: hidden;
   }
 

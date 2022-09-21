@@ -81,4 +81,28 @@ public class ReviewTest {
         //then
         assertThat(actual).isEqualTo(expected);
     }
+
+    @Test
+    @DisplayName("좋아요를 추가한다.")
+    void like() {
+        // given
+        Review review = new Review(
+            "title",
+            member,
+            reviewForm,
+            List.of(
+                new QuestionAnswer(new ReviewFormQuestion("question1", "description1"), new Answer("answer1")),
+                new QuestionAnswer(new ReviewFormQuestion("question2", "description2"), new Answer("answer2")),
+                new QuestionAnswer(new ReviewFormQuestion("question3", "description3"), new Answer("answer3"))
+            ), false);
+
+        // when
+        int likeCount = 50;
+        // 50씩 두 번 업데이트
+        review.like(likeCount);
+        int actual = review.like(likeCount);
+
+        // then
+        assertThat(actual).isEqualTo(100);
+    }
 }

@@ -6,6 +6,7 @@
 
   background-size: cover;
   background-position: center;
+  flex-shrink: 0;
 
   &.size-small {
     width: 3rem;
@@ -75,7 +76,7 @@
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;
-      line-height: 140%;
+      line-height: 100%;
     }
   }
 }

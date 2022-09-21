@@ -5,4 +5,13 @@ module.exports = (env, options) =>
   merge(common(env, options), {
     mode: 'production',
     devtool: false,
+    module: {
+      rules: [
+        {
+          test: /\.(tsx?|jsx?)$/,
+          exclude: /node_modules/,
+          use: ['babel-loader'],
+        },
+      ],
+    },
   });

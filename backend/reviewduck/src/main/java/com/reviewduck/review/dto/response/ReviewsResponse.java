@@ -20,6 +20,7 @@ public class ReviewsResponse {
 
     private long numberOfReviews;
     private boolean isMine;
+    private boolean isLastPage;
     private List<ReviewSummaryResponse> reviews;
 
     public static ReviewsResponse of(Page<Review> reviews, String socialId, Member member) {
@@ -29,10 +30,15 @@ public class ReviewsResponse {
 
         boolean isMine = member.getSocialId().equals(socialId);
 
-        return new ReviewsResponse(reviews.getTotalElements(), isMine, reviewResponses);
+        return new ReviewsResponse(reviews.getTotalElements(), isMine, reviews.isLast(), reviewResponses);
     }
 
     public boolean getIsMine() {
         return isMine;
     }
+
+    public boolean getIsLastPage() {
+        return isLastPage;
+    }
+
 }

@@ -44,6 +44,7 @@ public class ReviewForm extends BaseDate {
     @Column(nullable = false)
     private String title;
 
+    @SuppressWarnings("FieldMayBeFinal")
     @Column(nullable = false)
     private boolean isActive = true;
 

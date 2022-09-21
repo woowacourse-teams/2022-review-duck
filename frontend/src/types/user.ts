@@ -1,10 +1,25 @@
-import { ServerAnswerRequireId, ServerQuestionRequireId } from './review';
+import { ServerAnswerRequireId, ServerQuestionRequireId, Answer } from './review';
 
 export interface UserProfile {
   id: number;
   socialNickname: string;
   nickname: string;
   profileUrl: string;
+}
+
+export interface UserArticleList {
+  totalNumber: number;
+  isMine: boolean;
+  articleList: Array<{
+    id?: number;
+    reviewFormCode?: string;
+    title: string;
+
+    contents: Array<{
+      question: ServerQuestionRequireId;
+      answer?: Answer;
+    }>;
+  }>;
 }
 
 export interface GetUserReviewAnswerResponse {
@@ -38,6 +53,21 @@ export interface GetUserReviewFormsResponse {
   }>;
 }
 
+export interface GetUserTemplatesResponse {
+  numberOfTemplates: number;
+  isMine: boolean;
+  templates: Array<{
+    info: {
+      id: number;
+      title: string;
+      description: string;
+      updatedAt: number;
+      usedCount: number;
+    };
+    questions: ServerQuestionRequireId[];
+  }>;
+}
+
 export interface GetUserProfileResponse {
   isMine: boolean;
   socialId: string;
@@ -47,3 +77,5 @@ export interface GetUserProfileResponse {
 }
 
 export type UpdateProfileResponse = null;
+
+export type Tabs = 'reviews' | 'review-forms' | 'templates';
