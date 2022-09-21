@@ -1,6 +1,6 @@
 {
   "name": "review-duck-frontend",
-  "version": "0.24.2",
+  "version": "0.25.0",
   "main": "index.tsx",
   "license": "MIT",
   "scripts": {
