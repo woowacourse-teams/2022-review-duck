@@ -25,8 +25,14 @@ export const getFormAnswer = async (
   return transformer.transformFormAnswer(data);
 };
 
-export const getPublicAnswer = async (): Promise<ReviewType.ReviewPublicAnswerList> => {
-  const { data } = await axiosInstance.get(API_URI.REVIEW.GET_PUBLIC_ANSWER);
+/* TODO: sort 파라미터가 추가돼야 함 */
+export const getPublicAnswer = async (
+  pageNumber: string,
+  size: number,
+): Promise<ReviewType.ReviewPublicAnswerList> => {
+  const { data } = await axiosInstance.get(
+    `${API_URI.REVIEW.GET_PUBLIC_ANSWER}?page=${pageNumber}&size=${size}`,
+  );
 
   return transformer.transformPublicAnswer(data);
 };

@@ -71,7 +71,7 @@ export const transformFormAnswer = (data: GetReviewFormAnswerResponse): ReviewFo
 export const transformPublicAnswer = (
   data: GetReviewPublicAnswerResponse,
 ): ReviewPublicAnswerList => {
-  const { numberOfReviews, reviews } = data;
+  const { isLastPage, numberOfReviews, reviews } = data;
 
   const transformReviews = reviews.map((review) => {
     const { id, reviewFormCode, contents, creator, isCreator, updatedAt, likes } = review;
@@ -94,5 +94,5 @@ export const transformPublicAnswer = (
     };
   });
 
-  return { numberOfReviews, reviews: transformReviews };
+  return { isLastPage, numberOfReviews, reviews: transformReviews };
 };

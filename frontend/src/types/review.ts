@@ -49,6 +49,7 @@ export interface ReviewPublicAnswer extends ReviewFormAnswer {
 export type ReviewFormAnswerList = ReviewFormAnswer[];
 
 export interface ReviewPublicAnswerList {
+  isLastPage: boolean;
   numberOfReviews: number;
   reviews: ReviewPublicAnswer[];
 }
@@ -116,6 +117,7 @@ export type GetReviewFormAnswerResponse = {
 };
 
 export interface GetReviewPublicAnswerResponse {
+  isLastPage: boolean;
   numberOfReviews: number;
   reviews: Array<{
     id: number;
