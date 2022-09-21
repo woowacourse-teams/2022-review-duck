@@ -43,14 +43,16 @@ interface ReviewAnswerProps {
   children: React.ReactNode;
 }
 
-const ReviewAnswer = forwardRef(
-  ({ isLoading, children }: ReviewAnswerProps, forwardedRef: ForwardedRef<HTMLDivElement>) => {
-    return (
-      <div className={styles.reviewAnswer} ref={forwardedRef}>
-        {isLoading ? <Skeleton /> : children}
-      </div>
-    );
-  },
+const ReviewAnswer = React.memo(
+  forwardRef(
+    ({ isLoading, children }: ReviewAnswerProps, forwardedRef: ForwardedRef<HTMLDivElement>) => {
+      return (
+        <div className={styles.reviewAnswer} ref={forwardedRef}>
+          {isLoading ? <Skeleton /> : children}
+        </div>
+      );
+    },
+  ),
 );
 
 ReviewAnswer.displayName = 'ReviewAnswer';
