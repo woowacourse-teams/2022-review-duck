@@ -10,7 +10,7 @@ on:
     branches: ["develop", "main"]
     types : [ labeled ]
 
-# job 의 공통된 옵션
+# job의 공통된 옵션
 defaults:
   run:
     # 작업을 수행할 디렉토리 설정
