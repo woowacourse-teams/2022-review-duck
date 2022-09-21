@@ -22,14 +22,12 @@ public class TimelineReviewsResponse {
     private boolean isLastPage;
     private List<ReviewResponse> reviews;
 
-    public static TimelineReviewsResponse of(Page<Review> reviews, Member member, int page) {
+    public static TimelineReviewsResponse of(Page<Review> reviews, Member member) {
         List<ReviewResponse> reviewResponses = reviews.getContent().stream()
             .map(review -> ReviewResponse.of(member, review))
             .collect(Collectors.toUnmodifiableList());
 
-        return new TimelineReviewsResponse(reviews.getTotalElements(),
-            page == reviews.getTotalPages(),
-            reviewResponses);
+        return new TimelineReviewsResponse(reviews.getTotalElements(), reviews.isLast(), reviewResponses);
     }
 
     public boolean getIsLastPage() {

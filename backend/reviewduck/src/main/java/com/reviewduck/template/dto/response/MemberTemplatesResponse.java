@@ -21,15 +21,16 @@ public class MemberTemplatesResponse {
     private boolean isMine;
     private List<MemberTemplateResponse> templates;
 
-    public static MemberTemplatesResponse of(Page<Template> templates, String socialId, Member member, int page) {
+    public static MemberTemplatesResponse of(Page<Template> templates, String socialId, Member member) {
         List<MemberTemplateResponse> memberTemplateResponses = templates.stream()
             .map(MemberTemplateResponse::from)
             .collect(Collectors.toUnmodifiableList());
 
         boolean isMine = member.getSocialId().equals(socialId);
 
-        return new MemberTemplatesResponse(templates.getTotalElements(),
-            page == templates.getTotalPages(),
+        return new MemberTemplatesResponse(
+            templates.getTotalElements(),
+            templates.isLast(),
             isMine,
             memberTemplateResponses);
     }
