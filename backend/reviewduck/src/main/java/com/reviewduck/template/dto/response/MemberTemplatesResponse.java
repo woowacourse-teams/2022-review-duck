@@ -17,6 +17,7 @@ import lombok.Getter;
 public class MemberTemplatesResponse {
 
     private long numberOfTemplates;
+    private boolean isLastPage;
     private boolean isMine;
     private List<MemberTemplateResponse> templates;
 
@@ -27,10 +28,19 @@ public class MemberTemplatesResponse {
 
         boolean isMine = member.getSocialId().equals(socialId);
 
-        return new MemberTemplatesResponse(templates.getTotalElements(), isMine, memberTemplateResponses);
+        return new MemberTemplatesResponse(
+            templates.getTotalElements(),
+            templates.isLast(),
+            isMine,
+            memberTemplateResponses);
     }
 
     public boolean getIsMine() {
         return isMine;
     }
+
+    public boolean getIsLastPage() {
+        return isLastPage;
+    }
+
 }

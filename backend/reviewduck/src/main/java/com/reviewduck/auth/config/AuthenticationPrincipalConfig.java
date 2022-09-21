@@ -28,7 +28,8 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
             .addPathPatterns("/api/**")
             .excludePathPatterns("/api/login/**")
             .excludePathPatterns("/api/review-forms/*/reviews")
-            .excludePathPatterns("/api/reviews/public");
+            .excludePathPatterns("/api/reviews/public")
+            .excludePathPatterns("/api/reviews/*/likes");
     }
 
     @Override

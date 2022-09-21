@@ -158,8 +158,8 @@ public class TemplateServiceTest {
             templateService.increaseUsedCount(template1.getId());
 
             // when
-            Integer page = 0;
-            Integer size = 1;
+            int page = 0;
+            int size = 1;
             String sort = "trend";
 
             List<Template> templates = templateService.findAll(page, size, sort).getContent();
@@ -180,8 +180,8 @@ public class TemplateServiceTest {
             Template template2 = saveTemplate(member1, "title2", "description2", questions2);
 
             // when
-            Integer page = 0;
-            Integer size = 1;
+            int page = 0;
+            int size = 1;
             String sort = "latest";
 
             List<Template> templates = templateService.findAll(page, size, sort).getContent();
@@ -211,8 +211,8 @@ public class TemplateServiceTest {
             Template template4 = saveTemplate(member2, "title4", "description2", questions2);
 
             // when
-            Integer page = 0;
-            Integer size = 1;
+            int page = 0;
+            int size = 1;
 
             List<Template> templates = templateService.findAllBySocialId("1", page, size).getContent();
 

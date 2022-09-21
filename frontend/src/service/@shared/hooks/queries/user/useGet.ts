@@ -1,13 +1,8 @@
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+
 import { userAPI } from 'api';
 import { QUERY_KEY } from 'constant';
-import {
-  GetUserReviewAnswerResponse,
-  GetUserReviewFormsResponse,
-  ErrorResponse,
-  GetUserProfileResponse,
-} from 'types';
-
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { ErrorResponse, GetUserProfileResponse, UserArticleList } from 'types';
 
 interface UseGetUserProfile {
   socialId: number;
@@ -29,10 +24,10 @@ function useGetUserProfile(
 function useGetUserReviewForms(
   socialId: number,
   pageNumber: string,
-  queryOptions?: UseQueryOptions<GetUserReviewFormsResponse, ErrorResponse>,
+  queryOptions?: UseQueryOptions<UserArticleList, ErrorResponse>,
 ) {
-  return useQuery<GetUserReviewFormsResponse, ErrorResponse>(
-    [QUERY_KEY.DATA.REVIEW_FORM, QUERY_KEY.API.GET_MY_REVIEW_FORMS, { socialId, pageNumber }],
+  return useQuery<UserArticleList, ErrorResponse>(
+    [QUERY_KEY.DATA.REVIEW_FORM, QUERY_KEY.API.GET_USER_REVIEW_FORMS, { socialId, pageNumber }],
     () => userAPI.getUserReviewForms(socialId, pageNumber),
     {
       ...queryOptions,
@@ -44,10 +39,10 @@ function useGetUserReviewForms(
 function useGetUserReviewAnswer(
   socialId: number,
   pageNumber: string,
-  queryOptions?: UseQueryOptions<GetUserReviewAnswerResponse, ErrorResponse>,
+  queryOptions?: UseQueryOptions<UserArticleList, ErrorResponse>,
 ) {
-  return useQuery<GetUserReviewAnswerResponse, ErrorResponse>(
-    [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_MY_REVIEWS, { socialId, pageNumber }],
+  return useQuery<UserArticleList, ErrorResponse>(
+    [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_USER_REVIEWS, { socialId, pageNumber }],
     () => userAPI.getUserReviewAnswers(socialId, pageNumber),
     {
       ...queryOptions,
@@ -56,4 +51,19 @@ function useGetUserReviewAnswer(
   );
 }
 
-export { useGetUserProfile, useGetUserReviewForms, useGetUserReviewAnswer };
+function useGetUserTemplates(
+  socialId: number,
+  pageNumber: string,
+  queryOptions?: UseQueryOptions<UserArticleList, ErrorResponse>,
+) {
+  return useQuery<UserArticleList, ErrorResponse>(
+    [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_USER_TEMPLATES, { socialId, pageNumber }],
+    () => userAPI.getUserTemplates(socialId, pageNumber),
+    {
+      ...queryOptions,
+      keepPreviousData: true,
+    },
+  );
+}
+
+export { useGetUserProfile, useGetUserReviewForms, useGetUserTemplates, useGetUserReviewAnswer };

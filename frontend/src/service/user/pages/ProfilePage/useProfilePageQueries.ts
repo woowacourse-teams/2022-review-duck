@@ -1,52 +1,42 @@
+import { USER_PROFILE_TAB } from 'constant';
+import { Tabs } from 'types';
+
 import { useDeleteReviewAnswer, useDeleteReviewForm } from 'service/@shared/hooks/queries/review';
+import { useDeleteTemplate } from 'service/@shared/hooks/queries/template/useDelete';
 import {
   useGetUserReviewForms,
   useGetUserReviewAnswer,
   useGetUserProfile,
+  useGetUserTemplates,
 } from 'service/@shared/hooks/queries/user';
 
-function useProfilePageQueries(socialIdPrams: string, pageNumber: string) {
+function useProfilePageQueries(currentTab: Tabs, socialIdPrams: string, pageNumber: string) {
   const socialId = Number(socialIdPrams);
-  const getMyReviewsQuery = useGetUserReviewAnswer(socialId, pageNumber);
-  const getMyReviewFormsQuery = useGetUserReviewForms(socialId, pageNumber);
 
-  const getUserProfileQuery = useGetUserProfile({ socialId });
+  const useGetQueries = {
+    [USER_PROFILE_TAB.REVIEWS]: useGetUserReviewAnswer,
+    [USER_PROFILE_TAB.REVIEW_FORMS]: useGetUserReviewForms,
+    [USER_PROFILE_TAB.TEMPLATES]: useGetUserTemplates,
+  };
+
   const deleteReviewMutation = useDeleteReviewAnswer();
   const deleteReviewFormMutation = useDeleteReviewForm();
+  const deleteTemplateMutation = useDeleteTemplate();
 
-  const userReviews = getMyReviewsQuery.data || {
-    numberOfReviews: 0,
-    isMine: false,
-    reviews: [],
-  };
+  const getUserProfile = useGetUserProfile({ socialId });
+  const getUserArticles = useGetQueries[currentTab](socialId, pageNumber);
 
-  const userReviewForms = getMyReviewFormsQuery.data || {
-    numberOfReviewForms: 0,
-    isMine: false,
-    reviewForms: [],
-  };
+  const isLoading = getUserProfile.isLoading || getUserArticles.isLoading;
+  const isError = getUserProfile.isError || getUserArticles.isError;
 
-  const userProfile = getUserProfileQuery.data || {
-    isMine: false,
-    socialId: '',
-    nickname: '',
-    socialNickname: '',
-    profileUrl: '',
-  };
-
-  const isError =
-    getMyReviewsQuery.isError || getMyReviewFormsQuery.isError || getUserProfileQuery.isError;
-
-  const { error } = getMyReviewsQuery || getMyReviewFormsQuery || getUserProfileQuery;
+  if (isLoading || isError) return false;
 
   return {
-    userReviews,
-    userReviewForms,
-    userProfile,
+    userArticles: getUserArticles.data,
+    userProfile: getUserProfile.data,
     deleteReviewMutation,
     deleteReviewFormMutation,
-    isError,
-    error,
+    deleteTemplateMutation,
   };
 }
 

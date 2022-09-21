@@ -25,6 +25,10 @@ public class AdminReviewFormService {
         return reviewFormRepository.findAll();
     }
 
+    public ReviewForm findByCode(String reviewFormCode) {
+        return reviewFormRepository.findByCode(reviewFormCode);
+    }
+
     public List<ReviewForm> findByMemberId(Long memberId) {
         Member member = adminMemberService.findMemberById(memberId);
         return reviewFormRepository.findAllByMember(member);

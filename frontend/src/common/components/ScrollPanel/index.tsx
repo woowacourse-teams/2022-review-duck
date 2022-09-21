@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import cn from 'classnames';
 
 import useDebounceCallback from 'common/hooks/useDebounceCallback';
@@ -7,8 +10,6 @@ import useDebounceCallback from 'common/hooks/useDebounceCallback';
 import styles from './styles.module.scss';
 
 import FlexContainer from '../FlexContainer';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface ScrollPanelProps {
   className?: string;
@@ -71,9 +72,9 @@ function ScrollPanel({ className, centerDisabled, children }: ScrollPanelProps) 
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.componentScrollPanel}>
       <FlexContainer
-        className={cn(styles.hoverDetection, styles.previous, {
+        className={cn(styles.controlWrapper, styles.previous, {
           [styles.hidden]: controlHidden.previous,
         })}
         justify="center"
@@ -98,7 +99,7 @@ function ScrollPanel({ className, centerDisabled, children }: ScrollPanelProps) 
       </div>
 
       <FlexContainer
-        className={cn(styles.hoverDetection, styles.next, {
+        className={cn(styles.controlWrapper, styles.next, {
           [styles.hidden]: controlHidden.next,
         })}
         justify="center"

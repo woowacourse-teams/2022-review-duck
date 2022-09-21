@@ -99,16 +99,21 @@ export interface GetReviewAnswerResponse {
   isPrivate: boolean;
 }
 
-export type GetReviewFormAnswerResponse = Array<{
-  id: number;
-  updatedAt: number;
-  creator: UserProfile;
-  isCreator: boolean;
-  contents: Array<{
-    question: ServerQuestionRequireId;
-    answer: ServerAnswerRequireId;
+export type GetReviewFormAnswerResponse = {
+  numberOfReviews: number;
+  reviews: Array<{
+    id: number;
+    reviewTitle: string;
+    updatedAt: number;
+    likes: number;
+    isCreator: boolean;
+    creator: UserProfile;
+    contents: Array<{
+      question: ServerQuestionRequireId;
+      answer: ServerAnswerRequireId;
+    }>;
   }>;
-}>;
+};
 
 export interface GetReviewPublicAnswerResponse {
   numberOfReviews: number;

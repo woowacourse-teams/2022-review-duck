@@ -1,7 +1,7 @@
 package com.reviewduck.template.controller;
 
 import static com.reviewduck.common.util.Logging.*;
-import static com.reviewduck.common.vo.PageConstant.*;
+import static com.reviewduck.template.vo.TemplatePageConstant.*;
 
 import javax.validation.Valid;
 
@@ -85,8 +85,8 @@ public class TemplateController {
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     public TemplatesResponse findAll(@AuthenticationPrincipal Member member,
-        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
-        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
         @RequestParam(required = false) String sort) {
 
         info("/api/templates?page=" + page + " size=" + size, "GET", "");
@@ -100,8 +100,8 @@ public class TemplateController {
     @ResponseStatus(HttpStatus.OK)
     public MemberTemplatesResponse findAllByMemberId(@AuthenticationPrincipal Member member,
         @RequestParam(value = "member") String socialId,
-        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) Integer page,
-        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) Integer size) {
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size) {
 
         info("/api/templates?member=" + socialId + " page=" + page + " size=" + size, "GET", "");
 

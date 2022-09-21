@@ -174,11 +174,12 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             saveTemplateAndGetId(accessToken2, "title2");
 
             // when, then
-            get("/api/templates/all?page=1&size=1&sort=latest", accessToken1).statusCode(HttpStatus.OK.value())
+            get("/api/templates/all?page=2&size=1&sort=latest", accessToken1).statusCode(HttpStatus.OK.value())
                 .assertThat().body("numberOfTemplates", equalTo(2))
                 .assertThat().body("templates", hasSize(1))
-                .assertThat().body("templates[0].info.title", equalTo("title2"))
-                .assertThat().body("templates[0].isCreator", equalTo(false));
+                .assertThat().body("templates[0].info.title", equalTo("title1"))
+                .assertThat().body("templates[0].isCreator", equalTo(true))
+                .body("isLastPage", equalTo(true));
         }
 
         @Test
@@ -241,7 +242,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
                 .assertThat().body("numberOfTemplates", equalTo(2))
                 .assertThat().body("templates", hasSize(1))
                 .assertThat().body("templates[0].info.title", equalTo("title2"))
-                .assertThat().body("isMine", equalTo(false));
+                .assertThat().body("isMine", equalTo(false))
+                .body("isLastPage", equalTo(false));
         }
 
         @Test

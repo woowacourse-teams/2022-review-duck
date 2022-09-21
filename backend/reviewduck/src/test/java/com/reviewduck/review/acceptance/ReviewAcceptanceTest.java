@@ -27,10 +27,10 @@ import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
+import com.reviewduck.review.dto.request.ReviewLikesRequest;
 import com.reviewduck.review.dto.request.ReviewUpdateRequest;
 import com.reviewduck.review.dto.response.ReviewContentResponse;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
-import com.reviewduck.review.dto.response.ReviewResponse;
 import com.reviewduck.review.dto.response.ReviewSynchronizedResponse;
 
 public class ReviewAcceptanceTest extends AcceptanceTest {
@@ -55,42 +55,6 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
         accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember1.getId()));
         accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember2.getId()));
-    }
-
-    private String createReviewFormAndGetCode(String accessToken, String reviewTitle,
-        List<ReviewFormQuestionCreateRequest> questions) {
-        // given
-        ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
-
-        // when, then
-        return post("/api/review-forms", request, accessToken)
-            .extract()
-            .as(ReviewFormCodeResponse.class)
-            .getReviewFormCode();
-    }
-
-    private Long saveReviewAndGetId(String accessToken, boolean isPrivate) {
-        // save ReviewForm
-        String reviewTitle = "title";
-        List<ReviewFormQuestionCreateRequest> questions = List.of(
-            new ReviewFormQuestionCreateRequest("question1", "description1"),
-            new ReviewFormQuestionCreateRequest("question2", "description2"));
-        String code = createReviewFormAndGetCode(accessToken, reviewTitle, questions);
-
-        // save Review
-        ReviewCreateRequest createRequest = new ReviewCreateRequest(isPrivate, List.of(
-            new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
-            new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
-        ));
-
-        post("/api/review-forms/" + code, createRequest, accessToken);
-
-        return get("/api/review-forms/" + code + "/reviews?displayType=list", accessToken)
-            .extract()
-            .body()
-            .jsonPath().getList(".", ReviewResponse.class)
-            .get(0)
-            .getId();
     }
 
     @Nested
@@ -191,13 +155,15 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             saveReviewAndGetId(accessToken1, false);
             saveReviewAndGetId(accessToken1, false);
 
-            get("/api/reviews?member=1&page=1&size=1", accessToken1)
+            get("/api/reviews?member=1&page=2&size=1", accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .assertThat()
                 .body("isMine", equalTo(true))
                 .body("reviews", hasSize(1))
                 .body("numberOfReviews", equalTo(2))
-                .body("reviews[0].id", equalTo(2));
+                .body("reviews[0].id", equalTo(1))
+                .body("isLastPage", equalTo(true));
+
         }
 
         @Test
@@ -215,7 +181,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 .body("isMine", equalTo(false))
                 .body("reviews", hasSize(2))
                 .body("numberOfReviews", equalTo(2))
-                .body("reviews[0].id", equalTo(3));
+                .body("reviews[0].id", equalTo(3))
+                .body("isLastPage", equalTo(true));
         }
 
         @Test
@@ -251,31 +218,55 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         void withoutLogin() {
             get("/api/reviews?member=1").statusCode(HttpStatus.OK.value());
         }
+
     }
 
     @Nested
-    @DisplayName("최신 순 회고 조회")
+    @DisplayName("타임라인 회고 조회")
     class findTimelineReview {
 
         @Test
-        @DisplayName("공개된 모든 회고를 updatedAt 내림차순으로 모두 조회한다.")
+        @DisplayName("파라미터가 없는 경우 기본값으로 조회한다.")
         void findAllReviews() {
             // given
-            saveReviewAndGetId(accessToken1, false);
+            for (int i = 0; i < DEFAULT_SIZE + 5; i++) {
+                saveReviewAndGetId(accessToken1, false);
+            }
+
+            int reviewId = saveReviewAndGetId(accessToken1, false).intValue();
             saveReviewAndGetId(accessToken1, true);
-            Long reviewId = saveReviewAndGetId(accessToken1, false);
 
-            List<ReviewResponse> reviewResponses = get("/api/reviews/public")
+            get("/api/reviews/public")
                 .statusCode(HttpStatus.OK.value())
-                .extract()
-                .body()
-                .jsonPath().getList(".", ReviewResponse.class);
+                .assertThat()
+                .body("numberOfReviews", equalTo(DEFAULT_SIZE + 6))
+                .body("reviews", hasSize(DEFAULT_SIZE))
+                .body("reviews[0].id", equalTo(reviewId));
 
-            assertAll(
-                () -> assertThat(reviewResponses).hasSize(2),
-                () -> assertThat(reviewResponses.get(0).getId()).isEqualTo(reviewId)
-            );
         }
+
+        @Test
+        @DisplayName("최신순으로 특정 페이지를 조회한다.")
+        void findPageOrderByLatest() {
+            saveReviewAndGetId(accessToken1, false);
+            int reviewId = saveReviewAndGetId(accessToken2, false).intValue();
+            saveReviewAndGetId(accessToken2, true);
+
+            get("/api/reviews/public?page=1&size=1&sort=latest")
+                .statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .body("numberOfReviews", equalTo(2))
+                .body("reviews", hasSize(1))
+                .body("reviews[0].id", equalTo(reviewId))
+                .body("isLastPage", equalTo(false));
+        }
+
+        @Test
+        @DisplayName("로그인하지 않은 상태로 조회할 수 있다.")
+        void withoutLogin() {
+            get("/api/reviews/public").statusCode(HttpStatus.OK.value());
+        }
+
     }
 
     @Nested
@@ -386,5 +377,67 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
+    }
+
+    @Nested
+    @DisplayName("좋아요")
+    class likes {
+
+        @Test
+        @DisplayName("좋아요를 더한다.")
+        void increase() {
+            // given
+            Long reviewId = saveReviewAndGetId(accessToken1, false);
+            ReviewLikesRequest request = new ReviewLikesRequest(50);
+
+            // when, then
+            // 50번씩 두 번 더한다.
+            post("api/reviews/" + reviewId + "/likes", request)
+                .statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .body("likes", equalTo(50));
+
+            post("api/reviews/" + reviewId + "/likes", request)
+                .statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .body("likes", equalTo(100));
+        }
+
+    }
+
+    private String createReviewFormAndGetCode(String accessToken, String reviewTitle,
+        List<ReviewFormQuestionCreateRequest> questions) {
+        // given
+        ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
+
+        // when, then
+        return post("/api/review-forms", request, accessToken)
+            .extract()
+            .as(ReviewFormCodeResponse.class)
+            .getReviewFormCode();
+    }
+
+    private Long saveReviewAndGetId(String accessToken, boolean isPrivate) {
+        // save ReviewForm
+        String reviewTitle = "title";
+        List<ReviewFormQuestionCreateRequest> questions = List.of(
+            new ReviewFormQuestionCreateRequest("question1", "description1"),
+            new ReviewFormQuestionCreateRequest("question2", "description2"));
+        String code = createReviewFormAndGetCode(accessToken, reviewTitle, questions);
+
+        // save Review
+        ReviewCreateRequest createRequest = new ReviewCreateRequest(isPrivate, List.of(
+            new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+            new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+        ));
+
+        post("/api/review-forms/" + code, createRequest, accessToken);
+
+        return get("/api/review-forms/" + code + "/reviews?displayType=list",
+            accessToken)
+            .extract()
+            .body()
+            .jsonPath()
+            .getLong("reviews[0].id");
     }
 }

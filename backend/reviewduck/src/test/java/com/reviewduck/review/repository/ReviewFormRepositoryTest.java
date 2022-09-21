@@ -71,17 +71,44 @@ public class ReviewFormRepositoryTest {
         ReviewForm expected = saveReviewForm(member1);
 
         // when
-        Integer page = 0;
-        Integer size = 3;
+        int page = 0;
+        int size = 3;
         String sortType = "updatedAt";
         PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
 
-        List<ReviewForm> myReviewForms = reviewFormRepository.findByMember(member1, pageable)
+        List<ReviewForm> myReviewForms = reviewFormRepository.findByMemberAndIsActiveTrue(member1, pageable)
             .getContent();
 
         // then
         assertAll(
             () -> assertThat(myReviewForms).hasSize(2),
+            () -> assertThat(myReviewForms.get(0)).isNotNull(),
+            () -> assertThat(myReviewForms.get(0).getMember().getNickname()).isEqualTo("제이슨"),
+            () -> assertThat(myReviewForms.get(0).getTitle()).isEqualTo(expected.getTitle())
+        );
+    }
+
+    @Test
+    @DisplayName("회고 질문지 조회 시 삭제된 회고 질문지는 제외한다.")
+    void findReviewExceptDelete() throws InterruptedException {
+        // given
+        ReviewForm expected = saveReviewForm(member1);
+        ReviewForm reviewForm = saveReviewForm(member1);
+
+        reviewFormRepository.delete(reviewForm);
+
+        // when
+        int page = 0;
+        int size = 3;
+        String sortType = "updatedAt";
+        PageRequest pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+
+        List<ReviewForm> myReviewForms = reviewFormRepository.findByMemberAndIsActiveTrue(member1, pageable)
+            .getContent();
+
+        // then
+        assertAll(
+            () -> assertThat(myReviewForms).hasSize(1),
             () -> assertThat(myReviewForms.get(0)).isNotNull(),
             () -> assertThat(myReviewForms.get(0).getMember().getNickname()).isEqualTo("제이슨"),
             () -> assertThat(myReviewForms.get(0).getTitle()).isEqualTo(expected.getTitle())
@@ -99,20 +126,7 @@ public class ReviewFormRepositoryTest {
         reviewFormRepository.delete(reviewForm);
 
         // then
-        assertThat(reviewFormRepository.findByCode(reviewFormCode).isEmpty()).isTrue();
-    }
-
-    @Test
-    @DisplayName("삭제된 회고 폼을 멤버로 조회할 수 없다.")
-    void NotFoundDeletedReviewFormByMember() throws InterruptedException {
-        // given
-        ReviewForm reviewForm = saveReviewForm(member1);
-
-        // when
-        reviewFormRepository.delete(reviewForm);
-
-        // then
-        assertThat(reviewFormRepository.findByMemberOrderByUpdatedAtDesc(member1).isEmpty()).isTrue();
+        assertThat(reviewFormRepository.findByCodeAndIsActiveTrue(reviewFormCode).isEmpty()).isTrue();
     }
 
     private ReviewForm saveReviewForm(Member member) throws InterruptedException {

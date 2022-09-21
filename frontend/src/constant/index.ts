@@ -39,8 +39,9 @@ const QUERY_KEY = {
     GET_REVIEW_FORM: 'getReviewForm',
     GET_REVIEW_PUBLIC_ANSWER: 'getReviewPublicAnswer',
 
-    GET_MY_REVIEWS: 'getMyReviews',
-    GET_MY_REVIEW_FORMS: 'getMyReviewForms',
+    GET_USER_REVIEWS: 'getMyReviews',
+    GET_USER_REVIEW_FORMS: 'getMyReviewForms',
+    GET_USER_TEMPLATES: 'getUserTemplates',
 
     GET_TEMPLATES: 'getTemplates',
     GET_TEMPLATE: 'getTemplate',
@@ -71,6 +72,7 @@ const PERMISSION_VALID_TIME = 60 * 1000;
 const USER_PROFILE_TAB = {
   REVIEWS: 'reviews',
   REVIEW_FORMS: 'review-forms',
+  TEMPLATES: 'templates',
 };
 
 const TEMPLATE_TAB = {
@@ -93,6 +95,7 @@ const PAGE_OPTION = {
   TEMPLATE_ITEM_SIZE: 16,
   TEMPLATE_TREND_ITEM_SIZE: 10,
   TEMPLATE_BUTTON_LENGTH: 10,
+  USER_TEMPLATE_SIZE: 5,
 };
 
 const API_URI = {
@@ -108,6 +111,8 @@ const API_URI = {
     GET_PUBLIC_ANSWER: '/api/reviews/public',
 
     CREATE_FORM: '/api/review-forms',
+    CREATE_FORM_BY_TEMPLATE: (templateId: numberString) =>
+      `/api/templates/${templateId}/review-forms/edited`,
     CREATE_ANSWER: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
 
     UPDATE_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
@@ -119,6 +124,7 @@ const API_URI = {
   USER: {
     GET_REVIEW_ANSWERS: '/api/reviews',
     GET_REVIEW_FORMS: '/api/review-forms',
+    GET_TEMPLATES: (socialId: numberString) => `/api/templates?member=${socialId}`,
     GET_PROFILE: (socialId: numberString) => `/api/members/${socialId}`,
     UPDATE_PROFILE: '/api/members/me',
   },
