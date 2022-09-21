@@ -2,9 +2,15 @@ import React, { useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { faArrowTrendUp, faPenNib } from '@fortawesome/free-solid-svg-icons';
+import { InfiniteData } from '@tanstack/react-query';
 
 import { PAGE_LIST, PAGE_OPTION, QUERY_KEY, TAB } from 'constant';
-import { ReviewPublicAnswer, ReviewPublicAnswerList, TimelineFilterType } from 'types';
+import {
+  InfiniteItem,
+  ReviewPublicAnswer,
+  ReviewPublicAnswerList,
+  TimelineFilterType,
+} from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useStackFetch from 'common/hooks/useStackFetch';
@@ -59,19 +65,27 @@ function ReviewTimelinePage() {
 
   const { pages } = reviews;
 
-  const setUpdateLikeCount = (reviewId: number, count: number) => {
-    queryClient.setQueryData<ReviewPublicAnswerList>(
-      [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEW_PUBLIC_ANSWER],
+  const setUpdateLikeCount = (pageIndex: number, reviewId: number, count: number) => {
+    queryClient.setQueryData<InfiniteData<InfiniteItem<ReviewPublicAnswerList>>>(
+      [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEW_PUBLIC_ANSWER, { filter: currentTab }],
       (previousData) => {
         if (!previousData) return previousData;
 
-        const updatedReviews = previousData.reviews.map((review) => {
+        const updatedReviews = previousData.pages[pageIndex].data.reviews.map((review) => {
           if (review.id !== reviewId) return review;
 
           return { ...review, likes: count };
         });
 
-        return { ...previousData, reviews: updatedReviews };
+        const newPages = [...previousData.pages];
+        const newPage = { ...previousData.pages[pageIndex] };
+        const newData = { ...newPage.data };
+
+        newData.reviews = updatedReviews;
+        newPage.data = newData;
+        newPages[pageIndex] = newPage;
+
+        return { pages: newPages, pageParams: previousData.pageParams };
       },
     );
   };
@@ -106,7 +120,7 @@ function ReviewTimelinePage() {
     });
   };
 
-  const handleClickLikeButton = (reviewId: number, likes: number) => () => {
+  const handleClickLikeButton = (pageIndex: number, reviewId: number, likes: number) => () => {
     if (!reviewsLikeStack.current[reviewId]) {
       reviewsLikeStack.current[reviewId] = 0;
     }
@@ -114,10 +128,10 @@ function ReviewTimelinePage() {
     const reviewLikeStack = (reviewsLikeStack.current[reviewId] += 1);
 
     addFetch(reviewId, () => updateReviewLike({ reviewId, likes: reviewLikeStack }), {
-      onUpdate: () => setUpdateLikeCount(reviewId, likes + 1),
-      onError: () => setUpdateLikeCount(reviewId, likes - reviewLikeStack),
+      onUpdate: () => setUpdateLikeCount(pageIndex, reviewId, likes + 1),
+      onError: () => setUpdateLikeCount(pageIndex, reviewId, likes - reviewLikeStack),
       onSuccess: ({ likes: latestLikes }) => {
-        setUpdateLikeCount(reviewId, latestLikes);
+        setUpdateLikeCount(pageIndex, reviewId, latestLikes);
         delete reviewsLikeStack.current[reviewId];
       },
     });
@@ -189,7 +203,7 @@ function ReviewTimelinePage() {
 
                       <Questions.Reaction
                         likeCount={likes}
-                        onClickLike={handleClickLikeButton(id, likes)}
+                        onClickLike={handleClickLikeButton(pageIndex, id, likes)}
                         onClickBookmark={() => null}
                       />
                     </Questions>
