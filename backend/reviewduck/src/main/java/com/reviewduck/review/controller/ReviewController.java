@@ -29,7 +29,6 @@ import com.reviewduck.review.dto.response.ReviewsResponse;
 import com.reviewduck.review.dto.response.TimelineReviewsResponse;
 import com.reviewduck.review.service.ReviewService;
 
-import io.swagger.annotations.ApiParam;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 
@@ -54,9 +53,9 @@ public class ReviewController {
     @GetMapping(params = "member")
     @ResponseStatus(HttpStatus.OK)
     public ReviewsResponse findBySocialId(@AuthenticationPrincipal Member member,
-        @ApiParam(name = "사용자 socialId") @RequestParam(value = "member") String socialId,
-        @ApiParam(name = "페이지 번호") @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
-        @ApiParam(name = "페이지 당 게시물 수") @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size
+        @RequestParam(value = "member") String socialId,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size
     ) {
 
         info("/api/reviews?member=" + socialId + "&page=" + page + "&size=" + size, "GET", "");
