@@ -7,7 +7,6 @@
     "jsx": "react-jsx",
     "sourceMap": true,
     "outDir": "./build",
-    "isolatedModules": true,
     "strict": true,
     "moduleResolution": "node",
     "baseUrl": "src",
