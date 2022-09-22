@@ -21,26 +21,24 @@ function useIntersectionObserver<DataType, RefElementType extends Element>(
 
   const handleIntersect: IntersectionObserverCallback = ([entry], observer) => {
     if (entry.isIntersecting) {
-      console.log('intersect: ', entry.target);
-
-      observer.unobserve(entry.target);
+      // observer.unobserve(entry.target);
       onIntersect();
     }
   };
 
   useEffect(() => {
-    console.log('effect: ', targetRef);
-
     if (!targetRef || !targetRef.current) {
       return;
     }
+
     const target = targetRef.current;
     const observer = new IntersectionObserver(handleIntersect, option);
 
     observer.observe(target);
-    console.log('observed taret: ', target);
 
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+    };
   }, dependArray);
 
   return { targetRef };
