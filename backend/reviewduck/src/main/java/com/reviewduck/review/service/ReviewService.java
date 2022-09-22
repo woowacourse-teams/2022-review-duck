@@ -2,7 +2,6 @@ package com.reviewduck.review.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -80,8 +79,7 @@ public class ReviewService {
     }
 
     public List<Member> findAllParticipantsByCode(String code) {
-        ReviewForm reviewForm = reviewFormService.findByCode(code);
-        List<Review> reviews = reviewRepository.findAllByReviewForm(reviewForm);
+        List<Review> reviews = reviewRepository.findAllByReviewFormCode(code);
 
         return reviews.stream()
             .map(Review::getMember)
