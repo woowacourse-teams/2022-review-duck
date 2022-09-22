@@ -12,6 +12,7 @@ import {
   TimelineFilterType,
 } from 'types';
 
+import useIntersectionObserver from 'common/hooks/useIntersectionObserver';
 import useSnackbar from 'common/hooks/useSnackbar';
 import useStackFetch from 'common/hooks/useStackFetch';
 import {
@@ -24,7 +25,6 @@ import Questions from 'service/@shared/components/Questions';
 
 import styles from './styles.module.scss';
 
-import useIntersectionObserver from './useIntersectionObserver';
 import Feed from './views/Feed';
 import SideMenu from './views/SideMenu';
 import queryClient from 'api/config/queryClient';
@@ -172,7 +172,6 @@ function ReviewTimelinePage() {
               {page.data.reviews.map(
                 ({ id, reviewFormCode, questions, info: { creator, ...info }, likes }, index) => (
                   <Feed.ReviewAnswer
-                    isLoading={isFetching}
                     key={id}
                     ref={index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1 ? targetRef : null}
                   >
@@ -210,6 +209,7 @@ function ReviewTimelinePage() {
                   </Feed.ReviewAnswer>
                 ),
               )}
+              {isFetching && <Feed.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
             </React.Fragment>
           ))}
         </Feed.List>
