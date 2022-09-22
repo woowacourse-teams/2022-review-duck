@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { ForwardedRef, forwardRef } from 'react';
+
+import { Skeleton } from 'common/components';
 
 import Profile from 'service/@shared/components/Profile';
 
@@ -39,9 +41,13 @@ interface AnswersProps {
   children?: React.ReactNode;
 }
 
-const Answers = ({ children }: AnswersProps) => {
-  return <tr>{children}</tr>;
-};
+const Answers = React.memo(
+  forwardRef(({ children }: AnswersProps, forwardedRef: ForwardedRef<HTMLTableRowElement>) => {
+    return <tr ref={forwardedRef}>{children}</tr>;
+  }),
+);
+
+Answers.displayName = 'Answers';
 
 interface CreatorProps {
   socialId: number;
@@ -69,10 +75,32 @@ const Item = ({ isTitle, children }: ItemProps) => {
   return React.createElement(isTitle ? 'th' : 'td', null, children);
 };
 
+interface LoadingProps {
+  line: number;
+}
+
+const Loading = ({ line }: LoadingProps) => {
+  return (
+    <>
+      {Array.from({ length: line }, (_, index) => (
+        <SheetView.Answers key={index}>
+          <td>
+            <Skeleton />
+          </td>
+          <td>
+            <Skeleton />
+          </td>
+        </SheetView.Answers>
+      ))}
+    </>
+  );
+};
+
 export const SheetView = Object.assign(Container, {
   ReviewList,
   Questions,
   Answers,
   Creator,
   Item,
+  Loading,
 });
