@@ -270,7 +270,7 @@ public class ReviewServiceTest {
         void findAllParticipants() throws InterruptedException {
             // given
             saveReview(reviewForm1, member1, false);
-            saveReview(reviewForm1, member2, true);
+            saveReview(reviewForm1, member1, true);
             saveReview(reviewForm1, member1, true);
 
             saveReview(reviewForm2, member1, false);
@@ -281,9 +281,8 @@ public class ReviewServiceTest {
 
             // then
             assertAll(
-                () -> assertThat(participants).hasSize(2),
-                () -> assertTrue(participants.contains(member1)),
-                () -> assertTrue(participants.contains(member2))
+                () -> assertThat(participants).hasSize(1),
+                () -> assertTrue(participants.contains(member1))
             );
         }
     }
