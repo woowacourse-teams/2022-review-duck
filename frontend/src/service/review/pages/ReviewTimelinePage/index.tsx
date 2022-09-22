@@ -1,16 +1,22 @@
-import { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useRef } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
-import { faArrowTrendUp, faHeart, faPenNib } from '@fortawesome/free-solid-svg-icons';
+import { faArrowTrendUp, faPenNib } from '@fortawesome/free-solid-svg-icons';
+import { InfiniteData } from '@tanstack/react-query';
 
-import { PAGE_LIST, QUERY_KEY } from 'constant';
-import { ReviewPublicAnswer, ReviewPublicAnswerList } from 'types';
+import { PAGE_LIST, PAGE_OPTION, QUERY_KEY, FILTER } from 'constant';
+import {
+  InfiniteItem,
+  ReviewPublicAnswer,
+  ReviewPublicAnswerList,
+  TimelineFilterType,
+} from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useStackFetch from 'common/hooks/useStackFetch';
 import {
   useDeleteReviewAnswer,
-  useGetReviewPublicAnswer,
+  useGetInfiniteReviewPublicAnswer,
 } from 'service/@shared/hooks/queries/review';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
@@ -18,41 +24,68 @@ import Questions from 'service/@shared/components/Questions';
 
 import styles from './styles.module.scss';
 
+import useIntersectionObserver from './useIntersectionObserver';
 import Feed from './views/Feed';
 import SideMenu from './views/SideMenu';
 import queryClient from 'api/config/queryClient';
 import { updateReviewLike } from 'api/review.api';
+import { validateFilter } from 'service/@shared/validator';
 
 type ReviewId = ReviewPublicAnswer['id'];
 
 function ReviewTimelinePage() {
+  const [searchParam] = useSearchParams();
+
+  const currentTab = searchParam.get('filter') || 'trend';
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
+
+  validateFilter([FILTER.TIMELINE_TAB.TREND, FILTER.TIMELINE_TAB.LATEST], currentTab);
 
   const { mutate: reviewAnswerDelete } = useDeleteReviewAnswer();
   const { addFetch } = useStackFetch(2000);
 
-  const { isError, isLoading, data: publicReviewAnswer } = useGetReviewPublicAnswer();
+  const {
+    data: reviews,
+    isLoading,
+    isError,
+    fetchNextPage,
+    isFetching,
+  } = useGetInfiniteReviewPublicAnswer(currentTab as TimelineFilterType);
 
   const reviewsLikeStack = useRef<Record<ReviewId, number>>({});
 
+  const { targetRef } = useIntersectionObserver<ReviewPublicAnswerList, HTMLDivElement>(
+    fetchNextPage,
+    { threshold: 0.75 },
+    [reviews],
+  );
+
   if (isError || isLoading) return <>{/* Error Boundary, Suspense Used */}</>;
 
-  const { reviews, numberOfReviews } = publicReviewAnswer;
+  const { pages } = reviews;
 
-  const setUpdateLikeCount = (reviewId: number, count: number) => {
-    queryClient.setQueryData<ReviewPublicAnswerList>(
-      [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEW_PUBLIC_ANSWER],
+  const setUpdateLikeCount = (pageIndex: number, reviewId: number, count: number) => {
+    queryClient.setQueryData<InfiniteData<InfiniteItem<ReviewPublicAnswerList>>>(
+      [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEW_PUBLIC_ANSWER, { filter: currentTab }],
       (previousData) => {
         if (!previousData) return previousData;
 
-        const updatedReviews = previousData.reviews.map((review) => {
+        const updatedReviews = previousData.pages[pageIndex].data.reviews.map((review) => {
           if (review.id !== reviewId) return review;
 
           return { ...review, likes: count };
         });
 
-        return { ...previousData, reviews: updatedReviews };
+        const newPages = [...previousData.pages];
+        const newPage = { ...previousData.pages[pageIndex] };
+        const newData = { ...newPage.data };
+
+        newData.reviews = updatedReviews;
+        newPage.data = newData;
+        newPages[pageIndex] = newPage;
+
+        return { pages: newPages, pageParams: previousData.pageParams };
       },
     );
   };
@@ -87,7 +120,7 @@ function ReviewTimelinePage() {
     });
   };
 
-  const handleClickLikeButton = (reviewId: number, likes: number) => () => {
+  const handleClickLikeButton = (pageIndex: number, reviewId: number, likes: number) => () => {
     if (!reviewsLikeStack.current[reviewId]) {
       reviewsLikeStack.current[reviewId] = 0;
     }
@@ -95,10 +128,10 @@ function ReviewTimelinePage() {
     const reviewLikeStack = (reviewsLikeStack.current[reviewId] += 1);
 
     addFetch(reviewId, () => updateReviewLike({ reviewId, likes: reviewLikeStack }), {
-      onUpdate: () => setUpdateLikeCount(reviewId, likes + 1),
-      onError: () => setUpdateLikeCount(reviewId, likes - reviewLikeStack),
+      onUpdate: () => setUpdateLikeCount(pageIndex, reviewId, likes + 1),
+      onError: () => setUpdateLikeCount(pageIndex, reviewId, likes - reviewLikeStack),
       onSuccess: ({ likes: latestLikes }) => {
-        setUpdateLikeCount(reviewId, latestLikes);
+        setUpdateLikeCount(pageIndex, reviewId, latestLikes);
         delete reviewsLikeStack.current[reviewId];
       },
     });
@@ -110,52 +143,74 @@ function ReviewTimelinePage() {
         <SideMenu.Title>탐색하기</SideMenu.Title>
 
         <SideMenu.List>
-          <SideMenu.Menu icon={faArrowTrendUp}>트랜딩</SideMenu.Menu>
-          <SideMenu.Menu icon={faPenNib}>최신글</SideMenu.Menu>
-          <SideMenu.Menu icon={faHeart}>구독</SideMenu.Menu>
+          <SideMenu.Menu
+            isCurrentTab={currentTab === FILTER.TIMELINE_TAB.TREND}
+            filter={FILTER.TIMELINE_TAB.TREND as TimelineFilterType}
+            icon={faArrowTrendUp}
+          >
+            트랜딩
+          </SideMenu.Menu>
+          <SideMenu.Menu
+            isCurrentTab={currentTab === FILTER.TIMELINE_TAB.LATEST}
+            filter={FILTER.TIMELINE_TAB.LATEST as TimelineFilterType}
+            icon={faPenNib}
+          >
+            최신글
+          </SideMenu.Menu>
+          {/* <SideMenu.Menu icon={faHeart}>구독</SideMenu.Menu> */}
         </SideMenu.List>
 
-        <SideMenu.Title>나의 구독</SideMenu.Title>
+        {/* <SideMenu.Title>나의 구독</SideMenu.Title> */}
       </SideMenu>
 
       <Feed>
         <Feed.Title>타임라인</Feed.Title>
 
         <Feed.List>
-          {reviews.map(({ id, reviewFormCode, questions, info: { creator, ...info }, likes }) => (
-            <Feed.ReviewAnswer key={id}>
-              <Feed.UserProfile
-                socialId={creator.id}
-                profileUrl={creator.profileUrl}
-                nickname={creator.nickname}
-                update={info.updateDate}
-              />
-
-              <Questions>
-                <Questions.EditButtons
-                  className={styles.questionEdit}
-                  isVisible={info.isSelf}
-                  onClickEdit={handleClickEditButton(reviewFormCode, id)}
-                  onClickDelete={handleClickDeleteButton(id)}
-                />
-
-                {questions.map(({ answer, ...question }) => (
-                  <Questions.Answer
-                    key={question.id}
-                    question={question.value}
-                    description={question.description}
+          {pages.map((page, pageIndex) => (
+            <React.Fragment key={pageIndex}>
+              {page.data.reviews.map(
+                ({ id, reviewFormCode, questions, info: { creator, ...info }, likes }, index) => (
+                  <Feed.ReviewAnswer
+                    isLoading={isFetching}
+                    key={id}
+                    ref={index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1 ? targetRef : null}
                   >
-                    {answer.value}
-                  </Questions.Answer>
-                ))}
+                    <Feed.UserProfile
+                      socialId={creator.id}
+                      profileUrl={creator.profileUrl}
+                      nickname={creator.nickname}
+                      update={info.updateDate}
+                    />
 
-                <Questions.Reaction
-                  likeCount={likes}
-                  onClickLike={handleClickLikeButton(id, likes)}
-                  onClickBookmark={() => null}
-                />
-              </Questions>
-            </Feed.ReviewAnswer>
+                    <Questions>
+                      <Questions.EditButtons
+                        className={styles.questionEdit}
+                        isVisible={info.isSelf}
+                        onClickEdit={handleClickEditButton(reviewFormCode, id)}
+                        onClickDelete={handleClickDeleteButton(id)}
+                      />
+
+                      {questions.map(({ answer, ...question }) => (
+                        <Questions.Answer
+                          key={question.id}
+                          question={question.value}
+                          description={question.description}
+                        >
+                          {answer.value}
+                        </Questions.Answer>
+                      ))}
+
+                      <Questions.Reaction
+                        likeCount={likes}
+                        onClickLike={handleClickLikeButton(pageIndex, id, likes)}
+                        onClickBookmark={() => null}
+                      />
+                    </Questions>
+                  </Feed.ReviewAnswer>
+                ),
+              )}
+            </React.Fragment>
           ))}
         </Feed.List>
       </Feed>

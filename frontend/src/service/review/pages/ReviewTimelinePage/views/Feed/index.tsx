@@ -1,4 +1,6 @@
-import { FlexContainer, Text } from 'common/components';
+import React, { ForwardedRef, forwardRef } from 'react';
+
+import { FlexContainer, Skeleton, Text } from 'common/components';
 
 import Profile from 'service/@shared/components/Profile';
 
@@ -37,16 +39,23 @@ function List({ children }: ListProps) {
 }
 
 interface ReviewAnswerProps {
+  isLoading: boolean;
   children: React.ReactNode;
 }
 
-function ReviewAnswer({ children }: ReviewAnswerProps) {
-  return (
-    <FlexContainer className={styles.reviewAnswer} gap="medium">
-      {children}
-    </FlexContainer>
-  );
-}
+const ReviewAnswer = React.memo(
+  forwardRef(
+    ({ isLoading, children }: ReviewAnswerProps, forwardedRef: ForwardedRef<HTMLDivElement>) => {
+      return (
+        <div className={styles.reviewAnswer} ref={forwardedRef}>
+          {isLoading ? <Skeleton /> : children}
+        </div>
+      );
+    },
+  ),
+);
+
+ReviewAnswer.displayName = 'ReviewAnswer';
 
 interface UserProfileProps {
   socialId: number;

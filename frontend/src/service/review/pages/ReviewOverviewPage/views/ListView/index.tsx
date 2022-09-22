@@ -1,5 +1,10 @@
-import { useRef } from 'react';
+import { ForwardedRef, forwardRef, useRef } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
+
+import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
+import { faPenToSquare, faRightToBracket, faShareNodes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
 import { PAGE_LIST } from 'constant';
@@ -7,15 +12,11 @@ import { ReviewFormAnswer } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
-import { Text, FlexContainer, Button, TextBox } from 'common/components';
+import { Text, FlexContainer, Button, TextBox, Skeleton } from 'common/components';
 
 import ScrollPanel from 'common/components/ScrollPanel';
 
 import styles from './styles.module.scss';
-
-import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
-import { faPenToSquare, faRightToBracket, faShareNodes } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface ContainerProps {
   children: React.ReactNode;
@@ -59,9 +60,17 @@ interface ReviewProps {
   children: React.ReactNode;
 }
 
-const Review = ({ children }: ReviewProps) => {
-  return <section className={cn(styles.cardBox, styles.reviewContainer)}>{children}</section>;
-};
+const Review = React.memo(
+  forwardRef(({ children }: ReviewProps, forwardedRef: ForwardedRef<HTMLElement>) => {
+    return (
+      <section className={cn(styles.cardBox, styles.reviewContainer)} ref={forwardedRef}>
+        {children}
+      </section>
+    );
+  }),
+);
+
+Review.displayName = 'Review';
 
 interface SideMenuProps {
   isLoading: boolean;
@@ -220,6 +229,22 @@ const ReviewShortcut = ({ id, info }: ReviewFormAnswer) => {
   );
 };
 
+interface LoadingProps {
+  line: number;
+}
+
+const Loading = ({ line }: LoadingProps) => {
+  return (
+    <>
+      {Array.from({ length: line }, (_, index) => (
+        <ListView.Review key={index}>
+          <Skeleton />
+        </ListView.Review>
+      ))}
+    </>
+  );
+};
+
 export const ListView = Object.assign(Container, {
   Content,
   ParticipantList,
@@ -232,4 +257,5 @@ export const ListView = Object.assign(Container, {
   FormManageButtons,
   ReviewShortcutList,
   ReviewShortcut,
+  Loading,
 });
