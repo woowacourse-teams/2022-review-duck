@@ -173,7 +173,7 @@ function ReviewTimelinePage() {
                 ({ id, reviewFormCode, questions, info: { creator, ...info }, likes }, index) => (
                   <Feed.ReviewAnswer
                     key={id}
-                    ref={index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1 ? targetRef : null}
+                    // ref={index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1 ? targetRef : null}
                   >
                     <Feed.UserProfile
                       socialId={creator.id}
@@ -212,6 +212,7 @@ function ReviewTimelinePage() {
               {isFetching && <Feed.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
             </React.Fragment>
           ))}
+          <div ref={targetRef}></div>
         </Feed.List>
       </Feed>
     </LayoutContainer>
