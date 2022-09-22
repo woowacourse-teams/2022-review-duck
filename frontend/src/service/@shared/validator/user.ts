@@ -6,10 +6,4 @@ function validateNickname(nickname: string) {
   }
 }
 
-function validateTab(currentTab: string) {
-  if (['reviews', 'review-forms', 'templates'].findIndex((tab) => tab === currentTab) < 0) {
-    throw new Error('찾을 수 없는 페이지입니다.');
-  }
-}
-
-export { validateNickname, validateTab };
+export { validateNickname };

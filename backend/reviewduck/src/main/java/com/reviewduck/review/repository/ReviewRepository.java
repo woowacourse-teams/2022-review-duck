@@ -1,5 +1,6 @@
 package com.reviewduck.review.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -19,6 +20,9 @@ public interface ReviewRepository extends Repository<Review, Long> {
     Optional<Review> findById(long reviewId);
 
     Page<Review> findByReviewForm(ReviewForm reviewForm, Pageable pageable);
+
+    @Query("select r from Review r join fetch r.member where r.reviewForm.code = :reviewFormCode")
+    List<Review> findAllByReviewFormCode(String reviewFormCode);
 
     Page<Review> findByIsPrivateFalse(Pageable pageable);
 

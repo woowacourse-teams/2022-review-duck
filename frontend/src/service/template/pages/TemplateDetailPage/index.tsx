@@ -13,7 +13,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
-import { GITHUB_PROFILE_URL, PAGE_LIST, TEMPLATE_TAB } from 'constant';
+import { GITHUB_PROFILE_URL, PAGE_LIST, FILTER } from 'constant';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
@@ -205,7 +205,7 @@ function TemplateDetailPage() {
                 <span>새 템플릿 작성</span>
               </Button>
             </Link>
-            <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${TEMPLATE_TAB.TREND}`}>
+            <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${FILTER.TEMPLATE_TAB.TREND}`}>
               <Button size="medium" theme="outlined">
                 <FontAwesomeIcon icon={faList} />
                 <span>목록</span>

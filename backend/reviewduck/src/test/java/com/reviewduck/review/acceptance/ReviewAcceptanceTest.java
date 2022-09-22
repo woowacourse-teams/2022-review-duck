@@ -234,6 +234,10 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             }
 
             int reviewId = saveReviewAndGetId(accessToken1, false).intValue();
+
+            ReviewLikesRequest request = new ReviewLikesRequest(50);
+            post("api/reviews/" + reviewId + "/likes", request);
+
             saveReviewAndGetId(accessToken1, true);
 
             get("/api/reviews/public")
@@ -242,12 +246,30 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 .body("numberOfReviews", equalTo(DEFAULT_SIZE + 6))
                 .body("reviews", hasSize(DEFAULT_SIZE))
                 .body("reviews[0].id", equalTo(reviewId));
-
         }
 
         @Test
         @DisplayName("최신순으로 특정 페이지를 조회한다.")
         void findPageOrderByLatest() {
+            saveReviewAndGetId(accessToken1, false);
+            int reviewId = saveReviewAndGetId(accessToken2, false).intValue();
+            saveReviewAndGetId(accessToken2, true);
+
+            ReviewLikesRequest request = new ReviewLikesRequest(50);
+            post("api/reviews/" + reviewId + "/likes", request);
+
+            get("/api/reviews/public?page=1&size=1&sort=latest")
+                .statusCode(HttpStatus.OK.value())
+                .assertThat()
+                .body("numberOfReviews", equalTo(2))
+                .body("reviews", hasSize(1))
+                .body("reviews[0].id", equalTo(reviewId))
+                .body("isLastPage", equalTo(false));
+        }
+
+        @Test
+        @DisplayName("인기순으로 특정 페이지를 조회한다.")
+        void findPageOrderByTrend() {
             saveReviewAndGetId(accessToken1, false);
             int reviewId = saveReviewAndGetId(accessToken2, false).intValue();
             saveReviewAndGetId(accessToken2, true);
@@ -402,7 +424,6 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 .assertThat()
                 .body("likes", equalTo(100));
         }
-
     }
 
     private String createReviewFormAndGetCode(String accessToken, String reviewTitle,

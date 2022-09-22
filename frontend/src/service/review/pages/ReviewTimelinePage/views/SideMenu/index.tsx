@@ -1,9 +1,15 @@
-import { FlexContainer, Text } from 'common/components';
-
-import styles from './styles.module.scss';
+import { Link } from 'react-router-dom';
 
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import cn from 'classnames';
+import { PAGE_LIST } from 'constant';
+import { TimelineFilterType } from 'types';
+
+import { FlexContainer, Text } from 'common/components';
+
+import styles from './styles.module.scss';
 
 interface ContainerProps {
   children: React.ReactNode;
@@ -42,15 +48,19 @@ function List({ children }: ListProps) {
 }
 
 interface MenuProps {
+  isCurrentTab: boolean;
+  filter: TimelineFilterType;
   icon: IconDefinition;
   children: string;
 }
 
-function Menu({ icon, children }: MenuProps) {
+function Menu({ isCurrentTab, filter, icon, children }: MenuProps) {
   return (
-    <li className={styles.menu}>
-      <FontAwesomeIcon icon={icon} /> {children}
-    </li>
+    <Link to={`${PAGE_LIST.TIMELINE}?filter=${filter}`}>
+      <li className={cn(styles.menu, { [styles.focus]: isCurrentTab })}>
+        <FontAwesomeIcon icon={icon} /> {children}
+      </li>
+    </Link>
   );
 }
 

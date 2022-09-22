@@ -17,16 +17,26 @@ export const getAnswer = async (reviewId: number): Promise<ReviewType.ReviewAnsw
 };
 
 export const getFormAnswer = async (
+  pageNumber: string,
+  size: number,
   reviewFormCode = '',
-  display = 'list',
+  display: ReviewType.DisplayModeType = 'list',
 ): Promise<ReviewType.ReviewFormAnswerList> => {
-  const { data } = await axiosInstance.get(API_URI.REVIEW.GET_FORM_ANSWER(reviewFormCode, display));
+  const { data } = await axiosInstance.get(
+    API_URI.REVIEW.GET_FORM_ANSWER(reviewFormCode, display, pageNumber, size),
+  );
 
   return transformer.transformFormAnswer(data);
 };
 
-export const getPublicAnswer = async (): Promise<ReviewType.ReviewPublicAnswerList> => {
-  const { data } = await axiosInstance.get(API_URI.REVIEW.GET_PUBLIC_ANSWER);
+export const getPublicAnswer = async (
+  pageNumber: string,
+  size: number,
+  filter: ReviewType.TimelineFilterType = 'trend',
+): Promise<ReviewType.ReviewPublicAnswerList> => {
+  const { data } = await axiosInstance.get(
+    `${API_URI.REVIEW.GET_PUBLIC_ANSWER}?page=${pageNumber}&size=${size}&sort=${filter}`,
+  );
 
   return transformer.transformPublicAnswer(data);
 };

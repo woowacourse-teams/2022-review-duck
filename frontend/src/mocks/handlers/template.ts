@@ -1,5 +1,4 @@
-import { TEMPLATE_TAB } from 'constant';
-import { API_URI } from 'constant';
+import { API_URI, FILTER } from 'constant';
 import { rest } from 'msw';
 
 import { dummyTemplates, dummyTemplate, dummyFormcode } from 'mocks/data';
@@ -7,7 +6,7 @@ import { reviewduckAPI } from 'mocks/hosts';
 
 const templateHandlers = [
   rest.get(reviewduckAPI(API_URI.TEMPLATE.GET_TEMPLATES), (req, res, ctx) => {
-    if (req.url.searchParams.get('filter') === TEMPLATE_TAB.TREND) {
+    if (req.url.searchParams.get('filter') === FILTER.TEMPLATE_TAB.TREND) {
       const copyTemplates = [...dummyTemplates.templates];
       const sortedTemplates = copyTemplates.sort(
         (first, second) => second.info.usedCount - first.info.usedCount,

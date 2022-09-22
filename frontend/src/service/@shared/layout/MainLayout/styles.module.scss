@@ -46,8 +46,10 @@
   position: absolute;
   top: 50%;
   right: 1rem;
+  color: $THEME_COLOR_THEME_TEXT_800;
 
   transform: translateY(-50%);
+  cursor: pointer;
 }
 
 .menu-list {

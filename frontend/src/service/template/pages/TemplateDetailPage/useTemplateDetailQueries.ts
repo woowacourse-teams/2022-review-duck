@@ -1,4 +1,4 @@
-import { PAGE_OPTION, TEMPLATE_TAB } from 'constant';
+import { PAGE_OPTION, FILTER } from 'constant';
 import { TemplateFilterType } from 'types';
 
 import { useGetTemplate, useGetTemplates } from 'service/@shared/hooks/queries/template';
@@ -13,7 +13,7 @@ function useTemplateDetailQueries(templateId: number) {
     isError: isTemplatesError,
     error: templatesError,
   } = useGetTemplates(
-    TEMPLATE_TAB.TREND as TemplateFilterType,
+    FILTER.TEMPLATE_TAB.TREND as TemplateFilterType,
     String(1),
     PAGE_OPTION.TEMPLATE_TREND_ITEM_SIZE,
   );

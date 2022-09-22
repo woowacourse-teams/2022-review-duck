@@ -1,3 +1,6 @@
+import { faBackspace, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import { FlexContainer, Textarea } from 'common/components';
 
 import Button from 'common/components/Button';
@@ -5,9 +8,6 @@ import Text from 'common/components/Text';
 import TextBox from 'common/components/TextBox';
 
 import styles from './styles.module.scss';
-
-import { faBackspace, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type UpdateQuestionEvent = React.MouseEvent | React.KeyboardEvent<HTMLInputElement>;
 
@@ -41,6 +41,7 @@ function QuestionsEditorItem({
   const handleKeyUpTextBox = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== 'Enter') return;
 
+    event.preventDefault();
     onAddQuestion && onAddQuestion(event);
   };
 

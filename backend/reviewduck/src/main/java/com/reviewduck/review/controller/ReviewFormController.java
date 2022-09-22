@@ -3,6 +3,8 @@ package com.reviewduck.review.controller;
 import static com.reviewduck.common.util.Logging.*;
 import static com.reviewduck.common.vo.PageConstant.*;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.data.domain.Page;
@@ -75,8 +77,9 @@ public class ReviewFormController {
         info("/api/review-forms/" + reviewFormCode, "GET", "");
 
         ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
+        List<Member> participants = reviewService.findAllParticipantsByCode(reviewFormCode);
 
-        return ReviewFormResponse.of(reviewForm, member);
+        return ReviewFormResponse.of(reviewForm, member, participants);
     }
 
     @Operation(summary = "사용자가 작성한 회고 질문지 중 특정 페이지를 조회한다.")
