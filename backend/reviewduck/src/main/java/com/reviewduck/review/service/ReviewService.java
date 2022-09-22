@@ -2,6 +2,8 @@ package com.reviewduck.review.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -75,6 +77,16 @@ public class ReviewService {
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
         return reviewRepository.findByReviewForm(reviewForm, pageRequest);
+    }
+
+    public List<Member> findAllParticipantsByCode(String code) {
+        ReviewForm reviewForm = reviewFormService.findByCode(code);
+        List<Review> reviews = reviewRepository.findAllByReviewForm(reviewForm);
+
+        return reviews.stream()
+            .map(Review::getMember)
+            .distinct()
+            .collect(Collectors.toUnmodifiableList());
     }
 
     public Page<Review> findAllPublic(int page, int size, String sort) {

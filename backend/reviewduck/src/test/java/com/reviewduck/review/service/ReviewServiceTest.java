@@ -263,6 +263,24 @@ public class ReviewServiceTest {
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
 
+        @Test
+        @DisplayName("회고 폼 참여자 정보를 조회한다.")
+        void findAllParticipants() throws InterruptedException {
+            // given
+            saveReview(member1, false);
+            saveReview(member2, true);
+            saveReview(member1, true);
+
+            // when
+            List<Member> participants = reviewService.findAllParticipantsByCode(reviewForm.getCode());
+
+            // then
+            assertAll(
+                () -> assertThat(participants).hasSize(2),
+                () -> assertTrue(participants.contains(member1)),
+                () -> assertTrue(participants.contains(member2))
+            );
+        }
     }
 
     @Nested
