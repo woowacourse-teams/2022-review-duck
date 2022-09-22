@@ -10,6 +10,7 @@ export default defineConfig({
       config.viewportWidth = 1380;
       config.viewportHeight = 1080;
       config.baseUrl = `http://localhost:${webpackConfig.devServer.port}`;
+      config.video = false;
 
       return config;
     },
