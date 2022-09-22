@@ -4,7 +4,7 @@ import { faPenToSquare, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
-import { GITHUB_PROFILE_URL, TAB } from 'constant';
+import { GITHUB_PROFILE_URL, FILTER } from 'constant';
 import { Tabs } from 'types';
 
 import { Text, Button } from 'common/components';
@@ -22,7 +22,7 @@ const Container = ({ children }: ContainerProps) => {
 const Profile = ({ profileUrl }: Record<string, string>) => {
   return (
     <div className={styles.profileImage} style={{ backgroundImage: `url(${profileUrl})` }}>
-      <div className={styles.activeIcon}>🦖</div>
+      <div className={styles.activeIcon}>🐤</div>
     </div>
   );
 };
@@ -90,25 +90,25 @@ const TabNavigator = ({ currentTab, onTabClick }: TabNavigatorProps) => {
 
       <li
         className={cn(styles.item, {
-          [styles.focus]: currentTab === TAB.USER_PROFILE.REVIEWS,
+          [styles.focus]: currentTab === FILTER.USER_PROFILE_TAB.REVIEWS,
         })}
-        onClick={onTabClick(TAB.USER_PROFILE.REVIEWS)}
+        onClick={onTabClick(FILTER.USER_PROFILE_TAB.REVIEWS)}
       >
         작성한 회고글
       </li>
       <li
         className={cn(styles.item, {
-          [styles.focus]: currentTab === TAB.USER_PROFILE.REVIEW_FORMS,
+          [styles.focus]: currentTab === FILTER.USER_PROFILE_TAB.REVIEW_FORMS,
         })}
-        onClick={onTabClick(TAB.USER_PROFILE.REVIEW_FORMS)}
+        onClick={onTabClick(FILTER.USER_PROFILE_TAB.REVIEW_FORMS)}
       >
         생성한 질문지
       </li>
       <li
         className={cn(styles.item, {
-          [styles.focus]: currentTab === TAB.USER_PROFILE.TEMPLATES,
+          [styles.focus]: currentTab === FILTER.USER_PROFILE_TAB.TEMPLATES,
         })}
-        onClick={onTabClick(TAB.USER_PROFILE.TEMPLATES)}
+        onClick={onTabClick(FILTER.USER_PROFILE_TAB.TEMPLATES)}
       >
         생성한 템플릿
       </li>
