@@ -12,11 +12,12 @@ import {
 import { getElapsedTimeText } from 'service/@shared/utils';
 
 export const transformForm = (data: GetReviewFormResponse): ReviewForm => {
-  const { reviewFormTitle, questions, creator, isCreator, updatedAt } = data;
+  const { reviewFormTitle, questions, creator, isCreator, updatedAt, participants } = data;
 
   return {
     title: reviewFormTitle,
     questions,
+    participants,
     info: {
       creator,
       isSelf: isCreator,
@@ -46,9 +47,9 @@ export const transformAnswer = (data: GetReviewAnswerResponse): ReviewAnswer => 
 };
 
 export const transformFormAnswer = (data: GetReviewFormAnswerResponse): ReviewFormAnswerList => {
-  const { numberOfReviews, reviews } = data;
+  const { numberOfReviews, isLastPage, reviews } = data;
 
-  return reviews.map((review) => {
+  const transformReviews = reviews.map((review) => {
     const { id, reviewTitle, updatedAt, likes, isCreator, creator, contents } = review;
 
     return {
@@ -66,6 +67,8 @@ export const transformFormAnswer = (data: GetReviewFormAnswerResponse): ReviewFo
       },
     };
   });
+
+  return { isLastPage, reviews: transformReviews };
 };
 
 export const transformPublicAnswer = (

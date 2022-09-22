@@ -3,6 +3,7 @@ import { useInfiniteQuery, useQuery, UseQueryOptions } from '@tanstack/react-que
 import { reviewAPI } from 'api';
 import { PAGE_OPTION, QUERY_KEY } from 'constant';
 import {
+  DisplayModeType,
   ErrorResponse,
   InfiniteItem,
   ReviewAnswer,
@@ -39,19 +40,31 @@ function useGetReviewAnswer(
   );
 }
 
-interface UseGetReviewFormAnswer {
-  reviewFormCode: string;
-  display?: string;
-}
-
-function useGetReviewFormAnswer(
-  { reviewFormCode, display }: UseGetReviewFormAnswer,
-  queryOptions?: UseQueryOptions<ReviewFormAnswerList, ErrorResponse>,
+function useGetInfiniteReviewFormAnswer(
+  reviewFormCode: string,
+  display?: DisplayModeType,
+  queryOptions?: any,
 ) {
-  return useQuery<ReviewFormAnswerList, ErrorResponse>(
-    [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEWS, { reviewFormCode, display }],
-    () => reviewAPI.getFormAnswer(reviewFormCode, display),
+  const fetchFunc = async ({ pageParam = 1 }) => {
+    const data = await reviewAPI.getFormAnswer(
+      String(pageParam),
+      PAGE_OPTION.REVIEW_ITEM_SIZE,
+      reviewFormCode,
+      display,
+    );
+
+    return {
+      data,
+      currentPage: pageParam,
+    };
+  };
+
+  return useInfiniteQuery<InfiniteItem<ReviewFormAnswerList>>(
+    [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEW_PUBLIC_ANSWER, { display }],
+    fetchFunc,
     {
+      getNextPageParam: (lastItem) =>
+        lastItem.data.isLastPage ? undefined : lastItem.currentPage + 1,
       ...queryOptions,
     },
   );
@@ -84,7 +97,7 @@ function useGetInfiniteReviewPublicAnswer(filter: TimelineFilterType, queryOptio
 
 export {
   useGetReviewForm,
-  useGetReviewFormAnswer,
   useGetReviewAnswer,
   useGetInfiniteReviewPublicAnswer,
+  useGetInfiniteReviewFormAnswer,
 };

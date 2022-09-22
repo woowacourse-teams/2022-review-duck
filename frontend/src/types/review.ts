@@ -27,6 +27,7 @@ export interface ReviewForm {
   title: string;
   questions: Question[];
   info: UserContentRequireField;
+  participants?: UserProfile[];
 }
 
 export interface ReviewAnswer {
@@ -46,7 +47,10 @@ export interface ReviewPublicAnswer extends ReviewFormAnswer {
   likes: number;
 }
 
-export type ReviewFormAnswerList = ReviewFormAnswer[];
+export type ReviewFormAnswerList = {
+  isLastPage: boolean;
+  reviews: ReviewFormAnswer[];
+};
 
 export interface ReviewPublicAnswerList {
   isLastPage: boolean;
@@ -86,6 +90,7 @@ export interface GetReviewFormResponse extends ReviewFormResponse {
   updatedAt: number;
   creator: UserProfile;
   isCreator: boolean;
+  participants: UserProfile[];
 }
 
 export interface GetReviewAnswerResponse {
@@ -102,6 +107,7 @@ export interface GetReviewAnswerResponse {
 
 export type GetReviewFormAnswerResponse = {
   numberOfReviews: number;
+  isLastPage: boolean;
   reviews: Array<{
     id: number;
     reviewTitle: string;
@@ -189,3 +195,5 @@ export type DeleteReviewFormResponse = null;
 export type DeleteReviewAnswerResponse = null;
 
 export type TimelineFilterType = 'trend' | 'latest';
+
+export type DisplayModeType = 'list' | 'sheet';

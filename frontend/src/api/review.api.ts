@@ -17,10 +17,14 @@ export const getAnswer = async (reviewId: number): Promise<ReviewType.ReviewAnsw
 };
 
 export const getFormAnswer = async (
+  pageNumber: string,
+  size: number,
   reviewFormCode = '',
-  display = 'list',
+  display: ReviewType.DisplayModeType = 'list',
 ): Promise<ReviewType.ReviewFormAnswerList> => {
-  const { data } = await axiosInstance.get(API_URI.REVIEW.GET_FORM_ANSWER(reviewFormCode, display));
+  const { data } = await axiosInstance.get(
+    API_URI.REVIEW.GET_FORM_ANSWER(reviewFormCode, display, pageNumber, size),
+  );
 
   return transformer.transformFormAnswer(data);
 };
