@@ -36,4 +36,5 @@ jobs:
         with:
           start: yarn run start:mocking
           wait-on: "http://localhost:3000"
+          working-directory: ./frontend/
           config-file: cypress.config.ts
