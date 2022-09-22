@@ -179,6 +179,14 @@ export const DUMMY_REVIEW = {
       nickname: '만든 사람',
       profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
     },
+    participants: [
+      {
+        id: 1,
+        socialNickname: 1,
+        nickname: 'Compy',
+        profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
+      },
+    ],
     isCreator: true,
     questions: [
       {
@@ -222,78 +230,82 @@ export const DUMMY_REVIEW = {
     ],
   },
 
-  GET_FORM_ANSWER: [
-    {
-      id: 1,
-      updatedAt: 100,
-      isCreator: false,
-      creator: {
+  GET_FORM_ANSWER: {
+    numberOfReviews: 2,
+    isLastPage: true,
+    reviews: [
+      {
         id: 1,
-        nickname: '유저1',
-        profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
-      },
-      contents: [
-        {
-          question: {
-            id: 1,
-            value: '질문 1',
-            description: '설명 1',
-          },
-          answer: {
-            id: 1,
-            value: '답변 1',
-          },
+        updatedAt: 100,
+        isCreator: false,
+        creator: {
+          id: 1,
+          nickname: '유저1',
+          profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
         },
+        contents: [
+          {
+            question: {
+              id: 1,
+              value: '질문 1',
+              description: '설명 1',
+            },
+            answer: {
+              id: 1,
+              value: '답변 1',
+            },
+          },
 
-        {
-          question: {
-            id: 2,
-            value: '질문 2',
-            description: '설명 2',
+          {
+            question: {
+              id: 2,
+              value: '질문 2',
+              description: '설명 2',
+            },
+            answer: {
+              id: 2,
+              value: '답변 2',
+            },
           },
-          answer: {
-            id: 2,
-            value: '답변 2',
-          },
-        },
-      ],
-    },
-    {
-      id: 2,
-      updatedAt: 100,
-      isCreator: false,
-      creator: {
+        ],
+      },
+      {
         id: 2,
-        nickname: '유저2',
-        profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
-      },
-      contents: [
-        {
-          question: {
-            id: 1,
-            value: '질문 1',
-            description: '설명 1',
-          },
-          answer: {
-            id: 1,
-            value: '답변 1',
-          },
+        updatedAt: 100,
+        isCreator: false,
+        creator: {
+          id: 2,
+          nickname: '유저2',
+          profileUrl: 'https://avatars.githubusercontent.com/u/51396282?v=4',
         },
+        contents: [
+          {
+            question: {
+              id: 1,
+              value: '질문 1',
+              description: '설명 1',
+            },
+            answer: {
+              id: 1,
+              value: '답변 1',
+            },
+          },
 
-        {
-          question: {
-            id: 2,
-            value: '질문 2',
-            description: '설명 2',
+          {
+            question: {
+              id: 2,
+              value: '질문 2',
+              description: '설명 2',
+            },
+            answer: {
+              id: 2,
+              value: '답변 2',
+            },
           },
-          answer: {
-            id: 2,
-            value: '답변 2',
-          },
-        },
-      ],
-    },
-  ],
+        ],
+      },
+    ],
+  },
 
   CREATE_FORM: {
     reviewFormCode: '123ABC',
