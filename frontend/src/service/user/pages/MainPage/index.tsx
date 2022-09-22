@@ -4,7 +4,7 @@ import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
-import { MODAL_LIST, PAGE_OPTION, TAB } from 'constant';
+import { MODAL_LIST, PAGE_OPTION, FILTER } from 'constant';
 import { PAGE_LIST } from 'constant';
 import { TemplateFilterType } from 'types';
 
@@ -27,7 +27,7 @@ function MainPage() {
     showModal(MODAL_LIST.REVIEW_START);
   };
   const { data, isError, error } = useGetTemplates(
-    TAB.TEMPLATE.TREND as TemplateFilterType,
+    FILTER.TEMPLATE_TAB.TREND as TemplateFilterType,
     String(1),
     PAGE_OPTION.TEMPLATE_TREND_ITEM_SIZE,
   );

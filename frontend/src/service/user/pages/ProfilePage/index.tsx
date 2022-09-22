@@ -2,7 +2,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { faEraser } from '@fortawesome/free-solid-svg-icons';
 
-import { TAB, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
+import { FILTER, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
 import { Tabs } from 'types';
 
 import useModal from 'common/hooks/useModal';
@@ -19,7 +19,7 @@ import styles from './styles.module.scss';
 import useProfilePageQueries from './useProfilePageQueries';
 import { ArticleList } from './view/ArticleList';
 import { Controller } from './view/Controller';
-import { validateTab } from 'service/@shared/validator';
+import { validateFilter } from 'service/@shared/validator';
 
 function ProfilePage() {
   const navigate = useNavigate();
@@ -29,10 +29,17 @@ function ProfilePage() {
   const { showModal } = useModal();
   const { showSnackbar } = useSnackbar();
 
-  const currentTab = searchParams.get('tab') || TAB.USER_PROFILE.REVIEWS;
+  const currentTab = searchParams.get('tab') || FILTER.USER_PROFILE_TAB.REVIEWS;
   const pageNumber = searchParams.get('page') || String(1);
 
-  validateTab(['reviews', 'review-forms', 'templates'], currentTab);
+  validateFilter(
+    [
+      FILTER.USER_PROFILE_TAB.REVIEWS,
+      FILTER.USER_PROFILE_TAB.REVIEW_FORMS,
+      FILTER.USER_PROFILE_TAB.TEMPLATES,
+    ],
+    currentTab,
+  );
 
   const queries = useProfilePageQueries(currentTab as Tabs, socialId, pageNumber);
   if (!queries) return <>{/* Error Boundary, Suspense Used */}</>;
@@ -46,9 +53,9 @@ function ProfilePage() {
   } = queries;
 
   const subjectTitle = {
-    [TAB.USER_PROFILE.REVIEWS]: '작성한 회고',
-    [TAB.USER_PROFILE.REVIEW_FORMS]: '생성한 질문지',
-    [TAB.USER_PROFILE.TEMPLATES]: '생성한 템플릿',
+    [FILTER.USER_PROFILE_TAB.REVIEWS]: '작성한 회고',
+    [FILTER.USER_PROFILE_TAB.REVIEW_FORMS]: '생성한 질문지',
+    [FILTER.USER_PROFILE_TAB.TEMPLATES]: '생성한 템플릿',
   };
 
   const handleChangeTab = (filter: string) => () => {
@@ -88,19 +95,19 @@ function ProfilePage() {
         )}를(을) 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.`,
       )
     ) {
-      if (currentTab === TAB.USER_PROFILE.REVIEWS) {
+      if (currentTab === FILTER.USER_PROFILE_TAB.REVIEWS) {
         deleteReviewMutation.mutate(index as number, {
           onSuccess: deleteSuccessOption,
           onError: ({ message }) => alert(message),
         });
       }
-      if (currentTab === TAB.USER_PROFILE.REVIEW_FORMS) {
+      if (currentTab === FILTER.USER_PROFILE_TAB.REVIEW_FORMS) {
         deleteReviewFormMutation.mutate(index as string, {
           onSuccess: deleteSuccessOption,
           onError: ({ message }) => alert(message),
         });
       }
-      if (currentTab === TAB.USER_PROFILE.TEMPLATES) {
+      if (currentTab === FILTER.USER_PROFILE_TAB.TEMPLATES) {
         deleteTemplateMutation.mutate(index as number, {
           onSuccess: deleteSuccessOption,
           onError: ({ message }) => alert(message),

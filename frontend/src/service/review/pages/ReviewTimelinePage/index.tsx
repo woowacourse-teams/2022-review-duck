@@ -4,7 +4,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { faArrowTrendUp, faPenNib } from '@fortawesome/free-solid-svg-icons';
 import { InfiniteData } from '@tanstack/react-query';
 
-import { PAGE_LIST, PAGE_OPTION, QUERY_KEY, TAB } from 'constant';
+import { PAGE_LIST, PAGE_OPTION, QUERY_KEY, FILTER } from 'constant';
 import {
   InfiniteItem,
   ReviewPublicAnswer,
@@ -29,7 +29,7 @@ import Feed from './views/Feed';
 import SideMenu from './views/SideMenu';
 import queryClient from 'api/config/queryClient';
 import { updateReviewLike } from 'api/review.api';
-import { validateTab } from 'service/@shared/validator';
+import { validateFilter } from 'service/@shared/validator';
 
 type ReviewId = ReviewPublicAnswer['id'];
 
@@ -40,7 +40,7 @@ function ReviewTimelinePage() {
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
 
-  validateTab(['trend', 'latest'], currentTab);
+  validateFilter([FILTER.TIMELINE_TAB.TREND, FILTER.TIMELINE_TAB.LATEST], currentTab);
 
   const { mutate: reviewAnswerDelete } = useDeleteReviewAnswer();
   const { addFetch } = useStackFetch(2000);
@@ -58,7 +58,7 @@ function ReviewTimelinePage() {
   const { targetRef } = useIntersectionObserver<ReviewPublicAnswerList, HTMLDivElement>(
     fetchNextPage,
     { threshold: 0.75 },
-    reviews,
+    [reviews],
   );
 
   if (isError || isLoading) return <>{/* Error Boundary, Suspense Used */}</>;
@@ -144,15 +144,15 @@ function ReviewTimelinePage() {
 
         <SideMenu.List>
           <SideMenu.Menu
-            isCurrentTab={currentTab === TAB.TIMELINE.TREND}
-            filter={TAB.TIMELINE.TREND as TimelineFilterType}
+            isCurrentTab={currentTab === FILTER.TIMELINE_TAB.TREND}
+            filter={FILTER.TIMELINE_TAB.TREND as TimelineFilterType}
             icon={faArrowTrendUp}
           >
             트랜딩
           </SideMenu.Menu>
           <SideMenu.Menu
-            isCurrentTab={currentTab === TAB.TIMELINE.LATEST}
-            filter={TAB.TIMELINE.LATEST as TimelineFilterType}
+            isCurrentTab={currentTab === FILTER.TIMELINE_TAB.LATEST}
+            filter={FILTER.TIMELINE_TAB.LATEST as TimelineFilterType}
             icon={faPenNib}
           >
             최신글

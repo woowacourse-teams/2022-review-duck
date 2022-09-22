@@ -69,19 +69,23 @@ const ACCESS_TOKEN_REFRESH_TIME = ACCESS_TOKEN_EXPIRE_TIME - 60 * 2 * 1000;
 
 const PERMISSION_VALID_TIME = 60 * 1000;
 
-const TAB = {
-  USER_PROFILE: {
+const FILTER = {
+  USER_PROFILE_TAB: {
     REVIEWS: 'reviews',
     REVIEW_FORMS: 'review-forms',
     TEMPLATES: 'templates',
   },
-  TEMPLATE: {
+  TEMPLATE_TAB: {
     TREND: 'trend',
     LATEST: 'latest',
   },
-  TIMELINE: {
+  TIMELINE_TAB: {
     TREND: 'trend',
     LATEST: 'latest',
+  },
+  DISPLAY_MODE: {
+    LIST: 'list',
+    SHEET: 'sheet',
   },
 };
 
@@ -111,8 +115,8 @@ const API_URI = {
   REVIEW: {
     GET_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
     GET_ANSWER: (reviewId: numberString) => `/api/reviews/${reviewId}`,
-    GET_FORM_ANSWER: (reviewFormCode: string, display: string) =>
-      `/api/review-forms/${reviewFormCode}/reviews?displayType=${display}`,
+    GET_FORM_ANSWER: (reviewFormCode: string, display: string, page?: string, size?: number) =>
+      `/api/review-forms/${reviewFormCode}/reviews?displayType=${display}&page=${page}&size=${size}`,
     GET_PUBLIC_ANSWER: '/api/reviews/public',
 
     CREATE_FORM: '/api/review-forms',
@@ -157,7 +161,7 @@ export {
   ACCESS_PERMISSION,
   ACCESS_TOKEN_EXPIRE_TIME,
   ACCESS_TOKEN_REFRESH_TIME,
-  TAB,
+  FILTER,
   PERMISSION_VALID_TIME,
   REVIEW_FORM_TITLE_LENGTH,
   REVIEW_FORM_CODE_LENGTH,
