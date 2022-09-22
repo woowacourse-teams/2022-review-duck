@@ -16,12 +16,12 @@ input,
 textarea {
   font-family: 'NanumBarunGothic', sans-serif;
   font-weight: 400;
-  font-display: swap;
   -webkit-font-smoothing: antialiased;
 }
 
 * {
   box-sizing: border-box;
+  font-display: swap;
 }
 
 img {
