@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --config ./.webpack/webpack.dev.js --mode development --open --hot",
     "start-mocking": "webpack-dev-server --config ./.webpack/webpack.dev.js --open --hot --mode development --env MOCKING",
-    "build-develop": "webpack --config ./.webpack/webpack.dev.js --mode development",
+    "build-develop": "webpack --config ./.webpack/webpack.dev.js --mode production --env DEPLOY",
     "build": "webpack --config ./.webpack/webpack.prod.js --mode production",
     "storybook": "start-storybook -p 6006 --no-manager-cache",
     "build-storybook": "build-storybook",
