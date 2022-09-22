@@ -25,14 +25,14 @@ function Image({
   size = 'medium',
   theme = 'rectangle',
   edge = 'round',
-  src,
+  src = '',
 }: ImageProps) {
   const sizeToPixel = {
     small: 48,
     medium: 64,
     large: 96,
   };
-  const imageSrcURL = new URL(src || '');
+  const imageSrcURL = new URL(src);
 
   imageSrcURL.searchParams.set('size', String(sizeToPixel[size] * 2));
 

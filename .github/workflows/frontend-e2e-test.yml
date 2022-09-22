@@ -1,0 +1,38 @@
+name: frontend-e2e-test
+
+on:
+  push:
+    branches: ["develop"]
+    types: [labeled]
+  pull_request:
+    branches: ["develop", "main"]
+    types: [labeled]
+
+defaults:
+  run:
+    working-directory: ./frontend/
+
+jobs:
+  analysis:
+    if: ${{ github.event.label.name == 'front-end'}}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@master
+        with:
+          token: ${{ secrets.DEVELOP_PUSH_KEY }}
+
+      - name: Node.js 설치
+        uses: actions/setup-node@master
+        with:
+          node-version: 17.x
+
+      - name: dependencies 설치
+        run: yarn install
+
+      - name: 개발용 모킹 서버 실행
+        run: yarn run start:mocking
+
+      - name: E2E 테스트 진행
+        run: yarn run test:e2e
