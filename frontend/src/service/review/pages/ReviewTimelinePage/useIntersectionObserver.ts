@@ -1,10 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import {
-  FetchNextPageOptions,
-  InfiniteData,
-  InfiniteQueryObserverResult,
-} from '@tanstack/react-query';
+import { FetchNextPageOptions, InfiniteQueryObserverResult } from '@tanstack/react-query';
 
 import { InfiniteItem } from 'types';
 
@@ -19,7 +15,7 @@ function useIntersectionObserver<DataType, RefElementType extends Element>(
     options?: FetchNextPageOptions,
   ) => Promise<InfiniteQueryObserverResult<InfiniteItem<DataType>>>,
   option: ObserverOptionType,
-  data: InfiniteData<InfiniteItem<DataType>> | undefined,
+  dependArray: unknown[],
 ) {
   const targetRef = useRef<RefElementType>(null);
 
@@ -28,6 +24,7 @@ function useIntersectionObserver<DataType, RefElementType extends Element>(
       return;
     }
     const target = targetRef.current;
+
     const handleIntersect: IntersectionObserverCallback = ([entry]) => {
       if (entry.isIntersecting) {
         onIntersect();
@@ -42,7 +39,7 @@ function useIntersectionObserver<DataType, RefElementType extends Element>(
         observer.disconnect();
       }
     };
-  }, [data]);
+  }, dependArray);
 
   return { targetRef };
 }
