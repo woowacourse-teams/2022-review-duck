@@ -1,6 +1,7 @@
 import { Routes, Route } from 'react-router-dom';
 
 import { PAGE_LIST } from 'constant';
+import * as SplitPages from 'routes';
 
 import useAuth from 'service/@shared/hooks/useAuth';
 
@@ -10,17 +11,7 @@ import MainLayout from 'service/@shared/layout/MainLayout';
 import ErrorPage from 'service/@shared/pages/ErrorPage';
 import ReviewLayout from 'service/review/layout/ReviewLayout';
 import Playground from 'service/review/pages/Playground';
-import ReviewAnswerEditorPage from 'service/review/pages/ReviewAnswerEditorPage';
-import ReviewFormEditorPage from 'service/review/pages/ReviewFormEditorPage';
-import ReviewOverviewPage from 'service/review/pages/ReviewOverviewPage';
-import ReviewTimelinePage from 'service/review/pages/ReviewTimelinePage';
-import TemplateDetailPage from 'service/template/pages/TemplateDetailPage';
-import TemplateFormEditorPage from 'service/template/pages/TemplateFormEditorPage';
-import TemplateListPage from 'service/template/pages/TemplateListPage';
-import Authorize from 'service/user/pages/Authorize';
-import Logout from 'service/user/pages/Logout';
 import MainPage from 'service/user/pages/MainPage';
-import ProfilePage from 'service/user/pages/ProfilePage';
 
 function PageRoutes() {
   useAuth();
@@ -30,12 +21,15 @@ function PageRoutes() {
       <Route element={<MainLayout />}>
         <Route index element={<MainPage />} />
 
-        <Route path={PAGE_LIST.TEMPLATE_LIST} element={<TemplateListPage />} />
+        <Route path={PAGE_LIST.TEMPLATE_LIST} element={<SplitPages.TemplateListPage />} />
 
-        <Route path={`${PAGE_LIST.TEMPLATE_DETAIL}/:templateId`} element={<TemplateDetailPage />} />
+        <Route
+          path={`${PAGE_LIST.TEMPLATE_DETAIL}/:templateId`}
+          element={<SplitPages.TemplateDetailPage />}
+        />
 
-        <Route path={`${PAGE_LIST.USER_PROFILE}/:socialId`} element={<ProfilePage />} />
-        <Route path={PAGE_LIST.TIMELINE} element={<ReviewTimelinePage />} />
+        <Route path={`${PAGE_LIST.USER_PROFILE}/:socialId`} element={<SplitPages.ProfilePage />} />
+        <Route path={PAGE_LIST.TIMELINE} element={<SplitPages.ReviewTimelinePage />} />
         <Route path="playground" element={<Playground />} />
 
         {/* 데모 데이용 */}
@@ -49,29 +43,32 @@ function PageRoutes() {
         <Route element={<RequireAuth />}>
           <Route>
             <Route path={PAGE_LIST.REVIEW}>
-              <Route index element={<ReviewAnswerEditorPage />} />
-              <Route path=":reviewFormCode" element={<ReviewAnswerEditorPage />} />
-              <Route path=":reviewFormCode/:reviewId" element={<ReviewAnswerEditorPage />} />
+              <Route index element={<SplitPages.ReviewAnswerEditorPage />} />
+              <Route path=":reviewFormCode" element={<SplitPages.ReviewAnswerEditorPage />} />
+              <Route
+                path=":reviewFormCode/:reviewId"
+                element={<SplitPages.ReviewAnswerEditorPage />}
+              />
             </Route>
           </Route>
 
           <Route path={PAGE_LIST.REVIEW_FORM}>
-            <Route index element={<ReviewFormEditorPage />} />
-            <Route path=":reviewFormCode" element={<ReviewFormEditorPage />} />
+            <Route index element={<SplitPages.ReviewFormEditorPage />} />
+            <Route path=":reviewFormCode" element={<SplitPages.ReviewFormEditorPage />} />
           </Route>
 
-          <Route path={PAGE_LIST.TEMPLATE_FORM} element={<TemplateFormEditorPage />} />
+          <Route path={PAGE_LIST.TEMPLATE_FORM} element={<SplitPages.TemplateFormEditorPage />} />
         </Route>
       </Route>
 
       <Route path={PAGE_LIST.REVIEW_OVERVIEW}>
-        <Route index element={<ReviewOverviewPage />} />
-        <Route path=":reviewFormCode" element={<ReviewOverviewPage />} />
-        <Route path=":reviewFormCode/:displayMode" element={<ReviewOverviewPage />} />
+        <Route index element={<SplitPages.ReviewOverviewPage />} />
+        <Route path=":reviewFormCode" element={<SplitPages.ReviewOverviewPage />} />
+        <Route path=":reviewFormCode/:displayMode" element={<SplitPages.ReviewOverviewPage />} />
       </Route>
 
-      <Route path={PAGE_LIST.AUTHORIZE} element={<Authorize />} />
-      <Route path={PAGE_LIST.LOGOUT} element={<Logout />} />
+      <Route path={PAGE_LIST.AUTHORIZE} element={<SplitPages.AuthorizePage />} />
+      <Route path={PAGE_LIST.LOGOUT} element={<SplitPages.LogoutPage />} />
 
       <Route
         path="*"
