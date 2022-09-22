@@ -46,11 +46,6 @@ function QuestionsEditor({ className, initialQuestions, onUpdate, ...rest }: Que
   };
 
   const handleChangeQuestion = (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
-    const $input = event.target as HTMLInputElement;
-    const currentQuestion = questions[index];
-
-    if (!currentQuestion || $input.value === '') return;
-
     updateQuestion(index, { value: event.target.value });
   };
 
