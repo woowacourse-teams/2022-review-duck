@@ -15,7 +15,11 @@ function getElapsedTimeText(timestamp: number) {
   if (elapsed > maxTimeLimit) {
     const elapsedDate = new Date(timestamp);
 
-    return `${elapsedDate.getFullYear()}년 ${elapsedDate.getMonth()}월 ${elapsedDate.getDate()}일`;
+    return new Intl.DateTimeFormat('default', {
+      year: 'numeric',
+      month: 'narrow',
+      day: 'numeric',
+    }).format(elapsedDate);
   }
 
   const timeText = timeUnitRange.reduce((previous, { limit, text }, index) => {
