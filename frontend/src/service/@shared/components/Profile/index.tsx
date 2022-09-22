@@ -27,6 +27,15 @@ function Image({
   edge = 'round',
   src,
 }: ImageProps) {
+  const sizeToPixel = {
+    small: 48,
+    medium: 64,
+    large: 96,
+  };
+  const imageSrcURL = new URL(src || '');
+
+  imageSrcURL.searchParams.set('size', String(sizeToPixel[size] * 2));
+
   return (
     <div
       className={cn(
@@ -36,7 +45,7 @@ function Image({
         styles[`theme-${theme}`],
         styles[`edge-${edge}`],
       )}
-      style={{ backgroundImage: 'url(' + src + ')' }}
+      style={{ backgroundImage: `url(${imageSrcURL.toString()})` }}
     />
   );
 }
