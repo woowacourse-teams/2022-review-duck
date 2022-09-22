@@ -31,7 +31,7 @@ jobs:
       - name: dependencies 설치
         run: yarn install
 
-      - name: 개발용 모킹 서버 실행 및 E2E 테스트 시도
+      - name: 개발용 모킹 서버 실행 & E2E 테스트 시도
         run: |
           yarn run start:mocking
           yarn run test:e2e
