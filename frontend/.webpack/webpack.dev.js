@@ -2,7 +2,7 @@ const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 
 module.exports = (env, options) => {
-  const loader = options.mode
+  const loader = env.DEPLOY
     ? {
         test: /\.tsx?$/,
         exclude: /node_modules/,
@@ -15,7 +15,7 @@ module.exports = (env, options) => {
       };
 
   return merge(common(env, options), {
-    mode: options.mode,
+    mode: 'development',
     devtool: 'source-map',
     devServer: {
       historyApiFallback: true,

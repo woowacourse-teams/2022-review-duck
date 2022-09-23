@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { faArrowTrendUp, faPenNib } from '@fortawesome/free-solid-svg-icons';
@@ -40,7 +40,9 @@ function ReviewTimelinePage() {
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
 
-  validateFilter([FILTER.TIMELINE_TAB.TREND, FILTER.TIMELINE_TAB.LATEST], currentTab);
+  useEffect(() => {
+    validateFilter([FILTER.TIMELINE_TAB.TREND, FILTER.TIMELINE_TAB.LATEST], currentTab);
+  }, []);
 
   const { mutate: reviewAnswerDelete } = useDeleteReviewAnswer();
   const { addFetch } = useStackFetch(2000);
@@ -129,7 +131,17 @@ function ReviewTimelinePage() {
 
     addFetch(reviewId, () => updateReviewLike({ reviewId, likes: reviewLikeStack }), {
       onUpdate: () => setUpdateLikeCount(pageIndex, reviewId, likes + 1),
-      onError: () => setUpdateLikeCount(pageIndex, reviewId, likes - reviewLikeStack),
+      onError: (error) => {
+        const originCount = likes - (reviewLikeStack - 1);
+        setUpdateLikeCount(pageIndex, reviewId, originCount);
+        showSnackbar({
+          theme: 'danger',
+          title: '회고 좋아요에 실패하였습니다.',
+          description: error.message,
+        });
+
+        delete reviewsLikeStack.current[reviewId];
+      },
       onSuccess: ({ likes: latestLikes }) => {
         setUpdateLikeCount(pageIndex, reviewId, latestLikes);
         delete reviewsLikeStack.current[reviewId];
