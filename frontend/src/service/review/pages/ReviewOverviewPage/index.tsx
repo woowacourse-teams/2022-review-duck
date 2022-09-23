@@ -115,7 +115,7 @@ function ReviewOverViewPage() {
                 {page.data.reviews.map(({ id, info, questions }, index) => (
                   <ListView.Review
                     key={id}
-                    ref={index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1 ? targetRef : null}
+                    // ref={index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1 ? targetRef : null}
                   >
                     <Questions>
                       <Questions.CoverProfile
@@ -151,6 +151,7 @@ function ReviewOverViewPage() {
                 ))}
               </React.Fragment>
             ))}
+            <div ref={targetRef}></div>
             {isFetching && <ListView.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
           </ListView.Content>
 
