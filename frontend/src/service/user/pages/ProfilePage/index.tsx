@@ -150,7 +150,11 @@ function ProfilePage() {
               key={article.id || article.reviewFormCode}
               isMine={userArticles.isMine}
               article={article}
-              titleLink={`${PAGE_LIST.REVIEW_OVERVIEW}/${article.reviewFormCode}`}
+              titleLink={
+                currentTab === FILTER.USER_PROFILE_TAB.TEMPLATES
+                  ? `${PAGE_LIST.TEMPLATE_DETAIL}/${article.id}`
+                  : `${PAGE_LIST.REVIEW_OVERVIEW}/${article.reviewFormCode}`
+              }
               editUrl={`${PAGE_LIST.REVIEW}/${article.reviewFormCode}/${article.id}`}
               onEdit={handleClickEdit}
               onDelete={handleDeleteReview}
