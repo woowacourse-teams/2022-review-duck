@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
+import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
+
 import { PAGE_LIST } from 'constant';
 import { ErrorResponse } from 'types';
 
@@ -10,7 +12,6 @@ import useQuestions from 'service/@shared/hooks/useQuestions';
 import useAnswerEditorPage from './useAnswerEditorPage';
 import { Editor } from './views/Editor';
 import { Status } from './views/Status';
-import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 
 const EDITOR_MODE = {
   NEW_ANSWER: false,
