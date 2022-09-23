@@ -69,11 +69,23 @@ function QuestionsEditorItem({
         />
 
         <FlexContainer direction="row" justify="right" gap="small">
-          <Button className={styles.button} theme="circle" size="medium" onClick={onAddQuestion}>
+          <Button
+            className={styles.button}
+            theme="circle"
+            size="medium"
+            aria-label="질문 추가하기"
+            onClick={onAddQuestion}
+          >
             <FontAwesomeIcon icon={faPlus} />
           </Button>
 
-          <Button className={styles.button} theme="circle" size="medium" onClick={onDeleteQuestion}>
+          <Button
+            className={styles.button}
+            theme="circle"
+            size="medium"
+            aria-label="질문 제거하기"
+            onClick={onDeleteQuestion}
+          >
             <FontAwesomeIcon icon={faBackspace} />
           </Button>
         </FlexContainer>

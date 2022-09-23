@@ -1,16 +1,17 @@
 {
   "name": "review-duck-frontend",
-  "version": "0.26.1",
+  "version": "0.26.8",
   "main": "index.tsx",
   "license": "MIT",
   "scripts": {
     "start": "webpack-dev-server --config ./.webpack/webpack.dev.js --mode development --open --hot",
-    "start-mocking": "webpack-dev-server --config ./.webpack/webpack.dev.js --open --hot --mode development --env MOCKING",
-    "build-develop": "webpack --config ./.webpack/webpack.dev.js --mode development",
+    "start:mocking": "webpack-dev-server --config ./.webpack/webpack.dev.js --open --hot --mode development --env MOCKING",
+    "build-develop": "webpack --config ./.webpack/webpack.dev.js --mode development --env DEPLOY",
     "build": "webpack --config ./.webpack/webpack.prod.js --mode production",
     "storybook": "start-storybook -p 6006 --no-manager-cache",
     "build-storybook": "build-storybook",
-    "pretty": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\""
+    "pretty": "prettier --write \"src/**/*.{js,jsx,ts,tsx}\"",
+    "test:e2e": "yarn run cypress run"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
@@ -48,6 +49,7 @@
     "autoprefixer": "^10.4.7",
     "babel-loader": "^8.2.5",
     "css-loader": "^6.7.1",
+    "cypress": "^10.8.0",
     "dotenv": "^16.0.1",
     "eslint": "^8.18.0",
     "eslint-config-prettier": "^8.5.0",

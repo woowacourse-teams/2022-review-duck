@@ -28,8 +28,11 @@ module.exports = (env = {}, options = {}) => {
     output: {
       path: path.join(__dirname, '../build'),
       publicPath: process.env.PUBLIC_PATH,
-      filename: `app.${app.version}.[contenthash].js`,
+      filename: `[name].${app.version}.[contenthash].js`,
       clean: true,
+      asyncChunks: true,
+      chunkLoadTimeout: 30000,
+      chunkFilename: `[name].${app.version}.[contenthash].js`,
     },
     module: {
       rules: [
@@ -98,5 +101,10 @@ module.exports = (env = {}, options = {}) => {
         filename: `css/[name].${app.version}.[contenthash].css`,
       }),
     ],
+    optimization: {
+      splitChunks: {
+        chunks: 'all',
+      },
+    },
   };
 };

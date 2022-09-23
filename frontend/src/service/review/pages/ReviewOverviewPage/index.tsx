@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { FILTER, PAGE_LIST, PAGE_OPTION } from 'constant';
 import { DisplayModeType, ReviewFormAnswerList } from 'types';
 
+import useIntersectionObserver from 'common/hooks/useIntersectionObserver';
 import useSnackbar from 'common/hooks/useSnackbar';
 import {
   useDeleteReviewAnswer,
@@ -18,7 +19,6 @@ import Questions from 'service/@shared/components/Questions';
 
 import styles from './styles.module.scss';
 
-import useIntersectionObserver from '../ReviewTimelinePage/useIntersectionObserver';
 import { Header } from './views/Header';
 import { ListView } from './views/ListView';
 import { SheetView } from './views/SheetView';
@@ -115,7 +115,7 @@ function ReviewOverViewPage() {
                 {page.data.reviews.map(({ id, info, questions }, index) => (
                   <ListView.Review
                     key={id}
-                    ref={index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1 ? targetRef : null}
+                    // ref={index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1 ? targetRef : null}
                   >
                     <Questions>
                       <Questions.CoverProfile
@@ -151,6 +151,7 @@ function ReviewOverViewPage() {
                 ))}
               </React.Fragment>
             ))}
+            <div ref={targetRef}></div>
             {isFetching && <ListView.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
           </ListView.Content>
 

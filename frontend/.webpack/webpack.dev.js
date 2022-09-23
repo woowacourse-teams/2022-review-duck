@@ -1,8 +1,20 @@
 const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 
-module.exports = (env, options) =>
-  merge(common(env, options), {
+module.exports = (env, options) => {
+  const loader = env.DEPLOY
+    ? {
+        test: /\.tsx?$/,
+        exclude: /node_modules/,
+        use: ['ts-loader'],
+      }
+    : {
+        test: /\.(tsx?|jsx?)$/,
+        exclude: /node_modules/,
+        use: ['babel-loader'],
+      };
+
+  return merge(common(env, options), {
     mode: 'development',
     devtool: 'source-map',
     devServer: {
@@ -11,12 +23,7 @@ module.exports = (env, options) =>
       hot: true,
     },
     module: {
-      rules: [
-        {
-          test: /\.tsx?$/,
-          exclude: /node_modules/,
-          use: ['ts-loader'],
-        },
-      ],
+      rules: [loader],
     },
   });
+};

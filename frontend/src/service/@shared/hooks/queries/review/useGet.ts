@@ -60,7 +60,7 @@ function useGetInfiniteReviewFormAnswer(
   };
 
   return useInfiniteQuery<InfiniteItem<ReviewFormAnswerList>>(
-    [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEW_PUBLIC_ANSWER, { display }],
+    [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEWS, { display, reviewFormCode }],
     fetchFunc,
     {
       getNextPageParam: (lastItem) =>

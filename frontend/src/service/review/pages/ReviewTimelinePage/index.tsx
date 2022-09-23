@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { faArrowTrendUp, faPenNib } from '@fortawesome/free-solid-svg-icons';
@@ -12,6 +12,7 @@ import {
   TimelineFilterType,
 } from 'types';
 
+import useIntersectionObserver from 'common/hooks/useIntersectionObserver';
 import useSnackbar from 'common/hooks/useSnackbar';
 import useStackFetch from 'common/hooks/useStackFetch';
 import {
@@ -24,7 +25,6 @@ import Questions from 'service/@shared/components/Questions';
 
 import styles from './styles.module.scss';
 
-import useIntersectionObserver from './useIntersectionObserver';
 import Feed from './views/Feed';
 import SideMenu from './views/SideMenu';
 import queryClient from 'api/config/queryClient';
@@ -40,7 +40,9 @@ function ReviewTimelinePage() {
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
 
-  validateFilter([FILTER.TIMELINE_TAB.TREND, FILTER.TIMELINE_TAB.LATEST], currentTab);
+  useEffect(() => {
+    validateFilter([FILTER.TIMELINE_TAB.TREND, FILTER.TIMELINE_TAB.LATEST], currentTab);
+  }, []);
 
   const { mutate: reviewAnswerDelete } = useDeleteReviewAnswer();
   const { addFetch } = useStackFetch(2000);
@@ -129,7 +131,17 @@ function ReviewTimelinePage() {
 
     addFetch(reviewId, () => updateReviewLike({ reviewId, likes: reviewLikeStack }), {
       onUpdate: () => setUpdateLikeCount(pageIndex, reviewId, likes + 1),
-      onError: () => setUpdateLikeCount(pageIndex, reviewId, likes - reviewLikeStack),
+      onError: (error) => {
+        const originCount = likes - (reviewLikeStack - 1);
+        setUpdateLikeCount(pageIndex, reviewId, originCount);
+        showSnackbar({
+          theme: 'danger',
+          title: '회고 좋아요에 실패하였습니다.',
+          description: error.message,
+        });
+
+        delete reviewsLikeStack.current[reviewId];
+      },
       onSuccess: ({ likes: latestLikes }) => {
         setUpdateLikeCount(pageIndex, reviewId, latestLikes);
         delete reviewsLikeStack.current[reviewId];
@@ -172,9 +184,8 @@ function ReviewTimelinePage() {
               {page.data.reviews.map(
                 ({ id, reviewFormCode, questions, info: { creator, ...info }, likes }, index) => (
                   <Feed.ReviewAnswer
-                    isLoading={isFetching}
                     key={id}
-                    ref={index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1 ? targetRef : null}
+                    // ref={index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1 ? targetRef : null}
                   >
                     <Feed.UserProfile
                       socialId={creator.id}
@@ -210,8 +221,10 @@ function ReviewTimelinePage() {
                   </Feed.ReviewAnswer>
                 ),
               )}
+              {isFetching && <Feed.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
             </React.Fragment>
           ))}
+          <div ref={targetRef}></div>
         </Feed.List>
       </Feed>
     </LayoutContainer>

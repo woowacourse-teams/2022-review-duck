@@ -39,20 +39,17 @@ function List({ children }: ListProps) {
 }
 
 interface ReviewAnswerProps {
-  isLoading: boolean;
   children: React.ReactNode;
 }
 
 const ReviewAnswer = React.memo(
-  forwardRef(
-    ({ isLoading, children }: ReviewAnswerProps, forwardedRef: ForwardedRef<HTMLDivElement>) => {
-      return (
-        <div className={styles.reviewAnswer} ref={forwardedRef}>
-          {isLoading ? <Skeleton /> : children}
-        </div>
-      );
-    },
-  ),
+  forwardRef(({ children }: ReviewAnswerProps, forwardedRef: ForwardedRef<HTMLDivElement>) => {
+    return (
+      <div className={styles.reviewAnswer} ref={forwardedRef}>
+        {children}
+      </div>
+    );
+  }),
 );
 
 ReviewAnswer.displayName = 'ReviewAnswer';
@@ -75,11 +72,28 @@ function UserProfile({ socialId, profileUrl, nickname, update }: UserProfileProp
   );
 }
 
+interface LoadingProps {
+  line: number;
+}
+
+const Loading = ({ line }: LoadingProps) => {
+  return (
+    <>
+      {Array.from({ length: line }, (_, index) => (
+        <Feed.ReviewAnswer key={index}>
+          <Skeleton />
+        </Feed.ReviewAnswer>
+      ))}
+    </>
+  );
+};
+
 const Feed = Object.assign(Container, {
   Title,
   List,
   ReviewAnswer,
   UserProfile,
+  Loading,
 });
 
 export default Feed;

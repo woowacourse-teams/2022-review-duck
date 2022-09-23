@@ -1,0 +1,40 @@
+name: frontend-e2e-test
+
+on:
+  push:
+    branches: ["develop"]
+    types: [labeled]
+  pull_request:
+    branches: ["develop", "main"]
+    types: [labeled]
+
+defaults:
+  run:
+    working-directory: ./frontend/
+
+jobs:
+  analysis:
+    if: ${{ github.event.label.name == 'front-end'}}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@master
+        with:
+          token: ${{ secrets.DEVELOP_PUSH_KEY }}
+
+      - name: Node.js 설치
+        uses: actions/setup-node@master
+        with:
+          node-version: 17.x
+
+      - name: 프로젝트 Dependencies 설치
+        run: yarn install
+
+      - name: E2E 테스트 진행
+        uses: cypress-io/github-action@master
+        with:
+          start: yarn run start:mocking
+          wait-on: "http://localhost:3000"
+          working-directory: ./frontend/
+          config-file: cypress.config.ts
