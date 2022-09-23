@@ -19,9 +19,8 @@ function useIntersectionObserver<DataType, RefElementType extends Element>(
 ) {
   const targetRef = useRef<RefElementType>(null);
 
-  const handleIntersect: IntersectionObserverCallback = ([entry], observer) => {
+  const handleIntersect: IntersectionObserverCallback = ([entry]) => {
     if (entry.isIntersecting) {
-      // observer.unobserve(entry.target);
       onIntersect();
     }
   };
