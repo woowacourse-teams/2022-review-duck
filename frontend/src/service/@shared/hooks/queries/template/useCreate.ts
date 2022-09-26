@@ -20,6 +20,7 @@ function useCreateTemplate(mutationOptions?: UseCustomMutationOptions<CreateTemp
 
   return useMutation(templateAPI.createTemplate, {
     onSuccess: () => {
+      queryClient.invalidateQueries([QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_USER_TEMPLATES]);
       queryClient.invalidateQueries([QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_TEMPLATES]);
     },
     ...mutationOptions,
