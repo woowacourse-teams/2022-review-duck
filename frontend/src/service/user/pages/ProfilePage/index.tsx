@@ -155,7 +155,11 @@ function ProfilePage() {
                   ? `${PAGE_LIST.TEMPLATE_DETAIL}/${article.id}`
                   : `${PAGE_LIST.REVIEW_OVERVIEW}/${article.reviewFormCode}`
               }
-              editUrl={`${PAGE_LIST.REVIEW}/${article.reviewFormCode}/${article.id}`}
+              editUrl={
+                currentTab === FILTER.USER_PROFILE_TAB.TEMPLATES
+                  ? `${PAGE_LIST.TEMPLATE_FORM}?templateId=${article.id}&templateEditMode=true`
+                  : `${PAGE_LIST.REVIEW}/${article.reviewFormCode}/${article.id}`
+              }
               onEdit={handleClickEdit}
               onDelete={handleDeleteReview}
             />
