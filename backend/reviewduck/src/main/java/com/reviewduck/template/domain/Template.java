@@ -1,5 +1,6 @@
 package com.reviewduck.template.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -45,30 +46,25 @@ public class Template extends BaseDate {
     @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "template_id")
     @OrderBy("position asc")
-    private List<TemplateQuestion> questions;
+    private List<TemplateQuestion> questions = new ArrayList<>();
 
     @Column
     private int usedCount;
 
-    public Template(Member member, String templateTitle, String templateDescription, List<TemplateQuestion> questions) {
-        validateWhenCreate(member, templateTitle, templateDescription, questions);
+    public Template(Member member, String templateTitle, String templateDescription) {
+        validateWhenCreate(member, templateTitle, templateDescription);
 
         this.templateTitle = templateTitle;
         this.member = member;
         this.templateDescription = templateDescription;
-        this.questions = questions;
         this.usedCount = 0;
-
-        sortQuestions();
     }
 
-    public void update(String templateTitle, String templateDescription, List<TemplateQuestion> questions) {
+    public void update(String templateTitle, String templateDescription) {
         validateWhenUpdate(templateTitle, templateDescription);
 
         this.templateTitle = templateTitle;
         this.templateDescription = templateDescription;
-        this.questions = questions;
-
         sortQuestions();
     }
 
@@ -76,7 +72,7 @@ public class Template extends BaseDate {
         return member.equals(this.member);
     }
 
-    private void sortQuestions() {
+    public void sortQuestions() {
         int index = 0;
         for (TemplateQuestion question : questions) {
             question.setPosition(index++);
@@ -89,24 +85,16 @@ public class Template extends BaseDate {
         validateNullDescription(templateDescription);
     }
 
-    private void validateWhenCreate(Member member, String templateTitle, String templateDescription,
-        List<TemplateQuestion> questions) {
+    private void validateWhenCreate(Member member, String templateTitle, String templateDescription) {
         validateBlankTitle(templateTitle);
         validateTitleLength(templateTitle);
         validateNullMember(member);
         validateNullDescription(templateDescription);
-        validateNullQuestions(questions);
     }
 
     private void validateNullMember(Member member) {
         if (Objects.isNull(member)) {
             throw new TemplateException("템플릿의 작성자가 존재해야 합니다.");
-        }
-    }
-
-    private void validateNullQuestions(List<TemplateQuestion> questions) {
-        if (Objects.isNull(questions)) {
-            throw new TemplateException("템플릿의 질문 목록 생성 중 오류가 발생했습니다.");
         }
     }
 

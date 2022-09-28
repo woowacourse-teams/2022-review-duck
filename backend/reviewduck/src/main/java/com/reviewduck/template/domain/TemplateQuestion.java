@@ -4,9 +4,11 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.reviewduck.template.exception.TemplateQuestionException;
@@ -35,12 +37,30 @@ public class TemplateQuestion {
     @Column(nullable = false)
     private int position = -1;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Template template;
+
     public TemplateQuestion(String value, String description) {
         validateValue(value);
         validateDescription(description);
 
         this.value = value;
         this.description = description;
+    }
+
+    public TemplateQuestion(String value, String description, Template template) {
+        validateValue(value);
+        validateDescription(description);
+
+        this.value = value;
+        this.description = description;
+        this.template = template;
+        setTemplate(template);
+    }
+
+    public void setTemplate(Template template) {
+        this.template = template;
+        template.getQuestions().add(this);
     }
 
     public void update(String value, String description) {

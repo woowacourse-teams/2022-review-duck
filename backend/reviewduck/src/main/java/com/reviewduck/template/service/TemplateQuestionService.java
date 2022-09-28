@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.common.exception.NotFoundException;
+import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.domain.TemplateQuestion;
 import com.reviewduck.template.repository.TemplateQuestionRepository;
 
@@ -19,14 +20,15 @@ public class TemplateQuestionService {
     private final TemplateQuestionRepository templateQuestionRepository;
 
     @Transactional
-    public TemplateQuestion save(String value, String description) {
-        return templateQuestionRepository.save(new TemplateQuestion(value, description));
+    public TemplateQuestion save(String value, String description, Template template) {
+        return templateQuestionRepository.save(new TemplateQuestion(value, description, template));
     }
 
     @Transactional
-    public TemplateQuestion saveOrUpdateQuestion(Long id, String value, String description) {
+    public TemplateQuestion saveOrUpdateQuestion(final Long id, final String value,
+        final String description, final Template template) {
         if (Objects.isNull(id)) {
-            return templateQuestionRepository.save(new TemplateQuestion(value, description));
+            return templateQuestionRepository.save(new TemplateQuestion(value, description, template));
         }
 
         TemplateQuestion question = findById(id);

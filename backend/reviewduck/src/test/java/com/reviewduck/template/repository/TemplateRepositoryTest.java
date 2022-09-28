@@ -63,11 +63,11 @@ public class TemplateRepositoryTest {
     @DisplayName("템플릿을 저장한다.")
     void saveTemplate() {
         // given
+        Template template = new Template(member1, "title", "description");
         List<TemplateQuestion> questions = List.of(
-            new TemplateQuestion("question1", "description1"),
-            new TemplateQuestion("question2", "description2")
+            new TemplateQuestion("question1", "description1", template),
+            new TemplateQuestion("question2", "description2", template)
         );
-        Template template = new Template(member1, "title", "description", questions);
 
         // when
         Template savedTemplate = templateRepository.save(template);
@@ -177,8 +177,10 @@ public class TemplateRepositoryTest {
 
     private Template saveTemplate(Member member, List<TemplateQuestion> questions) throws InterruptedException {
         Thread.sleep(1);
-        Template template = new Template(member, "title", "description", questions);
-
+        Template template = new Template(member, "title", "description");
+        for (TemplateQuestion question : questions) {
+            question.setTemplate(template);
+        }
         return templateRepository.save(template);
     }
 }

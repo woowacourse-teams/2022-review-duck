@@ -73,10 +73,9 @@ public class TemplateServiceTest {
                 new TemplateQuestionCreateRequest("question1", "description1"),
                 new TemplateQuestionCreateRequest("question2", "description2"));
 
-            List<TemplateQuestion> expected = convertRequestToQuestions(questions);
-
             // when
             Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
+            List<TemplateQuestion> expected = convertRequestToQuestions(questions);
 
             // then
             assertAll(
@@ -86,13 +85,13 @@ public class TemplateServiceTest {
                 () -> assertThat(template.getTemplateDescription()).isEqualTo(templateDescription),
                 () -> assertThat(template.getQuestions())
                     .usingRecursiveComparison()
-                    .ignoringFields("id")
+                    .ignoringFields("id", "template")
                     .isEqualTo(expected)
             );
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("템플릿 단일 조회")
     class findTemplate {
@@ -108,13 +107,13 @@ public class TemplateServiceTest {
                 new TemplateQuestionCreateRequest("question1", "description1"),
                 new TemplateQuestionCreateRequest("question2", "description2"));
 
-            List<TemplateQuestion> expected = convertRequestToQuestions(questions);
             Template template = null;
             try {
                 template = saveTemplate(member1, templateTitle, templateDescription, questions);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            List<TemplateQuestion> expected = convertRequestToQuestions(questions);
 
             // when
             Template foundTemplate = templateService.findById(template.getId());
@@ -127,7 +126,7 @@ public class TemplateServiceTest {
                 () -> assertThat(foundTemplate.getTemplateDescription()).isEqualTo(templateDescription),
                 () -> assertThat(foundTemplate.getQuestions())
                     .usingRecursiveComparison()
-                    .ignoringFields("id")
+                    .ignoringFields("id", "template")
                     .isEqualTo(expected)
             );
         }
@@ -141,8 +140,8 @@ public class TemplateServiceTest {
                 .hasMessageContaining("존재하지 않는 템플릿입니다.");
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("전체 템플릿 조회")
     class findAll {
@@ -193,8 +192,8 @@ public class TemplateServiceTest {
             );
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("사용자별 템플릿 조회")
     class findAllByMember {
@@ -232,8 +231,8 @@ public class TemplateServiceTest {
                 .hasMessageContaining("존재하지 않는 사용자입니다.");
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("템플릿 수정")
     class updateTemplate {
@@ -278,7 +277,7 @@ public class TemplateServiceTest {
                 () -> assertThat(updatedTemplate.getTemplateDescription()).isEqualTo("new description"),
                 () -> assertThat(updatedTemplate.getQuestions())
                     .usingRecursiveComparison()
-                    .ignoringFields("id")
+                    .ignoringFields("id", "template")
                     .isEqualTo(expectedTemplateQuestions)
             );
         }
@@ -318,8 +317,8 @@ public class TemplateServiceTest {
                 .hasMessageContaining("존재하지 않는 템플릿입니다.");
         }
 
-    }
 
+    }
     @Nested
     @DisplayName("템플릿 삭제")
     class deleteTemplate {
@@ -369,6 +368,7 @@ public class TemplateServiceTest {
 
     }
 
+
     private List<TemplateQuestion> convertRequestToQuestions(List<TemplateQuestionCreateRequest> questions) {
         List<TemplateQuestion> expected = questions.stream()
             .map(questionRequest -> new TemplateQuestion(questionRequest.getValue(), questionRequest.getDescription()))
@@ -378,6 +378,7 @@ public class TemplateServiceTest {
         for (TemplateQuestion templateQuestion : expected) {
             templateQuestion.setPosition(index++);
         }
+
         return expected;
     }
 
@@ -387,5 +388,4 @@ public class TemplateServiceTest {
         TemplateCreateRequest createRequest = new TemplateCreateRequest(templateTitle, templateDescription, questions);
         return templateService.save(member, createRequest);
     }
-
 }

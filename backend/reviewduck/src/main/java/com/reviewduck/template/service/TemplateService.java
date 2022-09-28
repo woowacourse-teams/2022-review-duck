@@ -1,8 +1,5 @@
 package com.reviewduck.template.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -14,8 +11,9 @@ import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.template.domain.Template;
-import com.reviewduck.template.domain.TemplateQuestion;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
+import com.reviewduck.template.dto.request.TemplateQuestionCreateRequest;
+import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
 import com.reviewduck.template.repository.TemplateRepository;
 import com.reviewduck.template.vo.TemplateSortType;
@@ -35,16 +33,14 @@ public class TemplateService {
 
     @Transactional
     public Template save(Member member, TemplateCreateRequest createRequest) {
-
-        List<TemplateQuestion> questions = createRequest.getQuestions().stream()
-            .map(request -> templateQuestionService.save(request.getValue(), request.getDescription()))
-            .collect(Collectors.toUnmodifiableList());
-
         Template template = new Template(member,
             createRequest.getTemplateTitle(),
-            createRequest.getTemplateDescription(),
-            questions);
+            createRequest.getTemplateDescription());
 
+        for (final TemplateQuestionCreateRequest question : createRequest.getQuestions()) {
+            templateQuestionService.save(question.getValue(), question.getDescription(), template);
+        }
+        template.sortQuestions();
         return templateRepository.save(template);
     }
 
@@ -75,18 +71,19 @@ public class TemplateService {
 
         validateTemplateIsMine(template, member, "본인이 생성한 템플릿이 아니면 수정할 수 없습니다.");
 
-        List<TemplateQuestion> questions = templateUpdateRequest.getQuestions().stream()
-            .map(request -> templateQuestionService.saveOrUpdateQuestion(
-                request.getId(),
-                request.getValue(),
-                request.getDescription()))
-            .collect(Collectors.toUnmodifiableList());
+        for (TemplateQuestionUpdateRequest question : templateUpdateRequest.getQuestions()) {
+            templateQuestionService.saveOrUpdateQuestion(question.getId(), question.getValue(),
+                question.getDescription(), template);
+        }
 
         template.update(templateUpdateRequest.getTemplateTitle(),
-            templateUpdateRequest.getTemplateDescription(),
-            questions);
-
+            templateUpdateRequest.getTemplateDescription());
         return template;
+    }
+
+    @Transactional
+    public void increaseUsedCount(Long templateId) {
+        templateRepository.increaseUsedCount(templateId);
     }
 
     @Transactional
@@ -102,9 +99,4 @@ public class TemplateService {
             throw new AuthorizationException(message);
         }
     }
-
-    public void increaseUsedCount(Long templateId) {
-        templateRepository.increaseUsedCount(templateId);
-    }
-
 }
