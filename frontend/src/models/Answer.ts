@@ -4,14 +4,11 @@ export interface ResponseAnswer {
 }
 
 class Answer {
-  id: number | null;
-  value: string;
+  id: number | null = null;
+  value = '';
 
   constructor(responseData?: ResponseAnswer) {
     if (!responseData) {
-      this.id = null;
-      this.value = '';
-
       return;
     }
 
