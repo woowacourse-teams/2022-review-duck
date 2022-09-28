@@ -26,6 +26,8 @@ declare module '*.gif' {
   프로젝트 전반적으로 사용하는 범용 타입
 */
 
+type URLString = `http${'s' | ''}://${string}`;
+
 type numberString = `${number}` | number;
 
 type RequiredPartialType<Type, P extends keyof Type> = Type & {
