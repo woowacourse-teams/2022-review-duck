@@ -1,4 +1,4 @@
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { faEraser } from '@fortawesome/free-solid-svg-icons';
 
@@ -13,6 +13,7 @@ import { PaginationBar } from 'common/components';
 import { PaginationBarProps } from 'common/components/PaginationBar';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
+import Questions from 'service/@shared/components/Questions';
 
 import styles from './styles.module.scss';
 
@@ -71,8 +72,18 @@ function ProfilePage() {
     window.scrollTo(0, 0);
   };
 
-  const handleClickEdit = (editLink: string) => () => {
-    navigate(editLink);
+  const handleClickEdit = (id?: number, code?: string, socialId?: string) => () => {
+    const editNavigator = {
+      [FILTER.USER_PROFILE_TAB.REVIEWS]: () => navigate(`${PAGE_LIST.REVIEW}/${code}/${id}`),
+      [FILTER.USER_PROFILE_TAB.REVIEW_FORMS]: () =>
+        navigate(
+          `${PAGE_LIST.REVIEW_FORM}/${code}?redirect=${PAGE_LIST.USER_PROFILE}/${socialId}?tab=${currentTab}`,
+        ),
+      [FILTER.USER_PROFILE_TAB.TEMPLATES]: () =>
+        navigate(`${PAGE_LIST.TEMPLATE_FORM}?templateId=${id}&templateEditMode=true`),
+    };
+
+    editNavigator[currentTab]();
   };
 
   const deleteSuccessOption = () => {
@@ -146,23 +157,43 @@ function ProfilePage() {
 
         <ArticleList>
           {userArticles.articleList.map((article) => (
-            <ArticleList.Article
-              key={article.id || article.reviewFormCode}
-              isMine={userArticles.isMine}
-              article={article}
-              titleLink={
-                currentTab === FILTER.USER_PROFILE_TAB.TEMPLATES
-                  ? `${PAGE_LIST.TEMPLATE_DETAIL}/${article.id}`
-                  : `${PAGE_LIST.REVIEW_OVERVIEW}/${article.reviewFormCode}`
-              }
-              editUrl={
-                currentTab === FILTER.USER_PROFILE_TAB.TEMPLATES
-                  ? `${PAGE_LIST.TEMPLATE_FORM}?templateId=${article.id}&templateEditMode=true`
-                  : `${PAGE_LIST.REVIEW}/${article.reviewFormCode}/${article.id}`
-              }
-              onEdit={handleClickEdit}
-              onDelete={handleDeleteReview}
-            />
+            <div className={styles.reviewContainer} key={article.id || article.reviewFormCode}>
+              <Questions>
+                <Link
+                  to={
+                    currentTab === FILTER.USER_PROFILE_TAB.TEMPLATES
+                      ? `${PAGE_LIST.TEMPLATE_DETAIL}/${article.id}`
+                      : `${PAGE_LIST.REVIEW_OVERVIEW}/${article.reviewFormCode}`
+                  }
+                >
+                  <Questions.Title>{article.title}</Questions.Title>
+                </Link>
+                <Questions.EditButtons
+                  isVisible={userArticles.isMine}
+                  subject={currentTab === FILTER.USER_PROFILE_TAB.TEMPLATES ? '템플릿' : '회고'}
+                  onClickEdit={handleClickEdit(
+                    article.id,
+                    article.reviewFormCode,
+                    userProfile.socialId,
+                  )}
+                  onClickDelete={handleDeleteReview(article.id || article.reviewFormCode || '')}
+                />
+                {article.contents.map((content) => (
+                  <Questions.Answer
+                    key={content.question.id}
+                    question={content.question.value}
+                    description={content.question.description}
+                  >
+                    {content.answer?.value}
+                  </Questions.Answer>
+                ))}
+                <Questions.Reaction
+                  likeCount={0}
+                  onClickLike={() => null}
+                  onClickBookmark={() => null}
+                />
+              </Questions>
+            </div>
           ))}
           <ArticleList.NoArticleResult totalNumber={userArticles.totalNumber}>
             {`${subjectTitle[currentTab]}가(이) 없습니다.`}
