@@ -21,7 +21,6 @@ public interface ReviewRepository extends Repository<Review, Long> {
 
     Optional<Review> findById(long reviewId);
 
-    @BatchSize(size = 20)
     Page<Review> findByReviewForm(ReviewForm reviewForm, Pageable pageable);
 
     @Query("select r from Review r join fetch r.member where r.reviewForm.code = :reviewFormCode")
