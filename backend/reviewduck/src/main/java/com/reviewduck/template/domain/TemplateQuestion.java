@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -38,6 +39,7 @@ public class TemplateQuestion {
     private int position = -1;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "template_id")
     private Template template;
 
     public TemplateQuestion(String value, String description) {

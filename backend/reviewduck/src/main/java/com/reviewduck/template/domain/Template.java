@@ -43,10 +43,8 @@ public class Template extends BaseDate {
     @Column(nullable = false)
     private String templateDescription;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinColumn(name = "template_id")
-    @OrderBy("position asc")
-    private List<TemplateQuestion> questions = new ArrayList<>();
+    @OneToMany(mappedBy = "template", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private final List<TemplateQuestion> questions = new ArrayList<>();
 
     @Column
     private int usedCount;
