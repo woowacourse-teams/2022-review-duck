@@ -56,11 +56,18 @@ function Title({ children }: TitleProps) {
 interface EditButtonsProps {
   className?: string;
   isVisible?: boolean;
+  subject?: string;
   onClickEdit: React.MouseEventHandler<HTMLDivElement>;
   onClickDelete: React.MouseEventHandler<HTMLDivElement>;
 }
 
-function EditButtons({ className, isVisible, onClickEdit, onClickDelete }: EditButtonsProps) {
+function EditButtons({
+  className,
+  isVisible,
+  subject = '회고',
+  onClickEdit,
+  onClickDelete,
+}: EditButtonsProps) {
   if (!isVisible) return null;
 
   return (
@@ -73,7 +80,7 @@ function EditButtons({ className, isVisible, onClickEdit, onClickDelete }: EditB
       <FlexContainer className={styles.button} direction="row" align="center" onClick={onClickEdit}>
         <FontAwesomeIcon icon={faPenToSquare} />
         <Text className={styles.text} size={14}>
-          회고 편집
+          {`${subject} 편집`}
         </Text>
       </FlexContainer>
 
@@ -85,7 +92,7 @@ function EditButtons({ className, isVisible, onClickEdit, onClickDelete }: EditB
       >
         <FontAwesomeIcon icon={faEraser} />
         <Text className={styles.text} size={14}>
-          회고 삭제
+          {`${subject} 삭제`}
         </Text>
       </FlexContainer>
     </FlexContainer>
