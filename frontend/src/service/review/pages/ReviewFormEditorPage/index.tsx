@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link, useSearchParams } from 'react-router-dom';
 
+import { faArrowRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import cn from 'classnames';
 import { PAGE_LIST } from 'constant';
 import { Question } from 'types';
@@ -18,8 +21,6 @@ import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
 import styles from './styles.module.scss';
 
 import useReviewFormEditor from './useReviewFormEditor';
-import { faArrowRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { validateReviewForm } from 'service/@shared/validator';
 
 function ReviewFormEditorPage() {
@@ -93,7 +94,7 @@ function ReviewFormEditorPage() {
   const handleCancel = () => {
     if (!confirm('회고 생성을 정말 취소하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
 
-    navigate(-1);
+    navigate(redirectUri || PAGE_LIST.HOME);
   };
 
   return (
