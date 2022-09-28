@@ -104,7 +104,7 @@ public class ReviewFormController {
         @PathVariable String reviewFormCode,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
         @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
-        @RequestParam String displayType) {
+        @RequestParam(required = false, defaultValue = "list") String displayType) {
 
         info("/api/review-forms/" + reviewFormCode + "/reviews?displayType=" + displayType, "GET", "");
 
