@@ -173,7 +173,7 @@ function ProfilePage() {
                 </Link>
                 <Questions.EditButtons
                   isVisible={userArticles.isMine}
-                  subject={currentTab === FILTER.USER_PROFILE_TAB.TEMPLATES ? '템플릿' : '회고'}
+                  subject={subjectTitle[currentTab].substring(3, subjectTitle[currentTab].length)}
                   onClickEdit={handleClickEdit(
                     article.id,
                     article.reviewFormCode,
