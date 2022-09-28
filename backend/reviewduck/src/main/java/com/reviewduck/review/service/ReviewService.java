@@ -37,6 +37,7 @@ public class ReviewService {
 
     private final ReviewFormService reviewFormService;
     private final ReviewFormQuestionService reviewFormQuestionService;
+    private final QuestionAnswerService questionAnswerService;
     private final AnswerService answerService;
     private final MemberService memberService;
 
@@ -108,7 +109,8 @@ public class ReviewService {
             Answer answer = answerService.findOrCreateAnswer(content.getAnswer().getId());
             answer.update(content.getAnswer().getValue());
 
-            updateQuestionAnswers.add(new QuestionAnswer(question, answer));
+            QuestionAnswer questionAnswer = questionAnswerService.getOrSave(question, answer);
+            updateQuestionAnswers.add(questionAnswer);
         }
 
         review.update(request.getIsPrivate(), updateQuestionAnswers);
