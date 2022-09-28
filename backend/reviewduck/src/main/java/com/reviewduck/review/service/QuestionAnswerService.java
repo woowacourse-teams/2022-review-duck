@@ -20,7 +20,7 @@ public class QuestionAnswerService {
     @Transactional
     public QuestionAnswer getOrSave(ReviewFormQuestion question, Answer answer) {
         return questionAnswerRepository.findByAnswerId(answer.getId())
-            .orElse(new QuestionAnswer(question, answer));
+            .orElseGet(() -> new QuestionAnswer(question, answer));
     }
 
 }
