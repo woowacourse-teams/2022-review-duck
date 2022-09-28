@@ -1,108 +1,14 @@
 @import 'styles/@global.scss';
 
-.background {
-  background: radial-gradient(
-      102.36% 71.97% at 92.78% 94.68%,
-      rgba(49, 113, 114, 0.15) 0%,
-      rgba(255, 255, 255, 0) 100%
-    ),
-    radial-gradient(
-      77.78% 54.69% at 10.49% 43.21%,
-      rgba(255, 166, 84, 0.25) 0%,
-      rgba(255, 255, 255, 0) 100%
-    ),
-    #f5f5f5;
+.left-container {
+  word-break: keep-all;
+  line-height: 350%;
 
-  .intro-container {
-    display: grid;
-    grid-template-columns: 29% 65%;
-    gap: 13%;
-    padding: 2rem 1rem;
-    overflow: hidden;
-
-    .left-container {
-      word-break: keep-all;
-      line-height: 350%;
-
-      .title {
-        max-width: 190px;
-      }
-
-      .bold {
-        font-weight: bold;
-        color: $THEME_COLOR_STATUS_PRIMARY_500;
-      }
-
-      .sub-title {
-        color: $THEME_COLOR_THEME_TEXT_400;
-        letter-spacing: 0.4rem;
-      }
-
-      .button {
-        margin-top: 1.25rem;
-      }
-    }
-
-    .right-container {
-      position: relative;
-
-      .decorative {
-        position: absolute;
-        width: 400px;
-
-        &:nth-child(1) {
-          top: -0.9rem;
-        }
-
-        &:nth-child(2) {
-          min-width: 430px;
-          top: 4.0625rem;
-          left: 9.52rem;
-          z-index: 2;
-        }
-
-        &:nth-child(3) {
-          position: absolute;
-          top: 9rem;
-          left: 2.4375rem;
-          min-width: 430px;
-        }
-
-        .question {
-          box-shadow: 0px 15px 50px $GLOBAL_COLOR_BLACK_100;
-          animation: unset;
-
-          &.small {
-            transform: scale(0.9);
-          }
-
-          &.medium {
-            transform: scale(0.95);
-          }
-
-          &.large {
-            transform: scale(1);
-          }
-        }
-      }
-    }
+  .bold {
+    font-weight: bold;
+    color: $THEME_COLOR_STATUS_PRIMARY_500;
   }
 }
-
-.content-header {
-  padding: 2rem 0.25rem 1rem;
-}
-
-.main-card {
-  width: 18rem;
-  margin-right: 2.5rem;
-  padding: 2rem;
-}
-
-.card-list {
-  padding: 0.75rem 0;
-}
-
 .temp {
   padding: 3rem;
 }
