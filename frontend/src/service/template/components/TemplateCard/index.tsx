@@ -1,39 +1,23 @@
-import { useNavigate } from 'react-router-dom';
+import { faClock, faDownload } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
 
 import { getElapsedTimeText } from 'service/@shared/utils';
 
-import { FlexContainer, Text } from 'common/components';
-
-import TagLabel from 'common/components/TagLabel';
+import { FlexContainer, Text, TagLabel } from 'common/components';
 
 import SmallProfileCard from 'service/@shared/components/SmallProfileCard';
 
 import styles from './styles.module.scss';
 
-import { faClock, faDownload } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-interface ContainerProps {
-  className?: string;
-  link: string;
+interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
 }
 
-function Container({ className, link, children }: ContainerProps) {
-  const navigate = useNavigate();
-
-  const handleClickLink = () => {
-    navigate(link);
-  };
-
+function Container({ className, children, ...args }: ContainerProps) {
   return (
-    <FlexContainer
-      className={cn(className, styles.container)}
-      gap="small"
-      onClick={handleClickLink}
-    >
+    <FlexContainer className={cn(className, styles.container)} gap="small" {...args}>
       {children}
     </FlexContainer>
   );
