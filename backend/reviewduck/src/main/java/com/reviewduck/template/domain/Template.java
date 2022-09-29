@@ -55,7 +55,7 @@ public class Template extends BaseDate {
 
     public Template(Member member, String templateTitle, String templateDescription,
         List<TemplateQuestionCreateDto> questions) {
-        validateWhenCreate(member, templateTitle, templateDescription);
+        validateWhenCreate(member, templateTitle, templateDescription, questions);
 
         this.templateTitle = templateTitle;
         this.member = member;
@@ -66,7 +66,7 @@ public class Template extends BaseDate {
     }
 
     public void update(String templateTitle, String templateDescription, List<TemplateQuestionUpdateDto> questions) {
-        validateWhenUpdate(templateTitle, templateDescription);
+        validateWhenUpdate(templateTitle, templateDescription, questions);
 
         this.templateTitle = templateTitle;
         this.templateDescription = templateDescription;
@@ -116,22 +116,26 @@ public class Template extends BaseDate {
         }
     }
 
-    private void validateWhenCreate(Member member, String templateTitle, String templateDescription) {
+    private void validateWhenCreate(Member member, String templateTitle, String templateDescription,
+        List<TemplateQuestionCreateDto> questions) {
         validateBlankTitle(templateTitle);
         validateTitleLength(templateTitle);
         validateNullMember(member);
         validateNullDescription(templateDescription);
+        validateNullQuesions(questions);
     }
 
-    private void validateWhenUpdate(String templateTitle, String templateDescription) {
+    private void validateWhenUpdate(String templateTitle, String templateDescription,
+        List<TemplateQuestionUpdateDto> questions) {
         validateBlankTitle(templateTitle);
         validateTitleLength(templateTitle);
         validateNullDescription(templateDescription);
+        validateNullQuesions(questions);
     }
 
-    private void validateNullMember(Member member) {
-        if (Objects.isNull(member)) {
-            throw new TemplateException("템플릿의 작성자가 존재해야 합니다.");
+    private void validateBlankTitle(String templateTitle) {
+        if (Objects.isNull(templateTitle) || templateTitle.isBlank()) {
+            throw new TemplateException("템플릿의 제목은 비어있을 수 없습니다.");
         }
     }
 
@@ -141,15 +145,21 @@ public class Template extends BaseDate {
         }
     }
 
-    private void validateBlankTitle(String templateTitle) {
-        if (Objects.isNull(templateTitle) || templateTitle.isBlank()) {
-            throw new TemplateException("템플릿의 제목은 비어있을 수 없습니다.");
+    private void validateNullMember(Member member) {
+        if (member == null) {
+            throw new TemplateException("템플릿의 작성자가 존재해야 합니다.");
         }
     }
 
     private void validateNullDescription(String templateDescription) {
-        if (Objects.isNull(templateDescription)) {
+        if (templateDescription == null) {
             throw new TemplateException("템플릿의 설명 작성 중 오류가 발생했습니다.");
+        }
+    }
+
+    private void validateNullQuesions(List<?> questions) {
+        if (questions == null) {
+            throw new TemplateException("템플릿의 질문 작성 중 오류가 발생했습니다.");
         }
     }
 

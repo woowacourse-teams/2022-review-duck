@@ -73,6 +73,16 @@ class TemplateTest {
                 .hasMessageContaining("템플릿의 설명 작성 중 오류가 발생했습니다.");
         }
 
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("잘문 목록이 null 일 수 없다.")
+        void notNullQuestions(List<TemplateQuestionCreateDto> questions) {
+            //when, then
+            assertThatThrownBy(() -> new Template(member, "템플릿 제목", "템플릿 설명", questions))
+                .isInstanceOf(TemplateException.class)
+                .hasMessageContaining("템플릿의 질문 작성 중 오류가 발생했습니다.");
+        }
+
         private List<TemplateQuestion> toEntity(List<TemplateQuestionCreateDto> dtos) {
             List<TemplateQuestion> questions = dtos.stream()
                 .map(dto -> new TemplateQuestion(dto.getValue(), dto.getDescription()))
@@ -143,9 +153,19 @@ class TemplateTest {
         @DisplayName("설명이 null 일 수 없다.")
         void notNullDescription(String templateDescription) {
             //when, then
-            assertThatThrownBy(() -> createTemplate().update("templateTitle", templateDescription, updateQuestions))
+            assertThatThrownBy(() -> createTemplate().update("템플릿 제목", templateDescription, updateQuestions))
                 .isInstanceOf(TemplateException.class)
                 .hasMessageContaining("템플릿의 설명 작성 중 오류가 발생했습니다.");
+        }
+
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("잘문 목록이 null 일 수 없다.")
+        void notNullQuestions(List<TemplateQuestionUpdateDto> questions) {
+            //when, then
+            assertThatThrownBy(() -> createTemplate().update("템플릿 제목", "템플릿 설명", questions))
+                .isInstanceOf(TemplateException.class)
+                .hasMessageContaining("템플릿의 질문 작성 중 오류가 발생했습니다.");
         }
 
         private List<TemplateQuestion> toEntity(List<TemplateQuestionUpdateDto> dtos) {
