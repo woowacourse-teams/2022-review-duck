@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.reviewduck.template.domain.Template;
-import com.reviewduck.template.dto.response.TemplateQuestionResponse;
+import com.reviewduck.template.dto.controller.response.TemplateQuestionResponse;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

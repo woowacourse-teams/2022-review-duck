@@ -1,10 +1,13 @@
-package com.reviewduck.template.dto.request;
+package com.reviewduck.template.dto.controller.request;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import com.reviewduck.template.dto.service.TemplateQuestionCreateDto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -27,4 +30,5 @@ public class TemplateCreateRequest {
     @NotNull(message = "템플릿의 질문 목록 생성 중 오류가 발생했습니다.")
     @Valid
     private List<TemplateQuestionCreateRequest> questions;
+
 }
