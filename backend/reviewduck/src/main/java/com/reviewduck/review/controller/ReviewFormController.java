@@ -77,7 +77,7 @@ public class ReviewFormController {
         info("/api/review-forms/" + reviewFormCode, "GET", "");
 
         ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
-        List<Member> participants = reviewService.findAllParticipantsByCode(reviewFormCode);
+        List<Member> participants = reviewFormService.findAllParticipantsByCode(reviewFormCode);
 
         return ReviewFormResponse.of(reviewForm, member, participants);
     }
