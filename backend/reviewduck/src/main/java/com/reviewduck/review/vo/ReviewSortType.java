@@ -9,7 +9,8 @@ import java.util.Arrays;
  */
 public enum ReviewSortType {
 
-    LATEST("latest", "updatedAt"),
+    LATEST("latest", "createdAt"),
+    UPDATE("update", "updatedAt"),
     TREND("trend", "likes");
 
     private final String param;

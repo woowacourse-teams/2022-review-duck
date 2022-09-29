@@ -87,7 +87,7 @@ public class TemplateController {
     public TemplatesResponse findAll(@AuthenticationPrincipal Member member,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
         @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
-        @RequestParam(required = false) String sort) {
+        @RequestParam(required = false, defaultValue = "trend") String sort) {
 
         info("/api/templates?page=" + page + " size=" + size, "GET", "");
 
