@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams, Link, useSearchParams } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
 import { PAGE_LIST } from 'constant';
@@ -10,16 +10,11 @@ import useQuestions from 'service/@shared/hooks/useQuestions';
 
 import { getErrorMessage } from 'service/@shared/utils';
 
-import { Button, FlexContainer, Logo, TextBox } from 'common/components';
-
-import QuestionCard from 'service/@shared/components/QuestionCard';
 import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
 
-import styles from './styles.module.scss';
-
 import useReviewFormEditor from './useReviewFormEditor';
-import { faArrowRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Editor } from './views/Editor';
+import { Status } from './views/Status';
 import { validateReviewForm } from 'service/@shared/validator';
 
 function ReviewFormEditorPage() {
@@ -27,14 +22,8 @@ function ReviewFormEditorPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const {
-    initialReviewForm,
-    isNewReviewForm,
-    isSubmitLoading,
-    isLoadError,
-    loadError,
-    submitReviewForm,
-  } = useReviewFormEditor(reviewFormCode);
+  const { initialReviewForm, isNewReviewForm, isSubmitLoading, submitReviewForm } =
+    useReviewFormEditor(reviewFormCode);
 
   const [reviewFormTitle, setReviewTitle] = useState(initialReviewForm.title);
   const { removeBlankQuestions } = useQuestions();
@@ -42,13 +31,6 @@ function ReviewFormEditorPage() {
 
   const { showSnackbar } = useSnackbar();
   const redirectUri = searchParams.get('redirect');
-
-  useEffect(() => {
-    if (isLoadError) {
-      alert(loadError?.message);
-      navigate(redirectUri || PAGE_LIST.HOME);
-    }
-  }, []);
 
   const handleChangeReviewTitle = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     setReviewTitle(target.value);
@@ -98,52 +80,21 @@ function ReviewFormEditorPage() {
 
   return (
     <>
-      <FlexContainer className={styles.container} direction="column">
-        <Link to={PAGE_LIST.HOME}>
-          <Logo />
-        </Link>
+      <Status>
+        <Status.LinkedLogo linkTo={PAGE_LIST.HOME} />
+        <Status.QuestionPreview questions={questions} />
+      </Status>
 
-        <FlexContainer direction="column" gap="small">
-          {questions.map(
-            (question, index) =>
-              question.value && (
-                <QuestionCard
-                  key={index}
-                  numbering={index + 1}
-                  type="text"
-                  title={question.value}
-                  description={question.description}
-                />
-              ),
-          )}
-        </FlexContainer>
-      </FlexContainer>
-
-      <div>
-        <FlexContainer className={cn(styles.container, styles.sticky)} direction="column">
-          <TextBox
-            theme="underline"
-            size="large"
-            placeholder="회고의 제목을 입력해주세요."
-            value={reviewFormTitle}
-            onChange={handleChangeReviewTitle}
-          />
-
-          <QuestionsEditor initialQuestions={questions} onUpdate={handleChangeQuestions} />
-
-          <div className={cn('button-container horizontal')}>
-            <Button theme="outlined" onClick={handleCancel}>
-              <FontAwesomeIcon icon={faArrowRightFromBracket} />
-              <span>취소하기</span>
-            </Button>
-
-            <Button type="button" onClick={handleSubmitReviewForm} disabled={isSubmitLoading}>
-              <FontAwesomeIcon icon={faPenToSquare} />
-              <span>{isNewReviewForm ? '생성하기' : '수정하기'}</span>
-            </Button>
-          </div>
-        </FlexContainer>
-      </div>
+      <Editor>
+        <Editor.TitleInput title={reviewFormTitle} onTitleChange={handleChangeReviewTitle} />
+        <QuestionsEditor initialQuestions={questions} onUpdate={handleChangeQuestions} />
+        <div className={cn('button-container horizontal')}>
+          <Editor.CancelButton onCancel={handleCancel}>취소하기</Editor.CancelButton>
+          <Editor.SubmitButton onSubmit={handleSubmitReviewForm} disabled={isSubmitLoading}>
+            {isNewReviewForm ? '생성하기' : '수정하기'}
+          </Editor.SubmitButton>
+        </div>
+      </Editor>
     </>
   );
 }
