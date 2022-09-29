@@ -25,12 +25,12 @@ import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.template.domain.Template;
-import com.reviewduck.template.dto.request.TemplateCreateRequest;
-import com.reviewduck.template.dto.request.TemplateUpdateRequest;
-import com.reviewduck.template.dto.response.MemberTemplatesResponse;
-import com.reviewduck.template.dto.response.TemplateIdResponse;
-import com.reviewduck.template.dto.response.TemplateResponse;
-import com.reviewduck.template.dto.response.TemplatesResponse;
+import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
+import com.reviewduck.template.dto.controller.response.MemberTemplatesResponse;
+import com.reviewduck.template.dto.controller.response.TemplateIdResponse;
+import com.reviewduck.template.dto.controller.response.TemplateResponse;
+import com.reviewduck.template.dto.controller.response.TemplatesResponse;
 import com.reviewduck.template.service.TemplateService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -87,7 +87,7 @@ public class TemplateController {
     public TemplatesResponse findAll(@AuthenticationPrincipal Member member,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
         @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
-        @RequestParam(required = false) String sort) {
+        @RequestParam(required = false, defaultValue = "trend") String sort) {
 
         info("/api/templates?page=" + page + " size=" + size, "GET", "");
 

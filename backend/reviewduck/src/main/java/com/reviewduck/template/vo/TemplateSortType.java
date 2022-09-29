@@ -9,7 +9,7 @@ import java.util.Arrays;
  */
 public enum TemplateSortType {
 
-    LATEST("latest", "updatedAt"),
+    LATEST("latest", "createdAt"),
     TREND("trend", "usedCount");
 
     private final String param;

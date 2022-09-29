@@ -114,6 +114,10 @@
           "value": "#ccc",
           "type": "color"
         },
+        "850": {
+          "value": "#ddd",
+          "type": "color"
+        },
         "900": {
           "value": "#f3f3f3",
           "type": "color"
@@ -617,6 +621,10 @@
             "value": "{color.gray.900}",
             "type": "color"
           },
+          "300": {
+            "value": "{color.gray.850}",
+            "type": "color"
+          },
           "blur": {
             "value": "{color.white.600}",
             "type": "color"
@@ -655,5 +663,11 @@
       }
     }
   },
-  "$themes": []
+  "$themes": [],
+  "$metadata": {
+    "tokenSetOrder": [
+      "global",
+      "light"
+    ]
+  }
 }

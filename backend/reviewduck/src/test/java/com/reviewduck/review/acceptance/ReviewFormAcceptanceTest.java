@@ -27,9 +27,9 @@ import com.reviewduck.review.dto.request.ReviewFormQuestionUpdateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.response.ReviewFormResponse;
-import com.reviewduck.template.dto.request.TemplateCreateRequest;
-import com.reviewduck.template.dto.request.TemplateQuestionCreateRequest;
-import com.reviewduck.template.dto.response.TemplateIdResponse;
+import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
+import com.reviewduck.template.dto.controller.response.TemplateIdResponse;
 
 public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
