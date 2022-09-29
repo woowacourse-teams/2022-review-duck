@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.template.dto.service.TemplateQuestionCreateDto;
@@ -31,9 +32,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Template extends BaseDate {
 
-    @OneToMany(mappedBy = "template", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<TemplateQuestion> questions = new ArrayList<>();
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
@@ -47,6 +45,10 @@ public class Template extends BaseDate {
 
     @Column(nullable = false)
     private String templateDescription;
+
+    @OneToMany(mappedBy = "template", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private final List<TemplateQuestion> questions = new ArrayList<>();
 
     @Column
     private int usedCount;
@@ -63,20 +65,6 @@ public class Template extends BaseDate {
         sortQuestions();
     }
 
-    private List<TemplateQuestion> createQuestionsFrom(List<TemplateQuestionCreateDto> questions) {
-        return questions.stream()
-            .map(question -> new TemplateQuestion(question.getValue(), question.getDescription(), this))
-            .collect(Collectors.toUnmodifiableList());
-    }
-
-    public void update(String templateTitle, String templateDescription) {
-        validateWhenUpdate(templateTitle, templateDescription);
-
-        this.templateTitle = templateTitle;
-        this.templateDescription = templateDescription;
-        sortQuestions();
-    }
-
     public void update(String templateTitle, String templateDescription, List<TemplateQuestionUpdateDto> questions) {
         validateWhenUpdate(templateTitle, templateDescription);
 
@@ -87,6 +75,38 @@ public class Template extends BaseDate {
 
     public boolean isMine(Member member) {
         return member.equals(this.member);
+    }
+
+    private List<TemplateQuestion> createQuestionsFrom(List<TemplateQuestionCreateDto> questions) {
+        return questions.stream()
+            .map(question -> new TemplateQuestion(question.getValue(), question.getDescription(), this))
+            .collect(Collectors.toUnmodifiableList());
+    }
+
+    private void updateQuestions(List<TemplateQuestionUpdateDto> questions) {
+        int beforeSize = this.questions.size();
+
+        this.questions.addAll(questions.stream()
+            .map(this::createOrUpdateQuestion)
+            .collect(Collectors.toUnmodifiableList()));
+
+        this.questions.subList(0, beforeSize).clear();
+
+        sortQuestions();
+    }
+
+    private TemplateQuestion createOrUpdateQuestion(TemplateQuestionUpdateDto question) {
+        Optional<TemplateQuestion> existedQuestion = questions.stream()
+            .filter(it -> question.getId() != null && Objects.equals(it.getId(), question.getId()))
+            .findAny();
+
+        if (existedQuestion.isPresent()) {
+            TemplateQuestion updatedQuestion = existedQuestion.get();
+            updatedQuestion.update(question.getValue(), question.getDescription());
+            return updatedQuestion;
+        }
+
+        return new TemplateQuestion(question.getValue(), question.getDescription(), this);
     }
 
     private void sortQuestions() {
@@ -131,32 +151,6 @@ public class Template extends BaseDate {
         if (Objects.isNull(templateDescription)) {
             throw new TemplateException("템플릿의 설명 작성 중 오류가 발생했습니다.");
         }
-    }
-
-    private void updateQuestions(List<TemplateQuestionUpdateDto> questions) {
-        int beforeSize = this.questions.size();
-
-        this.questions.addAll(questions.stream()
-            .map(this::createOrUpdateQuestion)
-            .collect(Collectors.toUnmodifiableList()));
-
-        this.questions.subList(0, beforeSize).clear();
-
-        sortQuestions();
-    }
-
-    private TemplateQuestion createOrUpdateQuestion(TemplateQuestionUpdateDto question) {
-        Optional<TemplateQuestion> existedQuestion = questions.stream()
-            .filter(it -> question.getId() != null && Objects.equals(it.getId(), question.getId()))
-            .findAny();
-
-        if (existedQuestion.isPresent()) {
-            TemplateQuestion updatedQuestion = existedQuestion.get();
-            updatedQuestion.update(question.getValue(), question.getDescription());
-            return updatedQuestion;
-        }
-
-        return new TemplateQuestion(question.getValue(), question.getDescription(), this);
     }
 
 }
