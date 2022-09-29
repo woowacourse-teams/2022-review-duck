@@ -2,6 +2,8 @@ package com.reviewduck.template.dto.request;
 
 import javax.validation.constraints.NotNull;
 
+import com.reviewduck.template.service.TemplateQuestionCreateDto;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,4 +21,8 @@ public class TemplateQuestionCreateRequest {
 
     @NotNull(message = "템플릿의 질문 설명 생성 중 오류가 발생했습니다.")
     private String description;
+
+    public TemplateQuestionCreateDto toServiceDto() {
+        return new TemplateQuestionCreateDto(value, description);
+    }
 }

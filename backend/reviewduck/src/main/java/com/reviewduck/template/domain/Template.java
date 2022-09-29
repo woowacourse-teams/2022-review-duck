@@ -3,6 +3,7 @@ package com.reviewduck.template.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,14 +12,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.template.exception.TemplateException;
+import com.reviewduck.template.service.TemplateQuestionCreateDto;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -29,33 +29,37 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Template extends BaseDate {
 
+    @OneToMany(mappedBy = "template", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<TemplateQuestion> questions = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
-
     @Column(nullable = false)
     private String templateTitle;
-
     @Column(nullable = false)
     private String templateDescription;
-
-    @OneToMany(mappedBy = "template", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private final List<TemplateQuestion> questions = new ArrayList<>();
-
     @Column
     private int usedCount;
 
-    public Template(Member member, String templateTitle, String templateDescription) {
+    public Template(Member member, String templateTitle, String templateDescription,
+        List<TemplateQuestionCreateDto> questions) {
         validateWhenCreate(member, templateTitle, templateDescription);
 
         this.templateTitle = templateTitle;
         this.member = member;
         this.templateDescription = templateDescription;
         this.usedCount = 0;
+        this.questions.addAll(createQuestionsFrom(questions));
+        sortQuestions();
+    }
+
+    private List<TemplateQuestion> createQuestionsFrom(List<TemplateQuestionCreateDto> questions) {
+        return questions.stream()
+            .map(question -> new TemplateQuestion(question.getValue(), question.getDescription(), this))
+            .collect(Collectors.toUnmodifiableList());
     }
 
     public void update(String templateTitle, String templateDescription) {
@@ -70,7 +74,7 @@ public class Template extends BaseDate {
         return member.equals(this.member);
     }
 
-    public void sortQuestions() {
+    private void sortQuestions() {
         int index = 0;
         for (TemplateQuestion question : questions) {
             question.setPosition(index++);

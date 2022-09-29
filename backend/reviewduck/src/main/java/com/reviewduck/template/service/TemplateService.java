@@ -12,7 +12,6 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.request.TemplateCreateRequest;
-import com.reviewduck.template.dto.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.template.dto.request.TemplateUpdateRequest;
 import com.reviewduck.template.repository.TemplateRepository;
@@ -35,12 +34,9 @@ public class TemplateService {
     public Template save(Member member, TemplateCreateRequest createRequest) {
         Template template = new Template(member,
             createRequest.getTemplateTitle(),
-            createRequest.getTemplateDescription());
+            createRequest.getTemplateDescription(),
+            createRequest.toServiceDto());
 
-        for (final TemplateQuestionCreateRequest question : createRequest.getQuestions()) {
-            templateQuestionService.save(question.getValue(), question.getDescription(), template);
-        }
-        template.sortQuestions();
         return templateRepository.save(template);
     }
 

@@ -20,8 +20,8 @@ public class TemplateQuestionService {
     private final TemplateQuestionRepository templateQuestionRepository;
 
     @Transactional
-    public TemplateQuestion save(String value, String description, Template template) {
-        return templateQuestionRepository.save(new TemplateQuestion(value, description, template));
+    public TemplateQuestion save(String value, String description) {
+        return templateQuestionRepository.save(new TemplateQuestion(value, description));
     }
 
     @Transactional

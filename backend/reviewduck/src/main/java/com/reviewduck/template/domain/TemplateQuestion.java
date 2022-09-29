@@ -57,12 +57,6 @@ public class TemplateQuestion {
         this.value = value;
         this.description = description;
         this.template = template;
-        setTemplate(template);
-    }
-
-    public void setTemplate(Template template) {
-        this.template = template;
-        template.getQuestions().add(this);
     }
 
     public void update(String value, String description) {
