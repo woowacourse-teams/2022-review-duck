@@ -86,9 +86,10 @@ public class Template extends BaseDate {
     private void updateQuestions(List<TemplateQuestionUpdateDto> questions) {
         int beforeSize = this.questions.size();
 
-        this.questions.addAll(questions.stream()
+        List<TemplateQuestion> updatedQuestions = questions.stream()
             .map(this::createOrUpdateQuestion)
-            .collect(Collectors.toUnmodifiableList()));
+            .collect(Collectors.toUnmodifiableList());
+        this.questions.addAll(updatedQuestions);
 
         this.questions.subList(0, beforeSize).clear();
 
