@@ -1,5 +1,7 @@
 package com.reviewduck.template.service;
 
+import static com.reviewduck.template.dto.service.ServiceDtoConverter.*;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -12,9 +14,8 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
-import com.reviewduck.template.dto.controller.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
-import com.reviewduck.template.dto.service.ServiceDtoConveter;
+import com.reviewduck.template.dto.service.ServiceDtoConverter;
 import com.reviewduck.template.repository.TemplateRepository;
 import com.reviewduck.template.vo.TemplateSortType;
 
@@ -26,15 +27,16 @@ import lombok.AllArgsConstructor;
 public class TemplateService {
 
     private final TemplateRepository templateRepository;
-    private final TemplateQuestionService templateQuestionService;
     private final MemberService memberService;
 
     @Transactional
     public Template save(Member member, TemplateCreateRequest createRequest) {
-        Template template = new Template(member,
+        Template template = new Template(
+            member,
             createRequest.getTemplateTitle(),
             createRequest.getTemplateDescription(),
-            ServiceDtoConveter.toServiceDto(createRequest.getQuestions()));
+            toTemplateQuestionCreateDtos(createRequest.getQuestions())
+        );
 
         return templateRepository.save(template);
     }
@@ -63,16 +65,14 @@ public class TemplateService {
     @Transactional
     public Template update(Member member, Long id, TemplateUpdateRequest templateUpdateRequest) {
         Template template = findById(id);
-
         validateTemplateIsMine(template, member, "본인이 생성한 템플릿이 아니면 수정할 수 없습니다.");
 
-        for (TemplateQuestionUpdateRequest question : templateUpdateRequest.getQuestions()) {
-            templateQuestionService.saveOrUpdateQuestion(question.getId(), question.getValue(),
-                question.getDescription(), template);
-        }
+        template.update(
+            templateUpdateRequest.getTemplateTitle(),
+            templateUpdateRequest.getTemplateDescription(),
+            toTemplateQuestionUpdateDtos(templateUpdateRequest.getQuestions())
+        );
 
-        template.update(templateUpdateRequest.getTemplateTitle(),
-            templateUpdateRequest.getTemplateDescription());
         return template;
     }
 

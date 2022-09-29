@@ -3,6 +3,7 @@ package com.reviewduck.template.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -18,6 +19,7 @@ import javax.persistence.OneToMany;
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.template.dto.service.TemplateQuestionCreateDto;
+import com.reviewduck.template.dto.service.TemplateQuestionUpdateDto;
 import com.reviewduck.template.exception.TemplateException;
 
 import lombok.AccessLevel;
@@ -75,6 +77,14 @@ public class Template extends BaseDate {
         sortQuestions();
     }
 
+    public void update(String templateTitle, String templateDescription, List<TemplateQuestionUpdateDto> questions) {
+        validateWhenUpdate(templateTitle, templateDescription);
+
+        this.templateTitle = templateTitle;
+        this.templateDescription = templateDescription;
+        updateQuestions(questions);
+    }
+
     public boolean isMine(Member member) {
         return member.equals(this.member);
     }
@@ -86,16 +96,16 @@ public class Template extends BaseDate {
         }
     }
 
-    private void validateWhenUpdate(String templateTitle, String templateDescription) {
-        validateTitleLength(templateTitle);
-        validateBlankTitle(templateTitle);
-        validateNullDescription(templateDescription);
-    }
-
     private void validateWhenCreate(Member member, String templateTitle, String templateDescription) {
         validateBlankTitle(templateTitle);
         validateTitleLength(templateTitle);
         validateNullMember(member);
+        validateNullDescription(templateDescription);
+    }
+
+    private void validateWhenUpdate(String templateTitle, String templateDescription) {
+        validateBlankTitle(templateTitle);
+        validateTitleLength(templateTitle);
         validateNullDescription(templateDescription);
     }
 
@@ -122,4 +132,31 @@ public class Template extends BaseDate {
             throw new TemplateException("템플릿의 설명 작성 중 오류가 발생했습니다.");
         }
     }
+
+    private void updateQuestions(List<TemplateQuestionUpdateDto> questions) {
+        int beforeSize = this.questions.size();
+
+        this.questions.addAll(questions.stream()
+            .map(this::createOrUpdateQuestion)
+            .collect(Collectors.toUnmodifiableList()));
+
+        this.questions.subList(0, beforeSize).clear();
+
+        sortQuestions();
+    }
+
+    private TemplateQuestion createOrUpdateQuestion(TemplateQuestionUpdateDto question) {
+        Optional<TemplateQuestion> existedQuestion = questions.stream()
+            .filter(it -> question.getId() != null && Objects.equals(it.getId(), question.getId()))
+            .findAny();
+
+        if (existedQuestion.isPresent()) {
+            TemplateQuestion updatedQuestion = existedQuestion.get();
+            updatedQuestion.update(question.getValue(), question.getDescription());
+            return updatedQuestion;
+        }
+
+        return new TemplateQuestion(question.getValue(), question.getDescription(), this);
+    }
+
 }

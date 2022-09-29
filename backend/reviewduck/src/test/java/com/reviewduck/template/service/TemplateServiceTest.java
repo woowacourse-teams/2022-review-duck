@@ -92,6 +92,7 @@ public class TemplateServiceTest {
 
 
     }
+
     @Nested
     @DisplayName("템플릿 단일 조회")
     class findTemplate {
@@ -142,6 +143,7 @@ public class TemplateServiceTest {
 
 
     }
+
     @Nested
     @DisplayName("전체 템플릿 조회")
     class findAll {
@@ -194,6 +196,7 @@ public class TemplateServiceTest {
 
 
     }
+
     @Nested
     @DisplayName("사용자별 템플릿 조회")
     class findAllByMember {
@@ -233,6 +236,7 @@ public class TemplateServiceTest {
 
 
     }
+
     @Nested
     @DisplayName("템플릿 수정")
     class updateTemplate {
@@ -319,6 +323,7 @@ public class TemplateServiceTest {
 
 
     }
+
     @Nested
     @DisplayName("템플릿 삭제")
     class deleteTemplate {
