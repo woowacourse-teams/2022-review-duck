@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.Repository;
 
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.review.domain.ReviewForm;
 
 public interface MemberRepository extends Repository<Member, Long> {
 
@@ -16,6 +17,6 @@ public interface MemberRepository extends Repository<Member, Long> {
 
     Optional<Member> findBySocialId(String socialId);
 
-    @Query("select m from Member m where m.id in (select distinct r.member.id from Review r where r.reviewForm in (select rf from ReviewForm rf where rf.code = :code))")
-    List<Member> findAllParticipantsByReviewFormCode(String code);
+    @Query("select m from Member m where m.id in (select distinct r.member.id from Review r where r.reviewForm = :form)")
+    List<Member> findAllParticipantsByReviewFormCode(ReviewForm form);
 }

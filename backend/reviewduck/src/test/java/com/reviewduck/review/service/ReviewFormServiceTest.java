@@ -362,7 +362,7 @@ public class ReviewFormServiceTest {
             reviewService.save(member1, reviewForm.getCode(), reviewCreateRequest);
 
             // when
-            List<Member> participants = reviewFormService.findAllParticipantsByCode(reviewForm.getCode());
+            List<Member> participants = reviewFormService.findAllParticipantsByCode(reviewForm);
 
             // then
             assertAll(

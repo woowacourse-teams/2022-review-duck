@@ -112,7 +112,7 @@ public class ReviewFormService {
         }
     }
 
-    public List<Member> findAllParticipantsByCode(String code) {
-        return memberRepository.findAllParticipantsByReviewFormCode(code);
+    public List<Member> findAllParticipantsByCode(ReviewForm reviewForm) {
+        return memberRepository.findAllParticipantsByReviewFormCode(reviewForm);
     }
 }
