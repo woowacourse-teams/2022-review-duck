@@ -22,14 +22,14 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.dto.request.AnswerCreateRequest;
-import com.reviewduck.review.dto.request.AnswerUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewContentCreateRequest;
-import com.reviewduck.review.dto.request.ReviewContentUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
-import com.reviewduck.review.dto.request.ReviewUpdateRequest;
+import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
+import com.reviewduck.review.dto.controller.request.AnswerUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewContentUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")

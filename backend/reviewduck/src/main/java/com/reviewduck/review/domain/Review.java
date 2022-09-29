@@ -4,6 +4,7 @@ import static lombok.AccessLevel.*;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,13 +13,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.review.dto.service.ReviewCreateDto;
 import com.reviewduck.review.exception.ReviewException;
 
 import lombok.Getter;
@@ -44,27 +46,29 @@ public class Review extends BaseDate {
 
     private boolean isPrivate;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "review_id")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "review", fetch = FetchType.LAZY)
     @OrderBy("position asc")
+    @JsonIgnore
     private List<QuestionAnswer> questionAnswers;
 
     @Column(nullable = false)
     private int likes;
 
-    public Review(String title, Member member, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers,
+    public Review(String title, Member member, ReviewForm reviewForm, List<ReviewCreateDto> createDtos,
         boolean isPrivate) {
         validate(title);
-        sortQuestionAnswers(questionAnswers);
         this.title = title;
         this.member = member;
         this.reviewForm = reviewForm;
-        this.questionAnswers = questionAnswers;
         this.isPrivate = isPrivate;
+        this.questionAnswers = createDtos.stream()
+            .map(it -> new QuestionAnswer(it.getReviewFormQuestion(), it.getAnswer(), this))
+            .collect(Collectors.toUnmodifiableList());
+
+        sortQuestionAnswers();
     }
 
     public void update(boolean isPrivate, List<QuestionAnswer> questionAnswers) {
-        sortQuestionAnswers(questionAnswers);
         this.questionAnswers = questionAnswers;
         this.isPrivate = isPrivate;
         super.renewUpdatedAt();
@@ -74,7 +78,7 @@ public class Review extends BaseDate {
         return this.member.equals(member);
     }
 
-    private void sortQuestionAnswers(List<QuestionAnswer> questionAnswers) {
+    private void sortQuestionAnswers() {
         int index = 0;
         for (QuestionAnswer questionAnswer : questionAnswers) {
             questionAnswer.setPosition(index++);

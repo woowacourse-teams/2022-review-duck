@@ -18,20 +18,20 @@ import com.reviewduck.acceptance.AcceptanceTest;
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
-import com.reviewduck.review.dto.request.AnswerCreateRequest;
-import com.reviewduck.review.dto.request.AnswerUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewContentCreateRequest;
-import com.reviewduck.review.dto.request.ReviewContentUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewLikesRequest;
-import com.reviewduck.review.dto.request.ReviewUpdateRequest;
-import com.reviewduck.review.dto.response.ReviewContentResponse;
-import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
-import com.reviewduck.review.dto.response.ReviewSynchronizedResponse;
+import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
+import com.reviewduck.review.dto.controller.request.AnswerUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewContentUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormQuestionUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewLikesRequest;
+import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
+import com.reviewduck.review.dto.controller.response.ReviewContentResponse;
+import com.reviewduck.review.dto.controller.response.ReviewFormCodeResponse;
+import com.reviewduck.review.dto.controller.response.ReviewSynchronizedResponse;
 
 public class ReviewAcceptanceTest extends AcceptanceTest {
 

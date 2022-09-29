@@ -19,11 +19,12 @@ import com.reviewduck.review.domain.QuestionAnswer;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
-import com.reviewduck.review.dto.request.ReviewContentCreateRequest;
-import com.reviewduck.review.dto.request.ReviewContentUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewCreateRequest;
-import com.reviewduck.review.dto.request.ReviewUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewContentUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
 import com.reviewduck.review.repository.ReviewRepository;
+import com.reviewduck.review.dto.service.ReviewCreateDto;
 import com.reviewduck.review.vo.ReviewSortType;
 
 import lombok.AllArgsConstructor;
@@ -44,10 +45,11 @@ public class ReviewService {
     @Transactional
     public Review save(Member member, String code, ReviewCreateRequest request) {
         ReviewForm reviewForm = reviewFormService.findByCode(code);
+        List<ReviewCreateDto> reviewCreateDtos = request.getContents().stream()
+            .map(this::getReviewCreateDto)
+            .collect(Collectors.toUnmodifiableList());
 
-        List<QuestionAnswer> questionAnswers = convertToQuestionAnswers(request.getContents());
-
-        Review review = new Review("title", member, reviewForm, questionAnswers, request.getIsPrivate());
+        Review review = new Review("title", member, reviewForm, reviewCreateDtos, request.getIsPrivate());
         return reviewRepository.save(review);
     }
 
@@ -67,7 +69,6 @@ public class ReviewService {
         }
 
         return reviewRepository.findByMemberAndIsPrivateFalse(owner, pageRequest);
-
     }
 
     public Page<Review> findAllByCode(String code, int page, int size) {
@@ -132,15 +133,11 @@ public class ReviewService {
         reviewRepository.deleteById(id);
     }
 
-    private List<QuestionAnswer> convertToQuestionAnswers(List<ReviewContentCreateRequest> contents) {
-        List<QuestionAnswer> questionAnswers = new ArrayList<>();
+    private ReviewCreateDto getReviewCreateDto(ReviewContentCreateRequest content) {
+        ReviewFormQuestion reviewFormQuestion = reviewFormQuestionService.findById(content.getQuestionId());
+        Answer answer = new Answer(content.getAnswer().getValue());
 
-        for (ReviewContentCreateRequest request : contents) {
-            ReviewFormQuestion reviewFormQuestion = reviewFormQuestionService.findById(request.getQuestionId());
-            questionAnswers.add(new QuestionAnswer(reviewFormQuestion, new Answer(request.getAnswer().getValue())));
-        }
-
-        return questionAnswers;
+        return new ReviewCreateDto(reviewFormQuestion, answer);
     }
 
     private void validateMyReview(Member member, Review review, String message) {

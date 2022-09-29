@@ -21,12 +21,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
-import com.reviewduck.review.dto.request.ReviewLikesRequest;
-import com.reviewduck.review.dto.request.ReviewUpdateRequest;
-import com.reviewduck.review.dto.response.ReviewLikesResponse;
-import com.reviewduck.review.dto.response.ReviewSynchronizedResponse;
-import com.reviewduck.review.dto.response.ReviewsResponse;
-import com.reviewduck.review.dto.response.TimelineReviewsResponse;
+import com.reviewduck.review.dto.controller.request.ReviewLikesRequest;
+import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
+import com.reviewduck.review.dto.controller.response.ReviewLikesResponse;
+import com.reviewduck.review.dto.controller.response.ReviewSynchronizedResponse;
+import com.reviewduck.review.dto.controller.response.ReviewsResponse;
+import com.reviewduck.review.dto.controller.response.TimelineReviewsResponse;
 import com.reviewduck.review.service.ReviewService;
 
 import io.swagger.v3.oas.annotations.Operation;

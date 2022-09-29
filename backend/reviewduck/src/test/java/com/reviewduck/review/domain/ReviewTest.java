@@ -13,6 +13,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.exception.ReviewException;
+import com.reviewduck.review.dto.service.ReviewCreateDto;
 
 public class ReviewTest {
 
@@ -31,9 +32,9 @@ public class ReviewTest {
             member,
             reviewForm,
             List.of(
-                new QuestionAnswer(new ReviewFormQuestion("question1", "description1"), new Answer("answer1")),
-                new QuestionAnswer(new ReviewFormQuestion("question2", "description2"), new Answer("answer2")),
-                new QuestionAnswer(new ReviewFormQuestion("question3", "description3"), new Answer("answer3"))
+                new ReviewCreateDto(new ReviewFormQuestion("question1", "description1"), new Answer("answer1")),
+                new ReviewCreateDto(new ReviewFormQuestion("question2", "description2"), new Answer("answer2")),
+                new ReviewCreateDto(new ReviewFormQuestion("question3", "description3"), new Answer("answer3"))
             ),
             false));
     }
@@ -48,9 +49,9 @@ public class ReviewTest {
             member,
             reviewForm,
             List.of(
-                new QuestionAnswer(new ReviewFormQuestion("question1", "description1"), new Answer("answer1")),
-                new QuestionAnswer(new ReviewFormQuestion("question2", "description2"), new Answer("answer2")),
-                new QuestionAnswer(new ReviewFormQuestion("question3", "description3"), new Answer("answer3"))
+                new ReviewCreateDto(new ReviewFormQuestion("question1", "description1"), new Answer("answer1")),
+                new ReviewCreateDto(new ReviewFormQuestion("question2", "description2"), new Answer("answer2")),
+                new ReviewCreateDto(new ReviewFormQuestion("question3", "description3"), new Answer("answer3"))
             ),
             false))
             .isInstanceOf(ReviewException.class)
@@ -66,9 +67,9 @@ public class ReviewTest {
             member,
             reviewForm,
             List.of(
-                new QuestionAnswer(new ReviewFormQuestion("question1", "description1"), new Answer("answer1")),
-                new QuestionAnswer(new ReviewFormQuestion("question2", "description2"), new Answer("answer2")),
-                new QuestionAnswer(new ReviewFormQuestion("question3", "description3"), new Answer("answer3"))
+                new ReviewCreateDto(new ReviewFormQuestion("question1", "description1"), new Answer("answer1")),
+                new ReviewCreateDto(new ReviewFormQuestion("question2", "description2"), new Answer("answer2")),
+                new ReviewCreateDto(new ReviewFormQuestion("question3", "description3"), new Answer("answer3"))
             ),
             false);
 
@@ -91,9 +92,9 @@ public class ReviewTest {
             member,
             reviewForm,
             List.of(
-                new QuestionAnswer(new ReviewFormQuestion("question1", "description1"), new Answer("answer1")),
-                new QuestionAnswer(new ReviewFormQuestion("question2", "description2"), new Answer("answer2")),
-                new QuestionAnswer(new ReviewFormQuestion("question3", "description3"), new Answer("answer3"))
+                new ReviewCreateDto(new ReviewFormQuestion("question1", "description1"), new Answer("answer1")),
+                new ReviewCreateDto(new ReviewFormQuestion("question2", "description2"), new Answer("answer2")),
+                new ReviewCreateDto(new ReviewFormQuestion("question3", "description3"), new Answer("answer3"))
             ), false);
 
         // when

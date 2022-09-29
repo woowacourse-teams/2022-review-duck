@@ -18,8 +18,8 @@ import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.service.ReviewFormService;
 
 @SpringBootTest
