@@ -11,9 +11,10 @@ import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.template.domain.Template;
-import com.reviewduck.template.dto.request.TemplateCreateRequest;
-import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
-import com.reviewduck.template.dto.request.TemplateUpdateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateQuestionUpdateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
+import com.reviewduck.template.dto.service.ServiceDtoConveter;
 import com.reviewduck.template.repository.TemplateRepository;
 import com.reviewduck.template.vo.TemplateSortType;
 
@@ -25,9 +26,7 @@ import lombok.AllArgsConstructor;
 public class TemplateService {
 
     private final TemplateRepository templateRepository;
-
     private final TemplateQuestionService templateQuestionService;
-
     private final MemberService memberService;
 
     @Transactional
@@ -35,7 +34,7 @@ public class TemplateService {
         Template template = new Template(member,
             createRequest.getTemplateTitle(),
             createRequest.getTemplateDescription(),
-            createRequest.toServiceDto());
+            ServiceDtoConveter.toServiceDto(createRequest.getQuestions()));
 
         return templateRepository.save(template);
     }

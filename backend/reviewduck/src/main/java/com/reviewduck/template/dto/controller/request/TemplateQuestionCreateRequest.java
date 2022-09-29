@@ -1,8 +1,8 @@
-package com.reviewduck.template.dto.request;
+package com.reviewduck.template.dto.controller.request;
 
 import javax.validation.constraints.NotNull;
 
-import com.reviewduck.template.service.TemplateQuestionCreateDto;
+import com.reviewduck.template.dto.service.TemplateQuestionCreateDto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -25,7 +25,7 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.domain.TemplateQuestion;
-import com.reviewduck.template.service.TemplateQuestionCreateDto;
+import com.reviewduck.template.dto.service.TemplateQuestionCreateDto;
 
 @DataJpaTest
 @Import(JpaAuditingConfig.class)

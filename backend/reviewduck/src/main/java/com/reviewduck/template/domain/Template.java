@@ -17,8 +17,8 @@ import javax.persistence.OneToMany;
 
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.template.dto.service.TemplateQuestionCreateDto;
 import com.reviewduck.template.exception.TemplateException;
-import com.reviewduck.template.service.TemplateQuestionCreateDto;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -31,16 +31,21 @@ public class Template extends BaseDate {
 
     @OneToMany(mappedBy = "template", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<TemplateQuestion> questions = new ArrayList<>();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
+
     @Column(nullable = false)
     private String templateTitle;
+
     @Column(nullable = false)
     private String templateDescription;
+
     @Column
     private int usedCount;
 

@@ -1,4 +1,4 @@
-package com.reviewduck.template.dto.request;
+package com.reviewduck.template.dto.controller.request;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,7 +7,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import com.reviewduck.template.service.TemplateQuestionCreateDto;
+import com.reviewduck.template.dto.service.TemplateQuestionCreateDto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -31,9 +31,4 @@ public class TemplateCreateRequest {
     @Valid
     private List<TemplateQuestionCreateRequest> questions;
 
-    public List<TemplateQuestionCreateDto> toServiceDto() {
-        return questions.stream()
-            .map(TemplateQuestionCreateRequest::toServiceDto)
-            .collect(Collectors.toUnmodifiableList());
-    }
 }

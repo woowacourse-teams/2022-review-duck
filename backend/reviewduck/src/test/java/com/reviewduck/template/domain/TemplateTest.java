@@ -15,7 +15,7 @@ import org.junit.jupiter.params.provider.NullSource;
 
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.template.exception.TemplateException;
-import com.reviewduck.template.service.TemplateQuestionCreateDto;
+import com.reviewduck.template.dto.service.TemplateQuestionCreateDto;
 
 class TemplateTest {
 
