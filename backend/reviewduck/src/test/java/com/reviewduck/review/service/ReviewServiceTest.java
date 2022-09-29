@@ -264,27 +264,6 @@ public class ReviewServiceTest {
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
-
-        @Test
-        @DisplayName("회고 폼 참여자 정보를 조회한다.")
-        void findAllParticipants() throws InterruptedException {
-            // given
-            saveReview(reviewForm1, member1, false);
-            saveReview(reviewForm1, member1, true);
-            saveReview(reviewForm1, member1, true);
-
-            saveReview(reviewForm2, member1, false);
-            saveReview(reviewForm2, member2, true);
-
-            // when
-            List<Member> participants = reviewService.findAllParticipantsByCode(reviewForm1.getCode());
-
-            // then
-            assertAll(
-                () -> assertThat(participants).hasSize(1),
-                () -> assertTrue(participants.contains(member1))
-            );
-        }
     }
 
     @Nested

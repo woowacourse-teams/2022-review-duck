@@ -80,15 +80,6 @@ public class ReviewService {
         return reviewRepository.findByReviewForm(reviewForm, pageRequest);
     }
 
-    public List<Member> findAllParticipantsByCode(String code) {
-        List<Review> reviews = reviewRepository.findAllByReviewFormCode(code);
-
-        return reviews.stream()
-            .map(Review::getMember)
-            .distinct()
-            .collect(Collectors.toUnmodifiableList());
-    }
-
     public Page<Review> findAllPublic(int page, int size, String sort) {
         String sortType = ReviewSortType.getSortBy(sort);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));

@@ -31,5 +31,4 @@ public class ReviewsOfReviewFormResponse {
     public boolean getIsLastPage() {
         return isLastPage;
     }
-
 }

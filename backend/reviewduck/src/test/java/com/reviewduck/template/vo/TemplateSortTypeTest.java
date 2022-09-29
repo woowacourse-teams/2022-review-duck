@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 class TemplateSortTypeTest {
 
     @ParameterizedTest
-    @CsvSource(value = {"latest:updatedAt", "trend:usedCount"}, delimiter = ':')
+    @CsvSource(value = {"latest:createdAt", "trend:usedCount"}, delimiter = ':')
     @DisplayName("파라미터에 맞는 정렬 기준을 반환한다.")
     void getSortBy(String param, String sortBy) {
         assertThat(TemplateSortType.getSortBy(param))

@@ -77,7 +77,7 @@ public class ReviewFormController {
         info("/api/review-forms/" + reviewFormCode, "GET", "");
 
         ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
-        List<Member> participants = reviewService.findAllParticipantsByCode(reviewFormCode);
+        List<Member> participants = reviewFormService.findAllParticipantsByCode(reviewForm);
 
         return ReviewFormResponse.of(reviewForm, member, participants);
     }
@@ -104,7 +104,7 @@ public class ReviewFormController {
         @PathVariable String reviewFormCode,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
         @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
-        @RequestParam String displayType) {
+        @RequestParam(required = false, defaultValue = "list") String displayType) {
 
         info("/api/review-forms/" + reviewFormCode + "/reviews?displayType=" + displayType, "GET", "");
 
