@@ -6,6 +6,10 @@ import java.util.stream.Collectors;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionUpdateRequest;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ServiceDtoConverter {
 
     public static List<TemplateQuestionCreateDto> toTemplateQuestionCreateDtos(
