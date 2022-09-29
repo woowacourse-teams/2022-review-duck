@@ -28,6 +28,8 @@ declare module '*.gif' {
 
 type URLString = `http${'s' | ''}://${string}`;
 
+type ElapsedTime = `${number}${'초 전' | '분 전' | '시간 전' | '일 전'}`;
+
 type numberString = `${number}` | number;
 
 type RequiredPartialType<Type, P extends keyof Type> = Type & {
