@@ -1,6 +1,5 @@
 package com.reviewduck.review.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,7 +14,6 @@ import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Answer;
-import com.reviewduck.review.domain.QuestionAnswer;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
@@ -23,8 +21,9 @@ import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
-import com.reviewduck.review.repository.ReviewRepository;
 import com.reviewduck.review.dto.service.ReviewCreateDto;
+import com.reviewduck.review.dto.service.ReviewUpdateDto;
+import com.reviewduck.review.repository.ReviewRepository;
 import com.reviewduck.review.vo.ReviewSortType;
 
 import lombok.AllArgsConstructor;
@@ -38,8 +37,6 @@ public class ReviewService {
 
     private final ReviewFormService reviewFormService;
     private final ReviewFormQuestionService reviewFormQuestionService;
-    private final QuestionAnswerService questionAnswerService;
-    private final AnswerService answerService;
     private final MemberService memberService;
 
     @Transactional
@@ -88,25 +85,15 @@ public class ReviewService {
     }
 
     @Transactional
-    public Review update(Member member, Long id, ReviewUpdateRequest request) {
+    public void update(Member member, Long id, ReviewUpdateRequest request) {
         Review review = findById(id);
         validateMyReview(member, review, "본인이 생성한 회고가 아니면 수정할 수 없습니다.");
 
-        List<QuestionAnswer> updateQuestionAnswers = new ArrayList<>();
+        List<ReviewUpdateDto> reviewUpdateDtos = request.getContents().stream()
+            .map(this::getReviewUpdateDto)
+            .collect(Collectors.toUnmodifiableList());
 
-        for (ReviewContentUpdateRequest content : request.getContents()) {
-
-            ReviewFormQuestion question = reviewFormQuestionService.findById(content.getQuestionId());
-
-            Answer answer = answerService.findOrCreateAnswer(content.getAnswer().getId());
-            answer.update(content.getAnswer().getValue());
-
-            QuestionAnswer questionAnswer = questionAnswerService.getOrSave(question, answer);
-            updateQuestionAnswers.add(questionAnswer);
-        }
-
-        review.update(request.getIsPrivate(), updateQuestionAnswers);
-        return review;
+        review.update(request.getIsPrivate(), reviewUpdateDtos);
     }
 
     @Transactional
@@ -129,6 +116,13 @@ public class ReviewService {
         Answer answer = new Answer(content.getAnswer().getValue());
 
         return new ReviewCreateDto(reviewFormQuestion, answer);
+    }
+
+    private ReviewUpdateDto getReviewUpdateDto(ReviewContentUpdateRequest content) {
+        ReviewFormQuestion reviewFormQuestion = reviewFormQuestionService.findById(content.getQuestionId());
+        String answerValue = content.getAnswer().getValue();
+
+        return new ReviewUpdateDto(reviewFormQuestion, answerValue);
     }
 
     private void validateMyReview(Member member, Review review, String message) {

@@ -50,4 +50,8 @@ public class QuestionAnswer {
     public void setPosition(int position) {
         this.position = position;
     }
+
+    public void setAnswerValue(String value) {
+        answer.update(value);
+    }
 }

@@ -4,6 +4,7 @@ import static lombok.AccessLevel.*;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -21,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.dto.service.ReviewCreateDto;
+import com.reviewduck.review.dto.service.ReviewUpdateDto;
 import com.reviewduck.review.exception.ReviewException;
 
 import lombok.Getter;
@@ -61,21 +63,43 @@ public class Review extends BaseDate {
         this.member = member;
         this.reviewForm = reviewForm;
         this.isPrivate = isPrivate;
-        this.questionAnswers = createDtos.stream()
-            .map(it -> new QuestionAnswer(it.getReviewFormQuestion(), it.getAnswer(), this))
-            .collect(Collectors.toUnmodifiableList());
-
+        this.questionAnswers = createQuestionAnswers(createDtos);
         sortQuestionAnswers();
     }
 
-    public void update(boolean isPrivate, List<QuestionAnswer> questionAnswers) {
-        this.questionAnswers = questionAnswers;
+    public void update(boolean isPrivate, List<ReviewUpdateDto> reviewUpdateDtos) {
+        this.questionAnswers = updateQuestionAnswers(reviewUpdateDtos);
         this.isPrivate = isPrivate;
         super.renewUpdatedAt();
+        sortQuestionAnswers();
     }
 
     public boolean isMine(Member member) {
         return this.member.equals(member);
+    }
+
+    private List<QuestionAnswer> createQuestionAnswers(List<ReviewCreateDto> createDtos) {
+        return createDtos.stream()
+            .map(dto -> new QuestionAnswer(dto.getReviewFormQuestion(), dto.getAnswer(), this))
+            .collect(Collectors.toUnmodifiableList());
+    }
+
+    private List<QuestionAnswer> updateQuestionAnswers(List<ReviewUpdateDto> reviewUpdateDtos) {
+        return reviewUpdateDtos.stream()
+            .map(this::updateQuestionAnswer)
+            .collect(Collectors.toUnmodifiableList());
+    }
+
+    private QuestionAnswer updateQuestionAnswer(ReviewUpdateDto updateDto) {
+        Optional<QuestionAnswer> questionAnswer = questionAnswers.stream()
+            .filter(it -> it.getReviewFormQuestion().equals(updateDto.getReviewFormQuestion()))
+            .findFirst();
+
+        if (questionAnswer.isPresent()) {
+            questionAnswer.get().setAnswerValue(updateDto.getAnswerValue());
+            return questionAnswer.get();
+        }
+        return new QuestionAnswer(updateDto.getReviewFormQuestion(), new Answer(updateDto.getAnswerValue()), this);
     }
 
     private void sortQuestionAnswers() {

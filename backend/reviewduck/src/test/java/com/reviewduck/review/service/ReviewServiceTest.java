@@ -335,7 +335,9 @@ public class ReviewServiceTest {
                 new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
             ));
 
-            Review updatedReview = reviewService.update(member1, savedReview.getId(), updateRequest);
+            reviewService.update(member1, savedReview.getId(), updateRequest);
+
+            Review updatedReview = reviewService.findById(savedReview.getId());
 
             // then
             assertAll(
