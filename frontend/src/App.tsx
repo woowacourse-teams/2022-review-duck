@@ -24,7 +24,7 @@ function ContextWrapper({ children }: { children: ReactNode }) {
 }
 
 function App() {
-  // TODO: 전역 페이지 로딩 화면 구현하기, 페이지 단위로 lazy 로드 처리
+  // TODO: 전역 페이지 로딩 화면 구현하기
   return (
     <ContextWrapper>
       <SnackbarProvider />

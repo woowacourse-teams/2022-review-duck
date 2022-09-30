@@ -1,6 +1,7 @@
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
-import { faEraser } from '@fortawesome/free-solid-svg-icons';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import { FILTER, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
 import { Tabs } from 'types';
@@ -13,6 +14,7 @@ import { PaginationBar } from 'common/components';
 import { PaginationBarProps } from 'common/components/PaginationBar';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
+import Questions from 'service/@shared/components/Questions';
 
 import styles from './styles.module.scss';
 
@@ -32,16 +34,19 @@ function ProfilePage() {
   const currentTab = searchParams.get('tab') || FILTER.USER_PROFILE_TAB.REVIEWS;
   const pageNumber = searchParams.get('page') || String(1);
 
-  validateFilter(
-    [
-      FILTER.USER_PROFILE_TAB.REVIEWS,
-      FILTER.USER_PROFILE_TAB.REVIEW_FORMS,
-      FILTER.USER_PROFILE_TAB.TEMPLATES,
-    ],
-    currentTab,
-  );
+  useEffect(function queryStringFilter() {
+    validateFilter(
+      [
+        FILTER.USER_PROFILE_TAB.REVIEWS,
+        FILTER.USER_PROFILE_TAB.REVIEW_FORMS,
+        FILTER.USER_PROFILE_TAB.TEMPLATES,
+      ],
+      currentTab,
+    );
+  }, []);
 
   const queries = useProfilePageQueries(currentTab as Tabs, socialId, pageNumber);
+
   if (!queries) return <>{/* Error Boundary, Suspense Used */}</>;
 
   const {
@@ -66,35 +71,41 @@ function ProfilePage() {
     showModal(MODAL_LIST.PROFILE_EDIT);
   };
 
-  const movePage = (pageNumber: number) => {
+  const handlePagination = (pageNumber: number) => {
     setSearchParams({ tab: currentTab, page: String(pageNumber) });
     window.scrollTo(0, 0);
   };
 
-  const handleClickEdit = (editLink: string) => () => {
-    navigate(editLink);
+  const handleClickEdit = (id?: number, code?: string, socialId?: string) => () => {
+    switch (currentTab) {
+      case FILTER.USER_PROFILE_TAB.REVIEWS:
+        navigate(
+          `${PAGE_LIST.REVIEW}/${code}/${id}?redirect=${PAGE_LIST.USER_PROFILE}/${socialId}?tab=${currentTab}`,
+        );
+        break;
+
+      case FILTER.USER_PROFILE_TAB.REVIEW_FORMS:
+        navigate(
+          `${PAGE_LIST.REVIEW_FORM}/${code}?redirect=${PAGE_LIST.USER_PROFILE}/${socialId}?tab=${currentTab}`,
+        );
+        break;
+
+      case FILTER.USER_PROFILE_TAB.TEMPLATES:
+        navigate(`${PAGE_LIST.TEMPLATE_FORM}?templateId=${id}&templateEditMode=true`);
+        break;
+    }
   };
 
   const deleteSuccessOption = () => {
     showSnackbar({
-      icon: faEraser,
-      title: `${subjectTitle[currentTab].substring(
-        3,
-        subjectTitle[currentTab].length,
-      )}가(이) 삭제되었습니다.`,
-      description: '더 이상 조회할 수 없으며, 삭제된 정보는 복구할 수 없습니다.',
+      icon: faTrash,
+      title: `삭제 처리 되었습니다.`,
+      description: '삭제된 정보는 복구할 수 없습니다.',
     });
   };
 
   const handleDeleteReview = (index: number | string) => () => {
-    if (
-      confirm(
-        `정말 ${subjectTitle[currentTab].substring(
-          3,
-          subjectTitle[currentTab].length,
-        )}를(을) 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.`,
-      )
-    ) {
+    if (confirm(`정말 삭제하시겠습니까?\n삭제 후 복구를 할 수 없습니다.`)) {
       if (currentTab === FILTER.USER_PROFILE_TAB.REVIEWS) {
         deleteReviewMutation.mutate(index as number, {
           onSuccess: deleteSuccessOption,
@@ -146,19 +157,42 @@ function ProfilePage() {
 
         <ArticleList>
           {userArticles.articleList.map((article) => (
-            <ArticleList.Article
-              key={article.id || article.reviewFormCode}
-              isMine={userArticles.isMine}
-              article={article}
-              titleLink={
-                currentTab === FILTER.USER_PROFILE_TAB.TEMPLATES
-                  ? `${PAGE_LIST.TEMPLATE_DETAIL}/${article.id}`
-                  : `${PAGE_LIST.REVIEW_OVERVIEW}/${article.reviewFormCode}`
-              }
-              editUrl={`${PAGE_LIST.REVIEW}/${article.reviewFormCode}/${article.id}`}
-              onEdit={handleClickEdit}
-              onDelete={handleDeleteReview}
-            />
+            <div className={styles.reviewContainer} key={article.id || article.reviewFormCode}>
+              <Questions>
+                <Link
+                  to={
+                    currentTab === FILTER.USER_PROFILE_TAB.TEMPLATES
+                      ? `${PAGE_LIST.TEMPLATE_DETAIL}/${article.id}`
+                      : `${PAGE_LIST.REVIEW_OVERVIEW}/${article.reviewFormCode}`
+                  }
+                >
+                  <Questions.Title>{article.title}</Questions.Title>
+                </Link>
+                <Questions.EditButtons
+                  isVisible={userArticles.isMine}
+                  onClickEdit={handleClickEdit(
+                    article.id,
+                    article.reviewFormCode,
+                    userProfile.socialId,
+                  )}
+                  onClickDelete={handleDeleteReview(article.id || article.reviewFormCode || '')}
+                />
+                {article.contents.map((content) => (
+                  <Questions.Answer
+                    key={content.question.id}
+                    question={content.question.value}
+                    description={content.question.description}
+                  >
+                    {content.answer?.value}
+                  </Questions.Answer>
+                ))}
+                <Questions.Reaction
+                  likeCount={0}
+                  onClickLike={() => null}
+                  onClickBookmark={() => null}
+                />
+              </Questions>
+            </div>
           ))}
           <ArticleList.NoArticleResult totalNumber={userArticles.totalNumber}>
             {`${subjectTitle[currentTab]}가(이) 없습니다.`}
@@ -170,7 +204,7 @@ function ProfilePage() {
             itemCountInPage={PAGE_OPTION.REVIEW_ITEM_SIZE}
             totalItemCount={userArticles.totalNumber}
             focusedPage={Number(pageNumber)}
-            onClickPageButton={movePage}
+            onClickPageButton={handlePagination}
           />
         </ArticleList>
       </LayoutContainer>

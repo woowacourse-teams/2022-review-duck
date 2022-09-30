@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
 import { MODAL_LIST, PAGE_OPTION, FILTER } from 'constant';
-import { PAGE_LIST } from 'constant';
 import { TemplateFilterType } from 'types';
 
 import useModal from 'common/hooks/useModal';
@@ -24,6 +23,9 @@ import TemplateCard from 'service/template/components/TemplateCard';
 
 import styles from './styles.module.scss';
 
+import { Intro } from './view/Intro';
+import { TrendTemplate } from './view/TrendTemplate';
+
 function MainPage() {
   const { showModal } = useModal();
   const navigate = useNavigate();
@@ -33,13 +35,10 @@ function MainPage() {
     String(1),
     PAGE_OPTION.TEMPLATE_TREND_ITEM_SIZE,
   );
-  const { templates } = data || { templates: [] };
 
-  useEffect(() => {
-    if (isError) {
-      alert(error.message);
-    }
-  }, [isError, error]);
+  if (isError || isLoading) return <>{/* Error Boundary, Suspense Used */}</>;
+
+  const { templates } = data;
 
   const handleClickReviewStart = () => {
     showModal(MODAL_LIST.REVIEW_START);
@@ -50,14 +49,19 @@ function MainPage() {
   };
 
   return (
-    <>
-      <section className={styles.background}>
-        <LayoutContainer className={styles.introContainer}>
-          <div className={styles.leftContainer}>
-            <Text className={styles.title} size={40}>
-              <span className={styles.bold}>회고덕</span>으로 함께 회고를 시작해보세요
-            </Text>
+    <FlexContainer className={styles.mainPageContainer}>
+      <Intro>
+        <div className={styles.leftContainer}>
+          <Intro.Title>
+            <span className={styles.bold}>회고덕</span>으로 함께 회고를 시작해보세요
+          </Intro.Title>
+          <Intro.SubTitle>함께 성장하는 회고 플랫폼</Intro.SubTitle>
+          <Intro.ReviewButton onClick={handleClickReviewStart}>회고 시작하기</Intro.ReviewButton>
+        </div>
+        <Intro.HeroCards />
+      </Intro>
 
+<<<<<<< HEAD
             <Text className={styles.subTitle} size={16}>
               함께 성장하는 회고 플랫폼
             </Text>
@@ -148,6 +152,13 @@ function MainPage() {
 
       <div className={styles.temp}></div>
     </>
+=======
+      <TrendTemplate>
+        <TrendTemplate.Title>인기 템플릿</TrendTemplate.Title>
+        <TrendTemplate.TrendCardPanel templates={templates} />
+      </TrendTemplate>
+    </FlexContainer>
+>>>>>>> d70460f14be4e652435dfcdb136914d383e6179a
   );
 }
 
