@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,6 +11,8 @@ import { TemplateFilterType } from 'types';
 
 import useModal from 'common/hooks/useModal';
 import { useGetTemplates } from 'service/@shared/hooks/queries/template';
+
+import { getElapsedTimeText } from 'service/@shared/utils';
 
 import { Button, Text, TransitionDiv } from 'common/components';
 
@@ -23,9 +26,8 @@ import styles from './styles.module.scss';
 
 function MainPage() {
   const { showModal } = useModal();
-  const onClickReviewStart = () => {
-    showModal(MODAL_LIST.REVIEW_START);
-  };
+  const navigate = useNavigate();
+
   const { data, isError, error } = useGetTemplates(
     FILTER.TEMPLATE_TAB.TREND as TemplateFilterType,
     String(1),
@@ -38,6 +40,14 @@ function MainPage() {
       alert(error.message);
     }
   }, [isError, error]);
+
+  const handleClickReviewStart = () => {
+    showModal(MODAL_LIST.REVIEW_START);
+  };
+
+  const handleClickTemplateCard = (templateId: number) => () => {
+    navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${templateId}`);
+  };
 
   return (
     <>
@@ -56,7 +66,7 @@ function MainPage() {
               className={styles.button}
               theme="outlined"
               size="medium"
-              onClick={onClickReviewStart}
+              onClick={handleClickReviewStart}
             >
               <FontAwesomeIcon icon={faPenToSquare} />
               회고 시작하기
@@ -110,7 +120,7 @@ function MainPage() {
       </section>
 
       <LayoutContainer className={styles.contentHeader}>
-        <Text as="h1" size={24}>
+        <Text as="h1" size={20} weight="bold">
           인기 템플릿
         </Text>
       </LayoutContainer>
@@ -118,19 +128,19 @@ function MainPage() {
       <ScrollPanel className={styles.cardList}>
         {templates.map((template) => (
           <TemplateCard
-            key={template.info.id}
+            key={template.id}
             className={styles.mainCard}
-            link={`${PAGE_LIST.TEMPLATE_DETAIL}/${template.info.id}`}
+            onClick={handleClickTemplateCard(template.id)}
           >
-            <TemplateCard.Tag usedCount={template.info.usedCount} />
-            <TemplateCard.Title title={template.info.title} />
-            <TemplateCard.UpdatedAt updatedAt={template.info.updatedAt} />
-            <TemplateCard.Description description={template.info.description} />
+            <TemplateCard.Tag usedCount={template.usedCount} />
+            <TemplateCard.Title>{template.title}</TemplateCard.Title>
+            <TemplateCard.UpdatedAt>{template.elapsedTime}</TemplateCard.UpdatedAt>
+            <TemplateCard.Description>{template.description}</TemplateCard.Description>
 
             <TemplateCard.Profile
-              profileUrl={template.creator.profileUrl}
+              profileUrl={template.creator.profileImage}
               nickname={template.creator.nickname}
-              socialNickname={template.creator.socialNickname || ''}
+              socialNickname={template.creator.snsName}
             />
           </TemplateCard>
         ))}
