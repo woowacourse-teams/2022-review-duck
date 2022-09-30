@@ -8,6 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import org.hibernate.Hibernate;
+
 import com.reviewduck.review.exception.ReviewFormQuestionException;
 
 import lombok.AccessLevel;
@@ -86,5 +88,20 @@ public class ReviewFormQuestion {
         if (position < 0) {
             throw new ReviewFormQuestionException("질문 생성 중 에러가 발생하였습니다.");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o))
+            return false;
+        ReviewFormQuestion that = (ReviewFormQuestion)o;
+        return id!= null && Objects.equals(id, that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

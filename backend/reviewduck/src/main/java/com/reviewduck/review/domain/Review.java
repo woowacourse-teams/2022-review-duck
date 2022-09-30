@@ -2,9 +2,9 @@ package com.reviewduck.review.domain;
 
 import static lombok.AccessLevel.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -51,7 +51,7 @@ public class Review extends BaseDate {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "review", fetch = FetchType.LAZY)
     @OrderBy("position asc")
     @JsonIgnore
-    private List<QuestionAnswer> questionAnswers;
+    private final List<QuestionAnswer> questionAnswers = new ArrayList<>();
 
     @Column(nullable = false)
     private int likes;
@@ -63,12 +63,15 @@ public class Review extends BaseDate {
         this.member = member;
         this.reviewForm = reviewForm;
         this.isPrivate = isPrivate;
-        this.questionAnswers = createQuestionAnswers(createDtos);
+        this.questionAnswers.addAll(createQuestionAnswers(createDtos));
         sortQuestionAnswers();
     }
 
     public void update(boolean isPrivate, List<QuestionAnswerUpdateDto> updateDtos) {
-        this.questionAnswers = updateQuestionAnswers(updateDtos);
+        int oldSize = this.questionAnswers.size();
+        this.questionAnswers.addAll(updateQuestionAnswers(updateDtos));
+        this.questionAnswers.subList(0, oldSize).clear();
+
         this.isPrivate = isPrivate;
         sortQuestionAnswers();
     }
@@ -101,15 +104,14 @@ public class Review extends BaseDate {
     }
 
     private QuestionAnswer updateQuestionAnswer(QuestionAnswerUpdateDto updateDto) {
-        Optional<QuestionAnswer> questionAnswer = questionAnswers.stream()
+        QuestionAnswer questionAnswer = questionAnswers.stream()
             .filter(it -> it.getReviewFormQuestion().equals(updateDto.getReviewFormQuestion()))
-            .findFirst();
+            .findFirst()
+            .orElseGet(() ->
+                new QuestionAnswer(updateDto.getReviewFormQuestion(), new Answer(updateDto.getAnswerValue()), this));
 
-        if (questionAnswer.isPresent()) {
-            questionAnswer.get().setAnswerValue(updateDto.getAnswerValue());
-            return questionAnswer.get();
-        }
-        return new QuestionAnswer(updateDto.getReviewFormQuestion(), new Answer(updateDto.getAnswerValue()), this);
+        questionAnswer.setAnswerValue(updateDto.getAnswerValue());
+        return questionAnswer;
     }
 
     private void sortQuestionAnswers() {
