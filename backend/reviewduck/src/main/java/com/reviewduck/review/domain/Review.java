@@ -70,7 +70,6 @@ public class Review extends BaseDate {
     public void update(boolean isPrivate, List<ReviewUpdateDto> reviewUpdateDtos) {
         this.questionAnswers = updateQuestionAnswers(reviewUpdateDtos);
         this.isPrivate = isPrivate;
-        super.renewUpdatedAt();
         sortQuestionAnswers();
     }
 
