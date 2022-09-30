@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ReviewCreateDto {
+public class QuestionAnswerCreateDto {
 
     private final ReviewFormQuestion reviewFormQuestion;
     private final Answer answer;

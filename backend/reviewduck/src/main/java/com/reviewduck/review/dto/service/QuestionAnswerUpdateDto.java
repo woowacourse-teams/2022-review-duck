@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ReviewUpdateDto {
+public class QuestionAnswerUpdateDto {
 
     private final ReviewFormQuestion reviewFormQuestion;
     private final String answerValue;

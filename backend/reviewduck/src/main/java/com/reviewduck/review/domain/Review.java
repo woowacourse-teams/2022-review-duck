@@ -21,8 +21,8 @@ import javax.persistence.OrderBy;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.review.dto.service.ReviewCreateDto;
-import com.reviewduck.review.dto.service.ReviewUpdateDto;
+import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
+import com.reviewduck.review.dto.service.QuestionAnswerUpdateDto;
 import com.reviewduck.review.exception.ReviewException;
 
 import lombok.Getter;
@@ -56,7 +56,7 @@ public class Review extends BaseDate {
     @Column(nullable = false)
     private int likes;
 
-    public Review(String title, Member member, ReviewForm reviewForm, List<ReviewCreateDto> createDtos,
+    public Review(String title, Member member, ReviewForm reviewForm, List<QuestionAnswerCreateDto> createDtos,
         boolean isPrivate) {
         validate(title);
         this.title = title;
@@ -67,8 +67,8 @@ public class Review extends BaseDate {
         sortQuestionAnswers();
     }
 
-    public void update(boolean isPrivate, List<ReviewUpdateDto> reviewUpdateDtos) {
-        this.questionAnswers = updateQuestionAnswers(reviewUpdateDtos);
+    public void update(boolean isPrivate, List<QuestionAnswerUpdateDto> updateDtos) {
+        this.questionAnswers = updateQuestionAnswers(updateDtos);
         this.isPrivate = isPrivate;
         sortQuestionAnswers();
     }
@@ -88,19 +88,19 @@ public class Review extends BaseDate {
         }
     }
 
-    private List<QuestionAnswer> createQuestionAnswers(List<ReviewCreateDto> createDtos) {
+    private List<QuestionAnswer> createQuestionAnswers(List<QuestionAnswerCreateDto> createDtos) {
         return createDtos.stream()
             .map(dto -> new QuestionAnswer(dto.getReviewFormQuestion(), dto.getAnswer(), this))
             .collect(Collectors.toUnmodifiableList());
     }
 
-    private List<QuestionAnswer> updateQuestionAnswers(List<ReviewUpdateDto> reviewUpdateDtos) {
-        return reviewUpdateDtos.stream()
+    private List<QuestionAnswer> updateQuestionAnswers(List<QuestionAnswerUpdateDto> updateDtos) {
+        return updateDtos.stream()
             .map(this::updateQuestionAnswer)
             .collect(Collectors.toUnmodifiableList());
     }
 
-    private QuestionAnswer updateQuestionAnswer(ReviewUpdateDto updateDto) {
+    private QuestionAnswer updateQuestionAnswer(QuestionAnswerUpdateDto updateDto) {
         Optional<QuestionAnswer> questionAnswer = questionAnswers.stream()
             .filter(it -> it.getReviewFormQuestion().equals(updateDto.getReviewFormQuestion()))
             .findFirst();

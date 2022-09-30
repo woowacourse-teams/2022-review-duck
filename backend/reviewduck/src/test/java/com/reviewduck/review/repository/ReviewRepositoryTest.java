@@ -26,7 +26,7 @@ import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
-import com.reviewduck.review.dto.service.ReviewCreateDto;
+import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
 
 @DataJpaTest
 @Import(JpaAuditingConfig.class)
@@ -222,8 +222,8 @@ public class ReviewRepositoryTest {
         Thread.sleep(1);
         Review review = new Review("title", member, savedReviewForm,
             List.of(
-                new ReviewCreateDto(savedReviewForm.getReviewFormQuestions().get(0), new Answer("answer1")),
-                new ReviewCreateDto(savedReviewForm.getReviewFormQuestions().get(1), new Answer("answer2"))
+                new QuestionAnswerCreateDto(savedReviewForm.getReviewFormQuestions().get(0), new Answer("answer1")),
+                new QuestionAnswerCreateDto(savedReviewForm.getReviewFormQuestions().get(1), new Answer("answer2"))
             ),
             isPrivate
         );
