@@ -14,7 +14,7 @@ export interface ResponseQuestion {
 }
 
 class Question {
-  id: number;
+  id: number | null = null;
   value: string;
   description: string;
   answer: Answer;
