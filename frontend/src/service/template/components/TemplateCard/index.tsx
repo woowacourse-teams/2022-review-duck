@@ -39,40 +39,40 @@ function Tag({ className, usedCount }: TagProps) {
 
 interface TitleProps {
   className?: string;
-  title: string;
+  children: string;
 }
 
-function Title({ className, title }: TitleProps) {
+function Title({ className, children }: TitleProps) {
   return (
     <Text className={cn(className, styles.title)} size={20}>
-      {title}
+      {children}
     </Text>
   );
 }
 
 interface UpdatedAtProps {
   className?: string;
-  updatedAt: number;
+  children: string;
 }
 
-function UpdatedAt({ className, updatedAt }: UpdatedAtProps) {
+function UpdatedAt({ className, children }: UpdatedAtProps) {
   return (
     <FlexContainer className={cn(className, styles.info)} direction="row" align="center">
       <FontAwesomeIcon className={styles.icon} icon={faClock} />
-      <span className={styles.text}>{getElapsedTimeText(updatedAt)}</span>
+      <span className={styles.text}>{children}</span>
     </FlexContainer>
   );
 }
 
 interface DescriptionProps {
   className?: string;
-  description: string;
+  children: string;
 }
 
-function Description({ className, description }: DescriptionProps) {
+function Description({ className, children }: DescriptionProps) {
   return (
     <Text className={cn(className, styles.description)} size={16}>
-      {description}
+      {children}
     </Text>
   );
 }
