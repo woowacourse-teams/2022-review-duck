@@ -73,20 +73,23 @@ function ProfilePage() {
   };
 
   const handleClickEdit = (id?: number, code?: string, socialId?: string) => () => {
-    const editNavigator = {
-      [FILTER.USER_PROFILE_TAB.REVIEWS]: () =>
+    switch (currentTab) {
+      case FILTER.USER_PROFILE_TAB.REVIEWS:
         navigate(
           `${PAGE_LIST.REVIEW}/${code}/${id}?redirect=${PAGE_LIST.USER_PROFILE}/${socialId}?tab=${currentTab}`,
-        ),
-      [FILTER.USER_PROFILE_TAB.REVIEW_FORMS]: () =>
+        );
+        break;
+
+      case FILTER.USER_PROFILE_TAB.REVIEW_FORMS:
         navigate(
           `${PAGE_LIST.REVIEW_FORM}/${code}?redirect=${PAGE_LIST.USER_PROFILE}/${socialId}?tab=${currentTab}`,
-        ),
-      [FILTER.USER_PROFILE_TAB.TEMPLATES]: () =>
-        navigate(`${PAGE_LIST.TEMPLATE_FORM}?templateId=${id}&templateEditMode=true`),
-    };
+        );
+        break;
 
-    editNavigator[currentTab]();
+      case FILTER.USER_PROFILE_TAB.TEMPLATES:
+        navigate(`${PAGE_LIST.TEMPLATE_FORM}?templateId=${id}&templateEditMode=true`);
+        break;
+    }
   };
 
   const deleteSuccessOption = () => {
