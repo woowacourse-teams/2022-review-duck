@@ -25,7 +25,7 @@ function TemplateListPage() {
   const pageNumber = searchParam.get('page') || String(1);
 
   // QueryString Filter 아래와 같이 타입 좁히는식으로 진행!
-  const filterQueryString = searchParam.get('filter');
+  const filterQueryString = searchParam.get('sort');
   const currentTab = isInclude(Object.values(FILTER.TEMPLATE_TAB), filterQueryString)
     ? filterQueryString
     : FILTER.TEMPLATE_TAB.LATEST;
@@ -38,11 +38,11 @@ function TemplateListPage() {
   const { totalNumber, templates } = getTemplates.data;
 
   const handleTemplateView = (id: number) => () => {
-    navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${id}?filter=${currentTab}`);
+    navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${id}?sort=${currentTab}`);
   };
 
   const handleChangeSortList = (query: TemplateFilterType) => () => {
-    navigate(`${PAGE_LIST.TEMPLATE_LIST}?filter=${query}`);
+    navigate(`${PAGE_LIST.TEMPLATE_LIST}?sort=${query}`);
   };
 
   const handleMoveCreateTemplate = () => {
@@ -50,7 +50,7 @@ function TemplateListPage() {
   };
 
   const handleClickPagination = (pageNumber: number) => {
-    setSearchParam({ filter: currentTab, page: String(pageNumber) });
+    setSearchParam({ sort: currentTab, page: String(pageNumber) });
     window.scrollTo(0, 0);
   };
 
