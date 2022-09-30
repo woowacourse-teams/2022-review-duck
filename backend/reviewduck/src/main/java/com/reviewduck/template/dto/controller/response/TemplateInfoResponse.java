@@ -1,4 +1,4 @@
-package com.reviewduck.template.dto.response;
+package com.reviewduck.template.dto.controller.response;
 
 import java.sql.Timestamp;
 
