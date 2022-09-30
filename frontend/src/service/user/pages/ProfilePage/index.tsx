@@ -67,7 +67,7 @@ function ProfilePage() {
     showModal(MODAL_LIST.PROFILE_EDIT);
   };
 
-  const movePage = (pageNumber: number) => {
+  const handlePagination = (pageNumber: number) => {
     setSearchParams({ tab: currentTab, page: String(pageNumber) });
     window.scrollTo(0, 0);
   };
@@ -210,7 +210,7 @@ function ProfilePage() {
             itemCountInPage={PAGE_OPTION.REVIEW_ITEM_SIZE}
             totalItemCount={userArticles.totalNumber}
             focusedPage={Number(pageNumber)}
-            onClickPageButton={movePage}
+            onClickPageButton={handlePagination}
           />
         </ArticleList>
       </LayoutContainer>
