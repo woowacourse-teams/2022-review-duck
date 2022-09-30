@@ -173,7 +173,6 @@ function ProfilePage() {
                 </Link>
                 <Questions.EditButtons
                   isVisible={userArticles.isMine}
-                  subject={subjectTitle[currentTab].substring(3, subjectTitle[currentTab].length)}
                   onClickEdit={handleClickEdit(
                     article.id,
                     article.reviewFormCode,

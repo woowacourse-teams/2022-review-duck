@@ -1,4 +1,4 @@
-import { faEraser, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
@@ -61,13 +61,7 @@ interface EditButtonsProps {
   onClickDelete: React.MouseEventHandler<HTMLDivElement>;
 }
 
-function EditButtons({
-  className,
-  isVisible,
-  subject = '회고',
-  onClickEdit,
-  onClickDelete,
-}: EditButtonsProps) {
+function EditButtons({ className, isVisible, onClickEdit, onClickDelete }: EditButtonsProps) {
   if (!isVisible) return null;
 
   return (
@@ -80,7 +74,7 @@ function EditButtons({
       <FlexContainer className={styles.button} direction="row" align="center" onClick={onClickEdit}>
         <FontAwesomeIcon icon={faPenToSquare} />
         <Text className={styles.text} size={14}>
-          {`${subject} 편집`}
+          편집
         </Text>
       </FlexContainer>
 
@@ -90,9 +84,9 @@ function EditButtons({
         align="center"
         onClick={onClickDelete}
       >
-        <FontAwesomeIcon icon={faEraser} />
+        <FontAwesomeIcon icon={faTrash} />
         <Text className={styles.text} size={14}>
-          {`${subject} 삭제`}
+          삭제
         </Text>
       </FlexContainer>
     </FlexContainer>
