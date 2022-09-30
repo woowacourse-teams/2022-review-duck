@@ -24,6 +24,9 @@ function useProfilePageQueries(currentTab: Tabs, socialIdPrams: string, pageNumb
   const deleteTemplateMutation = useDeleteTemplate();
 
   const getUserProfile = useGetUserProfile({ socialId });
+
+  if (!useGetQueries[currentTab]) return false;
+
   const getUserArticles = useGetQueries[currentTab](socialId, pageNumber);
 
   const isLoading = getUserProfile.isLoading || getUserArticles.isLoading;

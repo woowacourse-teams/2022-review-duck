@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -33,16 +34,19 @@ function ProfilePage() {
   const currentTab = searchParams.get('tab') || FILTER.USER_PROFILE_TAB.REVIEWS;
   const pageNumber = searchParams.get('page') || String(1);
 
-  validateFilter(
-    [
-      FILTER.USER_PROFILE_TAB.REVIEWS,
-      FILTER.USER_PROFILE_TAB.REVIEW_FORMS,
-      FILTER.USER_PROFILE_TAB.TEMPLATES,
-    ],
-    currentTab,
-  );
+  useEffect(function queryStringFilter() {
+    validateFilter(
+      [
+        FILTER.USER_PROFILE_TAB.REVIEWS,
+        FILTER.USER_PROFILE_TAB.REVIEW_FORMS,
+        FILTER.USER_PROFILE_TAB.TEMPLATES,
+      ],
+      currentTab,
+    );
+  }, []);
 
   const queries = useProfilePageQueries(currentTab as Tabs, socialId, pageNumber);
+
   if (!queries) return <>{/* Error Boundary, Suspense Used */}</>;
 
   const {
