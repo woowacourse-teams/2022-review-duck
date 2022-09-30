@@ -13,14 +13,15 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.exception.ReviewException;
+import com.reviewduck.review.service.ReviewFormQuestionCreateDto;
 
 public class ReviewTest {
 
     private final Member member = new Member("1", "socialId", "nickname", "profileUrl");
     private final ReviewForm reviewForm = new ReviewForm(member, "title", List.of(
-        new ReviewFormQuestion("question1", "description1"),
-        new ReviewFormQuestion("question2", "description2"),
-        new ReviewFormQuestion("question3", "description3")));
+        new ReviewFormQuestionCreateDto("question1", "description1"),
+        new ReviewFormQuestionCreateDto("question2", "description2"),
+        new ReviewFormQuestionCreateDto("question3", "description3")));
 
     @Test
     @DisplayName("제약조건에 걸리지 않으면 회고가 생성된다.")

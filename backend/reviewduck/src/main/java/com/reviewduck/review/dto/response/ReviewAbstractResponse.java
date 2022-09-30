@@ -21,7 +21,7 @@ public abstract class ReviewAbstractResponse {
         Map<ReviewFormQuestion, Answer> reviewMap = review.getQuestionAnswers().stream()
             .collect(Collectors.toUnmodifiableMap(QuestionAnswer::getReviewFormQuestion, QuestionAnswer::getAnswer));
 
-        return reviewForm.getReviewFormQuestions().stream()
+        return reviewForm.getQuestions().stream()
             .map(question -> ReviewContentResponse.of(question, reviewMap.getOrDefault(question, null)))
             .collect(Collectors.toUnmodifiableList());
     }

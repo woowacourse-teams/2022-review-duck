@@ -76,8 +76,8 @@ public class ReviewServiceTest {
         @DisplayName("회고를 저장한다.")
         void saveReview() {
             // given
-            long questionId1 = reviewForm1.getReviewFormQuestions().get(0).getId();
-            long questionId2 = reviewForm1.getReviewFormQuestions().get(1).getId();
+            long questionId1 = reviewForm1.getQuestions().get(0).getId();
+            long questionId2 = reviewForm1.getQuestions().get(1).getId();
 
             ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, List.of(
                 new ReviewContentCreateRequest(questionId1, new AnswerCreateRequest("answer1")),
@@ -545,11 +545,11 @@ public class ReviewServiceTest {
 
         ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, List.of(
             new ReviewContentCreateRequest(
-                reviewForm.getReviewFormQuestions().get(0).getId(),
+                reviewForm.getQuestions().get(0).getId(),
                 new AnswerCreateRequest("answer1")
             ),
             new ReviewContentCreateRequest(
-                reviewForm.getReviewFormQuestions().get(1).getId(),
+                reviewForm.getQuestions().get(1).getId(),
                 new AnswerCreateRequest("answer2")
             )
         ));

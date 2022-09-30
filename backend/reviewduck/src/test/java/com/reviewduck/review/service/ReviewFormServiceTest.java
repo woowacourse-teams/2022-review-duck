@@ -96,9 +96,9 @@ public class ReviewFormServiceTest {
                 () -> assertThat(reviewForm.getMember().getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(reviewForm.getCode().length()).isEqualTo(8),
                 () -> assertThat(reviewForm.getTitle()).isEqualTo(reviewFormTitle),
-                () -> assertThat(reviewForm.getReviewFormQuestions())
+                () -> assertThat(reviewForm.getQuestions())
                     .usingRecursiveComparison()
-                    .ignoringFields("id")
+                    .ignoringFields("id", "reviewForm")
                     .isEqualTo(expected)
             );
         }
@@ -147,9 +147,9 @@ public class ReviewFormServiceTest {
                 () -> assertThat(savedReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(savedReviewForm.getCode().length()).isEqualTo(8),
                 () -> assertThat(savedReviewForm.getTitle()).isEqualTo(templateTitle),
-                () -> assertThat(savedReviewForm.getReviewFormQuestions())
+                () -> assertThat(savedReviewForm.getQuestions())
                     .usingRecursiveComparison()
-                    .ignoringFields("id")
+                    .ignoringFields("id", "reviewForm")
                     .isEqualTo(expected),
                 // template usedCount ++
                 // DB에 반영된 usedCount를 확인하기 위해 새로 조회
@@ -233,9 +233,9 @@ public class ReviewFormServiceTest {
                 () -> assertThat(createdReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(createdReviewForm.getCode().length()).isEqualTo(8),
                 () -> assertThat(createdReviewForm.getTitle()).isEqualTo(reviewFormTitle),
-                () -> assertThat(createdReviewForm.getReviewFormQuestions())
+                () -> assertThat(createdReviewForm.getQuestions())
                     .usingRecursiveComparison()
-                    .ignoringFields("id")
+                    .ignoringFields("id", "reviewForm")
                     .isEqualTo(expected),
                 // usedCount ++
                 // DB에 반영된 usedCount를 확인하기 위해 새로 조회
@@ -347,10 +347,10 @@ public class ReviewFormServiceTest {
                 () -> assertThat(myReviewForms.get(0).getId()).isNotNull(),
                 () -> assertThat(myReviewForms.get(0).getCode().length()).isEqualTo(8),
                 () -> assertThat(myReviewForms.get(0).getUpdatedAt()).isEqualTo(expected.getUpdatedAt()),
-                () -> assertThat(myReviewForms.get(0).getReviewFormQuestions())
+                () -> assertThat(myReviewForms.get(0).getQuestions())
                     .usingRecursiveComparison()
                     .ignoringFields("id")
-                    .isEqualTo(expected.getReviewFormQuestions())
+                    .isEqualTo(expected.getQuestions())
             );
         }
 
@@ -377,10 +377,10 @@ public class ReviewFormServiceTest {
                 () -> assertThat(myReviewForms.get(0).getId()).isNotNull(),
                 () -> assertThat(myReviewForms.get(0).getCode().length()).isEqualTo(8),
                 () -> assertThat(myReviewForms.get(0).getUpdatedAt()).isEqualTo(expected.getUpdatedAt()),
-                () -> assertThat(myReviewForms.get(0).getReviewFormQuestions())
+                () -> assertThat(myReviewForms.get(0).getQuestions())
                     .usingRecursiveComparison()
                     .ignoringFields("id")
-                    .isEqualTo(expected.getReviewFormQuestions())
+                    .isEqualTo(expected.getQuestions())
             );
         }
     }
@@ -395,7 +395,7 @@ public class ReviewFormServiceTest {
             // given
             ReviewForm savedReviewForm = saveReviewForm(member1);
             String code = savedReviewForm.getCode();
-            Long questionId = savedReviewForm.getReviewFormQuestions().get(0).getId();
+            Long questionId = savedReviewForm.getQuestions().get(0).getId();
 
             // when
             String reviewFormTitle = "new title";
@@ -424,9 +424,9 @@ public class ReviewFormServiceTest {
                 () -> assertThat(foundReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(foundReviewForm.getCode().length()).isEqualTo(8),
                 () -> assertThat(foundReviewForm.getTitle()).isEqualTo(reviewFormTitle),
-                () -> assertThat(foundReviewForm.getReviewFormQuestions())
+                () -> assertThat(foundReviewForm.getQuestions())
                     .usingRecursiveComparison()
-                    .ignoringFields("id")
+                    .ignoringFields("id", "reviewForm")
                     .isEqualTo(expected)
             );
         }
@@ -437,7 +437,7 @@ public class ReviewFormServiceTest {
             // given
             ReviewForm savedReviewForm = saveReviewForm(member1);
             String code = savedReviewForm.getCode();
-            Long questionId = savedReviewForm.getReviewFormQuestions().get(0).getId();
+            Long questionId = savedReviewForm.getQuestions().get(0).getId();
 
             // when
             String reviewFormTitle = "new title";

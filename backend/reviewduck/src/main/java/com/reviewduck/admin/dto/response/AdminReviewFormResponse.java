@@ -22,7 +22,7 @@ public class AdminReviewFormResponse {
     public static AdminReviewFormResponse of(ReviewForm reviewForm, List<Review> reviews) {
         AdminReviewFormInfoResponse reviewFormInfoResponse = AdminReviewFormInfoResponse.from(reviewForm);
 
-        List<ReviewFormQuestionResponse> questionResponses = reviewForm.getReviewFormQuestions().stream()
+        List<ReviewFormQuestionResponse> questionResponses = reviewForm.getQuestions().stream()
             .map(ReviewFormQuestionResponse::from)
             .collect(Collectors.toUnmodifiableList());
 
