@@ -10,8 +10,8 @@ import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/@shared/hooks/useQuestions';
 
 import useAnswerEditorPage from './useAnswerEditorPage';
-import { Editor } from './views/Editor';
-import { Status } from './views/Status';
+import { Editor } from './view/Editor';
+import { Status } from './view/Status';
 
 const EDITOR_MODE = {
   NEW_ANSWER: false,

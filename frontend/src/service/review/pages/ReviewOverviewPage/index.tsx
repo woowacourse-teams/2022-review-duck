@@ -19,9 +19,9 @@ import Questions from 'service/@shared/components/Questions';
 
 import styles from './styles.module.scss';
 
-import { Header } from './views/Header';
-import { ListView } from './views/ListView';
-import { SheetView } from './views/SheetView';
+import { Header } from './view/Header';
+import { ListView } from './view/ListView';
+import { SheetView } from './view/SheetView';
 import { validateFilter } from 'service/@shared/validator';
 
 /*

@@ -19,9 +19,8 @@ import useSnackbar from 'common/hooks/useSnackbar';
 
 import { getElapsedTimeText } from 'service/@shared/utils';
 
-import { Button, FlexContainer, Text } from 'common/components';
+import { Button, FlexContainer, Text, ScrollPanel } from 'common/components';
 
-import ScrollPanel from 'common/components/ScrollPanel';
 import TagLabel from 'common/components/TagLabel';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
