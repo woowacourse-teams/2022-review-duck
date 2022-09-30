@@ -302,8 +302,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
             //when, then
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(1L, "editedAnswer2"))
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
             ));
 
             put("/api/reviews/" + reviewId, updateRequest, accessToken1)
@@ -317,8 +317,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
             //when, then
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(1L, "editedAnswer2"))
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest( "editedAnswer2"))
             ));
 
             put("/api/reviews/" + reviewId, updateRequest)
@@ -330,8 +330,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         void invalidReviewId() {
             // when, then
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(1L, "editedAnswer2"))
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                new ReviewContentUpdateRequest(2L,new AnswerUpdateRequest("editedAnswer2"))
             ));
 
             put("/api/reviews/" + invalidReviewId, updateRequest, accessToken1)
@@ -345,8 +345,8 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
             //when, then
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(1L, "editedAnswer2"))
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                new ReviewContentUpdateRequest(2L,new AnswerUpdateRequest("editedAnswer2"))
             ));
 
             put("/api/reviews/" + reviewId, updateRequest, accessToken2)

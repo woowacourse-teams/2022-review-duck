@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 @Getter
 public class AnswerUpdateRequest {
 
-    private Long id;
-
     @NotNull(message = "답변은 비어있을 수 없습니다.")
     private String value;
 }

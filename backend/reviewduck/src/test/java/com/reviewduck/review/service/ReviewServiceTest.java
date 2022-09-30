@@ -331,8 +331,8 @@ public class ReviewServiceTest {
 
             // when
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
             ));
 
             reviewService.update(member1, savedReview.getId(), updateRequest);
@@ -357,8 +357,8 @@ public class ReviewServiceTest {
 
             // when
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
             ));
 
             // then
@@ -372,8 +372,8 @@ public class ReviewServiceTest {
         void invalidId() {
             // given
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
             ));
 
             // when, then
@@ -389,8 +389,8 @@ public class ReviewServiceTest {
             Review savedReview = saveReview(reviewForm1, member1, false);
 
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(999L, new AnswerUpdateRequest(2L, "editedAnswer2"))
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                new ReviewContentUpdateRequest(999L, new AnswerUpdateRequest("editedAnswer2"))
             ));
 
             // when, then
@@ -398,24 +398,6 @@ public class ReviewServiceTest {
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 질문입니다.");
         }
-
-        @Test
-        @DisplayName("유효하지 않은 답변 번호로 수정할 수 없다.")
-        void withInvalidAnswerId() throws InterruptedException {
-            // given
-            Review savedReview = saveReview(reviewForm1, member1, false);
-
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(9999L, "editedAnswer2"))
-            ));
-
-            // when, then
-            assertThatThrownBy(() -> reviewService.update(member1, savedReview.getId(), updateRequest))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessageContaining("존재하지 않는 답변 번호입니다.");
-        }
-
     }
 
     @Nested

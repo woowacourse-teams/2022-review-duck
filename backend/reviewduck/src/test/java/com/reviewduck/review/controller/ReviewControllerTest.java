@@ -75,7 +75,7 @@ public class ReviewControllerTest {
         void nullQuestionId(Long questionId) throws Exception {
             // given
             ReviewUpdateRequest request = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(questionId, new AnswerUpdateRequest(1L, "answer"))
+                new ReviewContentUpdateRequest(questionId, new AnswerUpdateRequest("answer"))
             ));
 
             // when, then
@@ -101,7 +101,7 @@ public class ReviewControllerTest {
         void nullAnswer(String answer) throws Exception {
             // given
             ReviewUpdateRequest request = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, answer))
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(answer))
             ));
 
             // when, then
