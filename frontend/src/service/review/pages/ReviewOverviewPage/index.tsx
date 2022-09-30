@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { FILTER, PAGE_LIST, PAGE_OPTION } from 'constant';
@@ -35,7 +35,9 @@ function ReviewOverViewPage() {
   const navigate = useNavigate();
   const { reviewFormCode = '', displayMode = FILTER.DISPLAY_MODE.LIST } = useParams();
 
-  validateFilter([FILTER.DISPLAY_MODE.LIST, FILTER.DISPLAY_MODE.SHEET], displayMode);
+  useEffect(function queryStringFilter() {
+    validateFilter([FILTER.DISPLAY_MODE.LIST, FILTER.DISPLAY_MODE.SHEET], displayMode);
+  }, []);
 
   const { showSnackbar } = useSnackbar();
 
