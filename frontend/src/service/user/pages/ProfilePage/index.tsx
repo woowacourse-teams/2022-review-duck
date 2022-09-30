@@ -1,6 +1,6 @@
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
-import { faEraser } from '@fortawesome/free-solid-svg-icons';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import { FILTER, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
 import { Tabs } from 'types';
@@ -94,24 +94,14 @@ function ProfilePage() {
 
   const deleteSuccessOption = () => {
     showSnackbar({
-      icon: faEraser,
-      title: `${subjectTitle[currentTab].substring(
-        3,
-        subjectTitle[currentTab].length,
-      )}가(이) 삭제되었습니다.`,
-      description: '더 이상 조회할 수 없으며, 삭제된 정보는 복구할 수 없습니다.',
+      icon: faTrash,
+      title: `삭제 처리 되었습니다.`,
+      description: '삭제된 정보는 복구할 수 없습니다.',
     });
   };
 
   const handleDeleteReview = (index: number | string) => () => {
-    if (
-      confirm(
-        `정말 ${subjectTitle[currentTab].substring(
-          3,
-          subjectTitle[currentTab].length,
-        )}를(을) 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.`,
-      )
-    ) {
+    if (confirm(`정말 삭제하시겠습니까?\n삭제 후 복구를 할 수 없습니다.`)) {
       if (currentTab === FILTER.USER_PROFILE_TAB.REVIEWS) {
         deleteReviewMutation.mutate(index as number, {
           onSuccess: deleteSuccessOption,
