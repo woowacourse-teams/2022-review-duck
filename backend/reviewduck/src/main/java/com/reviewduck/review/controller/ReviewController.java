@@ -71,7 +71,7 @@ public class ReviewController {
     public TimelineReviewsResponse findAllPublic(@AuthenticationPrincipal Member member,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
         @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
-        @RequestParam(required = false) String sort) {
+        @RequestParam(required = false, defaultValue = "latest") String sort) {
 
         info("/api/reviews/public?page=" + page + "&size=" + size + "&sort=" + sort, "GET", "");
 

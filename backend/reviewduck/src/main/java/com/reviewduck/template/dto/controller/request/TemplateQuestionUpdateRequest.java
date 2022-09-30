@@ -1,4 +1,4 @@
-package com.reviewduck.template.dto.request;
+package com.reviewduck.template.dto.controller.request;
 
 import javax.validation.constraints.NotNull;
 

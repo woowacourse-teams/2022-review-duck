@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,19 +25,20 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.domain.TemplateQuestion;
+import com.reviewduck.template.dto.service.TemplateQuestionCreateDto;
 
 @DataJpaTest
 @Import(JpaAuditingConfig.class)
 public class TemplateRepositoryTest {
 
-    private final List<TemplateQuestion> questions1 = List.of(
-        new TemplateQuestion("question1", "description1"),
-        new TemplateQuestion("question2", "description2")
+    private final List<TemplateQuestionCreateDto> questions1 = List.of(
+        new TemplateQuestionCreateDto("question1", "description1"),
+        new TemplateQuestionCreateDto("question2", "description2")
     );
 
-    private final List<TemplateQuestion> questions2 = List.of(
-        new TemplateQuestion("question3", "description3"),
-        new TemplateQuestion("question4", "description4")
+    private final List<TemplateQuestionCreateDto> questions2 = List.of(
+        new TemplateQuestionCreateDto("question3", "description3"),
+        new TemplateQuestionCreateDto("question4", "description4")
     );
 
     @Autowired
@@ -63,11 +65,7 @@ public class TemplateRepositoryTest {
     @DisplayName("템플릿을 저장한다.")
     void saveTemplate() {
         // given
-        List<TemplateQuestion> questions = List.of(
-            new TemplateQuestion("question1", "description1"),
-            new TemplateQuestion("question2", "description2")
-        );
-        Template template = new Template(member1, "title", "description", questions);
+        Template template = new Template(member1, "title", "description", questions1);
 
         // when
         Template savedTemplate = templateRepository.save(template);
@@ -77,8 +75,8 @@ public class TemplateRepositoryTest {
             () -> assertThat(savedTemplate.getId()).isNotNull(),
             () -> assertThat(savedTemplate.getQuestions())
                 .usingRecursiveComparison()
-                .ignoringFields("id")
-                .isEqualTo(questions)
+                .ignoringFields("id", "template")
+                .isEqualTo(toEntity(questions1))
         );
     }
 
@@ -86,11 +84,7 @@ public class TemplateRepositoryTest {
     @DisplayName("템플릿을 조회한다.")
     void findTemplate() throws InterruptedException {
         // given
-        List<TemplateQuestion> questions = List.of(
-            new TemplateQuestion("question1", "description1"),
-            new TemplateQuestion("question2", "description2")
-        );
-        Template savedTemplate = saveTemplate(member1, questions);
+        Template savedTemplate = saveTemplate(member1, questions1);
 
         // when
         Template foundTemplate = templateRepository.findById(savedTemplate.getId())
@@ -101,8 +95,8 @@ public class TemplateRepositoryTest {
             () -> assertThat(foundTemplate.getId()).isNotNull(),
             () -> assertThat(foundTemplate.getQuestions())
                 .usingRecursiveComparison()
-                .ignoringFields("id")
-                .isEqualTo(questions)
+                .ignoringFields("id", "template")
+                .isEqualTo(toEntity(questions1))
         );
     }
 
@@ -175,10 +169,22 @@ public class TemplateRepositoryTest {
         assertThat(template.getUsedCount()).isEqualTo(1);
     }
 
-    private Template saveTemplate(Member member, List<TemplateQuestion> questions) throws InterruptedException {
+    private Template saveTemplate(Member member, List<TemplateQuestionCreateDto> questions) throws
+        InterruptedException {
         Thread.sleep(1);
         Template template = new Template(member, "title", "description", questions);
-
         return templateRepository.save(template);
+    }
+
+    private List<TemplateQuestion> toEntity(List<TemplateQuestionCreateDto> dtos) {
+        List<TemplateQuestion> questions = dtos.stream()
+            .map(dto -> new TemplateQuestion(dto.getValue(), dto.getDescription()))
+            .collect(Collectors.toUnmodifiableList());
+
+        int position = 0;
+        for (TemplateQuestion question : questions) {
+            question.setPosition(position++);
+        }
+        return questions;
     }
 }
