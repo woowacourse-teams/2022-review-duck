@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 public class QuestionAnswer {
 
     @Id
-    @Column(name = "id", nullable = false)
+    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -35,11 +35,6 @@ public class QuestionAnswer {
 
     @Column(nullable = false)
     private int position = -1;
-
-    public QuestionAnswer(ReviewFormQuestion reviewFormQuestion, Answer answer) {
-        this.reviewFormQuestion = reviewFormQuestion;
-        this.answer = answer;
-    }
 
     public QuestionAnswer(ReviewFormQuestion reviewFormQuestion, Answer answer, Review review) {
         this.reviewFormQuestion = reviewFormQuestion;
