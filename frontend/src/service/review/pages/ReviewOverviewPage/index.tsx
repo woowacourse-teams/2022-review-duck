@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { FILTER, PAGE_LIST, PAGE_OPTION } from 'constant';
@@ -19,9 +19,9 @@ import Questions from 'service/@shared/components/Questions';
 
 import styles from './styles.module.scss';
 
-import { Header } from './views/Header';
-import { ListView } from './views/ListView';
-import { SheetView } from './views/SheetView';
+import { Header } from './view/Header';
+import { ListView } from './view/ListView';
+import { SheetView } from './view/SheetView';
 import { validateFilter } from 'service/@shared/validator';
 
 /*
@@ -35,7 +35,9 @@ function ReviewOverViewPage() {
   const navigate = useNavigate();
   const { reviewFormCode = '', displayMode = FILTER.DISPLAY_MODE.LIST } = useParams();
 
-  validateFilter([FILTER.DISPLAY_MODE.LIST, FILTER.DISPLAY_MODE.SHEET], displayMode);
+  useEffect(function queryStringFilter() {
+    validateFilter([FILTER.DISPLAY_MODE.LIST, FILTER.DISPLAY_MODE.SHEET], displayMode);
+  }, []);
 
   const { showSnackbar } = useSnackbar();
 

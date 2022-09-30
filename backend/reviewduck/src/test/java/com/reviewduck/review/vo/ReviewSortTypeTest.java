@@ -13,7 +13,7 @@ class ReviewSortTypeTest {
     @DisplayName("파라미터에 맞는 정렬 기준을 반환한다.")
     void getSortBy() {
         assertThat(ReviewSortType.getSortBy("latest"))
-            .isEqualTo("updatedAt");
+            .isEqualTo("createdAt");
     }
 
     @ParameterizedTest

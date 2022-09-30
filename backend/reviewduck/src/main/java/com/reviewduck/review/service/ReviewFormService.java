@@ -1,6 +1,7 @@
 package com.reviewduck.review.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
@@ -12,12 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.member.service.MemberService;
+import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.repository.ReviewFormRepository;
+import com.reviewduck.review.repository.ReviewRepository;
 import com.reviewduck.review.vo.ReviewFormSortType;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.service.TemplateService;
@@ -30,6 +34,7 @@ import lombok.AllArgsConstructor;
 public class ReviewFormService {
 
     private final ReviewFormRepository reviewFormRepository;
+    private final MemberRepository memberRepository;
 
     private final TemplateService templateService;
     private final MemberService memberService;
@@ -98,5 +103,9 @@ public class ReviewFormService {
         if (!reviewForm.isMine(member)) {
             throw new AuthorizationException(message);
         }
+    }
+
+    public List<Member> findAllParticipantsByCode(ReviewForm reviewForm) {
+        return memberRepository.findAllParticipantsByReviewFormCode(reviewForm);
     }
 }
