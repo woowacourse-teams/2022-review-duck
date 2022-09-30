@@ -4,6 +4,8 @@ import { TemplateFilterType } from 'types';
 import useModal from 'common/hooks/useModal';
 import { useGetTemplates } from 'service/@shared/hooks/queries/template';
 
+import { FlexContainer } from 'common/components';
+
 import styles from './styles.module.scss';
 
 import { Intro } from './view/Intro';
@@ -25,7 +27,7 @@ function MainPage() {
   const { templates } = data;
 
   return (
-    <>
+    <FlexContainer className={styles.mainPageContainer}>
       <Intro>
         <div className={styles.leftContainer}>
           <Intro.Title>
@@ -41,9 +43,7 @@ function MainPage() {
         <TrendTemplate.Title>인기 템플릿</TrendTemplate.Title>
         <TrendTemplate.TrendCardPanel templates={templates} />
       </TrendTemplate>
-
-      <div className={styles.temp}></div>
-    </>
+    </FlexContainer>
   );
 }
 
