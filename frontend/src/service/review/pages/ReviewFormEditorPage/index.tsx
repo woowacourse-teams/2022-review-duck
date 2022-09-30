@@ -22,14 +22,16 @@ function ReviewFormEditorPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const { initialReviewForm, isNewReviewForm, isSubmitLoading, submitReviewForm } =
+  const { reviewForm, isNewReviewForm, isSubmitLoading, submitReviewForm } =
     useReviewFormEditor(reviewFormCode);
 
-  const [reviewFormTitle, setReviewTitle] = useState(initialReviewForm.title);
+  const [reviewFormTitle, setReviewTitle] = useState(reviewForm?.title || '');
   const { removeBlankQuestions } = useQuestions();
-  const [questions, setQuestion] = useState(initialReviewForm.questions);
-
+  const [questions, setQuestion] = useState(
+    reviewForm?.questions || [{ value: '', description: '' }],
+  );
   const { showSnackbar } = useSnackbar();
+
   const redirectUri = searchParams.get('redirect');
 
   const handleChangeReviewTitle = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
