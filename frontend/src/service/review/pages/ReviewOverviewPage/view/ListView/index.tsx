@@ -12,9 +12,7 @@ import { ReviewFormAnswer } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
-import { Text, FlexContainer, Button, TextBox, Skeleton } from 'common/components';
-
-import ScrollPanel from 'common/components/ScrollPanel';
+import { Text, FlexContainer, Button, TextBox, Skeleton, ScrollPanel } from 'common/components';
 
 import styles from './styles.module.scss';
 

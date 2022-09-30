@@ -17,6 +17,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
+import org.hibernate.annotations.BatchSize;
+
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.exception.ReviewException;

@@ -1,7 +1,6 @@
 package com.reviewduck.template.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import static com.reviewduck.template.dto.service.ServiceDtoConverter.*;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,9 +13,9 @@ import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.template.domain.Template;
-import com.reviewduck.template.domain.TemplateQuestion;
-import com.reviewduck.template.dto.request.TemplateCreateRequest;
-import com.reviewduck.template.dto.request.TemplateUpdateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
+import com.reviewduck.template.dto.service.ServiceDtoConverter;
 import com.reviewduck.template.repository.TemplateRepository;
 import com.reviewduck.template.vo.TemplateSortType;
 
@@ -28,22 +27,16 @@ import lombok.AllArgsConstructor;
 public class TemplateService {
 
     private final TemplateRepository templateRepository;
-
-    private final TemplateQuestionService templateQuestionService;
-
     private final MemberService memberService;
 
     @Transactional
     public Template save(Member member, TemplateCreateRequest createRequest) {
-
-        List<TemplateQuestion> questions = createRequest.getQuestions().stream()
-            .map(request -> templateQuestionService.save(request.getValue(), request.getDescription()))
-            .collect(Collectors.toUnmodifiableList());
-
-        Template template = new Template(member,
+        Template template = new Template(
+            member,
             createRequest.getTemplateTitle(),
             createRequest.getTemplateDescription(),
-            questions);
+            toTemplateQuestionCreateDtos(createRequest.getQuestions())
+        );
 
         return templateRepository.save(template);
     }
@@ -72,21 +65,20 @@ public class TemplateService {
     @Transactional
     public Template update(Member member, Long id, TemplateUpdateRequest templateUpdateRequest) {
         Template template = findById(id);
-
         validateTemplateIsMine(template, member, "본인이 생성한 템플릿이 아니면 수정할 수 없습니다.");
 
-        List<TemplateQuestion> questions = templateUpdateRequest.getQuestions().stream()
-            .map(request -> templateQuestionService.saveOrUpdateQuestion(
-                request.getId(),
-                request.getValue(),
-                request.getDescription()))
-            .collect(Collectors.toUnmodifiableList());
-
-        template.update(templateUpdateRequest.getTemplateTitle(),
+        template.update(
+            templateUpdateRequest.getTemplateTitle(),
             templateUpdateRequest.getTemplateDescription(),
-            questions);
+            toTemplateQuestionUpdateDtos(templateUpdateRequest.getQuestions())
+        );
 
         return template;
+    }
+
+    @Transactional
+    public void increaseUsedCount(Long templateId) {
+        templateRepository.increaseUsedCount(templateId);
     }
 
     @Transactional
@@ -102,9 +94,4 @@ public class TemplateService {
             throw new AuthorizationException(message);
         }
     }
-
-    public void increaseUsedCount(Long templateId) {
-        templateRepository.increaseUsedCount(templateId);
-    }
-
 }

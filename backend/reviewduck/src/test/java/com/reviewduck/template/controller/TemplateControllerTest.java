@@ -26,10 +26,10 @@ import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.service.ReviewFormService;
-import com.reviewduck.template.dto.request.TemplateCreateRequest;
-import com.reviewduck.template.dto.request.TemplateQuestionCreateRequest;
-import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
-import com.reviewduck.template.dto.request.TemplateUpdateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateQuestionUpdateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
 import com.reviewduck.template.service.TemplateService;
 
 @WebMvcTest(TemplateController.class)
