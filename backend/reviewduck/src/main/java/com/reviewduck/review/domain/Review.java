@@ -78,6 +78,17 @@ public class Review extends BaseDate {
         return this.member.equals(member);
     }
 
+    public int like(int likeCount) {
+        likes += likeCount;
+        return likes;
+    }
+
+    private void validate(String title) {
+        if (Objects.isNull(title) || title.isBlank()) {
+            throw new ReviewException("회고의 제목은 비어있을 수 없습니다.");
+        }
+    }
+
     private List<QuestionAnswer> createQuestionAnswers(List<ReviewCreateDto> createDtos) {
         return createDtos.stream()
             .map(dto -> new QuestionAnswer(dto.getReviewFormQuestion(), dto.getAnswer(), this))
@@ -107,16 +118,5 @@ public class Review extends BaseDate {
         for (QuestionAnswer questionAnswer : questionAnswers) {
             questionAnswer.setPosition(index++);
         }
-    }
-
-    private void validate(String title) {
-        if (Objects.isNull(title) || title.isBlank()) {
-            throw new ReviewException("회고의 제목은 비어있을 수 없습니다.");
-        }
-    }
-
-    public int like(int likeCount) {
-        likes += likeCount;
-        return likes;
     }
 }
