@@ -42,9 +42,7 @@ public class ReviewService {
     @Transactional
     public Review save(Member member, String code, ReviewCreateRequest request) {
         ReviewForm reviewForm = reviewFormService.findByCode(code);
-        List<QuestionAnswerCreateDto> questionAnswerCreateDtos = request.getContents().stream()
-            .map(this::getReviewCreateDto)
-            .collect(Collectors.toUnmodifiableList());
+        List<QuestionAnswerCreateDto> questionAnswerCreateDtos = getReviewCreateDtos(request);
 
         Review review = new Review("title", member, reviewForm, questionAnswerCreateDtos, request.getIsPrivate());
         return reviewRepository.save(review);
@@ -89,9 +87,7 @@ public class ReviewService {
         Review review = findById(id);
         validateMyReview(member, review, "본인이 생성한 회고가 아니면 수정할 수 없습니다.");
 
-        List<QuestionAnswerUpdateDto> questionAnswerUpdateDtos = request.getContents().stream()
-            .map(this::getReviewUpdateDto)
-            .collect(Collectors.toUnmodifiableList());
+        List<QuestionAnswerUpdateDto> questionAnswerUpdateDtos = getQuestionAnswerUpdateDtos(request);
 
         review.update(request.getIsPrivate(), questionAnswerUpdateDtos);
     }
@@ -111,11 +107,23 @@ public class ReviewService {
         reviewRepository.deleteById(id);
     }
 
+    private List<QuestionAnswerCreateDto> getReviewCreateDtos(ReviewCreateRequest request) {
+        return request.getContents().stream()
+            .map(this::getReviewCreateDto)
+            .collect(Collectors.toUnmodifiableList());
+    }
+
     private QuestionAnswerCreateDto getReviewCreateDto(ReviewContentCreateRequest request) {
         ReviewFormQuestion reviewFormQuestion = reviewFormQuestionService.findById(request.getQuestionId());
         Answer answer = new Answer(request.getAnswer().getValue());
 
         return new QuestionAnswerCreateDto(reviewFormQuestion, answer);
+    }
+
+    private List<QuestionAnswerUpdateDto> getQuestionAnswerUpdateDtos(ReviewUpdateRequest request) {
+        return request.getContents().stream()
+            .map(this::getReviewUpdateDto)
+            .collect(Collectors.toUnmodifiableList());
     }
 
     private QuestionAnswerUpdateDto getReviewUpdateDto(ReviewContentUpdateRequest request) {
