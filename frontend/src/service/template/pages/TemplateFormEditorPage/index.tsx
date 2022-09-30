@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 
 import { faArrowRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
@@ -21,25 +21,36 @@ import SmallProfileCard from 'service/@shared/components/SmallProfileCard';
 import styles from './styles.module.scss';
 
 import useTemplateFormEditorPage from './useTemplateFormEditorPage';
+import Question from 'models/Question';
 import { validateReviewForm } from 'service/@shared/validator';
-import { Question } from 'types/review';
 
 function TemplateFormEditorPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { showSnackbar } = useSnackbar();
 
   const templateId = searchParams.get('templateId') || '';
   const templateEditMode = searchParams.get('templateEditMode') || '';
 
-  const { template, isSubmitLoading, templateMutation, createReviewForm } =
-    useTemplateFormEditorPage(templateId, templateEditMode);
+  const queries = useTemplateFormEditorPage(templateId, templateEditMode);
 
-  const [title, setTitle] = useState(template.info.title);
-  const [description, setDescription] = useState(template.info.description);
-  const [questions, setQuestions] = useState(template.questions);
+  const [title, setTitle] = useState<string>();
+  const [description, setDescription] = useState<string>();
+  const [questions, setQuestions] = useState<Question[]>([]);
   const { removeBlankQuestions } = useQuestions();
 
-  const { showSnackbar } = useSnackbar();
+  useLayoutEffect(function pageStateInitial() {
+    if (!queries) return;
+
+    setTitle(queries.template.title);
+    setDescription(queries.template.description);
+    setQuestions(queries.template.questions);
+  }, []);
+
+  if (!queries) return <>{/* Suspense, Error Boundary Used */}</>;
+
+  const { template, submitMutation } = queries;
+
   const redirectUri = searchParams.get('redirect');
 
   const isTemplateEditMode = templateId && templateEditMode;
@@ -85,7 +96,7 @@ function TemplateFormEditorPage() {
     alert(message);
   };
 
-  const submitReviewForm = (submitQuestions: Question[]) => {
+  /*   const submitReviewForm = (submitQuestions: Question[]) => {
     createReviewForm.mutate(
       { templateId: Number(templateId), reviewFormTitle: title, questions: submitQuestions },
       {
@@ -93,10 +104,10 @@ function TemplateFormEditorPage() {
         onError: handleSubmitError,
       },
     );
-  };
+  }; */
 
-  const submitTemplate = (submitQuestions: Question[]) => {
-    templateMutation.mutate(
+  /*   const submitTemplate = (submitQuestions: Question[]) => {
+    submitMutation.mutate(
       {
         templateId: Number(templateId),
         templateTitle: title,
@@ -109,8 +120,8 @@ function TemplateFormEditorPage() {
       },
     );
   };
-
-  const handleSubmitReviewForm = (event: React.FormEvent) => {
+ */
+  /*   const handleSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
 
     const submitQuestions = removeBlankQuestions(questions);
@@ -127,7 +138,7 @@ function TemplateFormEditorPage() {
       return;
     }
     submitTemplate(submitQuestions);
-  };
+  }; */
 
   const handleCancel = () => {
     if (!confirm('템플릿 생성을 정말 취소하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
@@ -146,7 +157,7 @@ function TemplateFormEditorPage() {
             <SmallProfileCard
               primaryText="템플릿 생성자"
               secondaryText={template.creator.nickname}
-              profileUrl={template.creator.profileUrl}
+              profileUrl={template.creator.profileImage}
             />
           )}
         </div>
@@ -196,16 +207,16 @@ function TemplateFormEditorPage() {
               <hr className={styles.line} />
             </>
           )}
-
+          {/* 
           <QuestionsEditor initialQuestions={questions} onUpdate={handleChangeQuestions} />
-
+ */}
           <div className={cn('button-container horizontal')}>
             <Button theme="outlined" onClick={handleCancel}>
               <FontAwesomeIcon icon={faArrowRightFromBracket} />
               <span>취소하기</span>
             </Button>
 
-            <Button type="button" onClick={handleSubmitReviewForm} disabled={isSubmitLoading}>
+            <Button type="button" onClick={() => null} disabled={true}>
               <FontAwesomeIcon icon={faPenToSquare} />
               <span>{templateEditMode === 'true' ? '수정하기' : '생성하기'}</span>
             </Button>
