@@ -43,3 +43,9 @@ type PickParameterType<T extends (...rest: any[]) => any> = T extends (...rest: 
 type PickReturnType<T extends (...rest: any[]) => any> = T extends (...rest: any[]) => infer P
   ? P
   : never;
+
+type ValueOf<T extends Record<string, unknown>> = T[keyof T];
+
+type Mutable<T> = { -readonly [P in keyof T]: T[P] };
+
+type ArrayToUnion<T extends Array<unknown>> = T[number];
