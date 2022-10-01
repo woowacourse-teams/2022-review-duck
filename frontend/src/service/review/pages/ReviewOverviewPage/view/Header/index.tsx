@@ -1,5 +1,8 @@
 import { Link } from 'react-router-dom';
 
+import { faListCheck, faTableList } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import cn from 'classnames';
 import { PAGE_LIST } from 'constant';
 
@@ -9,8 +12,6 @@ import FlexContainer from 'common/components/FlexContainer';
 
 import styles from './styles.module.scss';
 
-import { faListCheck, faTableList } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import pageStyles from 'service/review/pages/ReviewOverviewPage/styles.module.scss';
 
 interface ContainerProps {

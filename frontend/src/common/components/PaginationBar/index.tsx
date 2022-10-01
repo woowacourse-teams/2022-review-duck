@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { HTMLAttributes, useMemo } from 'react';
 
 import cn from 'classnames';
 
@@ -6,8 +6,8 @@ import styles from './styles.module.scss';
 
 import FlexContainer from '../FlexContainer';
 
-export interface PaginationBarProps {
-  visiblePageButtonLength: 5 | 10;
+export interface PaginationBarProps extends HTMLAttributes<HTMLDivElement> {
+  visiblePageButtonLength: number;
   itemCountInPage: number;
   totalItemCount: number;
   focusedPage: number;
@@ -15,11 +15,13 @@ export interface PaginationBarProps {
 }
 
 function PaginationBar({
+  className,
   visiblePageButtonLength,
   itemCountInPage,
   totalItemCount,
   focusedPage,
   onClickPageButton,
+  ...args
 }: PaginationBarProps) {
   const totalPageLength = Math.ceil(totalItemCount / itemCountInPage);
 
@@ -57,7 +59,12 @@ function PaginationBar({
   if (totalItemCount === 0) return <></>;
 
   return (
-    <FlexContainer className={styles.componentPaginationBar} direction="row" justify="center">
+    <FlexContainer
+      className={cn(className, styles.componentPaginationBar)}
+      direction="row"
+      justify="center"
+      {...args}
+    >
       <div className={styles.pageButtonContainer}>
         <button
           className={cn(styles.pageButton, { [styles.disabled]: isFirstPage })}

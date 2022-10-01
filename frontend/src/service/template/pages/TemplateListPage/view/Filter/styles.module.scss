@@ -1,0 +1,39 @@
+@import 'styles/@global.scss';
+
+.component-page-filter {
+  .sort-list-buttons {
+    .button {
+      cursor: pointer;
+
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.75rem;
+      color: $THEME_COLOR_THEME_TEXT_150;
+      padding: 2rem 0;
+      font-size: 1.25rem;
+
+      border: none;
+      background: unset;
+      transition: all 0.3s ease;
+
+      &:hover {
+        filter: brightness(0.5);
+      }
+    }
+
+    .button .icon {
+      color: $THEME_COLOR_STATUS_PRIMARY_500;
+    }
+
+    .button .text {
+      font-size: 1rem;
+      letter-spacing: 1px;
+    }
+
+    .button.focus {
+      font-weight: bold;
+      color: $THEME_COLOR_THEME_TEXT_900;
+    }
+  }
+}

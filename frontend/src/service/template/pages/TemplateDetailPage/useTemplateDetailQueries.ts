@@ -7,12 +7,8 @@ import { useDeleteTemplate } from 'service/@shared/hooks/queries/template/useDel
 import { useUpdateTemplate } from 'service/@shared/hooks/queries/template/useUpdate';
 
 function useTemplateDetailQueries(templateId: number) {
-  const { data, isError: isTemplateError, error: templateError } = useGetTemplate(templateId);
-  const {
-    data: templates,
-    isError: isTemplatesError,
-    error: templatesError,
-  } = useGetTemplates(
+  const getTemplateQuery = useGetTemplate(templateId);
+  const getTrendTemplateQuery = useGetTemplates(
     FILTER.TEMPLATE_TAB.TREND as TemplateFilterType,
     String(1),
     PAGE_OPTION.TEMPLATE_TREND_ITEM_SIZE,
@@ -21,37 +17,16 @@ function useTemplateDetailQueries(templateId: number) {
   const createFormMutation = useCreateForm();
 
   const updateMutation = useUpdateTemplate();
-
   const deleteMutation = useDeleteTemplate();
 
-  const isLoadError = isTemplateError || isTemplatesError;
+  const isLoading = getTrendTemplateQuery.isLoading || getTemplateQuery.isLoading;
+  const isError = getTrendTemplateQuery.isError || getTemplateQuery.isError;
 
-  const loadError = templateError || templatesError;
-
-  const template = data || {
-    isCreator: false,
-    info: {
-      id: 0,
-      title: '',
-      description: '',
-      updatedAt: 0,
-      usedCount: 0,
-    },
-    creator: {
-      id: 0,
-      nickname: '',
-      profileUrl: '',
-      socialNickname: '',
-      bio: '',
-    },
-    questions: [],
-  };
+  if (isLoading || isError) return false;
 
   return {
-    template,
-    templates,
-    isLoadError,
-    loadError,
+    trendingTemplates: getTrendTemplateQuery.data.templates,
+    template: getTemplateQuery.data,
     createFormMutation,
     updateMutation,
     deleteMutation,

@@ -1,50 +1,16 @@
 @import 'styles/@global.scss';
 
-.header {
-  padding: 0.75rem 0;
-
-  .button {
-    border: none;
-    background: unset;
-    color: $THEME_COLOR_THEME_TEXT_600;
-    padding: 2rem 1rem;
-    font-size: 1.25rem;
-
-    .button-box {
-      display: flex;
-      align-items: center;
-      opacity: 0.5;
-
-      &:hover {
-        cursor: pointer;
-        opacity: 1;
-      }
-    }
-
-    .focus {
-      font-weight: bold;
-      opacity: 1;
-    }
-
-    .icon {
-      margin-right: 0.5rem;
-      color: $THEME_COLOR_STATUS_PRIMARY_500;
-    }
-  }
-
-  .button-container {
-    display: flex;
-    align-items: center;
-  }
-}
-
-.card {
-  margin-bottom: 2rem;
-}
-
 .template-container {
   display: flex;
   flex-flow: wrap;
   gap: 2%;
   padding-bottom: 2rem;
+
+  .card {
+    margin-bottom: 2rem;
+  }
+}
+
+.pagination {
+  padding: 2rem 0 5rem;
 }

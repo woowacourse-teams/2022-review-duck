@@ -1,16 +1,12 @@
 @import 'styles/@global.scss';
 
-.tag {
+.component-tag-label {
   color: $THEME_COLOR_STATUS_SUCCESS_400;
   border: 1px solid $THEME_COLOR_STATUS_SUCCESS_400;
   width: fit-content;
   border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+  gap: 0.35rem;
 
-  .tag-wrapper {
-    font-size: 0.75rem;
-    display: flex;
-    gap: 0.125rem;
-    align-items: center;
-    padding: 0.25rem 0.4rem;
-  }
+  font-size: 0.75rem;
+  padding: 0.25rem 0.4rem;
 }

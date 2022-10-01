@@ -30,33 +30,17 @@ const Title = ({ children }: TitleProps) => {
   );
 };
 
-interface TrendCardPanelProps {
-  templates: Template[];
+interface ContentProps {
+  children: React.ReactNode;
 }
 
-const TrendCardPanel = ({ templates }: TrendCardPanelProps) => {
-  return (
-    <ScrollPanel className={styles.cardList}>
-      {templates.map((template) => (
-        <TemplateCard
-          key={template.info.id}
-          className={styles.mainCard}
-          link={`${PAGE_LIST.TEMPLATE_DETAIL}/${template.info.id}`}
-        >
-          <TemplateCard.Tag usedCount={template.info.usedCount} />
-          <TemplateCard.Title title={template.info.title} />
-          <TemplateCard.UpdatedAt updatedAt={template.info.updatedAt} />
-          <TemplateCard.Description description={template.info.description} />
-
-          <TemplateCard.Profile
-            profileUrl={template.creator.profileUrl}
-            nickname={template.creator.nickname}
-            socialNickname={template.creator.socialNickname || ''}
-          />
-        </TemplateCard>
-      ))}
-    </ScrollPanel>
-  );
+const Content = ({ children }: ContentProps) => {
+  return <ScrollPanel className={styles.cardList}>{children}</ScrollPanel>;
 };
 
-export const TrendTemplate = Object.assign(Container, { Title, TrendCardPanel });
+const TrendTemplate = Object.assign(Container, {
+  Title,
+  Content,
+});
+
+export default TrendTemplate;
