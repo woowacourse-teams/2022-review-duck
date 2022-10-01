@@ -12,7 +12,7 @@ import TemplateCard from 'service/template/components/TemplateCard';
 
 import styles from './styles.module.scss';
 
-import { Intro } from './view/Intro';
+import Intro from './view/Intro';
 import TrendTemplate from './view/TrendTemplate';
 
 function MainPage() {
