@@ -55,4 +55,6 @@ function QuestionPreview({ questions }: QuestionPreviewProps) {
   );
 }
 
-export const Status = Object.assign(Container, { LinkedLogo, QuestionPreview });
+const Status = Object.assign(Container, { LinkedLogo, QuestionPreview });
+
+export default Status;

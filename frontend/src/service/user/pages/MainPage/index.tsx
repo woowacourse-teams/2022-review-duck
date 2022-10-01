@@ -8,8 +8,8 @@ import { FlexContainer } from 'common/components';
 
 import styles from './styles.module.scss';
 
-import { Intro } from './view/Intro';
-import { TrendTemplate } from './view/TrendTemplate';
+import Intro from './view/Intro';
+import TrendTemplate from './view/TrendTemplate';
 
 function MainPage() {
   const { showModal } = useModal();

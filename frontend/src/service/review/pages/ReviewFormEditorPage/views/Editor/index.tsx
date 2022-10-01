@@ -65,4 +65,6 @@ function SubmitButton({ children, onSubmit }: SubmitButtonProps) {
   );
 }
 
-export const Editor = Object.assign(Container, { TitleInput, CancelButton, SubmitButton });
+const Editor = Object.assign(Container, { TitleInput, CancelButton, SubmitButton });
+
+export default Editor;

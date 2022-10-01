@@ -59,4 +59,6 @@ const TrendCardPanel = ({ templates }: TrendCardPanelProps) => {
   );
 };
 
-export const TrendTemplate = Object.assign(Container, { Title, TrendCardPanel });
+const TrendTemplate = Object.assign(Container, { Title, TrendCardPanel });
+
+export default TrendTemplate;
