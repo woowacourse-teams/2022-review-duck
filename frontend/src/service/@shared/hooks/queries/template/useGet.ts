@@ -1,21 +1,19 @@
+import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+
 import { templateAPI } from 'api';
 import { QUERY_KEY } from 'constant';
-import {
-  GetTemplatesResponse,
-  GetTemplateResponse,
-  ErrorResponse,
-  TemplateFilterType,
-} from 'types';
+import { ErrorResponse, TemplateFilterType } from 'types';
 
-import { useQuery, UseQueryOptions } from '@tanstack/react-query';
+import { TemplateList } from 'api/template.api';
+import Template from 'models/Template';
 
 function useGetTemplates(
   filter: TemplateFilterType,
   pageNumber: string,
   itemCount?: number,
-  queryOptions?: UseQueryOptions<GetTemplatesResponse, ErrorResponse>,
+  queryOptions?: UseQueryOptions<TemplateList, ErrorResponse>,
 ) {
-  return useQuery<GetTemplatesResponse, ErrorResponse>(
+  return useQuery<TemplateList, ErrorResponse>(
     [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_TEMPLATES, { filter, pageNumber, itemCount }],
     () => templateAPI.getTemplates(filter, pageNumber, itemCount),
     {
@@ -27,9 +25,9 @@ function useGetTemplates(
 
 function useGetTemplate(
   templateId: number,
-  queryOptions?: UseQueryOptions<GetTemplateResponse, ErrorResponse>,
+  queryOptions?: UseQueryOptions<Template, ErrorResponse>,
 ) {
-  return useQuery<GetTemplateResponse, ErrorResponse>(
+  return useQuery<Template, ErrorResponse>(
     [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_TEMPLATE, { templateId }],
     () => templateAPI.getTemplate(templateId),
     {

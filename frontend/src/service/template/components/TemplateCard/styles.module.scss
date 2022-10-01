@@ -5,10 +5,12 @@
   width: 23.5%;
 
   border-radius: $GLOBAL_BORDERRADIUS_XLARGE;
-  background-color: $THEME_COLOR_THEME_BACKGROUND_200;
+  background-color: $THEME_COLOR_THEME_BACKGROUND_100;
   padding: 1.5rem;
   transition: transform 0.3s ease;
   gap: 0.75rem;
+
+  box-shadow: 0 10px 10px 10px $GLOBAL_COLOR_BLACK_20;
 
   &:hover {
     transform: translateY(-3%);

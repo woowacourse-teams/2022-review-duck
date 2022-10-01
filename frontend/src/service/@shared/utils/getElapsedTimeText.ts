@@ -1,7 +1,7 @@
-function getElapsedTimeText(timestamp: number) {
+function getElapsedTimeText(timestamp: number): ElapsedTime {
   const elapsed = Math.round((Date.now() - timestamp) / 1000);
 
-  if (elapsed < 0) return '0초 전';
+  if (elapsed < 0) return `0초 전`;
 
   const timeUnitRange = [
     { limit: 60, text: '초 전' },
@@ -19,7 +19,7 @@ function getElapsedTimeText(timestamp: number) {
       year: 'numeric',
       month: 'narrow',
       day: 'numeric',
-    }).format(elapsedDate);
+    }).format(elapsedDate) as ElapsedTime;
   }
 
   const timeText = timeUnitRange.reduce((previous, { limit, text }, index) => {
@@ -32,7 +32,7 @@ function getElapsedTimeText(timestamp: number) {
     return `${Math.round(elapsed / unit)}${text}`;
   }, '');
 
-  return timeText;
+  return timeText as ElapsedTime;
 }
 
 export default getElapsedTimeText;

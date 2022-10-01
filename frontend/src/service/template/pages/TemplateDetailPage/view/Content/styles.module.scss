@@ -1,0 +1,21 @@
+@import 'styles/@global.scss';
+
+.component-page-content {
+  .detail {
+    min-height: 30vh;
+    gap: 3.5rem;
+
+    .title {
+      color: $THEME_COLOR_STATUS_PRIMARY_600;
+    }
+
+    .description {
+      white-space: pre;
+    }
+  }
+
+  .more-buttons {
+    padding: 1rem 0;
+    border-bottom: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
+  }
+}

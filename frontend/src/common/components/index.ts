@@ -17,4 +17,5 @@ export { default as ModalProvider } from './ModalProvider';
 export { default as FlexContainer } from './FlexContainer';
 export { default as PaginationBar } from './PaginationBar';
 export { default as ToolTip } from './ToolTip';
+export { default as TagLabel } from './TagLabel';
 export { default as ScrollPanel } from './ScrollPanel';

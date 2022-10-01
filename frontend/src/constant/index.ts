@@ -78,7 +78,7 @@ const FILTER = {
   TEMPLATE_TAB: {
     TREND: 'trend',
     LATEST: 'latest',
-  },
+  } as const,
   TIMELINE_TAB: {
     TREND: 'trend',
     LATEST: 'latest',
