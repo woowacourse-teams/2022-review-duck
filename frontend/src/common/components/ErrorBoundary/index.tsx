@@ -3,22 +3,24 @@ import { Component, ReactNode } from 'react';
 
 import axios from 'axios';
 
+export interface ErrorBoundaryFallbackProps {
+  status?: string | number;
+  title: string;
+  description: string;
+  onResetError?: () => void;
+}
+
 interface ErrorBoundaryProps {
-  fallback: React.FunctionComponent<{
-    status?: string | number;
-    title: string;
-    description: string;
-    onResetError?: () => void;
-  }>;
+  fallback: React.FunctionComponent<ErrorBoundaryFallbackProps>;
   children: ReactNode;
 }
 
-interface States {
+interface ErrorBoundaryStates {
   hasError?: boolean;
   error: unknown;
 }
 
-class ErrorBoundary extends Component<ErrorBoundaryProps, States> {
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryStates> {
   previousPath: string | null = null;
 
   constructor(props: ErrorBoundaryProps) {
@@ -31,16 +33,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, States> {
     this.previousPath = location.pathname;
   }
 
-  componentDidUpdate() {
-    if (window.location.pathname !== this.previousPath) {
-      this.setState({ hasError: false, error: null });
-    }
-
-    this.previousPath = window.location.pathname;
-  }
-
   resetError() {
-    this.setState({ hasError: false });
+    this.state.hasError && this.setState({ hasError: false });
   }
 
   static getDerivedStateFromError(error: unknown) {
@@ -51,26 +45,33 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, States> {
     const { hasError, error } = this.state;
     const { fallback, children } = this.props;
 
-    if (hasError && fallback && axios.isAxiosError(error)) {
-      console.error(error);
-      return React.createElement(fallback, {
-        status: error.response?.status || ':(',
-        title: error.message || '알 수 없는 오류가 발생하였습니다',
-        description: error.response?.statusText.toLowerCase() || '알 수 없는 오류',
-        onResetError: this.resetError.bind(this),
-      });
-    }
-    if (hasError && fallback && error instanceof Error) {
-      console.error(error);
-      return React.createElement(fallback, {
-        status: ':(',
-        title: error.message,
-        description: 'not found',
-        onResetError: this.resetError.bind(this),
-      });
+    if (!hasError) {
+      return children;
     }
 
-    return children;
+    if (!fallback) {
+      console.error('ErrorBoundary의 fallback props가 정의되지 않았습니다.');
+      return <>오류가 발생하였습니다.</>;
+    }
+
+    const fallbackProps: ErrorBoundaryFallbackProps = {
+      status: ':(',
+      title: '알 수 없는 오류가 발생하였습니다',
+      description: 'Error',
+      onResetError: this.resetError.bind(this),
+    };
+
+    if (axios.isAxiosError(error)) {
+      fallbackProps.status = error.response?.status || ':(';
+      fallbackProps.title = error.message || '알 수 없는 오류가 발생하였습니다';
+      fallbackProps.description = error.response?.statusText.toLowerCase() || 'Error';
+    } else if (error instanceof Error) {
+      fallbackProps.status = ':(';
+      fallbackProps.title = error.message;
+      fallbackProps.description = 'Error';
+    }
+
+    return React.createElement(fallback, fallbackProps);
   }
 }
 
