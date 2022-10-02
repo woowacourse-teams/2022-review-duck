@@ -33,6 +33,15 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryStates> {
     this.previousPath = location.pathname;
   }
 
+  componentDidUpdate(
+    _: Readonly<ErrorBoundaryProps>,
+    prevState: Readonly<ErrorBoundaryStates>,
+  ): void {
+    if (prevState.hasError && prevState.error === this.state.error) {
+      this.resetError();
+    }
+  }
+
   resetError() {
     this.state.hasError && this.setState({ hasError: false });
   }
