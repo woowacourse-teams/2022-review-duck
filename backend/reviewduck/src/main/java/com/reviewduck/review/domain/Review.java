@@ -4,7 +4,6 @@ import static lombok.AccessLevel.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -86,7 +85,7 @@ public class Review extends BaseDate {
     }
 
     private void validate(String title) {
-        if (Objects.isNull(title) || title.isBlank()) {
+        if (title == null || title.isBlank()) {
             throw new ReviewException("회고의 제목은 비어있을 수 없습니다.");
         }
     }

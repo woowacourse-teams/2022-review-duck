@@ -135,7 +135,7 @@ public class Template extends BaseDate {
     }
 
     private void validateBlankTitle(String templateTitle) {
-        if (Objects.isNull(templateTitle) || templateTitle.isBlank()) {
+        if (templateTitle == null || templateTitle.isBlank()) {
             throw new TemplateException("템플릿의 제목은 비어있을 수 없습니다.");
         }
     }

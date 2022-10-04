@@ -1,7 +1,5 @@
 package com.reviewduck.review.service;
 
-import java.util.Objects;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +23,7 @@ public class ReviewFormQuestionService {
 
     @Transactional
     public ReviewFormQuestion saveOrUpdateQuestion(Long questionId, String value, String description) {
-        if (Objects.isNull(questionId)) {
+        if (questionId == null) {
             return reviewFormQuestionRepository.save(new ReviewFormQuestion(value, description));
         }
 

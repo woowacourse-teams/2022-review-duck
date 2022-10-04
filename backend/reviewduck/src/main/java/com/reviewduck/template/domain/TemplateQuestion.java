@@ -1,7 +1,5 @@
 package com.reviewduck.template.domain;
 
-import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -83,7 +81,7 @@ public class TemplateQuestion {
     }
 
     private void validateNull(String value) {
-        if (Objects.isNull(value)) {
+        if (value == null) {
             throw new TemplateQuestionException("질문 생성 중 에러가 발생하였습니다.");
         }
     }

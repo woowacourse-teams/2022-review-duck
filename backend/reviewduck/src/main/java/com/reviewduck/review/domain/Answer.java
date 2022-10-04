@@ -33,7 +33,7 @@ public class Answer {
     }
 
     private void validate(String value) {
-        if (Objects.isNull(value)) {
+        if (value == null) {
             throw new AnswerException("답변 작성 중 오류가 발생했습니다.");
         }
     }

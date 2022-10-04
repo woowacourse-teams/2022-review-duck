@@ -1,7 +1,6 @@
 package com.reviewduck.auth.support;
 
 import java.util.Date;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -77,7 +76,7 @@ public class JwtTokenProvider {
     }
 
     private void validateNullToken(String token) {
-        if (Objects.isNull(token)) {
+        if (token == null) {
             throw new AuthorizationException("토큰이 없습니다.");
         }
     }
