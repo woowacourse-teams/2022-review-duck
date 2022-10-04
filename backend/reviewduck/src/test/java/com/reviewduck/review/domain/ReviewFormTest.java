@@ -13,6 +13,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 
+import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.exception.ReviewFormException;
 import com.reviewduck.review.service.ReviewFormQuestionCreateDto;
@@ -114,7 +115,7 @@ class ReviewFormTest {
             new ReviewFormQuestionUpdateDto(null, "question3", "description3"));
 
         @Test
-        @DisplayName("제약조건에 걸리지 않는다면 회고 폼이 수정된다.")
+        @DisplayName("제약조건에 걸리지 않는다면 회고 폼의 제목이 수정된다.")
         void updateReviewForm() {
             // given
             ReviewForm reviewForm = new ReviewForm(member, "리뷰폼 제목", List.of());
@@ -161,6 +162,27 @@ class ReviewFormTest {
             assertThatThrownBy(() -> reviewForm.update("title", questions))
                 .isInstanceOf(ReviewFormException.class)
                 .hasMessageContaining("회고 폼의 질문 목록 생성 중 오류가 발생했습니다.");
+        }
+
+        @Test
+        @DisplayName("새로운 질문 id에 해당하는 기존 질문 id가 없으면 예외를 반환한다.")
+        void notExistsQuestion() {
+            // given
+            List<ReviewFormQuestionCreateDto> questions = List.of(
+                new ReviewFormQuestionCreateDto("question1", "description1"),
+                new ReviewFormQuestionCreateDto("question2", "description2"));
+
+            String reviewTitle = "리뷰폼 제목";
+            ReviewForm reviewForm = new ReviewForm(member, reviewTitle, questions);
+
+            List<ReviewFormQuestionUpdateDto> questionsToUpdate = List.of(
+                new ReviewFormQuestionUpdateDto(1L, "question1", "description1"),
+                new ReviewFormQuestionUpdateDto(9999L, "question2", "description2"));
+
+            // when, then
+            assertThatThrownBy(() -> reviewForm.update(reviewTitle, questionsToUpdate))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("존재하지 않는 질문입니다.");
         }
 
     }
