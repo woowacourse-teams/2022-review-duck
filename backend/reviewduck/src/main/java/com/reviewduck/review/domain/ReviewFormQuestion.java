@@ -1,7 +1,5 @@
 package com.reviewduck.review.domain;
 
-import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,8 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.SQLDelete;
-
-import org.hibernate.Hibernate;
 
 import com.reviewduck.review.exception.ReviewFormQuestionException;
 
@@ -45,17 +41,8 @@ public class ReviewFormQuestion {
     @JoinColumn(name = "review_form_id")
     private ReviewForm reviewForm;
 
-    public ReviewFormQuestion(String value, String description) {
-        validateValue(value);
-        validateDescription(description);
-
-        this.value = value;
-        this.description = description;
-    }
-
     public ReviewFormQuestion(String value, String description, ReviewForm reviewForm) {
-        validateValue(value);
-        validateDescription(description);
+        validateQuestion(value, description);
 
         this.value = value;
         this.description = description;
@@ -63,8 +50,7 @@ public class ReviewFormQuestion {
     }
 
     public void update(String value, String description) {
-        validateValue(value);
-        validateDescription(description);
+        validateQuestion(value, description);
 
         this.value = value;
         this.description = description;
@@ -73,6 +59,11 @@ public class ReviewFormQuestion {
     public void setPosition(int position) {
         validatePosition(position);
         this.position = position;
+    }
+
+    private void validateQuestion(final String value, final String description) {
+        validateValue(value);
+        validateDescription(description);
     }
 
     private void validateValue(String value) {
@@ -107,20 +98,5 @@ public class ReviewFormQuestion {
         if (position < 0) {
             throw new ReviewFormQuestionException("질문 생성 중 에러가 발생하였습니다.");
         }
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o))
-            return false;
-        ReviewFormQuestion that = (ReviewFormQuestion)o;
-        return id!= null && Objects.equals(id, that.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
     }
 }

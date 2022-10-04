@@ -69,6 +69,17 @@ public class ReviewForm extends BaseDate {
         sortQuestions();
     }
 
+    public void update(String title, List<ReviewFormQuestionUpdateDto> questions) {
+        validateWhenUpdate(title, questions);
+
+        this.title = title;
+        updateQuestions(questions);
+    }
+
+    public boolean isMine(Member member) {
+        return this.member.equals(member);
+    }
+
     private List<ReviewFormQuestion> createQuestionsFrom(List<ReviewFormQuestionCreateDto> questions) {
         return questions.stream()
             .map(question -> new ReviewFormQuestion(question.getValue(), question.getDescription(), this))
@@ -80,13 +91,6 @@ public class ReviewForm extends BaseDate {
         for (ReviewFormQuestion reviewFormQuestion : this.questions) {
             reviewFormQuestion.setPosition(index++);
         }
-    }
-
-    public void update(String title, List<ReviewFormQuestionUpdateDto> questions) {
-        validateWhenUpdate(title, questions);
-
-        this.title = title;
-        updateQuestions(questions);
     }
 
     private void updateQuestions(List<ReviewFormQuestionUpdateDto> questions) {
@@ -116,10 +120,6 @@ public class ReviewForm extends BaseDate {
         return new ReviewFormQuestion(question.getValue(), question.getDescription(), this);
     }
 
-    public boolean isMine(Member member) {
-        return this.member.equals(member);
-    }
-
     private void validateWhenCreate(Member member, String title, List<ReviewFormQuestionCreateDto> questions) {
         validateBlankTitle(title);
         validateTitleLength(title);
@@ -131,7 +131,7 @@ public class ReviewForm extends BaseDate {
         validateBlankTitle(title);
         validateTitleLength(title);
         validateNullQuestions(questions);
-        validateQuestionExist(questions);
+        validateQuestionsUpdatable(questions);
     }
 
     private void validateBlankTitle(String title) {
@@ -158,7 +158,7 @@ public class ReviewForm extends BaseDate {
         }
     }
 
-    private void validateQuestionExist(List<ReviewFormQuestionUpdateDto> questions) {
+    private void validateQuestionsUpdatable(List<ReviewFormQuestionUpdateDto> questions) {
         questions.stream()
             .filter(this::isQuestionUpdatable)
             .findAny()

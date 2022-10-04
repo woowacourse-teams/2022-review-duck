@@ -2,6 +2,7 @@ package com.reviewduck.review.service;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,6 +39,7 @@ import com.reviewduck.template.service.TemplateService;
 public class ReviewFormServiceTest {
 
     private final String invalidCode = "aaaaaaaa";
+    private final ReviewForm mockReviewForm = mock(ReviewForm.class);
 
     @Autowired
     private ReviewFormService reviewFormService;
@@ -78,7 +80,7 @@ public class ReviewFormServiceTest {
             List<ReviewFormQuestion> expected = questions.stream()
                 .map(questionRequest -> new ReviewFormQuestion(
                     questionRequest.getValue(),
-                    questionRequest.getDescription()))
+                    questionRequest.getDescription(), mockReviewForm))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -131,7 +133,7 @@ public class ReviewFormServiceTest {
             ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(member1, templateId);
 
             List<ReviewFormQuestion> expected = questions.stream()
-                .map(question -> new ReviewFormQuestion(question.getValue(), question.getDescription()))
+                .map(question -> new ReviewFormQuestion(question.getValue(), question.getDescription(), mockReviewForm))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -212,7 +214,7 @@ public class ReviewFormServiceTest {
             List<ReviewFormQuestion> expected = reviewFromQuestions.stream()
                 .map(request -> new ReviewFormQuestion(
                     request.getValue(),
-                    request.getDescription()))
+                    request.getDescription(), mockReviewForm))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -268,7 +270,7 @@ public class ReviewFormServiceTest {
             List<ReviewFormQuestion> expected = reviewFromQuestions.stream()
                 .map(request -> new ReviewFormQuestion(
                     request.getValue(),
-                    request.getDescription()))
+                    request.getDescription(), mockReviewForm))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -407,7 +409,7 @@ public class ReviewFormServiceTest {
 
             List<ReviewFormQuestion> expected = updateRequests.stream()
                 .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(),
-                    questionRequest.getDescription()))
+                    questionRequest.getDescription(), mockReviewForm))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -448,7 +450,7 @@ public class ReviewFormServiceTest {
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewFormTitle, updateRequests);
 
             List<ReviewFormQuestion> expected = updateRequests.stream()
-                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(), ""))
+                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(), "", mockReviewForm))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;

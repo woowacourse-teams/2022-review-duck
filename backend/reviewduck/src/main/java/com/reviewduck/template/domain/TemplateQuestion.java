@@ -41,16 +41,14 @@ public class TemplateQuestion {
     private Template template;
 
     public TemplateQuestion(String value, String description) {
-        validateValue(value);
-        validateDescription(description);
+        validateQuestion(value, description);
 
         this.value = value;
         this.description = description;
     }
 
     public TemplateQuestion(String value, String description, Template template) {
-        validateValue(value);
-        validateDescription(description);
+        validateQuestion(value, description);
 
         this.value = value;
         this.description = description;
@@ -58,8 +56,7 @@ public class TemplateQuestion {
     }
 
     public void update(String value, String description) {
-        validateValue(value);
-        validateDescription(description);
+        validateQuestion(value, description);
 
         this.value = value;
         this.description = description;
@@ -68,6 +65,11 @@ public class TemplateQuestion {
     public void setPosition(int position) {
         validatePosition(position);
         this.position = position;
+    }
+
+    private void validateQuestion(final String value, final String description) {
+        validateValue(value);
+        validateDescription(description);
     }
 
     private void validateValue(String value) {

@@ -57,7 +57,8 @@ public class Review extends BaseDate {
 
     public Review(String title, Member member, ReviewForm reviewForm, List<QuestionAnswerCreateDto> questionAnswers,
         boolean isPrivate) {
-        validate(title);
+        validateTitle(title);
+        validateMember(member);
         this.title = title;
         this.member = member;
         this.reviewForm = reviewForm;
@@ -65,6 +66,7 @@ public class Review extends BaseDate {
         this.questionAnswers.addAll(createQuestionAnswers(questionAnswers));
         sortQuestionAnswers();
     }
+
 
     public void update(boolean isPrivate, List<QuestionAnswerUpdateDto> questionAnswers) {
         int oldSize = this.questionAnswers.size();
@@ -84,9 +86,15 @@ public class Review extends BaseDate {
         return likes;
     }
 
-    private void validate(String title) {
+    private void validateTitle(String title) {
         if (title == null || title.isBlank()) {
             throw new ReviewException("회고의 제목은 비어있을 수 없습니다.");
+        }
+    }
+
+    private void validateMember(Member member) {
+        if (member == null) {
+            throw new ReviewException("회고의 작성자가 존재해야 합니다.");
         }
     }
 
@@ -98,11 +106,11 @@ public class Review extends BaseDate {
 
     private List<QuestionAnswer> updateQuestionAnswers(List<QuestionAnswerUpdateDto> questionAnswers) {
         return questionAnswers.stream()
-            .map(this::updateQuestionAnswer)
+            .map(this::createOrUpdateQuestionAnswer)
             .collect(Collectors.toUnmodifiableList());
     }
 
-    private QuestionAnswer updateQuestionAnswer(QuestionAnswerUpdateDto questionAnswer) {
+    private QuestionAnswer createOrUpdateQuestionAnswer(QuestionAnswerUpdateDto questionAnswer) {
         QuestionAnswer UpdatedQuestionAnswer = questionAnswers.stream()
             .filter(it -> it.getReviewFormQuestion().equals(questionAnswer.getReviewFormQuestion()))
             .findFirst()

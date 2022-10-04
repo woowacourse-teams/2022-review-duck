@@ -43,7 +43,7 @@ class ReviewFormTest {
             //when, then
             assertThat(actual).usingRecursiveComparison()
                 .ignoringFields("id", "reviewForm")
-                .isEqualTo(toEntity(questions));
+                .isEqualTo(toEntity(questions, reviewForm));
         }
 
         @ParameterizedTest
@@ -90,9 +90,9 @@ class ReviewFormTest {
             assertThat(actual).isEqualTo(expected);
         }
 
-        private List<ReviewFormQuestion> toEntity(final List<ReviewFormQuestionCreateDto> dtos) {
+        private List<ReviewFormQuestion> toEntity(final List<ReviewFormQuestionCreateDto> dtos, ReviewForm reviewForm) {
             List<ReviewFormQuestion> questions = dtos.stream()
-                .map(dto -> new ReviewFormQuestion(dto.getValue(), dto.getDescription()))
+                .map(dto -> new ReviewFormQuestion(dto.getValue(), dto.getDescription(), reviewForm))
                 .collect(Collectors.toUnmodifiableList());
 
             int position = 0;
