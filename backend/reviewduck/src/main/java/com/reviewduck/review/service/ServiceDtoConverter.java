@@ -3,8 +3,8 @@ package com.reviewduck.review.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormQuestionUpdateRequest;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

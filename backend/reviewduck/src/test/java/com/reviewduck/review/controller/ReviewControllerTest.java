@@ -24,10 +24,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
-import com.reviewduck.review.dto.request.AnswerUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewContentUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewLikesRequest;
-import com.reviewduck.review.dto.request.ReviewUpdateRequest;
+import com.reviewduck.review.dto.controller.request.AnswerUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewContentUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewLikesRequest;
+import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
 import com.reviewduck.review.service.ReviewService;
 
 @WebMvcTest(ReviewController.class)
@@ -75,7 +75,7 @@ public class ReviewControllerTest {
         void nullQuestionId(Long questionId) throws Exception {
             // given
             ReviewUpdateRequest request = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(questionId, new AnswerUpdateRequest(1L, "answer"))
+                new ReviewContentUpdateRequest(questionId, new AnswerUpdateRequest("answer"))
             ));
 
             // when, then
@@ -101,7 +101,7 @@ public class ReviewControllerTest {
         void nullAnswer(String answer) throws Exception {
             // given
             ReviewUpdateRequest request = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, answer))
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(answer))
             ));
 
             // when, then

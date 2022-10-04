@@ -1,8 +1,6 @@
 import { API_URI, PAGE_OPTION } from 'constant';
 
 import {
-  GetTemplatesResponse,
-  GetTemplateResponse,
   CreateFormResponse,
   TemplateFilterType,
   CreateTemplateRequest,
@@ -11,25 +9,37 @@ import {
 } from '../types/template';
 
 import axiosInstance from './config/axiosInstance';
+import Template, { ResponseTemplate } from 'models/Template';
 
+interface GetTemplatesResponse {
+  numberOfTemplates: number;
+  isLastPage: boolean;
+  templates: ResponseTemplate[];
+}
+
+export type TemplateList = Awaited<ReturnType<typeof getTemplates>>;
 export const getTemplates = async (
   filter: TemplateFilterType,
   pageNumber: string,
   itemCount?: number,
-): Promise<GetTemplatesResponse> => {
-  const { data } = await axiosInstance.get(
+) => {
+  const { data } = await axiosInstance.get<GetTemplatesResponse>(
     `${API_URI.TEMPLATE.GET_TEMPLATES}?page=${pageNumber}&size=${
       itemCount || PAGE_OPTION.TEMPLATE_ITEM_SIZE
     }&sort=${filter}`,
   );
 
-  return data;
+  return {
+    totalNumber: data.numberOfTemplates,
+    isLastPage: data.isLastPage,
+    templates: data.templates.map((template) => new Template(template)),
+  };
 };
 
-export const getTemplate = async (templateId: number): Promise<GetTemplateResponse> => {
+export const getTemplate = async (templateId: number): Promise<Template> => {
   const { data } = await axiosInstance.get(API_URI.TEMPLATE.GET_TEMPLATE(templateId));
 
-  return data;
+  return new Template(data);
 };
 
 export const createForm = async (templateId: number): Promise<CreateFormResponse> => {

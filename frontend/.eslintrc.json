@@ -11,6 +11,9 @@
     "prettier",
     "plugin:prettier/recommended"
   ],
+  "ecmaFeatures": {
+    "legacyDecorators": true
+  },
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 2015,

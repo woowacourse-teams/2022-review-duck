@@ -26,6 +26,10 @@ declare module '*.gif' {
   프로젝트 전반적으로 사용하는 범용 타입
 */
 
+type URLString = `http${'s' | ''}://${string}`;
+
+type ElapsedTime = `${number}${'초 전' | '분 전' | '시간 전' | '일 전'}`;
+
 type numberString = `${number}` | number;
 
 type RequiredPartialType<Type, P extends keyof Type> = Type & {
@@ -39,3 +43,9 @@ type PickParameterType<T extends (...rest: any[]) => any> = T extends (...rest: 
 type PickReturnType<T extends (...rest: any[]) => any> = T extends (...rest: any[]) => infer P
   ? P
   : never;
+
+type ValueOf<T extends Record<string, unknown>> = T[keyof T];
+
+type Mutable<T> = { -readonly [P in keyof T]: T[P] };
+
+type ArrayToUnion<T extends Array<unknown>> = T[number];

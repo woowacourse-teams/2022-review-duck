@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.dto.response.ReviewFormQuestionResponse;
+import com.reviewduck.review.dto.controller.response.ReviewFormQuestionResponse;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

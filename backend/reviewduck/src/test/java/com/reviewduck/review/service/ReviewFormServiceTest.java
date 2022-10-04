@@ -21,16 +21,12 @@ import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
-import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
-import com.reviewduck.review.dto.request.AnswerCreateRequest;
-import com.reviewduck.review.dto.request.ReviewContentCreateRequest;
-import com.reviewduck.review.dto.request.ReviewCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormQuestionUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
@@ -45,9 +41,6 @@ public class ReviewFormServiceTest {
 
     @Autowired
     private ReviewFormService reviewFormService;
-
-    @Autowired
-    private ReviewService reviewService;
 
     @Autowired
     private TemplateService templateService;
@@ -65,18 +58,6 @@ public class ReviewFormServiceTest {
 
         Member tempMember2 = new Member("2", "woni", "워니", "testUrl2");
         member2 = memberService.save(tempMember2);
-    }
-
-    private ReviewForm saveReviewForm(Member member) throws InterruptedException {
-        Thread.sleep(1);
-
-        List<ReviewFormQuestionCreateRequest> createRequests = List.of(
-            new ReviewFormQuestionCreateRequest("question1", "description1"),
-            new ReviewFormQuestionCreateRequest("question2", "description2"));
-
-        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest("title", createRequests);
-
-        return reviewFormService.save(member, createRequest);
     }
 
     @Nested
@@ -339,37 +320,6 @@ public class ReviewFormServiceTest {
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
 
-        @Test
-        @DisplayName("회고 폼 참여자 정보를 조회한다.")
-        void findAllParticipants() {
-            // given
-            String reviewFormTitle = "title";
-            List<ReviewFormQuestionCreateRequest> questions = List.of(
-                new ReviewFormQuestionCreateRequest("question1", "description1"),
-                new ReviewFormQuestionCreateRequest("question2", "description2"));
-
-            ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewFormTitle, questions);
-            ReviewForm reviewForm = reviewFormService.save(member1, createRequest);
-
-            long questionId1 = reviewForm.getReviewFormQuestions().get(0).getId();
-            long questionId2 = reviewForm.getReviewFormQuestions().get(1).getId();
-
-            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, List.of(
-                new ReviewContentCreateRequest(questionId1, new AnswerCreateRequest("answer1")),
-                new ReviewContentCreateRequest(questionId2, new AnswerCreateRequest("answer2"))
-            ));
-
-            reviewService.save(member1, reviewForm.getCode(), reviewCreateRequest);
-
-            // when
-            List<Member> participants = reviewFormService.findAllParticipantsByCode(reviewForm);
-
-            // then
-            assertAll(
-                () -> assertThat(participants).hasSize(1),
-                () -> assertThat(participants).contains(member1)
-            );
-        }
     }
 
     @Nested
@@ -386,7 +336,7 @@ public class ReviewFormServiceTest {
             // when
             int page = 0;
             int size = 3;
-            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page, size)
+            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page ,size)
                 .getContent();
 
             // then
@@ -416,7 +366,7 @@ public class ReviewFormServiceTest {
             // when
             int page = 0;
             int size = 3;
-            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page, size)
+            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page ,size)
                 .getContent();
 
             // then
@@ -587,5 +537,17 @@ public class ReviewFormServiceTest {
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
 
+    }
+
+    private ReviewForm saveReviewForm(Member member) throws InterruptedException {
+        Thread.sleep(1);
+
+        List<ReviewFormQuestionCreateRequest> createRequests = List.of(
+            new ReviewFormQuestionCreateRequest("question1", "description1"),
+            new ReviewFormQuestionCreateRequest("question2", "description2"));
+
+        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest("title", createRequests);
+
+        return reviewFormService.save(member, createRequest);
     }
 }

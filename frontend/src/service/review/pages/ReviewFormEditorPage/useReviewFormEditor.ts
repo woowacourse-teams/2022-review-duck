@@ -1,12 +1,12 @@
-import { ReviewForm, CreateReviewFormRequest, UpdateReviewFormRequest, ErrorResponse } from 'types';
+import { UseMutationResult } from '@tanstack/react-query';
+
+import { CreateReviewFormRequest, UpdateReviewFormRequest, ErrorResponse } from 'types';
 
 import {
   useCreateReviewForm,
   useGetReviewForm,
   useUpdateReviewForm,
 } from 'service/@shared/hooks/queries/review';
-
-import { UseMutationResult } from '@tanstack/react-query';
 
 type SubmitMutationResult = UseMutationResult<
   { reviewFormCode: string },
@@ -24,31 +24,9 @@ function useReviewFormEditor(reviewFormCode: string) {
     enabled: !!reviewFormCode,
   });
 
-  const initialReviewForm: ReviewForm = getReviewFormQuery.data || {
-    title: '',
-    questions: [
-      {
-        value: '',
-        description: '',
-      },
-    ],
-    info: {
-      creator: {
-        id: -1,
-        socialNickname: 'user-id',
-        profileUrl: '',
-        nickname: '알 수 없음',
-      },
-      isSelf: false,
-      updateDate: '오류',
-    },
-  };
-
   return {
-    initialReviewForm,
+    reviewForm: getReviewFormQuery.data,
     isNewReviewForm: !reviewFormCode,
-    isLoadError: getReviewFormQuery.isError,
-    loadError: getReviewFormQuery.error,
     isSubmitLoading: submitMutation.isLoading,
     submitReviewForm: submitMutation as SubmitMutationResult,
   };

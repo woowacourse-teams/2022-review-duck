@@ -2,8 +2,10 @@ package com.reviewduck.review.domain;
 
 import static lombok.AccessLevel.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -12,15 +14,15 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
-import org.hibernate.annotations.BatchSize;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
+import com.reviewduck.review.dto.service.QuestionAnswerUpdateDto;
 import com.reviewduck.review.exception.ReviewException;
 
 import lombok.Getter;
@@ -46,41 +48,41 @@ public class Review extends BaseDate {
 
     private boolean isPrivate;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "review_id")
-    @OrderBy("position asc")
-    private List<QuestionAnswer> questionAnswers;
-
     @Column(nullable = false)
     private int likes;
 
-    public Review(String title, Member member, ReviewForm reviewForm, List<QuestionAnswer> questionAnswers,
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "review", fetch = FetchType.LAZY)
+    @OrderBy("position asc")
+    @JsonIgnore
+    private final List<QuestionAnswer> questionAnswers = new ArrayList<>();
+
+    public Review(String title, Member member, ReviewForm reviewForm, List<QuestionAnswerCreateDto> questionAnswers,
         boolean isPrivate) {
         validate(title);
-        sortQuestionAnswers(questionAnswers);
         this.title = title;
         this.member = member;
         this.reviewForm = reviewForm;
-        this.questionAnswers = questionAnswers;
         this.isPrivate = isPrivate;
+        this.questionAnswers.addAll(createQuestionAnswers(questionAnswers));
+        sortQuestionAnswers();
     }
 
-    public void update(boolean isPrivate, List<QuestionAnswer> questionAnswers) {
-        sortQuestionAnswers(questionAnswers);
-        this.questionAnswers = questionAnswers;
+    public void update(boolean isPrivate, List<QuestionAnswerUpdateDto> questionAnswers) {
+        int oldSize = this.questionAnswers.size();
+        this.questionAnswers.addAll(updateQuestionAnswers(questionAnswers));
+        this.questionAnswers.subList(0, oldSize).clear();
+
         this.isPrivate = isPrivate;
-        super.renewUpdatedAt();
+        sortQuestionAnswers();
     }
 
     public boolean isMine(Member member) {
         return this.member.equals(member);
     }
 
-    private void sortQuestionAnswers(List<QuestionAnswer> questionAnswers) {
-        int index = 0;
-        for (QuestionAnswer questionAnswer : questionAnswers) {
-            questionAnswer.setPosition(index++);
-        }
+    public int like(int likeCount) {
+        likes += likeCount;
+        return likes;
     }
 
     private void validate(String title) {
@@ -89,8 +91,34 @@ public class Review extends BaseDate {
         }
     }
 
-    public int like(int likeCount) {
-        likes += likeCount;
-        return likes;
+    private List<QuestionAnswer> createQuestionAnswers(List<QuestionAnswerCreateDto> questionAnswers) {
+        return questionAnswers.stream()
+            .map(dto -> new QuestionAnswer(dto.getReviewFormQuestion(), dto.getAnswer(), this))
+            .collect(Collectors.toUnmodifiableList());
+    }
+
+    private List<QuestionAnswer> updateQuestionAnswers(List<QuestionAnswerUpdateDto> questionAnswers) {
+        return questionAnswers.stream()
+            .map(this::updateQuestionAnswer)
+            .collect(Collectors.toUnmodifiableList());
+    }
+
+    private QuestionAnswer updateQuestionAnswer(QuestionAnswerUpdateDto questionAnswer) {
+        QuestionAnswer UpdatedQuestionAnswer = questionAnswers.stream()
+            .filter(it -> it.getReviewFormQuestion().equals(questionAnswer.getReviewFormQuestion()))
+            .findFirst()
+            .orElseGet(() ->
+                new QuestionAnswer(questionAnswer.getReviewFormQuestion(), new Answer(questionAnswer.getAnswerValue()),
+                    this));
+
+        UpdatedQuestionAnswer.setAnswerValue(questionAnswer.getAnswerValue());
+        return UpdatedQuestionAnswer;
+    }
+
+    private void sortQuestionAnswers() {
+        int index = 0;
+        for (QuestionAnswer questionAnswer : questionAnswers) {
+            questionAnswer.setPosition(index++);
+        }
     }
 }

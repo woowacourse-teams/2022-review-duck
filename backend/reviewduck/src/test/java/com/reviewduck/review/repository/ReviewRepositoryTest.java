@@ -23,11 +23,11 @@ import com.reviewduck.config.JpaAuditingConfig;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.review.domain.Answer;
-import com.reviewduck.review.domain.QuestionAnswer;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.review.service.ReviewFormQuestionCreateDto;
+import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
 
 @DataJpaTest
 @Import(JpaAuditingConfig.class)
@@ -223,8 +223,8 @@ public class ReviewRepositoryTest {
         Thread.sleep(1);
         Review review = new Review("title", member, savedReviewForm,
             List.of(
-                new QuestionAnswer(savedReviewForm.getQuestions().get(0), new Answer("answer1")),
-                new QuestionAnswer(savedReviewForm.getQuestions().get(1), new Answer("answer2"))
+                new QuestionAnswerCreateDto(savedReviewForm.getQuestions().get(0), new Answer("answer1")),
+                new QuestionAnswerCreateDto(savedReviewForm.getQuestions().get(1), new Answer("answer2"))
             ),
             isPrivate
         );

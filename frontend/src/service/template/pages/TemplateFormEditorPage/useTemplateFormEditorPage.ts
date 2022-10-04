@@ -43,43 +43,16 @@ function useTemplateFormEditorPage(templateId: string, templateEditMode: string)
     },
   });
 
-  const createTemplate = useCreateTemplate();
+  const createMutation = useCreateTemplate();
+  const updateMutation = useUpdateTemplate();
 
-  const updateTemplate = useUpdateTemplate();
+  const submitMutation = templateEditMode ? createMutation : updateMutation;
 
-  const templateMutation = templateEditMode ? updateTemplate : createTemplate;
-
-  const initialTemplateFormContents: GetTemplateResponse = {
-    isCreator: false,
-    info: {
-      id: 0,
-      title: '',
-      description: '',
-      updatedAt: 0,
-      usedCount: 0,
-    },
-    creator: {
-      id: 0,
-      socialNickname: '',
-      nickname: '',
-      profileUrl: '',
-    },
-    questions: [
-      {
-        value: '',
-        description: '',
-      },
-    ],
-  };
-
-  const template = getTemplateQuery.data || initialTemplateFormContents;
+  if (getTemplateQuery.isLoading || getTemplateQuery.isError) return false;
 
   return {
-    template,
-    isLoadError: getTemplateQuery.isError,
-    loadError: getTemplateQuery.error,
-    isSubmitLoading: createReviewForm.isLoading || templateMutation.isLoading,
-    templateMutation: templateMutation as SubmitTemplateResult,
+    template: getTemplateQuery.data,
+    submitMutation: submitMutation as SubmitTemplateResult,
     createReviewForm: createReviewForm as SubmitReviewFormResult,
   };
 }

@@ -93,9 +93,11 @@ const HeroCards = () => {
   );
 };
 
-export const Intro = Object.assign(Container, {
+const Intro = Object.assign(Container, {
   Title,
   SubTitle,
   ReviewButton,
   HeroCards,
 });
+
+export default Intro;
