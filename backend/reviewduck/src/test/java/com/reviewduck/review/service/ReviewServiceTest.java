@@ -22,14 +22,14 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.dto.request.AnswerCreateRequest;
-import com.reviewduck.review.dto.request.AnswerUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewContentCreateRequest;
-import com.reviewduck.review.dto.request.ReviewContentUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
-import com.reviewduck.review.dto.request.ReviewUpdateRequest;
+import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
+import com.reviewduck.review.dto.controller.request.AnswerUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewContentUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")
@@ -331,11 +331,13 @@ public class ReviewServiceTest {
 
             // when
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
             ));
 
-            Review updatedReview = reviewService.update(member1, savedReview.getId(), updateRequest);
+            reviewService.update(member1, savedReview.getId(), updateRequest);
+
+            Review updatedReview = reviewService.findById(savedReview.getId());
 
             // then
             assertAll(
@@ -355,8 +357,8 @@ public class ReviewServiceTest {
 
             // when
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
             ));
 
             // then
@@ -370,8 +372,8 @@ public class ReviewServiceTest {
         void invalidId() {
             // given
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
             ));
 
             // when, then
@@ -387,8 +389,8 @@ public class ReviewServiceTest {
             Review savedReview = saveReview(reviewForm1, member1, false);
 
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(999L, new AnswerUpdateRequest(2L, "editedAnswer2"))
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                new ReviewContentUpdateRequest(999L, new AnswerUpdateRequest("editedAnswer2"))
             ));
 
             // when, then
@@ -396,24 +398,6 @@ public class ReviewServiceTest {
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 질문입니다.");
         }
-
-        @Test
-        @DisplayName("유효하지 않은 답변 번호로 수정할 수 없다.")
-        void withInvalidAnswerId() throws InterruptedException {
-            // given
-            Review savedReview = saveReview(reviewForm1, member1, false);
-
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(9999L, "editedAnswer2"))
-            ));
-
-            // when, then
-            assertThatThrownBy(() -> reviewService.update(member1, savedReview.getId(), updateRequest))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessageContaining("존재하지 않는 답변 번호입니다.");
-        }
-
     }
 
     @Nested
