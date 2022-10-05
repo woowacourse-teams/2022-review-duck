@@ -15,14 +15,14 @@ public class ServiceDtoConverter {
     public static List<ReviewFormQuestionCreateDto> toReviewFormQuestionCreateDtos(
         List<ReviewFormQuestionCreateRequest> questions) {
         return questions.stream()
-            .map(dto -> new ReviewFormQuestionCreateDto(dto.getValue(), dto.getDescription()))
+            .map(request -> new ReviewFormQuestionCreateDto(request.getValue(), request.getDescription()))
             .collect(Collectors.toUnmodifiableList());
     }
 
     public static List<ReviewFormQuestionUpdateDto> toReviewFormQuestionUpdateDtos(
         List<ReviewFormQuestionUpdateRequest> questions) {
         return questions.stream()
-            .map(dto -> new ReviewFormQuestionUpdateDto(dto.getId(), dto.getValue(), dto.getDescription()))
+            .map(request -> new ReviewFormQuestionUpdateDto(request.getId(), request.getValue(), request.getDescription()))
             .collect(Collectors.toUnmodifiableList());
     }
 }

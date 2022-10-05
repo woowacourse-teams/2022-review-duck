@@ -111,15 +111,15 @@ public class Review extends BaseDate {
     }
 
     private QuestionAnswer createOrUpdateQuestionAnswer(QuestionAnswerUpdateDto questionAnswer) {
-        QuestionAnswer UpdatedQuestionAnswer = questionAnswers.stream()
+        QuestionAnswer updatedQuestionAnswer = questionAnswers.stream()
             .filter(it -> it.getReviewFormQuestion().equals(questionAnswer.getReviewFormQuestion()))
             .findFirst()
             .orElseGet(() ->
                 new QuestionAnswer(questionAnswer.getReviewFormQuestion(), new Answer(questionAnswer.getAnswerValue()),
                     this));
 
-        UpdatedQuestionAnswer.setAnswerValue(questionAnswer.getAnswerValue());
-        return UpdatedQuestionAnswer;
+        updatedQuestionAnswer.setAnswerValue(questionAnswer.getAnswerValue());
+        return updatedQuestionAnswer;
     }
 
     private void sortQuestionAnswers() {
