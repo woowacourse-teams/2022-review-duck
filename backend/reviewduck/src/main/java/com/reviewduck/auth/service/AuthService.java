@@ -90,7 +90,7 @@ public class AuthService {
     }
 
     private void validateTokenResponse(GithubTokenResponse githubTokenResponse) {
-        if (Objects.isNull(githubTokenResponse.getAccessToken())) {
+        if (githubTokenResponse != null && githubTokenResponse.getAccessToken() == null) {
             throw new AuthorizationException("깃허브 로그인이 실패했습니다.");
         }
     }
@@ -116,7 +116,7 @@ public class AuthService {
     }
 
     private void validateMemberResponse(GithubMemberResponse githubMemberResponse) {
-        if (Objects.isNull(githubMemberResponse)) {
+        if (githubMemberResponse == null) {
             throw new AuthorizationException("깃허브 유저 정보 가져오기가 실패했습니다.");
         }
     }

@@ -20,7 +20,7 @@ public class MemberReviewFormResponse {
     private List<ReviewFormQuestionResponse> questions;
 
     public static MemberReviewFormResponse from(ReviewForm reviewForm) {
-        List<ReviewFormQuestionResponse> reviewFormQuestionResponses = reviewForm.getReviewFormQuestions().stream()
+        List<ReviewFormQuestionResponse> reviewFormQuestionResponses = reviewForm.getQuestions().stream()
             .map(ReviewFormQuestionResponse::from)
             .collect(Collectors.toUnmodifiableList());
 

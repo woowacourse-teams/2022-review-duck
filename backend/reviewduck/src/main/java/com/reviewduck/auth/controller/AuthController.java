@@ -2,8 +2,6 @@ package com.reviewduck.auth.controller;
 
 import static com.reviewduck.common.util.Logging.*;
 
-import java.util.Objects;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -83,7 +81,7 @@ public class AuthController {
     }
 
     private void validateCookie(Cookie cookie) {
-        if (Objects.isNull(cookie)) {
+        if (cookie == null) {
             throw new AuthorizationException("리프레시 토큰이 없습니다.");
         }
     }

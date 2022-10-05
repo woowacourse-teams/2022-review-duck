@@ -19,6 +19,7 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
+import com.reviewduck.review.service.ReviewFormQuestionCreateDto;
 
 @DataJpaTest
 @Import(JpaAuditingConfig.class)
@@ -39,13 +40,13 @@ public class ReviewFormRepositoryTest {
     }
 
     @Test
-    @DisplayName("리뷰 폼을 저장한다.")
+    @DisplayName("회고 질문지를 저장한다.")
     void saveReviewForm() {
 
         // given
-        List<ReviewFormQuestion> questions = List.of(
-            new ReviewFormQuestion("question1", "description1"),
-            new ReviewFormQuestion("question2", "description2"));
+        List<ReviewFormQuestionCreateDto> questions = List.of(
+            new ReviewFormQuestionCreateDto("question1", "description1"),
+            new ReviewFormQuestionCreateDto("question2", "description2"));
         ReviewForm reviewForm = new ReviewForm(member1, "title", questions);
 
         // when
@@ -56,9 +57,9 @@ public class ReviewFormRepositoryTest {
             () -> assertThat(savedReviewForm.getId()).isNotNull(),
             () -> assertThat(savedReviewForm.getMember().getSocialNickname()).isEqualTo("panda"),
             () -> assertThat(savedReviewForm.getCode().length()).isEqualTo(8),
-            () -> assertThat(savedReviewForm.getReviewFormQuestions())
+            () -> assertThat(savedReviewForm.getQuestions())
                 .usingRecursiveComparison()
-                .ignoringFields("id")
+                .ignoringFields("id", "reviewForm", "position")
                 .isEqualTo(questions)
         );
     }
@@ -132,9 +133,9 @@ public class ReviewFormRepositoryTest {
     private ReviewForm saveReviewForm(Member member) throws InterruptedException {
         Thread.sleep(1);
 
-        List<ReviewFormQuestion> questions = List.of(
-            new ReviewFormQuestion("question1", "description1"),
-            new ReviewFormQuestion("question2", "description2"));
+        List<ReviewFormQuestionCreateDto> questions = List.of(
+            new ReviewFormQuestionCreateDto("question1", "description1"),
+            new ReviewFormQuestionCreateDto("question2", "description2"));
 
         return reviewFormRepository.save(new ReviewForm(member, "title", questions));
     }

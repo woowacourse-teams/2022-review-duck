@@ -36,17 +36,12 @@ public class ReviewFormService {
     private final ReviewFormRepository reviewFormRepository;
     private final MemberRepository memberRepository;
 
-    private final ReviewFormQuestionService reviewFormQuestionService;
     private final TemplateService templateService;
     private final MemberService memberService;
 
     @Transactional
     public ReviewForm save(Member member, ReviewFormCreateRequest createRequest) {
-        List<ReviewFormQuestion> questions = createRequest.getQuestions().stream()
-            .map(request -> reviewFormQuestionService.save(request.getValue(), request.getDescription()))
-            .collect(Collectors.toUnmodifiableList());
-
-        ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewFormTitle(), questions);
+        ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewFormTitle(), ServiceDtoConverter.toReviewFormQuestionCreateDtos(createRequest.getQuestions()));
         return reviewFormRepository.save(reviewForm);
     }
 
@@ -55,8 +50,8 @@ public class ReviewFormService {
         Template template = templateService.findById(templateId);
         templateService.increaseUsedCount(templateId);
 
-        List<ReviewFormQuestion> questions = template.getQuestions().stream()
-            .map(question -> reviewFormQuestionService.save(question.getValue(), question.getDescription()))
+        List<ReviewFormQuestionCreateDto> questions = template.getQuestions().stream()
+            .map(question -> new ReviewFormQuestionCreateDto(question.getValue(), question.getDescription()))
             .collect(Collectors.toUnmodifiableList());
 
         ReviewForm reviewForm = new ReviewForm(member, template.getTemplateTitle(), questions);
@@ -89,12 +84,10 @@ public class ReviewFormService {
         ReviewForm reviewForm = findByCode(code);
         validateReviewFormIsMine(member, reviewForm, "본인이 생성한 회고 폼이 아니면 수정할 수 없습니다.");
 
-        List<ReviewFormQuestion> reviewFormQuestions = updateRequest.getQuestions().stream()
-            .map(request -> reviewFormQuestionService.saveOrUpdateQuestion(request.getId(), request.getValue(),
-                request.getDescription()))
-            .collect(Collectors.toUnmodifiableList());
-
-        reviewForm.update(updateRequest.getReviewFormTitle(), reviewFormQuestions);
+        reviewForm.update(
+            updateRequest.getReviewFormTitle(),
+            ServiceDtoConverter.toReviewFormQuestionUpdateDtos(updateRequest.getQuestions())
+        );
 
         return reviewForm;
     }

@@ -4,7 +4,6 @@ import static lombok.AccessLevel.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -48,28 +47,30 @@ public class Review extends BaseDate {
 
     private boolean isPrivate;
 
+    @Column(nullable = false)
+    private int likes;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "review", fetch = FetchType.LAZY)
     @OrderBy("position asc")
     @JsonIgnore
     private final List<QuestionAnswer> questionAnswers = new ArrayList<>();
 
-    @Column(nullable = false)
-    private int likes;
-
-    public Review(String title, Member member, ReviewForm reviewForm, List<QuestionAnswerCreateDto> createDtos,
+    public Review(String title, Member member, ReviewForm reviewForm, List<QuestionAnswerCreateDto> questionAnswers,
         boolean isPrivate) {
-        validate(title);
+        validateTitle(title);
+        validateMember(member);
         this.title = title;
         this.member = member;
         this.reviewForm = reviewForm;
         this.isPrivate = isPrivate;
-        this.questionAnswers.addAll(createQuestionAnswers(createDtos));
+        this.questionAnswers.addAll(createQuestionAnswers(questionAnswers));
         sortQuestionAnswers();
     }
 
-    public void update(boolean isPrivate, List<QuestionAnswerUpdateDto> updateDtos) {
+
+    public void update(boolean isPrivate, List<QuestionAnswerUpdateDto> questionAnswers) {
         int oldSize = this.questionAnswers.size();
-        this.questionAnswers.addAll(updateQuestionAnswers(updateDtos));
+        this.questionAnswers.addAll(updateQuestionAnswers(questionAnswers));
         this.questionAnswers.subList(0, oldSize).clear();
 
         this.isPrivate = isPrivate;
@@ -85,33 +86,40 @@ public class Review extends BaseDate {
         return likes;
     }
 
-    private void validate(String title) {
-        if (Objects.isNull(title) || title.isBlank()) {
+    private void validateTitle(String title) {
+        if (title == null || title.isBlank()) {
             throw new ReviewException("회고의 제목은 비어있을 수 없습니다.");
         }
     }
 
-    private List<QuestionAnswer> createQuestionAnswers(List<QuestionAnswerCreateDto> createDtos) {
-        return createDtos.stream()
+    private void validateMember(Member member) {
+        if (member == null) {
+            throw new ReviewException("회고의 작성자가 존재해야 합니다.");
+        }
+    }
+
+    private List<QuestionAnswer> createQuestionAnswers(List<QuestionAnswerCreateDto> questionAnswers) {
+        return questionAnswers.stream()
             .map(dto -> new QuestionAnswer(dto.getReviewFormQuestion(), dto.getAnswer(), this))
             .collect(Collectors.toUnmodifiableList());
     }
 
-    private List<QuestionAnswer> updateQuestionAnswers(List<QuestionAnswerUpdateDto> updateDtos) {
-        return updateDtos.stream()
-            .map(this::updateQuestionAnswer)
+    private List<QuestionAnswer> updateQuestionAnswers(List<QuestionAnswerUpdateDto> questionAnswers) {
+        return questionAnswers.stream()
+            .map(this::createOrUpdateQuestionAnswer)
             .collect(Collectors.toUnmodifiableList());
     }
 
-    private QuestionAnswer updateQuestionAnswer(QuestionAnswerUpdateDto updateDto) {
-        QuestionAnswer questionAnswer = questionAnswers.stream()
-            .filter(it -> it.getReviewFormQuestion().equals(updateDto.getReviewFormQuestion()))
+    private QuestionAnswer createOrUpdateQuestionAnswer(QuestionAnswerUpdateDto questionAnswer) {
+        QuestionAnswer updatedQuestionAnswer = questionAnswers.stream()
+            .filter(it -> it.getReviewFormQuestion().equals(questionAnswer.getReviewFormQuestion()))
             .findFirst()
             .orElseGet(() ->
-                new QuestionAnswer(updateDto.getReviewFormQuestion(), new Answer(updateDto.getAnswerValue()), this));
+                new QuestionAnswer(questionAnswer.getReviewFormQuestion(), new Answer(questionAnswer.getAnswerValue()),
+                    this));
 
-        questionAnswer.setAnswerValue(updateDto.getAnswerValue());
-        return questionAnswer;
+        updatedQuestionAnswer.setAnswerValue(questionAnswer.getAnswerValue());
+        return updatedQuestionAnswer;
     }
 
     private void sortQuestionAnswers() {

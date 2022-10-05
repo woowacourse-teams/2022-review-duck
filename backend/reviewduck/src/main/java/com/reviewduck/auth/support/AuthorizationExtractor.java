@@ -1,7 +1,5 @@
 package com.reviewduck.auth.support;
 
-import java.util.Objects;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpHeaders;
@@ -20,7 +18,7 @@ public class AuthorizationExtractor {
     }
 
     private static void validateNullToken(String token) {
-        if (Objects.isNull(token)) {
+        if (token == null) {
             throw new AuthorizationException("토큰이 존재하지 않습니다.");
         }
     }

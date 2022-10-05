@@ -123,7 +123,7 @@ public class Template extends BaseDate {
         validateTitleLength(templateTitle);
         validateNullMember(member);
         validateNullDescription(templateDescription);
-        validateNullQuesions(questions);
+        validateNullQuestions(questions);
     }
 
     private void validateWhenUpdate(String templateTitle, String templateDescription,
@@ -131,11 +131,11 @@ public class Template extends BaseDate {
         validateBlankTitle(templateTitle);
         validateTitleLength(templateTitle);
         validateNullDescription(templateDescription);
-        validateNullQuesions(questions);
+        validateNullQuestions(questions);
     }
 
     private void validateBlankTitle(String templateTitle) {
-        if (Objects.isNull(templateTitle) || templateTitle.isBlank()) {
+        if (templateTitle == null || templateTitle.isBlank()) {
             throw new TemplateException("템플릿의 제목은 비어있을 수 없습니다.");
         }
     }
@@ -158,7 +158,7 @@ public class Template extends BaseDate {
         }
     }
 
-    private void validateNullQuesions(List<?> questions) {
+    private void validateNullQuestions(List<?> questions) {
         if (questions == null) {
             throw new TemplateException("템플릿의 질문 작성 중 오류가 발생했습니다.");
         }

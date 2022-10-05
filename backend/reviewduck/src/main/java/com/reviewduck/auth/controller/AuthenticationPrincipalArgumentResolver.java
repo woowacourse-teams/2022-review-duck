@@ -1,7 +1,5 @@
 package com.reviewduck.auth.controller;
 
-import java.util.Objects;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.core.MethodParameter;
@@ -36,7 +34,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
         HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
 
-        if (Objects.isNull(request.getHeader(HttpHeaders.AUTHORIZATION))) {
+        if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
             return Member.getMemberNotLogin();
         }
 

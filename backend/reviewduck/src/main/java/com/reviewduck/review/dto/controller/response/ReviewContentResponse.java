@@ -1,7 +1,5 @@
 package com.reviewduck.review.dto.controller.response;
 
-import java.util.Objects;
-
 import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.domain.QuestionAnswer;
 import com.reviewduck.review.domain.ReviewFormQuestion;
@@ -25,7 +23,7 @@ public class ReviewContentResponse {
     }
 
     public static ReviewContentResponse of(ReviewFormQuestion question, Answer answer) {
-        if (Objects.isNull(answer)) {
+        if (answer == null) {
             return new ReviewContentResponse(ReviewFormQuestionResponse.from(question), null);
         }
         return new ReviewContentResponse(ReviewFormQuestionResponse.from(question), AnswerResponse.from(answer));
