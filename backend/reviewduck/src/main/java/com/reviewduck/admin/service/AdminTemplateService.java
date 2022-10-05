@@ -21,6 +21,11 @@ public class AdminTemplateService {
     private AdminMemberService adminMemberService;
     private AdminTemplateRepository templateRepository;
 
+    public Template findById(Long templateId) {
+        return templateRepository.findById(templateId)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
+    }
+
     public List<Template> findAllTemplates() {
         return templateRepository.findAll();
     }
