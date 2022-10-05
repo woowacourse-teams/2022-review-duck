@@ -1,6 +1,5 @@
 package com.reviewduck.auth.service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -58,8 +57,8 @@ public class AuthService {
 
     @Transactional
     public TokensDto regenerateTokens(String refreshToken) {
-        jwtTokenProvider.validateToken(refreshToken);
-        Long memberId = Long.parseLong(jwtTokenProvider.getPayload(refreshToken));
+        jwtTokenProvider.validateRefreshToken(refreshToken);
+        Long memberId = Long.parseLong(jwtTokenProvider.getRefreshTokenPayload(refreshToken));
         Member member = memberService.findById(memberId);
         return generateTokens(member.getId());
     }

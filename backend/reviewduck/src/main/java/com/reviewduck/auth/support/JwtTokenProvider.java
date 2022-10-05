@@ -57,12 +57,17 @@ public class JwtTokenProvider {
             .compact();
     }
 
-    public String getPayload(String token) {
+    public String getAccessTokenPayload(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
             .getBody().getSubject();
     }
 
-    public boolean isInvalidToken(String token) {
+    public String getRefreshTokenPayload(String token) {
+        return Jwts.parser().setSigningKey(refreshSecretKey).parseClaimsJws(token)
+            .getBody().getSubject();
+    }
+
+    public boolean isInvalidToken(String token, String secretKey) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 
@@ -72,10 +77,14 @@ public class JwtTokenProvider {
         }
     }
 
-    public void validateToken(String token) {
+    public void validateAccessToken(String token) {
         validateNullToken(token);
+        validateInvalidToken(token, secretKey);
+    }
 
-        validateInvalidToken(token);
+    public void validateRefreshToken(String token) {
+        validateNullToken(token);
+        validateInvalidToken(token, refreshSecretKey);
     }
 
     private void validateNullToken(String token) {
@@ -84,8 +93,8 @@ public class JwtTokenProvider {
         }
     }
 
-    private void validateInvalidToken(String token) {
-        if (isInvalidToken(token)) {
+    private void validateInvalidToken(String token, String secretKey) {
+        if (isInvalidToken(token, secretKey)) {
             throw new AuthorizationException("인증되지 않은 사용자입니다.");
         }
     }
