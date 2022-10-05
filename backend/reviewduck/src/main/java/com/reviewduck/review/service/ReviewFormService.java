@@ -3,7 +3,6 @@ package com.reviewduck.review.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -13,11 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
+import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
+import com.reviewduck.review.dto.service.ServiceDtoConverter;
 import com.reviewduck.review.repository.ReviewFormRepository;
 import com.reviewduck.review.repository.ReviewRepository;
 import com.reviewduck.review.vo.ReviewFormSortType;
@@ -75,10 +75,6 @@ public class ReviewFormService {
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
         return reviewFormRepository.findByMemberAndIsActiveTrue(member, pageRequest);
-    }
-
-    public List<Member> findAllParticipantsByCode(ReviewForm reviewForm) {
-        return memberService.findAllParticipantsByCode(reviewForm);
     }
 
     @Transactional

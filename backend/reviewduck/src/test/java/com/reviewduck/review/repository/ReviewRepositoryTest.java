@@ -26,7 +26,7 @@ import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
-import com.reviewduck.review.service.ReviewFormQuestionCreateDto;
+import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
 
 @DataJpaTest
 @Import(JpaAuditingConfig.class)
@@ -246,7 +246,7 @@ public class ReviewRepositoryTest {
 
     @Test
     @DisplayName("특정 회고 질문지로 만든 회고가 존재하지 않는다.")
-    void existsByReviewForm_false() throws InterruptedException {
+    void existsByReviewForm_false() {
         // when
         boolean actual = reviewRepository.existsByReviewForm(savedReviewForm);
 

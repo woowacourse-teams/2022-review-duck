@@ -16,7 +16,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.exception.ReviewException;
 import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
-import com.reviewduck.review.service.ReviewFormQuestionCreateDto;
+import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
 
 public class ReviewTest {
 
