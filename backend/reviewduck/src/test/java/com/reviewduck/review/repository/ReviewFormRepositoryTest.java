@@ -28,6 +28,9 @@ public class ReviewFormRepositoryTest {
     private ReviewFormRepository reviewFormRepository;
 
     @Autowired
+    private TestReviewFormRepository testReviewFormRepository;
+
+    @Autowired
     private MemberRepository memberRepository;
 
     private Member member1;
@@ -116,8 +119,8 @@ public class ReviewFormRepositoryTest {
     }
 
     @Test
-    @DisplayName("삭제된 회고 폼을 코드로 조회할 수 없다.")
-    void NotFoundDeletedReviewFormByCode() throws InterruptedException {
+    @DisplayName("삭제된 회고 폼을 코드로 조회할 수 없다(inactive).")
+    void NotFoundInactivatedReviewFormByCode() throws InterruptedException {
         // given
         ReviewForm reviewForm = saveReviewForm(member1);
         String reviewFormCode = reviewForm.getCode();
@@ -126,7 +129,27 @@ public class ReviewFormRepositoryTest {
         reviewFormRepository.inactivate(reviewForm);
 
         // then
-        assertThat(reviewFormRepository.findByCodeAndIsActiveTrue(reviewFormCode).isEmpty()).isTrue();
+        assertAll(
+            () -> assertThat(reviewFormRepository.findByCodeAndIsActiveTrue(reviewFormCode).isEmpty()).isTrue(),
+            () -> assertThat(testReviewFormRepository.findByCode(reviewFormCode).isPresent()).isTrue()
+        );
+    }
+
+    @Test
+    @DisplayName("삭제된 회고 폼을 코드로 조회할 수 없다(delete).")
+    void NotFoundDeletedReviewFormByCode() throws InterruptedException {
+        // given
+        ReviewForm reviewForm = saveReviewForm(member1);
+        String reviewFormCode = reviewForm.getCode();
+
+        // when
+        reviewFormRepository.delete(reviewForm);
+
+        // then
+        assertAll(
+            () -> assertThat(reviewFormRepository.findByCodeAndIsActiveTrue(reviewFormCode).isEmpty()).isTrue(),
+            () -> assertThat(testReviewFormRepository.findByCode(reviewFormCode).isEmpty()).isTrue()
+        );
     }
 
     private ReviewForm saveReviewForm(Member member) throws InterruptedException {
