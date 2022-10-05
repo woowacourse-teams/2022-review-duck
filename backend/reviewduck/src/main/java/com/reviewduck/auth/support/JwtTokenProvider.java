@@ -19,13 +19,16 @@ public class JwtTokenProvider {
     private final long validityInMilliseconds;
     private final long refreshValidityInMilliseconds;
     private final String secretKey;
+    private final String refreshSecretKey;
 
     public JwtTokenProvider(@Value("${security.jwt.token.expire-length}") long validityInMilliseconds,
         @Value("${security.jwt.refresh-token.expire-length}") long refreshValidityInMilliseconds,
-        @Value("${security.jwt.token.secret-key}") String secretKey) {
+        @Value("${security.jwt.token.secret-key}") String secretKey,
+        @Value("${security.jwt.refresh-token.secret-key}") String refreshSecretKey) {
         this.validityInMilliseconds = validityInMilliseconds;
         this.refreshValidityInMilliseconds = refreshValidityInMilliseconds;
         this.secretKey = secretKey;
+        this.refreshSecretKey = refreshSecretKey;
     }
 
     public String createAccessToken(String payload) {
@@ -50,7 +53,7 @@ public class JwtTokenProvider {
             .setClaims(claims)
             .setIssuedAt(now)
             .setExpiration(refreshValidity)
-            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .signWith(SignatureAlgorithm.HS256, refreshSecretKey)
             .compact();
     }
 
