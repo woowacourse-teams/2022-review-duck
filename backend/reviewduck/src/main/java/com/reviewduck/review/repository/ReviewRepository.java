@@ -1,6 +1,5 @@
 package com.reviewduck.review.repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -26,6 +25,8 @@ public interface ReviewRepository extends Repository<Review, Long> {
     Page<Review> findByMember(Member member, Pageable pageable);
 
     Page<Review> findByMemberAndIsPrivateFalse(Member member, Pageable pageable);
+
+    boolean existsByReviewForm(ReviewForm reviewForm);
 
     @Modifying(clearAutomatically = true)
     @Query("update Review r set r.likes = r.likes + :likeCount where r.id = :#{#review.id}")

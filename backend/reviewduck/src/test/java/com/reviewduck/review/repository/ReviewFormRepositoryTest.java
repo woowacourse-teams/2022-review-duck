@@ -18,7 +18,6 @@ import com.reviewduck.config.JpaAuditingConfig;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.review.service.ReviewFormQuestionCreateDto;
 
 @DataJpaTest
@@ -96,7 +95,7 @@ public class ReviewFormRepositoryTest {
         ReviewForm expected = saveReviewForm(member1);
         ReviewForm reviewForm = saveReviewForm(member1);
 
-        reviewFormRepository.delete(reviewForm);
+        reviewFormRepository.deleteSoftly(reviewForm);
 
         // when
         int page = 0;
@@ -124,7 +123,7 @@ public class ReviewFormRepositoryTest {
         String reviewFormCode = reviewForm.getCode();
 
         // when
-        reviewFormRepository.delete(reviewForm);
+        reviewFormRepository.deleteSoftly(reviewForm);
 
         // then
         assertThat(reviewFormRepository.findByCodeAndIsActiveTrue(reviewFormCode).isEmpty()).isTrue();

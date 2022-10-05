@@ -58,11 +58,11 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("회고 폼 생성")
+    @DisplayName("회고 질문지 생성")
     class createReviewForm {
 
         @Test
-        @DisplayName("회고 폼을 생성한다.")
+        @DisplayName("회고 질문지를 생성한다.")
         void createReviewForm() {
             // given
             String reviewTitle = "title";
@@ -90,7 +90,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("템플릿을 기반으로 작성된 후 수정된 회고 폼을 생성")
+    @DisplayName("템플릿을 기반으로 작성된 후 수정된 회고 질문지를 생성")
     class createReviewFormByTemplate {
 
         @Test
@@ -199,11 +199,11 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("특정 회고 폼 조회")
+    @DisplayName("특정 회고 질문지 조회")
     class findReviewForm {
 
         @Test
-        @DisplayName("특정 회고 폼을 조회한다.")
+        @DisplayName("특정 회고 질문지를 조회한다.")
         void findReviewForm() {
             // given
             String reviewTitle = "title";
@@ -232,7 +232,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("회고 폼이 존재하지 않는 경우 조회할 수 없다.")
+        @DisplayName("회고 질문지가 존재하지 않는 경우 조회할 수 없다.")
         void invalidReviewForm() {
             // when, then
             get("/api/review-forms/" + "AAAAAAAA", accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
@@ -241,7 +241,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("사용자가 생성한 회고 폼 조회")
+    @DisplayName("사용자가 생성한 회고 질문지 조회")
     class findReviewFormsByMember {
 
         @Test
@@ -316,7 +316,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("특정 회고 폼을 기반으로 작성된 회고 조회")
+    @DisplayName("특정 회고 질문지를 기반으로 작성된 회고 조회")
     class findReviewsByCodeWithDisplayType {
 
         @Test
@@ -375,7 +375,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("특정 회고 폼을 기반으로 작성된 목록형 회고 조회")
+    @DisplayName("특정 회고 질문지를 기반으로 작성된 목록형 회고 조회")
     class findReviewsByCodeWithListDisplay {
 
         @Test
@@ -397,7 +397,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("특정 회고 폼을 기반으로 작성된 회고 답변 전체 중 특정 페이지를 조회한다.")
+        @DisplayName("특정 회고 질문지를 기반으로 작성된 회고 답변 전체 중 특정 페이지를 조회한다.")
         void findReviewsPageByCode() {
             // given
             String code = createReviewFormAndGetCode(accessToken1);
@@ -441,7 +441,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("존재하지 않는 회고 폼 코드에 대해 조회할 수 없다.")
+        @DisplayName("존재하지 않는 회고 질문지 코드에 대해 조회할 수 없다.")
         void invalidCode() {
             // when, then
             get("/api/review-forms/" + invalidCode + "/reviews?displayType=list", accessToken1)
@@ -451,7 +451,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("특정 회고 폼을 기반으로 작성된 시트형 회고 조회 (동기화)")
+    @DisplayName("특정 회고 질문지를 기반으로 작성된 시트형 회고 조회 (동기화)")
     class findReviewsByCodeWithSheetDisplay {
 
         @Test
@@ -473,7 +473,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("특정 회고 폼을 기반으로 작성되고 동기화된 회고 답변중 특정 페이지를 조회한다.")
+        @DisplayName("특정 회고 질문지를 기반으로 작성되고 동기화된 회고 답변중 특정 페이지를 조회한다.")
         void findReviewsByCode() {
             // given
             String code = createReviewFormAndGetCode(accessToken1);
@@ -523,7 +523,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("존재하지 않는 회고 폼 코드에 대해 조회할 수 없다.")
+        @DisplayName("존재하지 않는 회고 질문지 코드에 대해 조회할 수 없다.")
         void invalidCode() {
             // when, then
             get("/api/review-forms/" + invalidCode + "/reviews?displayType=sheet", accessToken1)
@@ -532,11 +532,11 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("회고 폼 수정")
+    @DisplayName("회고 질문지 수정")
     class updateReviewForm {
 
         @Test
-        @DisplayName("회고 폼을 수정한다.")
+        @DisplayName("회고 질문지를 수정한다.")
         void updateReviewForm() {
             // given
             String reviewFormCode = createReviewFormAndGetCode(accessToken1);
@@ -565,7 +565,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("로그인하지 않은 상태로 회고 폼을 수정할 수 없다.")
+        @DisplayName("로그인하지 않은 상태로 회고 질문지를 수정할 수 없다.")
         void withoutLogin() {
             // given
             String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
@@ -581,7 +581,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("존재하지 않는 회고 폼을 수정할 수 없다.")
+        @DisplayName("존재하지 않는 회고 질문지를 수정할 수 없다.")
         void invalidReviewForm() {
             // when, then
             String newReviewTitle = "new title";
@@ -594,7 +594,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("본인이 생성한 회고 폼이 아니면 수정할 수 없다.")
+        @DisplayName("본인이 생성한 회고 질문지가 아니면 수정할 수 없다.")
         void notMine() {
             // given
             String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
@@ -617,8 +617,23 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
     class deleteReviewForm {
 
         @Test
-        @DisplayName("회고 폼을 삭제한다.")
-        void deleteReviewForm() {
+        @DisplayName("회고 질문지를 삭제한다(생성한 회고 있는 상태).")
+        void deleteReviewForm_reviewNotExists() {
+            // given
+            String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
+            createReview(createReviewFormCode);
+
+            // when, then
+            delete("/api/review-forms/" + createReviewFormCode, accessToken1)
+                .statusCode(HttpStatus.NO_CONTENT.value());
+
+            get("/api/review-forms/" + createReviewFormCode, accessToken1)
+                .statusCode(HttpStatus.NOT_FOUND.value());
+        }
+
+        @Test
+        @DisplayName("회고 질문지를 삭제한다(생성한 회고 없는 상태).")
+        void deleteReviewForm_reviewExists() {
             // given
             String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
 
@@ -631,7 +646,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("로그인하지 않은 상태로 회고 폼을 삭제할 수 없다.")
+        @DisplayName("로그인하지 않은 상태로 회고 질문지를 삭제할 수 없다.")
         void withoutLogin() {
             // given
             String createReviewFormCode = createReviewFormAndGetCode(accessToken1);
@@ -642,7 +657,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("존재하지 않는 회고 폼을 삭제할 수 없다.")
+        @DisplayName("존재하지 않는 회고 질문지를 삭제할 수 없다.")
         void invalidReviewForm() {
             // when, then
             delete("/api/review-forms/aaaaaaaa", accessToken1)
@@ -650,7 +665,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         }
 
         @Test
-        @DisplayName("본인이 생성한 회고 폼이 아니면 삭제할 수 없다.")
+        @DisplayName("본인이 생성한 회고 질문지가 아니면 삭제할 수 없다.")
         void noeMine() {
             // given
             String createReviewFormCode = createReviewFormAndGetCode(accessToken1);

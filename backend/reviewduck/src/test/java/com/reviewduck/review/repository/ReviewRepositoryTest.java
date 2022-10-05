@@ -25,9 +25,8 @@ import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.domain.ReviewFormQuestion;
-import com.reviewduck.review.service.ReviewFormQuestionCreateDto;
 import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
+import com.reviewduck.review.service.ReviewFormQuestionCreateDto;
 
 @DataJpaTest
 @Import(JpaAuditingConfig.class)
@@ -230,5 +229,28 @@ public class ReviewRepositoryTest {
         );
 
         return reviewRepository.save(review);
+    }
+
+    @Test
+    @DisplayName("특정 회고 질문지로 만든 회고가 존재한다.")
+    void existsByReviewForm_true() throws InterruptedException {
+        // given
+        Review savedReview = saveReview(savedMember, savedReviewForm, false);
+
+        // when
+        boolean actual = reviewRepository.existsByReviewForm(savedReviewForm);
+
+        // then
+        assertThat(actual).isTrue();
+    }
+
+    @Test
+    @DisplayName("특정 회고 질문지로 만든 회고가 존재하지 않는다.")
+    void existsByReviewForm_false() throws InterruptedException {
+        // when
+        boolean actual = reviewRepository.existsByReviewForm(savedReviewForm);
+
+        // then
+        assertThat(actual).isFalse();
     }
 }
