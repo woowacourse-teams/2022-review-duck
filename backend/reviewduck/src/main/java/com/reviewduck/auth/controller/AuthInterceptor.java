@@ -47,6 +47,6 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     public void validateToken(HttpServletRequest request) {
         String token = AuthorizationExtractor.extract(request);
-        jwtTokenProvider.validateToken(token);
+        jwtTokenProvider.validateAccessToken(token);
     }
 }

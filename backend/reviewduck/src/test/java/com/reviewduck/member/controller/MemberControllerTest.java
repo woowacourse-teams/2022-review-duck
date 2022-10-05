@@ -42,7 +42,7 @@ public class MemberControllerTest {
     @BeforeEach
     void createMemberAndGetAccessToken() {
         Member member = new Member("1", "jason", "제이슨", "profileUrl");
-        given(jwtTokenProvider.getPayload(any())).willReturn("1");
+        given(jwtTokenProvider.getAccessTokenPayload(any())).willReturn("1");
         given(memberService.findById(any())).willReturn(member);
     }
 
