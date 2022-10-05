@@ -95,7 +95,7 @@ public class ReviewFormRepositoryTest {
         ReviewForm expected = saveReviewForm(member1);
         ReviewForm reviewForm = saveReviewForm(member1);
 
-        reviewFormRepository.deleteSoftly(reviewForm);
+        reviewFormRepository.inactivate(reviewForm);
 
         // when
         int page = 0;
@@ -123,7 +123,7 @@ public class ReviewFormRepositoryTest {
         String reviewFormCode = reviewForm.getCode();
 
         // when
-        reviewFormRepository.deleteSoftly(reviewForm);
+        reviewFormRepository.inactivate(reviewForm);
 
         // then
         assertThat(reviewFormRepository.findByCodeAndIsActiveTrue(reviewFormCode).isEmpty()).isTrue();

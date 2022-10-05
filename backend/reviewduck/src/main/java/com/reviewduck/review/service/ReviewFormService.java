@@ -95,7 +95,7 @@ public class ReviewFormService {
         ReviewForm reviewForm = findByCode(reviewFormCode);
         validateReviewFormIsMine(member, reviewForm, "본인이 생성한 회고 폼이 아니면 삭제할 수 없습니다.");
         if (reviewRepository.existsByReviewForm(reviewForm)) {
-            reviewFormRepository.deleteSoftly(reviewForm);
+            reviewFormRepository.inactivate(reviewForm);
             return;
         }
         reviewFormRepository.delete(reviewForm);

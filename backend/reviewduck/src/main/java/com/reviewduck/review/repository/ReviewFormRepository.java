@@ -21,7 +21,7 @@ public interface ReviewFormRepository extends Repository<ReviewForm, Long> {
 
     @Modifying
     @Query("update ReviewForm r set r.isActive = false where r.id = :#{#reviewForm.id}")
-    void deleteSoftly(ReviewForm reviewForm);
+    void inactivate(ReviewForm reviewForm);
 
     void delete(ReviewForm reviewForm);
 }

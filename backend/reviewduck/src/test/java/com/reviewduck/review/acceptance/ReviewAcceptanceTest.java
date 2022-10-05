@@ -81,7 +81,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
 
             post("/api/review-forms/" + code, createRequest, accessToken2);
 
-            // deleteSoftly question2 and add question4 of reviewForm
+            // delete question2 and add question4 of reviewForm
             List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
                 new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"),
                 new ReviewFormQuestionUpdateRequest(3L, "new question3", "new description3"),
