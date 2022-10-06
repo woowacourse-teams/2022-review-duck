@@ -1,6 +1,9 @@
+import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { ErrorBoundary } from 'common/components';
+
+import PageSuspense from 'common/components/PageSuspense';
 
 import styles from './styles.module.scss';
 
@@ -14,7 +17,11 @@ function MainLayout() {
 
       <main className={styles.main}>
         <ErrorBoundary fallback={ErrorPage}>
-          <Outlet />
+          <Suspense>
+            <PageSuspense.Provider>
+              <Outlet />
+            </PageSuspense.Provider>
+          </Suspense>
         </ErrorBoundary>
       </main>
 

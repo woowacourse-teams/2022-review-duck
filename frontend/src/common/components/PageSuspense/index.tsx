@@ -8,8 +8,6 @@ import React, {
   useRef,
 } from 'react';
 
-import { API_REQUEST_TIMEOUT } from 'constant';
-
 import styles from './styles.module.scss';
 
 import ProgressBar from '../ProgressBar';

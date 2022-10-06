@@ -14,6 +14,8 @@ import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
 
 import { Button, TextBox, Text, Textarea, FieldSet, FlexContainer } from 'common/components';
 
+import PageSuspense from 'common/components/PageSuspense';
+
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
 import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
 
@@ -100,7 +102,7 @@ function TemplateFormPage() {
     }
   };
 
-  return (
+  return PageSuspense(
     <LayoutContainer className={styles.container}>
       <FlexContainer
         className={cn(styles.templateInfoContainer, styles.questionsEditor)}
@@ -147,7 +149,7 @@ function TemplateFormPage() {
           </Button>
         </div>
       </FlexContainer>
-    </LayoutContainer>
+    </LayoutContainer>,
   );
 }
 

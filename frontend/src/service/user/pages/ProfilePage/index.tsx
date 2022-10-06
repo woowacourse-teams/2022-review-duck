@@ -11,6 +11,7 @@ import useSnackbar from 'common/hooks/useSnackbar';
 
 import { PaginationBar } from 'common/components';
 
+import PageSuspense from 'common/components/PageSuspense';
 import { PaginationBarProps } from 'common/components/PaginationBar';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
@@ -25,7 +26,6 @@ import { validateFilter } from 'service/@shared/validator';
 
 function ProfilePage() {
   const navigate = useNavigate();
-
   const { socialId = '' } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const { showModal } = useModal();
@@ -127,7 +127,7 @@ function ProfilePage() {
     }
   };
 
-  return (
+  return PageSuspense(
     <>
       <div
         className={styles.profileBackground}
@@ -208,7 +208,7 @@ function ProfilePage() {
           />
         </ArticleList>
       </LayoutContainer>
-    </>
+    </>,
   );
 }
 

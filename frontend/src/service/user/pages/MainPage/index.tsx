@@ -1,12 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 
-import { MODAL_LIST, PAGE_OPTION, FILTER, PAGE_LIST } from 'constant';
-import { TemplateFilterType } from 'types';
+import { MODAL_LIST, FILTER, PAGE_LIST } from 'constant';
 
 import useModal from 'common/hooks/useModal';
 import { useGetTemplates } from 'service/@shared/hooks/queries/template';
 
+import { getElapsedTimeText } from 'service/@shared/utils';
+
 import { FlexContainer } from 'common/components';
+
+import PageSuspense from 'common/components/PageSuspense';
 
 import TemplateCard from 'service/template/components/TemplateCard';
 
@@ -19,11 +22,10 @@ function MainPage() {
   const { showModal } = useModal();
   const navigate = useNavigate();
 
-  const { data, isError, isLoading } = useGetTemplates(
-    FILTER.TEMPLATE_TAB.TREND as TemplateFilterType,
-    String(1),
-    PAGE_OPTION.TEMPLATE_TREND_ITEM_SIZE,
-  );
+  const { data, isError, isLoading } = useGetTemplates({
+    filter: FILTER.TEMPLATE_TAB.TREND,
+    pageNumber: 1,
+  });
 
   if (isError || isLoading) return <>{/* Error Boundary, Suspense Used */}</>;
 
@@ -37,7 +39,7 @@ function MainPage() {
     navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${templateId}`);
   };
 
-  return (
+  return PageSuspense(
     <FlexContainer className={styles.mainPageContainer}>
       <Intro>
         <div className={styles.leftContainer}>
@@ -47,33 +49,34 @@ function MainPage() {
           <Intro.SubTitle>함께 성장하는 회고 플랫폼</Intro.SubTitle>
           <Intro.ReviewButton onClick={handleClickReviewStart}>회고 시작하기</Intro.ReviewButton>
         </div>
+
         <Intro.HeroCards />
       </Intro>
 
       <TrendTemplate>
         <TrendTemplate.Title>인기 템플릿</TrendTemplate.Title>
         <TrendTemplate.Content>
-          {templates.map((template) => (
+          {templates.map(({ info, creator }) => (
             <TemplateCard
-              key={template.id}
+              key={info.id}
               className={styles.mainCard}
-              onClick={handleClickTemplateCard(template.id)}
+              onClick={handleClickTemplateCard(info.id)}
             >
-              <TemplateCard.Tag usedCount={template.usedCount} />
-              <TemplateCard.Title>{template.title}</TemplateCard.Title>
-              <TemplateCard.UpdatedAt>{template.elapsedTime}</TemplateCard.UpdatedAt>
-              <TemplateCard.Description>{template.description}</TemplateCard.Description>
+              <TemplateCard.Tag usedCount={info.usedCount} />
+              <TemplateCard.Title>{info.title}</TemplateCard.Title>
+              <TemplateCard.UpdatedAt>{getElapsedTimeText(info.updatedAt)}</TemplateCard.UpdatedAt>
+              <TemplateCard.Description>{info.description}</TemplateCard.Description>
 
               <TemplateCard.Profile
-                profileUrl={template.creator.profileImage}
-                nickname={template.creator.nickname}
-                socialNickname={template.creator.snsName}
+                profileUrl={creator.profileUrl}
+                nickname={creator.nickname}
+                socialNickname={creator.socialNickname}
               />
             </TemplateCard>
           ))}
         </TrendTemplate.Content>
       </TrendTemplate>
-    </FlexContainer>
+    </FlexContainer>,
   );
 }
 
