@@ -30,9 +30,9 @@ function PageRoutes() {
           path={`${PAGE_LIST.TEMPLATE_DETAIL}/:templateId`}
           element={<SplitPages.TemplateDetailPage />}
         />
-        <Route path={PAGE_LIST.TEMPLATE_FORM} element={<SplitPages.TemplateEditorPage />} />
 
         <Route element={<RequireAuth />}>
+          <Route path={PAGE_LIST.TEMPLATE_FORM} element={<SplitPages.TemplateEditorPage />} />
           <Route
             path={`${PAGE_LIST.TEMPLATE_FORM}/:templateId`}
             element={<SplitPages.TemplateEditorPage />}
