@@ -53,6 +53,18 @@ function Title({ children }: TitleProps) {
   );
 }
 
+interface SubTitleProps {
+  children: string;
+}
+
+function SubTitle({ children }: SubTitleProps) {
+  return (
+    <Text className={styles.subTitle} as="h3" size={16}>
+      {children}
+    </Text>
+  );
+}
+
 interface EditButtonsProps {
   className?: string;
   isVisible?: boolean;
@@ -142,6 +154,7 @@ function Reaction({ likeCount, onClickLike, onClickBookmark }: ReactionProps) {
 const Questions = Object.assign(Container, {
   CoverProfile,
   Title,
+  SubTitle,
   EditButtons,
   Answer,
   Reaction,

@@ -168,6 +168,9 @@ function ProfilePage() {
                 >
                   <Questions.Title>{article.title}</Questions.Title>
                 </Link>
+                {article.reviewTitle && (
+                  <Questions.SubTitle>{article.reviewTitle}</Questions.SubTitle>
+                )}
                 <Questions.EditButtons
                   isVisible={userArticles.isMine}
                   onClickEdit={handleClickEdit(
