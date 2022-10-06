@@ -18,8 +18,7 @@ import com.reviewduck.config.JpaAuditingConfig;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.domain.ReviewFormQuestion;
-import com.reviewduck.review.service.ReviewFormQuestionCreateDto;
+import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
 
 @DataJpaTest
 @Import(JpaAuditingConfig.class)
@@ -27,6 +26,9 @@ public class ReviewFormRepositoryTest {
 
     @Autowired
     private ReviewFormRepository reviewFormRepository;
+
+    @Autowired
+    private TestReviewFormRepository testReviewFormRepository;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -96,7 +98,7 @@ public class ReviewFormRepositoryTest {
         ReviewForm expected = saveReviewForm(member1);
         ReviewForm reviewForm = saveReviewForm(member1);
 
-        reviewFormRepository.delete(reviewForm);
+        reviewFormRepository.inactivate(reviewForm);
 
         // when
         int page = 0;
@@ -117,7 +119,24 @@ public class ReviewFormRepositoryTest {
     }
 
     @Test
-    @DisplayName("삭제된 회고 폼을 코드로 조회할 수 없다.")
+    @DisplayName("삭제된 회고 폼을 코드로 조회할 수 없다(inactive).")
+    void NotFoundInactivatedReviewFormByCode() throws InterruptedException {
+        // given
+        ReviewForm reviewForm = saveReviewForm(member1);
+        String reviewFormCode = reviewForm.getCode();
+
+        // when
+        reviewFormRepository.inactivate(reviewForm);
+
+        // then
+        assertAll(
+            () -> assertThat(reviewFormRepository.findByCodeAndIsActiveTrue(reviewFormCode).isEmpty()).isTrue(),
+            () -> assertThat(testReviewFormRepository.findByCode(reviewFormCode).isPresent()).isTrue()
+        );
+    }
+
+    @Test
+    @DisplayName("삭제된 회고 폼을 코드로 조회할 수 없다(delete).")
     void NotFoundDeletedReviewFormByCode() throws InterruptedException {
         // given
         ReviewForm reviewForm = saveReviewForm(member1);
@@ -127,7 +146,10 @@ public class ReviewFormRepositoryTest {
         reviewFormRepository.delete(reviewForm);
 
         // then
-        assertThat(reviewFormRepository.findByCodeAndIsActiveTrue(reviewFormCode).isEmpty()).isTrue();
+        assertAll(
+            () -> assertThat(reviewFormRepository.findByCodeAndIsActiveTrue(reviewFormCode).isEmpty()).isTrue(),
+            () -> assertThat(testReviewFormRepository.findByCode(reviewFormCode).isEmpty()).isTrue()
+        );
     }
 
     private ReviewForm saveReviewForm(Member member) throws InterruptedException {
