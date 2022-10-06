@@ -11,13 +11,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import com.reviewduck.acceptance.AcceptanceTest;
-import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
@@ -32,17 +29,6 @@ import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequ
 import com.reviewduck.template.dto.controller.response.TemplateIdResponse;
 
 public class ReviewFormAcceptanceTest extends AcceptanceTest {
-
-    private static final String invalidCode = "aaaaaaaa";
-    private static final String invalidToken = "tokentokentoken.invalidinvalidinvalid.tokentokentoken";
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-    @Autowired
-    private MemberService memberService;
-
-    private String accessToken1;
-    private String accessToken2;
 
     @BeforeEach
     void createMemberAndGetAccessToken() {
@@ -435,7 +421,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             createReview(code);
 
             // when, then
-            get("/api/review-forms/" + code + "/reviews?displayType=list", invalidToken)
+            get("/api/review-forms/" + code + "/reviews?displayType=list", INVALID_TOKEN)
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
@@ -443,7 +429,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         @DisplayName("존재하지 않는 회고 질문지 코드에 대해 조회할 수 없다.")
         void invalidCode() {
             // when, then
-            get("/api/review-forms/" + invalidCode + "/reviews?displayType=list", accessToken1)
+            get("/api/review-forms/" + INVALID_CODE + "/reviews?displayType=list", accessToken1)
                 .statusCode(HttpStatus.NOT_FOUND.value());
         }
 
@@ -517,7 +503,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             createReview(code);
 
             // when, then
-            get("/api/review-forms/" + code + "/reviews?displayType=sheet", invalidToken)
+            get("/api/review-forms/" + code + "/reviews?displayType=sheet", INVALID_TOKEN)
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
@@ -525,7 +511,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         @DisplayName("존재하지 않는 회고 질문지 코드에 대해 조회할 수 없다.")
         void invalidCode() {
             // when, then
-            get("/api/review-forms/" + invalidCode + "/reviews?displayType=sheet", accessToken1)
+            get("/api/review-forms/" + INVALID_CODE + "/reviews?displayType=sheet", accessToken1)
                 .statusCode(HttpStatus.NOT_FOUND.value());
         }
     }
