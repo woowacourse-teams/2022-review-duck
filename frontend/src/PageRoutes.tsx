@@ -31,10 +31,13 @@ function PageRoutes() {
           element={<SplitPages.TemplateDetailPage />}
         />
         <Route path={PAGE_LIST.TEMPLATE_FORM} element={<SplitPages.TemplateEditorPage />} />
-        <Route
-          path={`${PAGE_LIST.TEMPLATE_FORM}/:templateId`}
-          element={<SplitPages.TemplateEditorPage />}
-        />
+
+        <Route element={<RequireAuth />}>
+          <Route
+            path={`${PAGE_LIST.TEMPLATE_FORM}/:templateId`}
+            element={<SplitPages.TemplateEditorPage />}
+          />
+        </Route>
 
         {/* 데모 데이용 */}
         <Route
