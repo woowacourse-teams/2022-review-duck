@@ -195,7 +195,7 @@ public class ReviewFormControllerTest {
             ));
 
             // when, then
-            assertBadRequestFromPost("/api/reviews/" + invalidCode, request, "공개 여부를 설정해야 합니다.");
+            assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "공개 여부를 설정해야 합니다.");
         }
 
     }
