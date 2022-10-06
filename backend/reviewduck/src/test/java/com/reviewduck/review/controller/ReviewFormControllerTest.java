@@ -185,6 +185,19 @@ public class ReviewFormControllerTest {
             assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "답변은 비어있을 수 없습니다.");
         }
 
+        @ParameterizedTest
+        @NullSource
+        @DisplayName("회고 공개 여부에 null 값이 들어갈 경우 예외가 발생한다.")
+        void nullIsPrivate(Boolean isPrivate) throws Exception {
+            // given
+            ReviewCreateRequest request = new ReviewCreateRequest(isPrivate, "title", List.of(
+                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer"))
+            ));
+
+            // when, then
+            assertBadRequestFromPost("/api/reviews/" + invalidCode, request, "공개 여부를 설정해야 합니다.");
+        }
+
     }
 
     @Nested

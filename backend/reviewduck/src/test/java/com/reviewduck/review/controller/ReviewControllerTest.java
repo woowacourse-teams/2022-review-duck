@@ -73,6 +73,19 @@ public class ReviewControllerTest {
 
         @ParameterizedTest
         @NullSource
+        @DisplayName("회고 공개 여부에 null 값이 들어갈 경우 예외가 발생한다.")
+        void nullIsPrivate(Boolean isPrivate) throws Exception {
+            // given
+            ReviewUpdateRequest request = new ReviewUpdateRequest(isPrivate, "title", List.of(
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("answer")))
+            );
+
+            // when, then
+            assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "공개 여부를 설정해야 합니다.");
+        }
+
+        @ParameterizedTest
+        @NullSource
         @DisplayName("회고 내용에 null 값이 들어갈 경우 예외가 발생한다.")
         void nullContent(List<ReviewContentUpdateRequest> contents) throws Exception {
             // given
