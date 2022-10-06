@@ -147,6 +147,7 @@ export interface CreateReviewFormResponse {
 
 export interface CreateReviewAnswerRequest {
   reviewFormCode: string;
+  reviewTitle: string;
   contents: Array<{
     questionId: number;
     answer: ServerAnswer;
@@ -173,6 +174,7 @@ export interface UpdateReviewFormResponse {
 }
 
 export interface UpdateReviewAnswerRequest {
+  reviewTitle: string;
   reviewId: number;
   contents: Array<{
     questionId: number;

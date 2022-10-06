@@ -33,7 +33,7 @@ function ReviewAnswerEditorPage() {
   const { authorProfile, reviewForm, reviewAnswer, submitCreateAnswer, submitUpdateAnswer } =
     useAnswerEditorPage(reviewFormCode, reviewId);
   const { questions, answeredCount, isAnswerComplete, updateAnswer } = useQuestions(
-    reviewForm.questions,
+    reviewAnswer.questions,
   );
 
   const { nickname } = queryClient.getQueryData([
@@ -84,7 +84,7 @@ function ReviewAnswerEditorPage() {
 
     isEditorMode === EDITOR_MODE.NEW_ANSWER &&
       submitCreateAnswer(
-        { questions, isPrivate },
+        { reviewTitle, questions, isPrivate },
         {
           onSuccess: handleSubmitSuccess,
           onError: handleSubmitError,
@@ -93,7 +93,7 @@ function ReviewAnswerEditorPage() {
 
     isEditorMode === EDITOR_MODE.UPDATE_ANSWER &&
       submitUpdateAnswer(
-        { reviewId, questions, isPrivate },
+        { reviewTitle, reviewId, questions, isPrivate },
         {
           onSuccess: handleSubmitSuccess,
           onError: handleSubmitError,
