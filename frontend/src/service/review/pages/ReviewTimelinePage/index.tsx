@@ -117,7 +117,7 @@ function ReviewTimelinePage() {
         showSnackbar({
           title: '회고가 삭제되었습니다.',
           description: '삭제된 회고는 복구할 수 없습니다.',
-          theme: 'success',
+          theme: 'warning',
         }),
 
       onError: (error) =>
