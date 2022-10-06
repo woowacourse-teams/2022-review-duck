@@ -1,7 +1,5 @@
 package com.reviewduck.template.domain;
 
-import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -43,16 +41,14 @@ public class TemplateQuestion {
     private Template template;
 
     public TemplateQuestion(String value, String description) {
-        validateValue(value);
-        validateDescription(description);
+        validateQuestion(value, description);
 
         this.value = value;
         this.description = description;
     }
 
     public TemplateQuestion(String value, String description, Template template) {
-        validateValue(value);
-        validateDescription(description);
+        validateQuestion(value, description);
 
         this.value = value;
         this.description = description;
@@ -60,8 +56,7 @@ public class TemplateQuestion {
     }
 
     public void update(String value, String description) {
-        validateValue(value);
-        validateDescription(description);
+        validateQuestion(value, description);
 
         this.value = value;
         this.description = description;
@@ -70,6 +65,11 @@ public class TemplateQuestion {
     public void setPosition(int position) {
         validatePosition(position);
         this.position = position;
+    }
+
+    private void validateQuestion(final String value, final String description) {
+        validateValue(value);
+        validateDescription(description);
     }
 
     private void validateValue(String value) {
@@ -83,7 +83,7 @@ public class TemplateQuestion {
     }
 
     private void validateNull(String value) {
-        if (Objects.isNull(value)) {
+        if (value == null) {
             throw new TemplateQuestionException("질문 생성 중 에러가 발생하였습니다.");
         }
     }

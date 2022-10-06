@@ -64,10 +64,12 @@ export const createFormByTemplate = async ({
 
 export const createAnswer = async ({
   reviewFormCode,
+  reviewTitle,
   contents,
   isPrivate,
 }: ReviewType.CreateReviewAnswerRequest): Promise<ReviewType.CreateReviewAnswerResponse> => {
   const { data } = await axiosInstance.post(API_URI.REVIEW.CREATE_ANSWER(reviewFormCode), {
+    title: reviewTitle,
     contents,
     isPrivate,
   });
@@ -89,11 +91,13 @@ export const updateForm = async ({
 };
 
 export const updateAnswer = async ({
+  reviewTitle,
   reviewId,
   contents,
   isPrivate,
 }: ReviewType.UpdateReviewAnswerRequest): Promise<ReviewType.UpdateReviewAnswerResponse> => {
   const { data } = await axiosInstance.put(API_URI.REVIEW.UPDATE_ANSWER(reviewId), {
+    title: reviewTitle,
     contents,
     isPrivate,
   });

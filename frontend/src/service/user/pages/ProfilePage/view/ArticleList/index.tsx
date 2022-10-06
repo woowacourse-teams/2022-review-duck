@@ -21,4 +21,6 @@ const NoArticleResult = ({ totalNumber, children }: NoArticleResultProps) => {
   return <></>;
 };
 
-export const ArticleList = Object.assign(Container, { NoArticleResult });
+const ArticleList = Object.assign(Container, { NoArticleResult });
+
+export default ArticleList;

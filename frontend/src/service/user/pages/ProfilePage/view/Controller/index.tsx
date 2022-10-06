@@ -134,10 +134,12 @@ const Record = ({ numberOfItems, title }: RecordProps) => {
   );
 };
 
-export const Controller = Object.assign(Container, {
+const Controller = Object.assign(Container, {
   Profile,
   NameCard,
   ProfileManager,
   TabNavigator,
   Record,
 });
+
+export default Controller;

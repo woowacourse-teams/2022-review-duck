@@ -22,14 +22,14 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.dto.request.AnswerCreateRequest;
-import com.reviewduck.review.dto.request.AnswerUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewContentCreateRequest;
-import com.reviewduck.review.dto.request.ReviewContentUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
-import com.reviewduck.review.dto.request.ReviewUpdateRequest;
+import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
+import com.reviewduck.review.dto.controller.request.AnswerUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewContentUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")
@@ -76,13 +76,14 @@ public class ReviewServiceTest {
         @DisplayName("회고를 저장한다.")
         void saveReview() {
             // given
-            long questionId1 = reviewForm1.getReviewFormQuestions().get(0).getId();
-            long questionId2 = reviewForm1.getReviewFormQuestions().get(1).getId();
+            long questionId1 = reviewForm1.getQuestions().get(0).getId();
+            long questionId2 = reviewForm1.getQuestions().get(1).getId();
 
-            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, List.of(
-                new ReviewContentCreateRequest(questionId1, new AnswerCreateRequest("answer1")),
-                new ReviewContentCreateRequest(questionId2, new AnswerCreateRequest("answer2"))
-            ));
+            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, "title",
+                List.of(
+                    new ReviewContentCreateRequest(questionId1, new AnswerCreateRequest("answer1")),
+                    new ReviewContentCreateRequest(questionId2, new AnswerCreateRequest("answer2"))
+                ));
 
             // when
             Review savedReview = reviewService.save(member1, reviewForm1.getCode(), reviewCreateRequest);
@@ -102,10 +103,11 @@ public class ReviewServiceTest {
         @DisplayName("유효하지 않은 입장 코드로 저장할 수 없다.")
         void withInvalidCode() {
             // given
-            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, List.of(
-                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
-                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
-            ));
+            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, "title",
+                List.of(
+                    new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                    new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+                ));
 
             // when, then
             assertThatThrownBy(() -> reviewService.save(member1, invalidCode, reviewCreateRequest))
@@ -117,10 +119,11 @@ public class ReviewServiceTest {
         @DisplayName("유효하지 않은 질문 번호로 저장할 수 없다.")
         void withInvalidQuestionId() {
             //given
-            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, List.of(
-                new ReviewContentCreateRequest(9999L, new AnswerCreateRequest("answer1")),
-                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
-            ));
+            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, "title",
+                List.of(
+                    new ReviewContentCreateRequest(9999L, new AnswerCreateRequest("answer1")),
+                    new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+                ));
 
             // when, then
             assertThatThrownBy(() -> reviewService.save(member1, reviewForm1.getCode(), reviewCreateRequest))
@@ -330,12 +333,15 @@ public class ReviewServiceTest {
             Review savedReview = saveReview(reviewForm1, member1, true);
 
             // when
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
-            ));
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title",
+                List.of(
+                    new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                    new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
+                ));
 
-            Review updatedReview = reviewService.update(member1, savedReview.getId(), updateRequest);
+            reviewService.update(member1, savedReview.getId(), updateRequest);
+
+            Review updatedReview = reviewService.findById(savedReview.getId());
 
             // then
             assertAll(
@@ -354,10 +360,11 @@ public class ReviewServiceTest {
             Review savedReview = saveReview(reviewForm1, member1, false);
 
             // when
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
-            ));
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title",
+                List.of(
+                    new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                    new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
+                ));
 
             // then
             assertThatThrownBy(() -> reviewService.update(member2, savedReview.getId(), updateRequest))
@@ -369,10 +376,11 @@ public class ReviewServiceTest {
         @DisplayName("존재하지 않는 회고는 수정할 수 없다.")
         void invalidId() {
             // given
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(2L, "editedAnswer2"))
-            ));
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title",
+                List.of(
+                    new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                    new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
+                ));
 
             // when, then
             assertThatThrownBy(() -> reviewService.update(member1, 99999L, updateRequest))
@@ -386,34 +394,17 @@ public class ReviewServiceTest {
             // given
             Review savedReview = saveReview(reviewForm1, member1, false);
 
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(999L, new AnswerUpdateRequest(2L, "editedAnswer2"))
-            ));
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title",
+                List.of(
+                    new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                    new ReviewContentUpdateRequest(999L, new AnswerUpdateRequest("editedAnswer2"))
+                ));
 
             // when, then
             assertThatThrownBy(() -> reviewService.update(member1, savedReview.getId(), updateRequest))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 질문입니다.");
         }
-
-        @Test
-        @DisplayName("유효하지 않은 답변 번호로 수정할 수 없다.")
-        void withInvalidAnswerId() throws InterruptedException {
-            // given
-            Review savedReview = saveReview(reviewForm1, member1, false);
-
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(1L, "editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest(9999L, "editedAnswer2"))
-            ));
-
-            // when, then
-            assertThatThrownBy(() -> reviewService.update(member1, savedReview.getId(), updateRequest))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessageContaining("존재하지 않는 답변 번호입니다.");
-        }
-
     }
 
     @Nested
@@ -522,16 +513,17 @@ public class ReviewServiceTest {
     private Review saveReview(ReviewForm reviewForm, Member member, boolean isPrivate) throws InterruptedException {
         Thread.sleep(1);
 
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, List.of(
-            new ReviewContentCreateRequest(
-                reviewForm.getReviewFormQuestions().get(0).getId(),
-                new AnswerCreateRequest("answer1")
-            ),
-            new ReviewContentCreateRequest(
-                reviewForm.getReviewFormQuestions().get(1).getId(),
-                new AnswerCreateRequest("answer2")
-            )
-        ));
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, "title",
+            List.of(
+                new ReviewContentCreateRequest(
+                    reviewForm.getQuestions().get(0).getId(),
+                    new AnswerCreateRequest("answer1")
+                ),
+                new ReviewContentCreateRequest(
+                    reviewForm.getQuestions().get(1).getId(),
+                    new AnswerCreateRequest("answer2")
+                )
+            ));
 
         return reviewService.save(member, reviewForm.getCode(), reviewCreateRequest);
     }

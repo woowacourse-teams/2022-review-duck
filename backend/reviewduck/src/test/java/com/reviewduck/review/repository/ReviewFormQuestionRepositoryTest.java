@@ -1,7 +1,8 @@
 package com.reviewduck.review.repository;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,18 +21,12 @@ public class ReviewFormQuestionRepositoryTest {
     private ReviewFormQuestionRepository reviewFormQuestionRepository;
 
     @Test
-    @DisplayName("질문을 저장한다.")
-    void saveQuestion() {
-        // given
-        ReviewFormQuestion reviewFormQuestion = new ReviewFormQuestion("new question", "description");
-
+    @DisplayName("존재하지 않는 질문을 조회하면 빈 Optional을 반환한다.")
+    void findById() {
         // when
-        ReviewFormQuestion savedReviewFormQuestion = reviewFormQuestionRepository.save(reviewFormQuestion);
+        Optional<ReviewFormQuestion> foundQuestion = reviewFormQuestionRepository.findById(9999L);
 
         // then
-        assertAll(
-            () -> assertThat(savedReviewFormQuestion.getValue()).isEqualTo(reviewFormQuestion.getValue()),
-            () -> assertThat(savedReviewFormQuestion.getId()).isNotNull()
-        );
+        assertThat(foundQuestion).isEmpty();
     }
 }

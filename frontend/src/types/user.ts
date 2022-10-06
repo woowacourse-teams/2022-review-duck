@@ -14,6 +14,7 @@ export interface UserArticleList {
     id?: number;
     reviewFormCode?: string;
     title: string;
+    reviewTitle?: string;
 
     contents: Array<{
       question: ServerQuestionRequireId;
@@ -28,6 +29,7 @@ export interface GetUserReviewAnswerResponse {
   reviews: Array<{
     id: number;
     title: string;
+    isPrivate: boolean;
     updatedAt: number;
     contents: Array<{
       question: ServerQuestionRequireId;

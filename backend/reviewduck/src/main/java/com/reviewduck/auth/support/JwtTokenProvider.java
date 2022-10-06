@@ -1,7 +1,6 @@
 package com.reviewduck.auth.support;
 
 import java.util.Date;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -20,13 +19,16 @@ public class JwtTokenProvider {
     private final long validityInMilliseconds;
     private final long refreshValidityInMilliseconds;
     private final String secretKey;
+    private final String refreshSecretKey;
 
     public JwtTokenProvider(@Value("${security.jwt.token.expire-length}") long validityInMilliseconds,
         @Value("${security.jwt.refresh-token.expire-length}") long refreshValidityInMilliseconds,
-        @Value("${security.jwt.token.secret-key}") String secretKey) {
+        @Value("${security.jwt.token.secret-key}") String secretKey,
+        @Value("${security.jwt.refresh-token.secret-key}") String refreshSecretKey) {
         this.validityInMilliseconds = validityInMilliseconds;
         this.refreshValidityInMilliseconds = refreshValidityInMilliseconds;
         this.secretKey = secretKey;
+        this.refreshSecretKey = refreshSecretKey;
     }
 
     public String createAccessToken(String payload) {
@@ -51,16 +53,21 @@ public class JwtTokenProvider {
             .setClaims(claims)
             .setIssuedAt(now)
             .setExpiration(refreshValidity)
-            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .signWith(SignatureAlgorithm.HS256, refreshSecretKey)
             .compact();
     }
 
-    public String getPayload(String token) {
+    public String getAccessTokenPayload(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
             .getBody().getSubject();
     }
 
-    public boolean isInvalidToken(String token) {
+    public String getRefreshTokenPayload(String token) {
+        return Jwts.parser().setSigningKey(refreshSecretKey).parseClaimsJws(token)
+            .getBody().getSubject();
+    }
+
+    public boolean isInvalidToken(String token, String secretKey) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
 
@@ -70,20 +77,24 @@ public class JwtTokenProvider {
         }
     }
 
-    public void validateToken(String token) {
+    public void validateAccessToken(String token) {
         validateNullToken(token);
+        validateInvalidToken(token, secretKey);
+    }
 
-        validateInvalidToken(token);
+    public void validateRefreshToken(String token) {
+        validateNullToken(token);
+        validateInvalidToken(token, refreshSecretKey);
     }
 
     private void validateNullToken(String token) {
-        if (Objects.isNull(token)) {
+        if (token == null) {
             throw new AuthorizationException("토큰이 없습니다.");
         }
     }
 
-    private void validateInvalidToken(String token) {
-        if (isInvalidToken(token)) {
+    private void validateInvalidToken(String token, String secretKey) {
+        if (isInvalidToken(token, secretKey)) {
             throw new AuthorizationException("인증되지 않은 사용자입니다.");
         }
     }

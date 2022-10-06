@@ -15,6 +15,7 @@ export const transformUserReviews = (data: GetUserReviewAnswerResponse): UserArt
       id: review.id,
       reviewFormCode: review.reviewForm.code,
       title: review.reviewForm.title,
+      reviewTitle: review.title,
       contents: review.contents.map((content) => ({
         question: {
           id: content.question.id,

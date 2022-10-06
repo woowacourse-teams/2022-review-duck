@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.dto.response.ReviewFormQuestionResponse;
+import com.reviewduck.review.dto.controller.response.ReviewFormQuestionResponse;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,7 +22,7 @@ public class AdminReviewFormResponse {
     public static AdminReviewFormResponse of(ReviewForm reviewForm, List<Review> reviews) {
         AdminReviewFormInfoResponse reviewFormInfoResponse = AdminReviewFormInfoResponse.from(reviewForm);
 
-        List<ReviewFormQuestionResponse> questionResponses = reviewForm.getReviewFormQuestions().stream()
+        List<ReviewFormQuestionResponse> questionResponses = reviewForm.getQuestions().stream()
             .map(ReviewFormQuestionResponse::from)
             .collect(Collectors.toUnmodifiableList());
 

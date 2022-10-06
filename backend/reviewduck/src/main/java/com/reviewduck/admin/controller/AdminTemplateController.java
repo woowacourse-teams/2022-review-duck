@@ -33,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 public class AdminTemplateController {
 
     private AdminTemplateService adminTemplateService;
-    private TemplateService templateService;
 
     @Operation(summary = "생성된 템플릿을 모두 조회한다")
     @GetMapping()
@@ -67,7 +66,7 @@ public class AdminTemplateController {
         info("api/admin/templates/" + templateId, "GET", "");
 
         validateAdmin(member);
-        Template template = templateService.findById(templateId);
+        Template template = adminTemplateService.findById(templateId);
 
         return AdminTemplateResponse.from(template);
     }

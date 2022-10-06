@@ -1,5 +1,6 @@
 package com.reviewduck.member.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -9,6 +10,7 @@ import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
+import com.reviewduck.review.domain.ReviewForm;
 
 import lombok.AllArgsConstructor;
 
@@ -36,6 +38,10 @@ public class MemberService {
 
     public Optional<Member> findBySocialId(String socialId) {
         return memberRepository.findBySocialId(socialId);
+    }
+
+    public List<Member> findAllParticipantsByCode(ReviewForm reviewForm) {
+        return memberRepository.findAllParticipantsByReviewFormCode(reviewForm);
     }
 
     @Transactional

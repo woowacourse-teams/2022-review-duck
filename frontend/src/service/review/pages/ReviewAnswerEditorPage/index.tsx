@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
+import { useQueryClient } from '@tanstack/react-query';
 
+<<<<<<< HEAD
 import { PAGE_LIST } from 'constant';
 import { ErrorResponse, Question } from 'types';
+=======
+import { PAGE_LIST, QUERY_KEY } from 'constant';
+import { ErrorResponse, UserProfileResponse } from 'types';
+>>>>>>> 792eed1bd567ccda61f4baee1035584b544664b0
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/@shared/hooks/useQuestions';
@@ -21,6 +27,7 @@ const EDITOR_MODE = {
 function ReviewAnswerEditorPage() {
   const { reviewFormCode = '', reviewId = '' } = useParams();
   const [searchParams] = useSearchParams();
+  const queryClient = useQueryClient();
 
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
@@ -28,8 +35,9 @@ function ReviewAnswerEditorPage() {
   const redirectUri =
     searchParams.get('redirect') || `${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`;
 
-  const { authorProfile, reviewForm, reviewContents, submitCreateAnswer, submitUpdateAnswer } =
+  const { authorProfile, reviewForm, reviewAnswer, submitCreateAnswer, submitUpdateAnswer } =
     useAnswerEditorPage(reviewFormCode, reviewId);
+<<<<<<< HEAD
 
   const [questions, setQuestions] = useState<Question[]>(reviewContents.questions);
   const {
@@ -38,9 +46,22 @@ function ReviewAnswerEditorPage() {
     isAnswerComplete,
     updateAnswer,
   } = useQuestions(questions, setQuestions);
+=======
+  const { questions, answeredCount, isAnswerComplete, updateAnswer } = useQuestions(
+    reviewId ? reviewAnswer.questions : reviewForm.questions,
+  );
+>>>>>>> 792eed1bd567ccda61f4baee1035584b544664b0
 
-  const [isPrivate, setPrivate] = useState(!!reviewContents.info.isPrivate);
+  const { nickname } = queryClient.getQueryData([
+    QUERY_KEY.DATA.AUTH,
+    QUERY_KEY.API.GET_AUTH_MY_PROFILE,
+  ]) as UserProfileResponse;
+
+  const [isPrivate, setPrivate] = useState(!!reviewAnswer.info.isPrivate);
   const [focusQuestionIndex, setFocusQuestionIndex] = useState(0);
+  const [reviewTitle, setReviewTitle] = useState(
+    reviewId ? reviewAnswer.info.reviewTitle : `${nickname}의 회고`,
+  );
 
   const handleFocusAnswer = (index: number) => () => {
     setFocusQuestionIndex(index);
@@ -79,7 +100,7 @@ function ReviewAnswerEditorPage() {
 
     isEditorMode === EDITOR_MODE.NEW_ANSWER &&
       submitCreateAnswer(
-        { questions, isPrivate },
+        { reviewTitle, questions, isPrivate },
         {
           onSuccess: handleSubmitSuccess,
           onError: handleSubmitError,
@@ -88,7 +109,7 @@ function ReviewAnswerEditorPage() {
 
     isEditorMode === EDITOR_MODE.UPDATE_ANSWER &&
       submitUpdateAnswer(
-        { reviewId, questions, isPrivate },
+        { reviewTitle, reviewId, questions, isPrivate },
         {
           onSuccess: handleSubmitSuccess,
           onError: handleSubmitError,
@@ -104,11 +125,15 @@ function ReviewAnswerEditorPage() {
     });
   };
 
+  const handleReviewTitleChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    setReviewTitle(target.value);
+  };
+
   return (
     <>
       <Status>
         <Status.LogoButton link={PAGE_LIST.HOME} />
-
+        <Status.FormTitle>{reviewForm.title}</Status.FormTitle>
         <Status.FocusQuestion description={questions[focusQuestionIndex].description}>
           {questions[focusQuestionIndex].value}
         </Status.FocusQuestion>
@@ -116,12 +141,16 @@ function ReviewAnswerEditorPage() {
         <Status.UserProfile
           nickname={authorProfile?.nickname}
           profileImage={authorProfile?.profileUrl}
-          description="이 프로필로 회고에 기록됩니다."
+          description={authorProfile?.socialNickname}
         />
       </Status>
 
       <Editor onSubmit={handleSubmit}>
-        <Editor.Title>{reviewForm?.title}</Editor.Title>
+        <Editor.TitleInput
+          placeholder={reviewId ? reviewAnswer.info.reviewTitle : `${nickname}의 회고`}
+          title={reviewTitle}
+          onChange={handleReviewTitleChange}
+        />
 
         {questionsWithKey.map(({ key, answer, ...question }, index) => (
           <Editor.AnswerField
@@ -137,7 +166,7 @@ function ReviewAnswerEditorPage() {
         <Editor.PrivateCheckBox checked={isPrivate} onChange={handleChangePrivate} />
 
         <Editor.ConfirmButtons
-          submitDisabled={!isAnswerComplete}
+          submitDisabled={!isAnswerComplete || reviewTitle === ''}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
         />

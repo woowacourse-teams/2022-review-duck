@@ -9,13 +9,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import com.reviewduck.acceptance.AcceptanceTest;
-import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.service.MemberService;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionUpdateRequest;
@@ -23,14 +20,6 @@ import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
 import com.reviewduck.template.dto.controller.response.TemplateIdResponse;
 
 public class TemplateAcceptanceTest extends AcceptanceTest {
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-    @Autowired
-    private MemberService memberService;
-
-    private String accessToken1;
-    private String accessToken2;
 
     @BeforeEach
     void createMemberAndGetAccessToken() {
@@ -79,9 +68,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             post("/api/templates", request).statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
-
-
     }
+
     @Nested
     @DisplayName("템플릿 기반 회고 폼 생성")
     class createReviewFormFromTemplate {
@@ -115,9 +103,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             post("/api/templates/9999/review-forms", accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
         }
 
-
-
     }
+
     @Nested
     @DisplayName("템플릿 전체 조회")
     class findAllTemplates {
@@ -177,9 +164,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             get("/api/templates/all").statusCode(HttpStatus.OK.value());
         }
 
-
-
     }
+
     @Nested
     @DisplayName("사용자별 템플릿 전체 조회")
     class findAllTemplatesBySocialId {
@@ -231,9 +217,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             get("/api/templates?member=12345", accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
         }
 
-
-
     }
+
     @Nested
     @DisplayName("특정 템플릿 조회")
     class findTemplate {
@@ -268,9 +253,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             get("/api/templates/" + 9999L, accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
         }
 
-
-
     }
+
     @Nested
     @DisplayName("템플릿 수정")
     class updateTemplate {
@@ -344,9 +328,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
                 .statusCode(HttpStatus.NOT_FOUND.value());
         }
 
-
-
     }
+
     @Nested
     @DisplayName("템플릿 삭제")
     class deleteTemplate {
@@ -388,9 +371,8 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             delete("/api/templates/" + 9999L, accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
         }
 
-
-
     }
+
     private long saveTemplateAndGetId(String accessToken, String title) {
         String description = "test description";
         List<TemplateQuestionCreateRequest> questions = List.of(
@@ -403,6 +385,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             .as(TemplateIdResponse.class)
             .getTemplateId();
     }
+
     private long saveTemplateAndGetId(String accessToken) {
         return saveTemplateAndGetId(accessToken, "title");
     }

@@ -96,7 +96,7 @@ const REVIEW_FORM_TITLE_LENGTH = 100;
 const REVIEW_FORM_CODE_LENGTH = 8;
 
 const REGEX = {
-  REVIEW_FORM_CODE: `(?=.*[A-Za-z])(?=.*[0-9])[a-zA-Z0-9]{${REVIEW_FORM_CODE_LENGTH}}$`,
+  REVIEW_FORM_CODE: `^[a-zA-Z0-9]{${REVIEW_FORM_CODE_LENGTH}}$`,
   NICKNAME: '^[a-zA-Z가-힣ㄱ-ㅎ0-9]{2,10}$',
 };
 

@@ -2,6 +2,16 @@
 
 .main-page-container {
   padding-bottom: 5rem;
+
+  .left-container {
+    word-break: keep-all;
+    line-height: 350%;
+
+    .bold {
+      font-weight: bold;
+      color: $THEME_COLOR_STATUS_PRIMARY_500;
+    }
+  }
 }
 
 .main-card {

@@ -20,8 +20,8 @@ import Questions from 'service/@shared/components/Questions';
 import styles from './styles.module.scss';
 
 import useProfilePageQueries from './useProfilePageQueries';
-import { ArticleList } from './view/ArticleList';
-import { Controller } from './view/Controller';
+import ArticleList from './view/ArticleList';
+import Controller from './view/Controller';
 import { validateFilter } from 'service/@shared/validator';
 
 function ProfilePage() {
@@ -168,6 +168,9 @@ function ProfilePage() {
                 >
                   <Questions.Title>{article.title}</Questions.Title>
                 </Link>
+                {article.reviewTitle && (
+                  <Questions.SubTitle>{article.reviewTitle}</Questions.SubTitle>
+                )}
                 <Questions.EditButtons
                   isVisible={userArticles.isMine}
                   onClickEdit={handleClickEdit(

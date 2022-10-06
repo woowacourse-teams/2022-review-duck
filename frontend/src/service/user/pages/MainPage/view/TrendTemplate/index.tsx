@@ -1,10 +1,6 @@
-import { PAGE_LIST } from 'constant';
-import { Template } from 'types';
-
 import { ScrollPanel, Text } from 'common/components';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
-import TemplateCard from 'service/template/components/TemplateCard';
 
 import styles from './styles.module.scss';
 
