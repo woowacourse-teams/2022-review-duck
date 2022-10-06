@@ -51,16 +51,16 @@ Answers.displayName = 'Answers';
 
 interface CreatorProps {
   socialId: number;
-  nickname: string;
+  title: string;
   profileImage: string;
 }
 
-const Creator = ({ socialId, nickname, profileImage }: CreatorProps) => {
+const Creator = ({ socialId, title, profileImage }: CreatorProps) => {
   return (
     <td>
       <Profile socialId={socialId} direction="column" align="center" textAlign="center">
         <Profile.Image src={profileImage} size="small" />
-        <Profile.Nickname>{nickname}</Profile.Nickname>
+        <Profile.Nickname>{title}</Profile.Nickname>
       </Profile>
     </td>
   );

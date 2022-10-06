@@ -19,10 +19,15 @@
 }
 
 .title {
-  padding: 1.25rem 0;
+  padding: 1rem 0;
   color: $THEME_COLOR_STATUS_PRIMARY_600;
-  border-bottom: 1px solid $THEME_COLOR_STATUS_PRIMARY_100;
   line-height: 160%;
+}
+
+.sub-title {
+  padding-bottom: 1rem;
+  color: $THEME_COLOR_THEME_TEXT_400;
+  border-bottom: 1px solid $THEME_COLOR_STATUS_PRIMARY_100;
 }
 
 .answerContainer {

@@ -123,7 +123,7 @@ function ReviewOverViewPage() {
                       <Questions.CoverProfile
                         socialId={info.creator.id}
                         image={info.creator.profileUrl}
-                        title={info.creator.nickname}
+                        title={info.reviewTitle as string}
                         description={info.updateDate}
                       />
 
@@ -193,26 +193,28 @@ function ReviewOverViewPage() {
           <SheetView.ReviewList>
             {pages.map((page, pageIndex) => (
               <React.Fragment key={pageIndex}>
-                {page.data.reviews.map(({ id, info: { creator }, questions }, index) => (
-                  <SheetView.Answers
-                    key={id}
-                    // ref={
-                    //   displayMode === 'sheet' && index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1
-                    //     ? targetRef
-                    //     : null
-                    // }
-                  >
-                    <SheetView.Creator
-                      socialId={creator.id}
-                      nickname={creator.nickname}
-                      profileImage={creator.profileUrl}
-                    />
+                {page.data.reviews.map(
+                  ({ id, info: { creator, reviewTitle }, questions }, index) => (
+                    <SheetView.Answers
+                      key={id}
+                      // ref={
+                      //   displayMode === 'sheet' && index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1
+                      //     ? targetRef
+                      //     : null
+                      // }
+                    >
+                      <SheetView.Creator
+                        socialId={creator.id}
+                        title={reviewTitle as string}
+                        profileImage={creator.profileUrl}
+                      />
 
-                    {questions.map(({ answer, ...review }) => (
-                      <SheetView.Item key={review.id}>{answer && answer.value}</SheetView.Item>
-                    ))}
-                  </SheetView.Answers>
-                ))}
+                      {questions.map(({ answer, ...review }) => (
+                        <SheetView.Item key={review.id}>{answer && answer.value}</SheetView.Item>
+                      ))}
+                    </SheetView.Answers>
+                  ),
+                )}
               </React.Fragment>
             ))}
             {isFetching && <SheetView.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}

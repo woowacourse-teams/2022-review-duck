@@ -1,4 +1,10 @@
-import { ErrorResponse, Question, ReviewForm, UpdateReviewAnswerRequest } from 'types';
+import {
+  ErrorResponse,
+  Question,
+  ReviewAnswer,
+  ReviewForm,
+  UpdateReviewAnswerRequest,
+} from 'types';
 
 import { useGetAuthProfile } from 'service/@shared/hooks/queries/auth';
 import {
@@ -13,7 +19,7 @@ interface SubmitHandler {
   onError: (error: ErrorResponse) => void;
 }
 
-const initialReviewContents: ReviewForm = {
+const initialReviewForm: ReviewForm = {
   title: '',
   questions: [],
   info: {
@@ -29,7 +35,16 @@ const initialReviewContents: ReviewForm = {
   },
 };
 
+const initialReviewAnswer: ReviewAnswer = {
+  questions: [],
+  info: {
+    reviewTitle: '',
+    isPrivate: false,
+  },
+};
+
 interface CreateParameters {
+  reviewTitle: string;
   reviewId?: string;
   questions: Question[];
   isPrivate: boolean;
@@ -51,10 +66,11 @@ function useAnswerEditorPage(reviewFormCode: string, reviewId: string) {
     enabled: !!reviewId,
   });
 
-  const reviewContents = reviewAnswerQuery.data || reviewFormQuery.data || initialReviewContents;
+  const reviewForm = reviewFormQuery.data || initialReviewForm;
+  const reviewAnswer = reviewAnswerQuery.data || initialReviewAnswer;
 
   const submitCreateAnswer = (
-    { questions, isPrivate }: CreateParameters,
+    { reviewTitle, questions, isPrivate }: CreateParameters,
     handler: SubmitHandler,
   ) => {
     const { onSuccess, onError } = handler;
@@ -63,6 +79,7 @@ function useAnswerEditorPage(reviewFormCode: string, reviewId: string) {
     createMutation.mutate(
       {
         reviewFormCode,
+        reviewTitle,
         contents: requestContents,
         isPrivate,
       },
@@ -74,22 +91,22 @@ function useAnswerEditorPage(reviewFormCode: string, reviewId: string) {
   };
 
   const submitUpdateAnswer = (
-    { reviewId, questions, isPrivate }: CreateParameters,
+    { reviewTitle, reviewId, questions, isPrivate }: CreateParameters,
     handler: SubmitHandler,
   ) => {
     const { onSuccess, onError } = handler;
     const requestContents = changeRequestBody(questions);
 
     updateMutation.mutate(
-      { reviewId: Number(reviewId), contents: requestContents, isPrivate },
+      { reviewTitle, reviewId: Number(reviewId), contents: requestContents, isPrivate },
       { onSuccess, onError },
     );
   };
 
   return {
     authorProfile: userProfileQuery.data,
-    reviewForm: reviewFormQuery.data,
-    reviewContents,
+    reviewForm: reviewForm,
+    reviewAnswer: reviewAnswer,
     submitCreateAnswer,
     submitUpdateAnswer,
   };

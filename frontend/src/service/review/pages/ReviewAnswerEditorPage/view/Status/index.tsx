@@ -35,10 +35,22 @@ interface FocusQuestionProps {
   children: string;
 }
 
+interface FormTitleProps {
+  children: React.ReactNode;
+}
+
+const FormTitle = ({ children }: FormTitleProps) => {
+  return (
+    <Text className={styles.formTitle} as="h1" size={24} weight="bold">
+      {children}
+    </Text>
+  );
+};
+
 const FocusQuestion = ({ description, children }: FocusQuestionProps) => {
   return (
     <FlexContainer className={styles.focusQuestion} gap="medium">
-      <Text as="h1" key={`title-${children}`} className={styles.title} size={40} weight="bold">
+      <Text as="h2" key={`title-${children}`} className={styles.title} size={40} weight="bold">
         {children}
       </Text>
 
@@ -69,7 +81,7 @@ const AnsweredState = ({ answeredCount, questionCount }: AnsweredStateProps) => 
 interface UserProfile {
   nickname?: string;
   profileImage?: string;
-  description: string;
+  description?: string;
 }
 
 const UserProfile = ({ nickname, profileImage, description }: UserProfile) => {
@@ -89,6 +101,7 @@ const UserProfile = ({ nickname, profileImage, description }: UserProfile) => {
 
 export const Status = Object.assign(Container, {
   LogoButton,
+  FormTitle,
   FocusQuestion,
   AnsweredState,
   UserProfile,
