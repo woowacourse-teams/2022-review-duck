@@ -14,38 +14,16 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.reviewduck.auth.support.JwtTokenProvider;
+import com.reviewduck.controller.ControllerTest;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.controller.request.AnswerUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewLikesRequest;
 import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
-import com.reviewduck.review.service.ReviewService;
 
-@WebMvcTest(ReviewController.class)
-public class ReviewControllerTest {
-
-    private static final String accessToken = "access_token";
-    private static final Long invalidReviewId = 1L;
-
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @MockBean
-    private ReviewService reviewService;
-    @MockBean
-    private JwtTokenProvider jwtTokenProvider;
-    @MockBean
-    private MemberService memberService;
+public class ReviewControllerTest extends ControllerTest {
 
     @BeforeEach
     void createMemberAndGetAccessToken() {
@@ -68,7 +46,7 @@ public class ReviewControllerTest {
             );
 
             // when, then
-            assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "회고 제목은 비어있을 수 없습니다.");
+            assertBadRequestFromPut("/api/reviews/" + INVALID_REVIEW_ID, request, "회고 제목은 비어있을 수 없습니다.");
         }
 
         @ParameterizedTest
@@ -81,7 +59,7 @@ public class ReviewControllerTest {
             );
 
             // when, then
-            assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "공개 여부를 설정해야 합니다.");
+            assertBadRequestFromPut("/api/reviews/" + INVALID_REVIEW_ID, request, "공개 여부를 설정해야 합니다.");
         }
 
         @ParameterizedTest
@@ -92,7 +70,7 @@ public class ReviewControllerTest {
             ReviewUpdateRequest request = new ReviewUpdateRequest(false, "title", contents);
 
             // when, then
-            assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "회고 답변 관련 오류가 발생했습니다.");
+            assertBadRequestFromPut("/api/reviews/" + INVALID_REVIEW_ID, request, "회고 답변 관련 오류가 발생했습니다.");
         }
 
         @ParameterizedTest
@@ -105,7 +83,7 @@ public class ReviewControllerTest {
             ));
 
             // when, then
-            assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "질문 번호는 비어있을 수 없습니다.");
+            assertBadRequestFromPut("/api/reviews/" + INVALID_REVIEW_ID, request, "질문 번호는 비어있을 수 없습니다.");
         }
 
         @ParameterizedTest
@@ -118,7 +96,7 @@ public class ReviewControllerTest {
             ));
 
             // when, then
-            assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "회고 답변 생성 중 오류가 발생했습니다.");
+            assertBadRequestFromPut("/api/reviews/" + INVALID_REVIEW_ID, request, "회고 답변 생성 중 오류가 발생했습니다.");
         }
 
         @ParameterizedTest
@@ -131,7 +109,7 @@ public class ReviewControllerTest {
             ));
 
             // when, then
-            assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "답변은 비어있을 수 없습니다.");
+            assertBadRequestFromPut("/api/reviews/" + INVALID_REVIEW_ID, request, "답변은 비어있을 수 없습니다.");
         }
 
     }
@@ -155,7 +133,7 @@ public class ReviewControllerTest {
     private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws
         Exception {
         mockMvc.perform(post(uri)
-                .header("Authorization", "Bearer " + accessToken)
+                .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(objectMapper.writeValueAsString(request))
@@ -165,7 +143,7 @@ public class ReviewControllerTest {
 
     private void assertBadRequestFromPut(String uri, Object request, String errorMessage) throws Exception {
         mockMvc.perform(put(uri)
-                .header("Authorization", "Bearer " + accessToken)
+                .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(objectMapper.writeValueAsString(request))
