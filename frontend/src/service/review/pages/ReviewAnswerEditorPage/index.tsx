@@ -150,7 +150,7 @@ function ReviewAnswerEditorPage() {
         <Editor.PrivateCheckBox checked={isPrivate} onChange={handleChangePrivate} />
 
         <Editor.ConfirmButtons
-          submitDisabled={!isAnswerComplete}
+          submitDisabled={!isAnswerComplete || reviewTitle === ''}
           onSubmit={handleSubmit}
           onCancel={handleCancel}
         />
