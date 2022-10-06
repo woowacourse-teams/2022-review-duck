@@ -15,7 +15,6 @@ import com.reviewduck.member.service.MemberService;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
-import com.reviewduck.template.dto.service.ServiceDtoConverter;
 import com.reviewduck.template.repository.TemplateRepository;
 import com.reviewduck.template.vo.TemplateSortType;
 

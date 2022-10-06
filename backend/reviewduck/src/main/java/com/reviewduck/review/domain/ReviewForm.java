@@ -24,8 +24,8 @@ import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.exception.ReviewFormException;
-import com.reviewduck.review.service.ReviewFormQuestionCreateDto;
-import com.reviewduck.review.service.ReviewFormQuestionUpdateDto;
+import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
+import com.reviewduck.review.dto.service.ReviewFormQuestionUpdateDto;
 
 import lombok.AccessLevel;
 import lombok.Getter;
