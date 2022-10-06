@@ -1,6 +1,6 @@
-import axios from 'axios';
-
 import { QueryClient } from '@tanstack/react-query';
+
+import axios from 'axios';
 
 const handleServerException = (count: number, error: unknown): boolean => {
   if (!error || !axios.isAxiosError(error)) return false;

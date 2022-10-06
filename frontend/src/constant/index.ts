@@ -7,7 +7,7 @@ const PAGE_LIST = {
   LOGOUT: '/logout',
   TEMPLATE_LIST: '/template/list',
   TEMPLATE_DETAIL: '/template/view',
-  TEMPLATE_FORM: '/template/review-form',
+  TEMPLATE_FORM: '/template/editor',
   USER_PROFILE: '/profile',
   TIMELINE: '/timeline',
 };
@@ -18,6 +18,8 @@ const MODAL_LIST = {
 
   PROFILE_EDIT: 'ModalProfileEdit',
 };
+
+const API_REQUEST_TIMEOUT = 5000;
 
 const QUERY_KEY = {
   DATA: {
@@ -152,6 +154,7 @@ const API_URI = {
 
 export {
   API_URI,
+  API_REQUEST_TIMEOUT,
   PAGE_LIST,
   MODAL_LIST,
   QUERY_KEY,
