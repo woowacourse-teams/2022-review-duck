@@ -20,6 +20,8 @@ import {
   useGetInfiniteReviewPublicAnswer,
 } from 'service/@shared/hooks/queries/review';
 
+import PageSuspense from 'common/components/PageSuspense';
+
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
 import Questions from 'service/@shared/components/Questions';
 
@@ -149,7 +151,7 @@ function ReviewTimelinePage() {
     });
   };
 
-  return (
+  return PageSuspense(
     <LayoutContainer className={styles.container}>
       <SideMenu>
         <SideMenu.Title>탐색하기</SideMenu.Title>
@@ -227,7 +229,7 @@ function ReviewTimelinePage() {
           <div ref={targetRef}></div>
         </Feed.List>
       </Feed>
-    </LayoutContainer>
+    </LayoutContainer>,
   );
 }
 
