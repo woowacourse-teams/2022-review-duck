@@ -12,9 +12,15 @@ import useSnackbar from 'common/hooks/useSnackbar';
 import { useTemplateMutation } from 'service/@shared/hooks/queries/template';
 import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
 
-import { Button, TextBox, Text, Textarea, FieldSet, FlexContainer } from 'common/components';
-
-import PageSuspense from 'common/components/PageSuspense';
+import {
+  Button,
+  TextBox,
+  Text,
+  Textarea,
+  FieldSet,
+  FlexContainer,
+  PageSuspense,
+} from 'common/components';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
 import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
@@ -65,7 +71,7 @@ function TemplateFormPage() {
       setTemplateInfo({ ...templateInfo, [updateTarget]: target.value });
     };
 
-  const handleSubmitSuccess = (id: number, message: string) => () => {
+  const handleSubmitSuccess = (id: number, message: string) => {
     showSnackbar({
       title: message,
     });
@@ -82,6 +88,7 @@ function TemplateFormPage() {
     };
 
     if (!templateId) {
+      console.log('1');
       templateMutate.create(requestBody, {
         onSuccess: ({ templateId }) => handleSubmitSuccess(templateId, '템플릿을 등록하였습니다.'),
         onError: (error) => showSnackbar({ theme: 'danger', title: error.message }),
@@ -89,13 +96,14 @@ function TemplateFormPage() {
     }
 
     if (templateId) {
+      console.log('2');
       templateMutate.update(
         {
           templateId: Number(templateId),
           ...requestBody,
         },
         {
-          onSuccess: handleSubmitSuccess(templateId, '템플릿을 수정하였습니다.'),
+          onSuccess: () => handleSubmitSuccess(templateId, '템플릿을 수정하였습니다.'),
           onError: (error) => showSnackbar({ theme: 'danger', title: error.message }),
         },
       );
