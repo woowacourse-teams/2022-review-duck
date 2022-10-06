@@ -17,21 +17,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reviewduck.auth.dto.request.LoginRequest;
 import com.reviewduck.auth.service.AuthService;
 import com.reviewduck.auth.support.JwtTokenProvider;
+import com.reviewduck.controller.ControllerTest;
 import com.reviewduck.member.service.MemberService;
 
-@WebMvcTest(AuthController.class)
-public class AuthControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @MockBean
-    private AuthService authService;
-    @MockBean
-    private JwtTokenProvider jwtTokenProvider;
-    @MockBean
-    private MemberService memberService;
+public class AuthControllerTest extends ControllerTest {
 
     @ParameterizedTest
     @NullAndEmptySource

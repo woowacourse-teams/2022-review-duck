@@ -14,16 +14,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.reviewduck.auth.support.JwtTokenProvider;
+import com.reviewduck.controller.ControllerTest;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
@@ -31,32 +25,8 @@ import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
-import com.reviewduck.review.service.ReviewFormService;
-import com.reviewduck.review.service.ReviewService;
 
-@WebMvcTest(ReviewFormController.class)
-public class ReviewFormControllerTest {
-
-    private static final String accessToken = "access_token";
-    private static final String invalidCode = "aaaaaaaa";
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockBean
-    private ReviewFormService reviewFormService;
-
-    @MockBean
-    private ReviewService reviewService;
-
-    @MockBean
-    private JwtTokenProvider jwtTokenProvider;
-
-    @MockBean
-    private MemberService memberService;
+public class ReviewFormControllerTest extends ControllerTest {
 
     @BeforeEach
     void createMemberAndGetAccessToken() {

@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.reviewduck.auth.support.JwtTokenProvider;
+import com.reviewduck.controller.ControllerTest;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.controller.request.AnswerUpdateRequest;
@@ -30,22 +31,7 @@ import com.reviewduck.review.dto.controller.request.ReviewLikesRequest;
 import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
 import com.reviewduck.review.service.ReviewService;
 
-@WebMvcTest(ReviewController.class)
-public class ReviewControllerTest {
-
-    private static final String accessToken = "access_token";
-    private static final Long invalidReviewId = 1L;
-
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @MockBean
-    private ReviewService reviewService;
-    @MockBean
-    private JwtTokenProvider jwtTokenProvider;
-    @MockBean
-    private MemberService memberService;
+public class ReviewControllerTest extends ControllerTest {
 
     @BeforeEach
     void createMemberAndGetAccessToken() {

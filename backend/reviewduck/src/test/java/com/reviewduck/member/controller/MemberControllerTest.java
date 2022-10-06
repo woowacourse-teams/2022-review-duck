@@ -10,34 +10,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.reviewduck.auth.service.AuthService;
-import com.reviewduck.auth.support.JwtTokenProvider;
+import com.reviewduck.controller.ControllerTest;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.request.MemberUpdateNicknameRequest;
-import com.reviewduck.member.service.MemberService;
 
-@WebMvcTest(MemberController.class)
-public class MemberControllerTest {
-
-    private static final String accessToken = "access_token";
-
-    @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
-    @MockBean
-    private MemberService memberService;
-    @MockBean
-    private AuthService authService;
-    @MockBean
-    private JwtTokenProvider jwtTokenProvider;
+public class MemberControllerTest extends ControllerTest {
 
     @BeforeEach
     void createMemberAndGetAccessToken() {
