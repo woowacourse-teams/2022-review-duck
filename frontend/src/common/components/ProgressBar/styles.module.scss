@@ -1,18 +1,43 @@
 @import 'styles/@global.scss';
 
-.container {
-  width: 80%;
-  height: 0.3125rem;
+.component-progress-bar {
+  width: 100%;
+  height: 4px;
   position: relative;
+  border-radius: 0.1875rem;
   background-color: $THEME_COLOR_STATUS_PRIMARY_100;
-  border-radius: 0.1875rem;
-}
 
-.progress {
-  position: absolute;
-  left: 0;
-  background-color: $THEME_COLOR_STATUS_PRIMARY_500;
-  height: 0.3125rem;
-  transition: width 0.5s ease;
-  border-radius: 0.1875rem;
+  @include animation(0.2s linear forwards 1s) {
+    0% {
+      opacity: 1;
+    }
+
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .percent {
+    width: 0%;
+    height: 100%;
+    transition: width 0.5s ease;
+    border-radius: 0.1875rem;
+    background-color: $THEME_COLOR_STATUS_PRIMARY_500;
+  }
+
+  .percent.animation {
+    @include setAnimationContent {
+      from {
+        width: 0%;
+      }
+
+      to {
+        width: 100%;
+      }
+    }
+
+    animation-play-state: running;
+    animation-fill-mode: forwards;
+    animation-timing-function: linear;
+  }
 }
