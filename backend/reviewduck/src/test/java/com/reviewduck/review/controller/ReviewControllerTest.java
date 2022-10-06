@@ -60,10 +60,23 @@ public class ReviewControllerTest {
 
         @ParameterizedTest
         @NullSource
+        @DisplayName("회고 제목에 null 값이 들어갈 경우 예외가 발생한다.")
+        void nullTitle(String title) throws Exception {
+            // given
+            ReviewUpdateRequest request = new ReviewUpdateRequest(false, title, List.of(
+                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("answer")))
+            );
+
+            // when, then
+            assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "회고 제목은 비어있을 수 없습니다.");
+        }
+
+        @ParameterizedTest
+        @NullSource
         @DisplayName("회고 내용에 null 값이 들어갈 경우 예외가 발생한다.")
         void nullContent(List<ReviewContentUpdateRequest> contents) throws Exception {
             // given
-            ReviewUpdateRequest request = new ReviewUpdateRequest(false, contents);
+            ReviewUpdateRequest request = new ReviewUpdateRequest(false, "title", contents);
 
             // when, then
             assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "회고 답변 관련 오류가 발생했습니다.");
@@ -74,7 +87,7 @@ public class ReviewControllerTest {
         @DisplayName("질문 번호에 null 값이 들어갈 경우 예외가 발생한다.")
         void nullQuestionId(Long questionId) throws Exception {
             // given
-            ReviewUpdateRequest request = new ReviewUpdateRequest(false, List.of(
+            ReviewUpdateRequest request = new ReviewUpdateRequest(false, "title", List.of(
                 new ReviewContentUpdateRequest(questionId, new AnswerUpdateRequest("answer"))
             ));
 
@@ -87,7 +100,7 @@ public class ReviewControllerTest {
         @DisplayName("답변에 null 값이 들어갈 경우 예외가 발생한다.")
         void nullAnswerUpdateRequest(AnswerUpdateRequest answer) throws Exception {
             // given
-            ReviewUpdateRequest request = new ReviewUpdateRequest(false, List.of(
+            ReviewUpdateRequest request = new ReviewUpdateRequest(false, "title", List.of(
                 new ReviewContentUpdateRequest(1L, answer)
             ));
 
@@ -100,7 +113,7 @@ public class ReviewControllerTest {
         @DisplayName("답변 값에 null 값이 들어갈 경우 예외가 발생한다.")
         void nullAnswer(String answer) throws Exception {
             // given
-            ReviewUpdateRequest request = new ReviewUpdateRequest(false, List.of(
+            ReviewUpdateRequest request = new ReviewUpdateRequest(false, "title", List.of(
                 new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest(answer))
             ));
 
@@ -108,8 +121,8 @@ public class ReviewControllerTest {
             assertBadRequestFromPut("/api/reviews/" + invalidReviewId, request, "답변은 비어있을 수 없습니다.");
         }
 
-
     }
+
     @Nested
     @DisplayName("좋아요")
     class likes {
@@ -123,7 +136,6 @@ public class ReviewControllerTest {
             // when, then
             assertBadRequestFromPost("/api/reviews/1/likes", request, "좋아요 개수는 0 이상이어야 합니다.");
         }
-
 
     }
 
