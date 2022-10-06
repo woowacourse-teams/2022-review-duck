@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
+import { useQueryClient } from '@tanstack/react-query';
 
-import { PAGE_LIST } from 'constant';
-import { ErrorResponse } from 'types';
+import { PAGE_LIST, QUERY_KEY } from 'constant';
+import { ErrorResponse, UserProfileResponse } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/@shared/hooks/useQuestions';
@@ -21,6 +22,7 @@ const EDITOR_MODE = {
 function ReviewAnswerEditorPage() {
   const { reviewFormCode = '', reviewId = '' } = useParams();
   const [searchParams] = useSearchParams();
+  const queryClient = useQueryClient();
 
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
@@ -28,14 +30,22 @@ function ReviewAnswerEditorPage() {
   const redirectUri =
     searchParams.get('redirect') || `${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`;
 
-  const { authorProfile, reviewForm, reviewContents, submitCreateAnswer, submitUpdateAnswer } =
+  const { authorProfile, reviewForm, reviewAnswer, submitCreateAnswer, submitUpdateAnswer } =
     useAnswerEditorPage(reviewFormCode, reviewId);
   const { questions, answeredCount, isAnswerComplete, updateAnswer } = useQuestions(
-    reviewContents.questions,
+    reviewForm.questions,
   );
 
-  const [isPrivate, setPrivate] = useState(!!reviewContents.info.isPrivate);
+  const { nickname } = queryClient.getQueryData([
+    QUERY_KEY.DATA.AUTH,
+    QUERY_KEY.API.GET_AUTH_MY_PROFILE,
+  ]) as UserProfileResponse;
+
+  const [isPrivate, setPrivate] = useState(!!reviewAnswer.info.isPrivate);
   const [focusQuestionIndex, setFocusQuestionIndex] = useState(0);
+  const [reviewTitle, setReviewTitle] = useState(
+    reviewId ? reviewAnswer.info.reviewTitle : `${nickname}의 회고`,
+  );
 
   const handleFocusAnswer = (index: number) => () => {
     setFocusQuestionIndex(index);
@@ -99,11 +109,15 @@ function ReviewAnswerEditorPage() {
     });
   };
 
+  const handleReviewTitleChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
+    setReviewTitle(target.value);
+  };
+
   return (
     <>
       <Status>
         <Status.LogoButton link={PAGE_LIST.HOME} />
-
+        <Status.FormTitle>{reviewForm.title}</Status.FormTitle>
         <Status.FocusQuestion description={questions[focusQuestionIndex].description}>
           {questions[focusQuestionIndex].value}
         </Status.FocusQuestion>
@@ -116,7 +130,7 @@ function ReviewAnswerEditorPage() {
       </Status>
 
       <Editor onSubmit={handleSubmit}>
-        <Editor.Title>{reviewForm?.title}</Editor.Title>
+        <Editor.TitleInput title={reviewTitle} onChange={handleReviewTitleChange} />
 
         {questions.map(({ key, answer, ...question }, index) => (
           <Editor.AnswerField

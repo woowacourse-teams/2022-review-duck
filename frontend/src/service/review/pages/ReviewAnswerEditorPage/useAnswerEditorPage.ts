@@ -1,4 +1,10 @@
-import { ErrorResponse, Question, ReviewForm, UpdateReviewAnswerRequest } from 'types';
+import {
+  ErrorResponse,
+  Question,
+  ReviewAnswer,
+  ReviewForm,
+  UpdateReviewAnswerRequest,
+} from 'types';
 
 import { useGetAuthProfile } from 'service/@shared/hooks/queries/auth';
 import {
@@ -13,7 +19,7 @@ interface SubmitHandler {
   onError: (error: ErrorResponse) => void;
 }
 
-const initialReviewContents: ReviewForm = {
+const initialReviewForm: ReviewForm = {
   title: '',
   questions: [],
   info: {
@@ -25,6 +31,14 @@ const initialReviewContents: ReviewForm = {
     },
     isSelf: false,
     updateDate: '0일 전',
+    isPrivate: false,
+  },
+};
+
+const initialReviewAnswer: ReviewAnswer = {
+  questions: [],
+  info: {
+    reviewTitle: '',
     isPrivate: false,
   },
 };
@@ -51,7 +65,8 @@ function useAnswerEditorPage(reviewFormCode: string, reviewId: string) {
     enabled: !!reviewId,
   });
 
-  const reviewContents = reviewAnswerQuery.data || reviewFormQuery.data || initialReviewContents;
+  const reviewForm = reviewFormQuery.data || initialReviewForm;
+  const reviewAnswer = reviewAnswerQuery.data || initialReviewAnswer;
 
   const submitCreateAnswer = (
     { questions, isPrivate }: CreateParameters,
@@ -88,8 +103,8 @@ function useAnswerEditorPage(reviewFormCode: string, reviewId: string) {
 
   return {
     authorProfile: userProfileQuery.data,
-    reviewForm: reviewFormQuery.data,
-    reviewContents,
+    reviewForm: reviewForm,
+    reviewAnswer: reviewAnswer,
     submitCreateAnswer,
     submitUpdateAnswer,
   };

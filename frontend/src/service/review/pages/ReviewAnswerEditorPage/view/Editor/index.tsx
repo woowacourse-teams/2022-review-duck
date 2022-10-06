@@ -5,7 +5,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { Text, FieldSet, Textarea, Button, ToolTip, CheckBox } from 'common/components';
+import { FieldSet, Textarea, Button, ToolTip, CheckBox, TextBox } from 'common/components';
 
 import { CheckboxProps } from 'common/components/CheckBox';
 
@@ -23,16 +23,13 @@ const Container = ({ onSubmit, children, ...rest }: ContainerProps) => {
   );
 };
 
-interface TitleProps {
-  children?: string;
+interface TitleInputProps {
+  title: string;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-const Title = ({ children }: TitleProps) => {
-  return (
-    <Text className={styles.reviewFormTitle} size={24} weight="bold">
-      {children}
-    </Text>
-  );
+const TitleInput = ({ title, onChange }: TitleInputProps) => {
+  return <TextBox onChange={onChange} value={title} theme="underline" size="large" />;
 };
 
 interface AnswerFieldProps {
@@ -89,7 +86,7 @@ const ConfirmButtons = ({ submitDisabled, onSubmit, onCancel }: ConfirmButtonsPr
 };
 
 export const Editor = Object.assign(Container, {
-  Title,
+  TitleInput,
   AnswerField,
   PrivateCheckBox,
   ConfirmButtons,

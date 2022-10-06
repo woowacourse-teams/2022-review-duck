@@ -6,6 +6,14 @@
   top: 0;
 }
 
+.form-title {
+  margin-top: 1rem;
+  color: $LIGHT_COLOR_STATUS_PRIMARY_700;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 2rem;
+}
+
 .focus-question {
   margin-bottom: 2rem;
 
