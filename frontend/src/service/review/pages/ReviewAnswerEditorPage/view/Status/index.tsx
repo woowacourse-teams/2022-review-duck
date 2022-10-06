@@ -69,7 +69,7 @@ const AnsweredState = ({ answeredCount, questionCount }: AnsweredStateProps) => 
 interface UserProfile {
   nickname?: string;
   profileImage?: string;
-  description: string;
+  description?: string;
 }
 
 const UserProfile = ({ nickname, profileImage, description }: UserProfile) => {
