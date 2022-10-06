@@ -33,7 +33,7 @@ function ReviewAnswerEditorPage() {
   const { authorProfile, reviewForm, reviewAnswer, submitCreateAnswer, submitUpdateAnswer } =
     useAnswerEditorPage(reviewFormCode, reviewId);
   const { questions, answeredCount, isAnswerComplete, updateAnswer } = useQuestions(
-    reviewAnswer.questions,
+    reviewId ? reviewAnswer.questions : reviewForm.questions,
   );
 
   const { nickname } = queryClient.getQueryData([
