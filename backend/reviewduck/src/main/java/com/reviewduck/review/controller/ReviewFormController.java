@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
@@ -44,6 +45,7 @@ public class ReviewFormController {
 
     private final ReviewFormService reviewFormService;
     private final ReviewService reviewService;
+    private final MemberService memberService;
 
     @Operation(summary = "회고 폼을 생성한다.")
     @PostMapping
@@ -77,7 +79,7 @@ public class ReviewFormController {
         info("/api/review-forms/" + reviewFormCode, "GET", "");
 
         ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
-        List<Member> participants = reviewFormService.findAllParticipantsByCode(reviewForm);
+        List<Member> participants = memberService.findAllParticipantsByCode(reviewForm);
 
         return ReviewFormResponse.of(reviewForm, member, participants);
     }

@@ -24,6 +24,9 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
+import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionUpdateRequest;
@@ -43,6 +46,12 @@ public class ReviewFormServiceTest {
 
     @Autowired
     private ReviewFormService reviewFormService;
+
+    @Autowired
+    private ReviewFormQuestionService reviewFormQuestionService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     @Autowired
     private TemplateService templateService;
@@ -338,7 +347,7 @@ public class ReviewFormServiceTest {
             // when
             int page = 0;
             int size = 3;
-            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page ,size)
+            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page, size)
                 .getContent();
 
             // then
@@ -368,7 +377,7 @@ public class ReviewFormServiceTest {
             // when
             int page = 0;
             int size = 3;
-            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page ,size)
+            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page, size)
                 .getContent();
 
             // then
@@ -502,8 +511,29 @@ public class ReviewFormServiceTest {
     class deleteByCode {
 
         @Test
-        @DisplayName("회고 폼을 삭제한다.")
-        void deleteReviewForm() throws InterruptedException {
+        @DisplayName("회고 폼을 삭제한다(생성한 회고 있는 상태).")
+        void deleteReviewForm_reviewExists() throws InterruptedException {
+            // given
+            ReviewForm savedReviewForm = saveReviewForm(member1);
+            String code = savedReviewForm.getCode();
+            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, "title", List.of(
+                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+            ));
+            reviewService.save(member1, code, reviewCreateRequest);
+
+            // when
+            reviewFormService.deleteByCode(member1, code);
+
+            // then
+            assertThatThrownBy(() -> reviewFormService.findByCode(code))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("존재하지 않는 회고 폼입니다.");
+        }
+
+        @Test
+        @DisplayName("회고 폼을 삭제한다(생성한 회고 없는 상태).")
+        void deleteReviewForm_reviewNotExists() throws InterruptedException {
             // given
             ReviewForm savedReviewForm = saveReviewForm(member1);
             String code = savedReviewForm.getCode();

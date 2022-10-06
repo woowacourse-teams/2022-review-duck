@@ -44,7 +44,7 @@ public class ReviewService {
         ReviewForm reviewForm = reviewFormService.findByCode(code);
         List<QuestionAnswerCreateDto> questionAnswerCreateDtos = getReviewCreateDtos(request);
 
-        Review review = new Review("title", member, reviewForm, questionAnswerCreateDtos, request.getIsPrivate());
+        Review review = new Review(request.getTitle(), member, reviewForm, questionAnswerCreateDtos, request.getIsPrivate());
         return reviewRepository.save(review);
     }
 
@@ -89,7 +89,7 @@ public class ReviewService {
 
         List<QuestionAnswerUpdateDto> questionAnswerUpdateDtos = getQuestionAnswerUpdateDtos(request);
 
-        review.update(request.getIsPrivate(), questionAnswerUpdateDtos);
+        review.update(request.getIsPrivate(), request.getTitle(), questionAnswerUpdateDtos);
     }
 
     @Transactional

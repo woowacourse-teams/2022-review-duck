@@ -67,13 +67,13 @@ public class Review extends BaseDate {
         sortQuestionAnswers();
     }
 
-
-    public void update(boolean isPrivate, List<QuestionAnswerUpdateDto> questionAnswers) {
+    public void update(boolean isPrivate, String title, List<QuestionAnswerUpdateDto> questionAnswers) {
         int oldSize = this.questionAnswers.size();
         this.questionAnswers.addAll(updateQuestionAnswers(questionAnswers));
         this.questionAnswers.subList(0, oldSize).clear();
 
         this.isPrivate = isPrivate;
+        this.title = title;
         sortQuestionAnswers();
     }
 

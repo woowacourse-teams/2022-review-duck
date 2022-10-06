@@ -16,8 +16,8 @@ import org.junit.jupiter.params.provider.NullSource;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.exception.ReviewFormException;
-import com.reviewduck.review.service.ReviewFormQuestionCreateDto;
-import com.reviewduck.review.service.ReviewFormQuestionUpdateDto;
+import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
+import com.reviewduck.review.dto.service.ReviewFormQuestionUpdateDto;
 
 class ReviewFormTest {
 

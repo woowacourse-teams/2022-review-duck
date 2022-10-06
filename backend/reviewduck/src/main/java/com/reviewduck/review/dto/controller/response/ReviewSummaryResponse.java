@@ -18,6 +18,7 @@ public class ReviewSummaryResponse {
     private String title;
     private long updatedAt;
     private int likes;
+    private boolean isPrivate;
     private List<ReviewContentResponse> contents;
     private ReviewFormSummaryResponse reviewForm;
 
@@ -31,8 +32,13 @@ public class ReviewSummaryResponse {
             review.getTitle(),
             Timestamp.valueOf(review.getUpdatedAt()).getTime(),
             review.getLikes(),
+            review.isPrivate(),
             contents,
             ReviewFormSummaryResponse.from(review.getReviewForm())
         );
+    }
+
+    public boolean getIsPrivate() {
+        return isPrivate;
     }
 }

@@ -1,4 +1,4 @@
-package com.reviewduck.review.service;
+package com.reviewduck.review.dto.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
