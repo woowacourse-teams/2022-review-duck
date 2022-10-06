@@ -35,16 +35,6 @@ import com.reviewduck.review.dto.controller.response.ReviewSynchronizedResponse;
 
 public class ReviewAcceptanceTest extends AcceptanceTest {
 
-    private static final Long invalidReviewId = 99L;
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-    @Autowired
-    private MemberService memberService;
-
-    private String accessToken1;
-    private String accessToken2;
-
     @BeforeEach
     void createMemberAndGetAccessToken() {
         Member member1 = new Member("1", "jason", "제이슨", "profileUrl1");

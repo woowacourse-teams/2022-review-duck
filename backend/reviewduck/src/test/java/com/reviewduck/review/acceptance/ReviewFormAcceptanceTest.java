@@ -34,17 +34,6 @@ import com.reviewduck.template.dto.controller.response.TemplateIdResponse;
 
 public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
-    private static final String invalidCode = "aaaaaaaa";
-    private static final String invalidToken = "tokentokentoken.invalidinvalidinvalid.tokentokentoken";
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-    @Autowired
-    private MemberService memberService;
-
-    private String accessToken1;
-    private String accessToken2;
-
     @BeforeEach
     void createMemberAndGetAccessToken() {
         Member member1 = new Member("1", "panda", "제이슨", "profileUrl1");

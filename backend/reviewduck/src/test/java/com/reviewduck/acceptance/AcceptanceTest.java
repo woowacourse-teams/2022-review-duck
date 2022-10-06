@@ -1,10 +1,15 @@
 package com.reviewduck.acceptance;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+
+import com.reviewduck.auth.support.JwtTokenProvider;
+import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.service.MemberService;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
@@ -12,6 +17,20 @@ import io.restassured.response.ValidatableResponse;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("classpath:truncate.sql")
 public class AcceptanceTest {
+
+    @Autowired
+    protected JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    protected MemberService memberService;
+
+    protected String accessToken1;
+    protected String accessToken2;
+
+    protected Member savedMember;
+
+    protected Long invalidReviewId = 99L;
+    protected String invalidCode = "aaaaaaaa";
+    protected String invalidToken = "tokentokentoken.invalidinvalidinvalid.tokentokentoken";
 
     @Value("${local.server.port}")
     int port;
