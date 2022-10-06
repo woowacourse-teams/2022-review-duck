@@ -32,8 +32,8 @@ import lombok.AllArgsConstructor;
 public class ReviewFormService {
 
     private final ReviewFormRepository reviewFormRepository;
-
     private final ReviewRepository reviewRepository;
+
     private final TemplateService templateService;
     private final MemberService memberService;
 
