@@ -4,7 +4,7 @@ import { flushSync } from 'react-dom';
 import cn from 'classnames';
 import { Question } from 'types';
 
-import useQuestions from 'service/@shared/hooks/useQuestionsV2';
+import useQuestions from 'service/@shared/hooks/useQuestions';
 
 import { setFormFocus } from 'service/@shared/utils';
 
