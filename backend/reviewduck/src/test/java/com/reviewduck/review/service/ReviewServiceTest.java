@@ -79,10 +79,11 @@ public class ReviewServiceTest {
             long questionId1 = reviewForm1.getQuestions().get(0).getId();
             long questionId2 = reviewForm1.getQuestions().get(1).getId();
 
-            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, List.of(
-                new ReviewContentCreateRequest(questionId1, new AnswerCreateRequest("answer1")),
-                new ReviewContentCreateRequest(questionId2, new AnswerCreateRequest("answer2"))
-            ));
+            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, "title",
+                List.of(
+                    new ReviewContentCreateRequest(questionId1, new AnswerCreateRequest("answer1")),
+                    new ReviewContentCreateRequest(questionId2, new AnswerCreateRequest("answer2"))
+                ));
 
             // when
             Review savedReview = reviewService.save(member1, reviewForm1.getCode(), reviewCreateRequest);
@@ -102,10 +103,11 @@ public class ReviewServiceTest {
         @DisplayName("유효하지 않은 입장 코드로 저장할 수 없다.")
         void withInvalidCode() {
             // given
-            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, List.of(
-                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
-                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
-            ));
+            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, "title",
+                List.of(
+                    new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                    new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+                ));
 
             // when, then
             assertThatThrownBy(() -> reviewService.save(member1, invalidCode, reviewCreateRequest))
@@ -117,10 +119,11 @@ public class ReviewServiceTest {
         @DisplayName("유효하지 않은 질문 번호로 저장할 수 없다.")
         void withInvalidQuestionId() {
             //given
-            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, List.of(
-                new ReviewContentCreateRequest(9999L, new AnswerCreateRequest("answer1")),
-                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
-            ));
+            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, "title",
+                List.of(
+                    new ReviewContentCreateRequest(9999L, new AnswerCreateRequest("answer1")),
+                    new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+                ));
 
             // when, then
             assertThatThrownBy(() -> reviewService.save(member1, reviewForm1.getCode(), reviewCreateRequest))
@@ -330,10 +333,11 @@ public class ReviewServiceTest {
             Review savedReview = saveReview(reviewForm1, member1, true);
 
             // when
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
-            ));
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title",
+                List.of(
+                    new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                    new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
+                ));
 
             reviewService.update(member1, savedReview.getId(), updateRequest);
 
@@ -356,10 +360,11 @@ public class ReviewServiceTest {
             Review savedReview = saveReview(reviewForm1, member1, false);
 
             // when
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
-            ));
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title",
+                List.of(
+                    new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                    new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
+                ));
 
             // then
             assertThatThrownBy(() -> reviewService.update(member2, savedReview.getId(), updateRequest))
@@ -371,10 +376,11 @@ public class ReviewServiceTest {
         @DisplayName("존재하지 않는 회고는 수정할 수 없다.")
         void invalidId() {
             // given
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
-            ));
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title",
+                List.of(
+                    new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                    new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
+                ));
 
             // when, then
             assertThatThrownBy(() -> reviewService.update(member1, 99999L, updateRequest))
@@ -388,10 +394,11 @@ public class ReviewServiceTest {
             // given
             Review savedReview = saveReview(reviewForm1, member1, false);
 
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
-                new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
-                new ReviewContentUpdateRequest(999L, new AnswerUpdateRequest("editedAnswer2"))
-            ));
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title",
+                List.of(
+                    new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
+                    new ReviewContentUpdateRequest(999L, new AnswerUpdateRequest("editedAnswer2"))
+                ));
 
             // when, then
             assertThatThrownBy(() -> reviewService.update(member1, savedReview.getId(), updateRequest))
@@ -506,16 +513,17 @@ public class ReviewServiceTest {
     private Review saveReview(ReviewForm reviewForm, Member member, boolean isPrivate) throws InterruptedException {
         Thread.sleep(1);
 
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, List.of(
-            new ReviewContentCreateRequest(
-                reviewForm.getQuestions().get(0).getId(),
-                new AnswerCreateRequest("answer1")
-            ),
-            new ReviewContentCreateRequest(
-                reviewForm.getQuestions().get(1).getId(),
-                new AnswerCreateRequest("answer2")
-            )
-        ));
+        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, "title",
+            List.of(
+                new ReviewContentCreateRequest(
+                    reviewForm.getQuestions().get(0).getId(),
+                    new AnswerCreateRequest("answer1")
+                ),
+                new ReviewContentCreateRequest(
+                    reviewForm.getQuestions().get(1).getId(),
+                    new AnswerCreateRequest("answer2")
+                )
+            ));
 
         return reviewService.save(member, reviewForm.getCode(), reviewCreateRequest);
     }

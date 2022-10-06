@@ -73,7 +73,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             String code = createReviewFormAndGetCode(accessToken1, reviewTitle, questions);
 
             // save review
-            ReviewCreateRequest createRequest = new ReviewCreateRequest(false, List.of(
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(false, "title", List.of(
                 new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
                 new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2")),
                 new ReviewContentCreateRequest(3L, new AnswerCreateRequest("answer3"))
@@ -196,7 +196,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             String reviewFormCode = createReviewFormAndGetCode(accessToken1, "title", questions);
 
             // 회고 등록
-            ReviewCreateRequest createRequest = new ReviewCreateRequest(false, List.of(
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(false, "title", List.of(
                 new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
                 new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
             ));
@@ -301,7 +301,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             Long reviewId = saveReviewAndGetId(accessToken1, false);
 
             //when, then
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title", List.of(
                 new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
                 new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
             ));
@@ -316,9 +316,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             Long reviewId = saveReviewAndGetId(accessToken1, false);
 
             //when, then
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title", List.of(
                 new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
-                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest( "editedAnswer2"))
+                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
             ));
 
             put("/api/reviews/" + reviewId, updateRequest)
@@ -329,9 +329,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         @DisplayName("존재하지 않는 회고를 수정할 수 없다.")
         void invalidReviewId() {
             // when, then
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title", List.of(
                 new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
-                new ReviewContentUpdateRequest(2L,new AnswerUpdateRequest("editedAnswer2"))
+                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
             ));
 
             put("/api/reviews/" + invalidReviewId, updateRequest, accessToken1)
@@ -344,9 +344,9 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             Long reviewId = saveReviewAndGetId(accessToken1, false);
 
             //when, then
-            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, List.of(
+            ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title", List.of(
                 new ReviewContentUpdateRequest(1L, new AnswerUpdateRequest("editedAnswer1")),
-                new ReviewContentUpdateRequest(2L,new AnswerUpdateRequest("editedAnswer2"))
+                new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
             ));
 
             put("/api/reviews/" + reviewId, updateRequest, accessToken2)
@@ -447,7 +447,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         String code = createReviewFormAndGetCode(accessToken, reviewTitle, questions);
 
         // save Review
-        ReviewCreateRequest createRequest = new ReviewCreateRequest(isPrivate, List.of(
+        ReviewCreateRequest createRequest = new ReviewCreateRequest(isPrivate, "title", List.of(
             new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
             new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
         ));

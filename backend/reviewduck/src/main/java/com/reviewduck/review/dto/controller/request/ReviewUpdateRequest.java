@@ -16,13 +16,17 @@ import lombok.NoArgsConstructor;
 public class ReviewUpdateRequest {
 
     @NotNull(message = "공개 여부를 설정해야 합니다.")
-    private boolean isPrivate;
+    private Boolean isPrivate;
+
+    @NotNull(message = "회고 제목은 비어있을 수 없습니다.")
+    private String title;
 
     @NotNull(message = "회고 답변 관련 오류가 발생했습니다.")
     @Valid
     private List<ReviewContentUpdateRequest> contents;
 
-    public boolean getIsPrivate() {
+    public Boolean getIsPrivate() {
         return isPrivate;
     }
+
 }
