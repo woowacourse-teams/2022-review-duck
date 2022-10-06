@@ -62,7 +62,7 @@ function Title({ usedCount, nickname, elapsedTime, children }: TitleProps) {
 }
 
 interface ActionButtonsProps {
-  editable: boolean;
+  editable?: boolean;
   onClickCreateReviewForm: React.MouseEventHandler<HTMLButtonElement>;
   onClickStartReview: React.MouseEventHandler<HTMLButtonElement>;
   onClickEdit: React.MouseEventHandler<HTMLDivElement>;
@@ -70,7 +70,7 @@ interface ActionButtonsProps {
 }
 
 function Buttons({
-  editable,
+  editable = false,
   onClickCreateReviewForm,
   onClickStartReview,
   onClickEdit,

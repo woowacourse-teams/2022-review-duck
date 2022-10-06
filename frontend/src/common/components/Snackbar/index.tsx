@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { faBell } from '@fortawesome/free-regular-svg-icons';
+import { faClose } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import cn from 'classnames';
 
 import { TransitionDiv, Text } from 'common/components';
 
 import styles from './styles.module.scss';
-
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { faBell } from '@fortawesome/free-regular-svg-icons';
-import { faClose } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export interface SnackbarProps {
   icon?: IconProp;
@@ -48,7 +48,7 @@ function Snackbar({
 
   return (
     <TransitionDiv
-      className={cn(styles.container, styles[theme])}
+      className={cn(styles.componentSnackbar, styles[theme])}
       all="drop"
       direction="right"
       duration={500}
@@ -63,9 +63,11 @@ function Snackbar({
           <Text className={styles.title} size={18} weight="bold">
             {title}
           </Text>
-          <Text className={styles.description} size={14}>
-            {description}
-          </Text>
+          {description && (
+            <Text className={styles.description} size={14}>
+              {description}
+            </Text>
+          )}
         </div>
 
         <FontAwesomeIcon className={styles.close} icon={faClose} />

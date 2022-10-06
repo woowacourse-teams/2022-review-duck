@@ -50,6 +50,7 @@
   width: 5%;
   min-width: 3.5rem;
   height: 100%;
+  pointer-events: none;
 
   z-index: 5;
 
@@ -64,6 +65,7 @@
   .control-button {
     cursor: pointer;
     user-select: none;
+    pointer-events: all;
 
     display: flex;
     position: relative;

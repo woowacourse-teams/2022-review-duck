@@ -14,7 +14,6 @@ export interface Template {
     nickname: string;
     profileUrl: URLString;
     socialNickname: string;
-    bio?: string;
   };
 }
 

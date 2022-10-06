@@ -1,4 +1,4 @@
-import { API_URI, PAGE_OPTION } from 'constant';
+import { API_URI, FILTER, PAGE_OPTION } from 'constant';
 
 import {
   CreateFormResponse,
@@ -6,52 +6,45 @@ import {
   CreateTemplateRequest,
   CreateTemplateResponse,
   UpdateTemplateRequest,
+  GetTemplateResponse,
+  GetTemplatesResponse,
 } from '../types/template';
 
 import axiosInstance from './config/axiosInstance';
-import Template, { ResponseTemplate } from 'models/Template';
 
-interface GetTemplatesResponse {
-  numberOfTemplates: number;
-  isLastPage: boolean;
-  templates: ResponseTemplate[];
-}
-
-export type TemplateList = Awaited<ReturnType<typeof getTemplates>>;
 export const getTemplates = async (
-  filter: TemplateFilterType,
-  pageNumber: string,
-  itemCount?: number,
+  filter: TemplateFilterType = FILTER.TEMPLATE_TAB.LATEST,
+  pageNumber = 1,
+  itemCount = PAGE_OPTION.TEMPLATE_ITEM_SIZE,
 ) => {
   const { data } = await axiosInstance.get<GetTemplatesResponse>(
-    `${API_URI.TEMPLATE.GET_TEMPLATES}?page=${pageNumber}&size=${
-      itemCount || PAGE_OPTION.TEMPLATE_ITEM_SIZE
-    }&sort=${filter}`,
+    `${API_URI.TEMPLATE.GET_TEMPLATES}?page=${pageNumber}&size=${itemCount}&sort=${filter}`,
   );
-
-  return {
-    totalNumber: data.numberOfTemplates,
-    isLastPage: data.isLastPage,
-    templates: data.templates.map((template) => new Template(template)),
-  };
-};
-
-export const getTemplate = async (templateId: number): Promise<Template> => {
-  const { data } = await axiosInstance.get(API_URI.TEMPLATE.GET_TEMPLATE(templateId));
-
-  return new Template(data);
-};
-
-export const createForm = async (templateId: number): Promise<CreateFormResponse> => {
-  const { data } = await axiosInstance.post(API_URI.TEMPLATE.CREATE_FORM(templateId));
 
   return data;
 };
 
-export const createTemplate = async (
-  query: CreateTemplateRequest,
-): Promise<CreateTemplateResponse> => {
-  const { data } = await axiosInstance.post(API_URI.TEMPLATE.CREATE_TEMPLATE, query);
+export const getTemplate = async (templateId: number) => {
+  const { data } = await axiosInstance.get<GetTemplateResponse>(
+    API_URI.TEMPLATE.GET_TEMPLATE(templateId),
+  );
+
+  return data;
+};
+
+export const createForm = async (templateId: number) => {
+  const { data } = await axiosInstance.post<CreateFormResponse>(
+    API_URI.TEMPLATE.CREATE_FORM(templateId),
+  );
+
+  return data;
+};
+
+export const createTemplate = async (query: CreateTemplateRequest) => {
+  const { data } = await axiosInstance.post<CreateTemplateResponse>(
+    API_URI.TEMPLATE.CREATE_TEMPLATE,
+    query,
+  );
 
   return data;
 };
@@ -61,8 +54,8 @@ export const updateTemplate = async ({
   templateTitle,
   templateDescription,
   questions,
-}: UpdateTemplateRequest): Promise<null> => {
-  const { data } = await axiosInstance.put(API_URI.TEMPLATE.UPDATE_TEMPLATE(templateId), {
+}: UpdateTemplateRequest) => {
+  const { data } = await axiosInstance.put<null>(API_URI.TEMPLATE.UPDATE_TEMPLATE(templateId), {
     templateTitle,
     templateDescription,
     questions,
@@ -71,8 +64,8 @@ export const updateTemplate = async ({
   return data;
 };
 
-export const deleteTemplate = async (templateId: number): Promise<null> => {
-  const { data } = await axiosInstance.delete(API_URI.TEMPLATE.DELETE_TEMPLATE(templateId));
+export const deleteTemplate = async (templateId: number) => {
+  const { data } = await axiosInstance.delete<null>(API_URI.TEMPLATE.DELETE_TEMPLATE(templateId));
 
   return data;
 };

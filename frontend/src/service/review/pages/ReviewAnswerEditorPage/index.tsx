@@ -5,7 +5,7 @@ import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 import { useQueryClient } from '@tanstack/react-query';
 
 import { PAGE_LIST, QUERY_KEY } from 'constant';
-import { ErrorResponse, UserProfileResponse } from 'types';
+import { ErrorResponse, Question, UserProfileResponse } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/@shared/hooks/useQuestions';
@@ -32,9 +32,16 @@ function ReviewAnswerEditorPage() {
 
   const { authorProfile, reviewForm, reviewAnswer, submitCreateAnswer, submitUpdateAnswer } =
     useAnswerEditorPage(reviewFormCode, reviewId);
-  const { questions, answeredCount, isAnswerComplete, updateAnswer } = useQuestions(
+
+  const [questions, setQuestions] = useState<Question[]>(
     reviewId ? reviewAnswer.questions : reviewForm.questions,
   );
+  const {
+    questions: questionsWithKey,
+    answeredCount,
+    isAnswerComplete,
+    updateAnswer,
+  } = useQuestions(questions, setQuestions);
 
   const { nickname } = queryClient.getQueryData([
     QUERY_KEY.DATA.AUTH,
@@ -136,7 +143,7 @@ function ReviewAnswerEditorPage() {
           onChange={handleReviewTitleChange}
         />
 
-        {questions.map(({ key, answer, ...question }, index) => (
+        {questionsWithKey.map(({ key, answer, ...question }, index) => (
           <Editor.AnswerField
             key={key}
             question={question.value}

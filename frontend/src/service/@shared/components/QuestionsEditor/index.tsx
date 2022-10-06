@@ -1,4 +1,4 @@
-import { FormEvent, HTMLAttributes, useEffect } from 'react';
+import { FormEvent, HTMLAttributes } from 'react';
 import { flushSync } from 'react-dom';
 
 import cn from 'classnames';
@@ -12,28 +12,15 @@ import QuestionEditorItem from 'service/@shared/components/QuestionsEditorItem';
 
 import styles from './styles.module.scss';
 
-interface QuestionsEditorProps extends HTMLAttributes<HTMLFormElement> {
-  initialQuestions?: Question[];
-  onUpdate: (questions: Question[]) => unknown;
+interface QuestionsEditorProps extends Omit<HTMLAttributes<HTMLFormElement>, 'onChange'> {
+  value: Question[];
+  onChange: (questions: Question[]) => unknown;
 }
 
 type UpdateQuestionEvent = React.MouseEvent | React.KeyboardEvent<HTMLInputElement>;
 
-const INITIAL_QUESTION: Question[] = [
-  {
-    value: '',
-    description: '',
-  },
-];
-
-function QuestionsEditor({ className, initialQuestions, onUpdate, ...rest }: QuestionsEditorProps) {
-  const { questions, addQuestion, removeQuestion, updateQuestion } = useQuestions(
-    initialQuestions || INITIAL_QUESTION,
-  );
-
-  useEffect(() => {
-    onUpdate(questions);
-  }, [questions, onUpdate]);
+function QuestionsEditor({ className, value, onChange, ...rest }: QuestionsEditorProps) {
+  const { questions, addQuestion, removeQuestion, updateQuestion } = useQuestions(value, onChange);
 
   const handleAdd = (index: number) => (event: UpdateQuestionEvent) => {
     let newQuestionIndex = -1;

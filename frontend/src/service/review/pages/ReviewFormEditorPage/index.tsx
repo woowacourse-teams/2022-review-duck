@@ -6,7 +6,6 @@ import { PAGE_LIST } from 'constant';
 import { Question } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
-import useQuestions from 'service/@shared/hooks/useQuestions';
 
 import { getErrorMessage } from 'service/@shared/utils';
 
@@ -26,10 +25,10 @@ function ReviewFormEditorPage() {
     useReviewFormEditor(reviewFormCode);
 
   const [reviewFormTitle, setReviewTitle] = useState(reviewForm?.title || '');
-  const { removeBlankQuestions } = useQuestions();
   const [questions, setQuestion] = useState(
     reviewForm?.questions || [{ value: '', description: '' }],
   );
+
   const { showSnackbar } = useSnackbar();
 
   const redirectUri = searchParams.get('redirect');
@@ -45,17 +44,15 @@ function ReviewFormEditorPage() {
   const handleSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const submitQuestions = removeBlankQuestions(questions);
-
     try {
-      validateReviewForm(reviewFormTitle, submitQuestions);
+      validateReviewForm(reviewFormTitle, questions);
     } catch (error) {
       alert(getErrorMessage(error));
       return;
     }
 
     submitReviewForm.mutate(
-      { reviewFormTitle, reviewFormCode, questions: submitQuestions },
+      { reviewFormTitle, reviewFormCode, questions },
       {
         onSuccess: ({ reviewFormCode }) => {
           showSnackbar({
@@ -89,7 +86,7 @@ function ReviewFormEditorPage() {
 
       <Editor>
         <Editor.TitleInput title={reviewFormTitle} onTitleChange={handleChangeReviewTitle} />
-        <QuestionsEditor initialQuestions={questions} onUpdate={handleChangeQuestions} />
+        <QuestionsEditor value={questions} onChange={handleChangeQuestions} />
         <div className={cn('button-container horizontal')}>
           <Editor.CancelButton onCancel={handleCancel}>취소하기</Editor.CancelButton>
           <Editor.SubmitButton onSubmit={handleSubmitReviewForm} disabled={isSubmitLoading}>

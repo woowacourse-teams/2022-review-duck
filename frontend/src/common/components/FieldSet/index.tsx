@@ -1,3 +1,6 @@
+import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import cn from 'classnames';
 
 import { Text } from 'common/components';
@@ -5,8 +8,6 @@ import { Text } from 'common/components';
 import styles from './styles.module.scss';
 
 import FlexContainer from '../FlexContainer';
-import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface FieldSetContainerProps {
   className?: string;

@@ -24,7 +24,7 @@ interface controlVisible {
 }
 
 function ScrollPanel({ className, centerDisabled, children }: ScrollPanelProps) {
-  const [controlHidden, setControlVisible] = useState<controlVisible>({
+  const [buttonVisible, setButtonVisible] = useState<controlVisible>({
     previous: true,
     next: false,
   });
@@ -34,36 +34,48 @@ function ScrollPanel({ className, centerDisabled, children }: ScrollPanelProps) 
 
   const childElementWidth = useRef<number>(0);
 
-  useEffect(() => {
+  const updateButtonVisible = () => {
+    if (!scrollPanelRef.current) return;
+
+    const { scrollWidth, scrollLeft, clientWidth } = scrollPanelRef.current;
+
+    const isPreviousButtonVisible = scrollLeft <= 0;
+    const isNextButtonVisible = scrollWidth - clientWidth <= scrollLeft;
+
+    setButtonVisible({
+      ...buttonVisible,
+      previous: isPreviousButtonVisible,
+      next: isNextButtonVisible,
+    });
+  };
+
+  useEffect(
+    function scrollPositionInitial() {
+      if (!scrollPanelRef.current) return;
+
+      scrollPanelRef.current.scrollLeft = 0;
+      updateButtonVisible();
+    },
+    [children],
+  );
+
+  useEffect(function getChildItemWidth() {
     const $firstChildElement = listRef.current?.querySelector('*:first-child');
 
     if (!$firstChildElement) return;
     childElementWidth.current = $firstChildElement.clientWidth;
   }, []);
 
-  const handleChangeScroll = useDebounceCallback(({ target }: React.UIEvent<HTMLDivElement>) => {
-    const { scrollWidth, scrollLeft, clientWidth } = target as HTMLDivElement;
-    const updateControlHidden = { ...controlHidden };
+  const handleUpdateScrollPosition = useDebounceCallback(() => updateButtonVisible(), 50);
 
-    const isScrollFirstPosition = scrollLeft <= 0;
-    const isScrollEndPosition = scrollWidth - clientWidth <= scrollLeft;
-
-    updateControlHidden.previous = isScrollFirstPosition;
-    updateControlHidden.next = isScrollEndPosition;
-
-    setControlVisible(updateControlHidden);
-  }, 100);
-
-  const handleClickControlButton = (direction: controlDirection) => () => {
+  const handleChangeScroll = (direction: controlDirection) => () => {
     if (!scrollPanelRef.current) return;
 
     const { scrollWidth, scrollLeft, clientWidth } = scrollPanelRef.current;
-
     const scrollLocation =
       direction === 'previous'
         ? scrollLeft - childElementWidth.current
         : scrollLeft + childElementWidth.current;
-
     const isMoveable = scrollWidth - clientWidth + childElementWidth.current >= scrollLocation;
 
     if (!isMoveable) return;
@@ -75,12 +87,12 @@ function ScrollPanel({ className, centerDisabled, children }: ScrollPanelProps) 
     <div className={styles.componentScrollPanel}>
       <FlexContainer
         className={cn(styles.controlWrapper, styles.previous, {
-          [styles.hidden]: controlHidden.previous,
+          [styles.hidden]: buttonVisible.previous,
         })}
         justify="center"
         align="center"
       >
-        <div className={styles.controlButton} onClick={handleClickControlButton('previous')}>
+        <div className={styles.controlButton} onClick={handleChangeScroll('previous')}>
           <FontAwesomeIcon icon={faChevronLeft} />
         </div>
       </FlexContainer>
@@ -88,7 +100,7 @@ function ScrollPanel({ className, centerDisabled, children }: ScrollPanelProps) 
       <div
         className={cn(styles.scrollContainer, className)}
         ref={scrollPanelRef}
-        onScroll={handleChangeScroll}
+        onScroll={handleUpdateScrollPosition}
       >
         <div
           className={cn(styles.correctScreen, { [styles.disabled]: centerDisabled })}
@@ -100,12 +112,12 @@ function ScrollPanel({ className, centerDisabled, children }: ScrollPanelProps) 
 
       <FlexContainer
         className={cn(styles.controlWrapper, styles.next, {
-          [styles.hidden]: controlHidden.next,
+          [styles.hidden]: buttonVisible.next,
         })}
         justify="center"
         align="center"
       >
-        <div className={styles.controlButton} onClick={handleClickControlButton('next')}>
+        <div className={styles.controlButton} onClick={handleChangeScroll('next')}>
           <FontAwesomeIcon icon={faChevronRight} />
         </div>
       </FlexContainer>

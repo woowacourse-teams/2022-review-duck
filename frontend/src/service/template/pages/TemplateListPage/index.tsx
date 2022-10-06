@@ -7,9 +7,12 @@ import { TemplateFilterType } from 'types';
 
 import { useGetTemplates } from 'service/@shared/hooks/queries/template/useGet';
 
-import { isInclude } from 'service/@shared/utils';
+import { isNumber } from 'common/utils/validator';
+import { getElapsedTimeText, isInclude } from 'service/@shared/utils';
 
 import { PaginationBar } from 'common/components';
+
+import PageSuspense from 'common/components/PageSuspense';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
 import TemplateCard from 'service/template/components/TemplateCard';
@@ -22,20 +25,22 @@ function TemplateListPage() {
   const [searchParam, setSearchParam] = useSearchParams();
   const navigate = useNavigate();
 
-  const pageNumber = searchParam.get('page') || String(1);
+  const pageNumber = isNumber(searchParam.get('page')) ? Number(searchParam.get('page')) : 1;
 
-  // QueryString Filter 아래와 같이 타입 좁히는식으로 진행!
   const filterQueryString = searchParam.get('sort');
   const currentTab = isInclude(Object.values(FILTER.TEMPLATE_TAB), filterQueryString)
     ? filterQueryString
     : FILTER.TEMPLATE_TAB.LATEST;
 
-  const getTemplates = useGetTemplates(currentTab as TemplateFilterType, pageNumber);
+  const getTemplates = useGetTemplates({
+    filter: currentTab,
+    pageNumber,
+  });
 
   if (getTemplates.isError || getTemplates.isLoading)
     return <>{/* Suspense, ErrorBoundary Used */}</>;
 
-  const { totalNumber, templates } = getTemplates.data;
+  const { numberOfTemplates, templates } = getTemplates.data;
 
   const handleTemplateView = (id: number) => () => {
     navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${id}?sort=${currentTab}`);
@@ -54,7 +59,7 @@ function TemplateListPage() {
     window.scrollTo(0, 0);
   };
 
-  return (
+  return PageSuspense(
     <LayoutContainer>
       <Filter>
         <Filter.SortList
@@ -70,21 +75,17 @@ function TemplateListPage() {
       </Filter>
 
       <div className={styles.templateContainer}>
-        {templates.map((template) => (
-          <TemplateCard
-            key={template.id}
-            className={styles.card}
-            onClick={handleTemplateView(template.id)}
-          >
-            <TemplateCard.Tag usedCount={template.usedCount} />
-            <TemplateCard.Title>{template.title}</TemplateCard.Title>
-            <TemplateCard.UpdatedAt>{template.elapsedTime}</TemplateCard.UpdatedAt>
-            <TemplateCard.Description>{template.description}</TemplateCard.Description>
+        {templates.map(({ info, creator }) => (
+          <TemplateCard key={info.id} className={styles.card} onClick={handleTemplateView(info.id)}>
+            <TemplateCard.Tag usedCount={info.usedCount} />
+            <TemplateCard.Title>{info.title}</TemplateCard.Title>
+            <TemplateCard.UpdatedAt>{getElapsedTimeText(info.updatedAt)}</TemplateCard.UpdatedAt>
+            <TemplateCard.Description>{info.description}</TemplateCard.Description>
 
             <TemplateCard.Profile
-              profileUrl={template.creator.profileImage}
-              nickname={template.creator.nickname}
-              socialNickname={template.creator.snsName}
+              profileUrl={creator.profileUrl}
+              nickname={creator.nickname}
+              socialNickname={creator.socialNickname}
             />
           </TemplateCard>
         ))}
@@ -93,12 +94,12 @@ function TemplateListPage() {
           className={styles.pagination}
           visiblePageButtonLength={PAGE_OPTION.TEMPLATE_BUTTON_LENGTH}
           itemCountInPage={PAGE_OPTION.TEMPLATE_ITEM_SIZE}
-          totalItemCount={totalNumber}
+          totalItemCount={numberOfTemplates}
           focusedPage={Number(pageNumber)}
           onClickPageButton={handleClickPagination}
         />
       </div>
-    </LayoutContainer>
+    </LayoutContainer>,
   );
 }
 

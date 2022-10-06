@@ -5,8 +5,11 @@ import { faArrowTrendUp } from '@fortawesome/free-solid-svg-icons';
 import { PAGE_LIST, FILTER } from 'constant';
 
 import useSnackbar from 'common/hooks/useSnackbar';
+import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
 
-import { isInclude } from 'service/@shared/utils';
+import { getElapsedTimeText, isInclude } from 'service/@shared/utils';
+
+import PageSuspense from 'common/components/PageSuspense';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
 import Questions from 'service/@shared/components/Questions';
@@ -21,6 +24,7 @@ import Trending from './view/Trending';
 
 function TemplateDetailPage() {
   const [searchParam] = useSearchParams();
+  const { navigate, handleLinkPage } = useNavigateHandler();
   const { templateId } = useParams();
 
   const filterQueryString = searchParam.get('sort');
@@ -28,30 +32,17 @@ function TemplateDetailPage() {
     ? filterQueryString
     : FILTER.TEMPLATE_TAB.LATEST;
 
-  const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
 
   const queries = useTemplateDetailQueries(Number(templateId));
 
   if (!queries) return <>{/* Suspense, Error Boundary Used */}</>;
 
-  const { template, trendingTemplates, deleteMutation, createFormMutation } = queries;
-  const creator = template.creator;
+  const { trendingTemplates, deleteMutation, createFormMutation } = queries;
+  const { info: templateInfo, creator: templateCreator, ...template } = queries.template;
 
   const handleTemplateView = (id: number) => () => {
     navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${id}?sort=${currentTab}`);
-  };
-
-  const handleCreateReview = () => {
-    navigate(`${PAGE_LIST.TEMPLATE_FORM}?templateId=${template.id}`);
-  };
-
-  const handleCreateTemplate = () => {
-    navigate(PAGE_LIST.TEMPLATE_FORM);
-  };
-
-  const handleTemplateList = () => {
-    navigate(`${PAGE_LIST.TEMPLATE_LIST}?sort=${currentTab}`);
   };
 
   const handleStartReview = () => {
@@ -75,14 +66,10 @@ function TemplateDetailPage() {
     });
   };
 
-  const handleEditTemplate = () => {
-    navigate(`${PAGE_LIST.TEMPLATE_FORM}?templateId=${template.id}`);
-  };
-
   const handleDeleteTemplate = () => {
     if (!confirm('정말 템플릿을 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
 
-    deleteMutation.mutate(template.id, {
+    deleteMutation.mutate(templateInfo.id, {
       onSuccess: () => {
         showSnackbar({
           title: '템플릿이 삭제되었습니다.',
@@ -96,29 +83,31 @@ function TemplateDetailPage() {
     });
   };
 
-  return (
+  return PageSuspense(
     <>
       <LayoutContainer>
         <Header>
           <Header.Title
-            usedCount={template.usedCount}
-            nickname={creator.nickname}
-            elapsedTime={template.elapsedTime}
+            usedCount={templateInfo.usedCount}
+            nickname={templateCreator.nickname}
+            elapsedTime={getElapsedTimeText(templateInfo.updatedAt)}
           >
-            {template.title}
+            {templateInfo.title}
           </Header.Title>
 
           <Header.Buttons
-            editable={template.isEditable}
-            onClickCreateReviewForm={handleCreateReview}
+            editable={template.isCreator}
+            onClickCreateReviewForm={handleLinkPage(
+              `${PAGE_LIST.TEMPLATE_FORM}?templateId=${templateInfo.id}`,
+            )}
             onClickStartReview={handleStartReview}
-            onClickEdit={handleEditTemplate}
+            onClickEdit={handleLinkPage(`${PAGE_LIST.TEMPLATE_FORM}/${templateInfo.id}`)}
             onClickDelete={handleDeleteTemplate}
           />
         </Header>
 
         <Content>
-          <Content.Detail description={template.description}>
+          <Content.Detail description={templateInfo.description}>
             <Questions>
               {template.questions.map((question, index) => {
                 const questionText = `${index + 1}. ${question.value}`;
@@ -133,44 +122,44 @@ function TemplateDetailPage() {
           </Content.Detail>
 
           <Content.MoreButtons
-            onClickCreateTemplate={handleCreateTemplate}
-            onClickList={handleTemplateList}
+            onClickCreateTemplate={handleLinkPage(PAGE_LIST.TEMPLATE_FORM)}
+            onClickList={handleLinkPage(`${PAGE_LIST.TEMPLATE_LIST}?sort=${currentTab}`)}
           />
         </Content>
       </LayoutContainer>
 
       <Trending>
         <Trending.ProfileCard
-          snsKey={creator.snsKey}
-          profileImage={creator.profileImage}
-          nickname={creator.nickname}
-          description={creator.snsName}
+          snsKey={templateCreator.id}
+          profileImage={templateCreator.profileUrl}
+          nickname={templateCreator.nickname}
+          description={templateCreator.socialNickname}
         />
 
         <Trending.ListTextCard icon={faArrowTrendUp} description="지금 주목 받고 있는 템플릿은?">
           인기 템플릿
         </Trending.ListTextCard>
 
-        {trendingTemplates.map((template) => (
+        {trendingTemplates.map(({ info, creator }) => (
           <TemplateCard
-            key={template.id}
+            key={info.id}
             className={styles.templateCard}
-            onClick={handleTemplateView(template.id)}
+            onClick={handleTemplateView(info.id)}
           >
-            <TemplateCard.Tag usedCount={template.usedCount} />
-            <TemplateCard.Title>{template.title}</TemplateCard.Title>
-            <TemplateCard.UpdatedAt>{template.elapsedTime}</TemplateCard.UpdatedAt>
-            <TemplateCard.Description>{template.description}</TemplateCard.Description>
+            <TemplateCard.Tag usedCount={info.usedCount} />
+            <TemplateCard.Title>{info.title}</TemplateCard.Title>
+            <TemplateCard.UpdatedAt>{getElapsedTimeText(info.updatedAt)}</TemplateCard.UpdatedAt>
+            <TemplateCard.Description>{info.description}</TemplateCard.Description>
 
             <TemplateCard.Profile
-              profileUrl={template.creator.profileImage}
-              nickname={template.creator.nickname}
-              socialNickname={template.creator.snsName}
+              profileUrl={creator.profileUrl}
+              nickname={creator.nickname}
+              socialNickname={creator.socialNickname}
             />
           </TemplateCard>
         ))}
       </Trending>
-    </>
+    </>,
   );
 }
 

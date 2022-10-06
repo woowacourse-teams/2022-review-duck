@@ -8,11 +8,7 @@ import { useUpdateTemplate } from 'service/@shared/hooks/queries/template/useUpd
 
 function useTemplateDetailQueries(templateId: number) {
   const getTemplateQuery = useGetTemplate(templateId);
-  const getTrendTemplateQuery = useGetTemplates(
-    FILTER.TEMPLATE_TAB.TREND as TemplateFilterType,
-    String(1),
-    PAGE_OPTION.TEMPLATE_TREND_ITEM_SIZE,
-  );
+  const getTrendTemplateQuery = useGetTemplates({ filter: FILTER.TEMPLATE_TAB.TREND });
 
   const createFormMutation = useCreateForm();
 
