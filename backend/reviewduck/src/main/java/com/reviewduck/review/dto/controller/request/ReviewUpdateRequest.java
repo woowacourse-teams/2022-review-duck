@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 @Getter
 public class ReviewUpdateRequest {
 
@@ -28,9 +29,4 @@ public class ReviewUpdateRequest {
         return isPrivate;
     }
 
-    public ReviewUpdateRequest(Boolean isPrivate, String title, List<ReviewContentUpdateRequest> contents) {
-        this.isPrivate = isPrivate;
-        this.title = title;
-        this.contents = contents;
-    }
 }

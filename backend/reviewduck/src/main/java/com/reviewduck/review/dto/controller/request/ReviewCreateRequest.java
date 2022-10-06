@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-
+@AllArgsConstructor
 @Getter
 @ToString
 public class ReviewCreateRequest {
@@ -31,9 +31,4 @@ public class ReviewCreateRequest {
         return isPrivate;
     }
 
-    public ReviewCreateRequest(Boolean isPrivate, String title, List<ReviewContentCreateRequest> contents) {
-        this.isPrivate = isPrivate;
-        this.title = title;
-        this.contents = contents;
-    }
 }
