@@ -11,13 +11,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import com.reviewduck.acceptance.AcceptanceTest;
-import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
@@ -32,17 +29,6 @@ import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequ
 import com.reviewduck.template.dto.controller.response.TemplateIdResponse;
 
 public class ReviewFormAcceptanceTest extends AcceptanceTest {
-
-    private static final String invalidCode = "aaaaaaaa";
-    private static final String invalidToken = "tokentokentoken.invalidinvalidinvalid.tokentokentoken";
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-    @Autowired
-    private MemberService memberService;
-
-    private String accessToken1;
-    private String accessToken2;
 
     @BeforeEach
     void createMemberAndGetAccessToken() {

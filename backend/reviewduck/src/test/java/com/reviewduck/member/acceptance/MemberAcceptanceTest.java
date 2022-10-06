@@ -7,25 +7,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import com.reviewduck.acceptance.AcceptanceTest;
-import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.request.MemberUpdateNicknameRequest;
 import com.reviewduck.member.dto.response.MemberResponse;
-import com.reviewduck.member.service.MemberService;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
-
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
-    @Autowired
-    private MemberService memberService;
-
-    private String accessToken;
-    private Member savedMember;
 
     @BeforeEach
     void createMemberAndGetAccessToken() {
