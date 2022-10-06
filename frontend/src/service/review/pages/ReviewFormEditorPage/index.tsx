@@ -24,17 +24,11 @@ function ReviewFormEditorPage() {
   const { reviewForm, isNewReviewForm, isSubmitLoading, submitReviewForm } =
     useReviewFormEditor(reviewFormCode);
 
-<<<<<<< HEAD
-  const [reviewFormTitle, setReviewTitle] = useState(initialReviewForm.title);
-  const [questions, setQuestion] = useState(initialReviewForm.questions);
-
-=======
   const [reviewFormTitle, setReviewTitle] = useState(reviewForm?.title || '');
-  const { removeBlankQuestions } = useQuestions();
   const [questions, setQuestion] = useState(
     reviewForm?.questions || [{ value: '', description: '' }],
   );
->>>>>>> 792eed1bd567ccda61f4baee1035584b544664b0
+
   const { showSnackbar } = useSnackbar();
 
   const redirectUri = searchParams.get('redirect');
@@ -90,52 +84,9 @@ function ReviewFormEditorPage() {
         <Status.QuestionPreview questions={questions} />
       </Status>
 
-<<<<<<< HEAD
-        <FlexContainer direction="column" gap="small">
-          {questions.map(
-            (question, index) =>
-              question.value && (
-                <QuestionCard
-                  key={index}
-                  numbering={index + 1}
-                  type="text"
-                  title={question.value}
-                  description={question.description}
-                />
-              ),
-          )}
-        </FlexContainer>
-      </FlexContainer>
-
-      <div>
-        <FlexContainer className={cn(styles.container, styles.sticky)} direction="column">
-          <TextBox
-            theme="underline"
-            size="large"
-            placeholder="회고의 제목을 입력해주세요."
-            value={reviewFormTitle}
-            onChange={handleChangeReviewTitle}
-          />
-
-          <QuestionsEditor value={questions} onChange={handleChangeQuestions} />
-
-          <div className={cn('button-container horizontal')}>
-            <Button theme="outlined" onClick={handleCancel}>
-              <FontAwesomeIcon icon={faArrowRightFromBracket} />
-              <span>취소하기</span>
-            </Button>
-
-            <Button type="button" onClick={handleSubmitReviewForm} disabled={isSubmitLoading}>
-              <FontAwesomeIcon icon={faPenToSquare} />
-              <span>{isNewReviewForm ? '생성하기' : '수정하기'}</span>
-            </Button>
-          </div>
-        </FlexContainer>
-      </div>
-=======
       <Editor>
         <Editor.TitleInput title={reviewFormTitle} onTitleChange={handleChangeReviewTitle} />
-        <QuestionsEditor initialQuestions={questions} onUpdate={handleChangeQuestions} />
+        <QuestionsEditor value={questions} onChange={handleChangeQuestions} />
         <div className={cn('button-container horizontal')}>
           <Editor.CancelButton onCancel={handleCancel}>취소하기</Editor.CancelButton>
           <Editor.SubmitButton onSubmit={handleSubmitReviewForm} disabled={isSubmitLoading}>
@@ -143,7 +94,6 @@ function ReviewFormEditorPage() {
           </Editor.SubmitButton>
         </div>
       </Editor>
->>>>>>> 792eed1bd567ccda61f4baee1035584b544664b0
     </>
   );
 }

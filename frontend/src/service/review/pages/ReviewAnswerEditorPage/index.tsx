@@ -4,13 +4,8 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 import { useQueryClient } from '@tanstack/react-query';
 
-<<<<<<< HEAD
-import { PAGE_LIST } from 'constant';
-import { ErrorResponse, Question } from 'types';
-=======
 import { PAGE_LIST, QUERY_KEY } from 'constant';
-import { ErrorResponse, UserProfileResponse } from 'types';
->>>>>>> 792eed1bd567ccda61f4baee1035584b544664b0
+import { ErrorResponse, Question, UserProfileResponse } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/@shared/hooks/useQuestions';
@@ -37,20 +32,16 @@ function ReviewAnswerEditorPage() {
 
   const { authorProfile, reviewForm, reviewAnswer, submitCreateAnswer, submitUpdateAnswer } =
     useAnswerEditorPage(reviewFormCode, reviewId);
-<<<<<<< HEAD
 
-  const [questions, setQuestions] = useState<Question[]>(reviewContents.questions);
+  const [questions, setQuestions] = useState<Question[]>(
+    reviewId ? reviewAnswer.questions : reviewForm.questions,
+  );
   const {
     questions: questionsWithKey,
     answeredCount,
     isAnswerComplete,
     updateAnswer,
   } = useQuestions(questions, setQuestions);
-=======
-  const { questions, answeredCount, isAnswerComplete, updateAnswer } = useQuestions(
-    reviewId ? reviewAnswer.questions : reviewForm.questions,
-  );
->>>>>>> 792eed1bd567ccda61f4baee1035584b544664b0
 
   const { nickname } = queryClient.getQueryData([
     QUERY_KEY.DATA.AUTH,

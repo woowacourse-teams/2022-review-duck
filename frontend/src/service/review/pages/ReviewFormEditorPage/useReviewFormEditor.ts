@@ -1,10 +1,6 @@
 import { UseMutationResult } from '@tanstack/react-query';
 
-<<<<<<< HEAD
-import { ReviewForm, CreateReviewFormRequest, UpdateReviewFormRequest, ErrorResponse } from 'types';
-=======
 import { CreateReviewFormRequest, UpdateReviewFormRequest, ErrorResponse } from 'types';
->>>>>>> 792eed1bd567ccda61f4baee1035584b544664b0
 
 import {
   useCreateReviewForm,
