@@ -21,6 +21,7 @@ export interface UserContentRequireField {
   isSelf: boolean;
   updateDate: string;
   isPrivate?: boolean;
+  reviewTitle?: string;
 }
 
 export interface ReviewForm {

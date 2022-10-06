@@ -58,6 +58,7 @@ export const transformFormAnswer = (data: GetReviewFormAnswerResponse): ReviewFo
         answer: content.answer,
       })),
       info: {
+        reviewTitle,
         creator,
         isSelf: isCreator,
         updateDate: getElapsedTimeText(updatedAt),

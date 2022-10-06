@@ -123,7 +123,7 @@ function ReviewOverViewPage() {
                       <Questions.CoverProfile
                         socialId={info.creator.id}
                         image={info.creator.profileUrl}
-                        title={info.creator.nickname}
+                        title={info.reviewTitle as string}
                         description={info.updateDate}
                       />
 
