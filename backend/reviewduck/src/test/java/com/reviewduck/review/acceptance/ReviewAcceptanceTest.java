@@ -321,7 +321,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 new ReviewContentUpdateRequest(2L, new AnswerUpdateRequest("editedAnswer2"))
             ));
 
-            put("/api/reviews/" + invalidReviewId, updateRequest, accessToken1)
+            put("/api/reviews/" + INVALID_REVIEW_ID, updateRequest, accessToken1)
                 .statusCode(HttpStatus.NOT_FOUND.value());
         }
 
@@ -371,7 +371,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         @DisplayName("존재하지 않는 회고를 삭제할 수 없다.")
         void invalidReviewId() {
             // when, then
-            delete("/api/reviews/" + invalidReviewId, accessToken1)
+            delete("/api/reviews/" + INVALID_REVIEW_ID, accessToken1)
                 .statusCode(HttpStatus.NOT_FOUND.value());
         }
 

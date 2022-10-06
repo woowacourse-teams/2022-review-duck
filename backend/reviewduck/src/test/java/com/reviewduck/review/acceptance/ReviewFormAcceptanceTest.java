@@ -421,7 +421,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             createReview(code);
 
             // when, then
-            get("/api/review-forms/" + code + "/reviews?displayType=list", invalidToken)
+            get("/api/review-forms/" + code + "/reviews?displayType=list", INVALID_TOKEN)
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
@@ -429,7 +429,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         @DisplayName("존재하지 않는 회고 질문지 코드에 대해 조회할 수 없다.")
         void invalidCode() {
             // when, then
-            get("/api/review-forms/" + invalidCode + "/reviews?displayType=list", accessToken1)
+            get("/api/review-forms/" + INVALID_CODE + "/reviews?displayType=list", accessToken1)
                 .statusCode(HttpStatus.NOT_FOUND.value());
         }
 
@@ -503,7 +503,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             createReview(code);
 
             // when, then
-            get("/api/review-forms/" + code + "/reviews?displayType=sheet", invalidToken)
+            get("/api/review-forms/" + code + "/reviews?displayType=sheet", INVALID_TOKEN)
                 .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
@@ -511,7 +511,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         @DisplayName("존재하지 않는 회고 질문지 코드에 대해 조회할 수 없다.")
         void invalidCode() {
             // when, then
-            get("/api/review-forms/" + invalidCode + "/reviews?displayType=sheet", accessToken1)
+            get("/api/review-forms/" + INVALID_CODE + "/reviews?displayType=sheet", accessToken1)
                 .statusCode(HttpStatus.NOT_FOUND.value());
         }
     }

@@ -21,7 +21,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         Member member = new Member("1", "jason", "제이슨", "profileUrl");
         savedMember = memberService.save(member);
 
-        accessToken = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
+        accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
     }
 
     @Nested
@@ -35,10 +35,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             Member member = new Member("2", "jason", "제이슨", "profileUrl");
             Member savedMember = memberService.save(member);
 
-            String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
+            String accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
 
             // when
-            MemberResponse memberResponse = get("/api/members/me", accessToken)
+            MemberResponse memberResponse = get("/api/members/me", accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(MemberResponse.class);
@@ -68,7 +68,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         @DisplayName("본인의 사용자 정보를 조회한다.")
         void findMyMemberInfo() {
             // when
-            MemberResponse memberResponse = get("/api/members/" + savedMember.getSocialId(), accessToken)
+            MemberResponse memberResponse = get("/api/members/" + savedMember.getSocialId(), accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(MemberResponse.class);
@@ -90,7 +90,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             memberService.save(member2);
 
             // when
-            MemberResponse memberResponse = get("/api/members/" + member2.getSocialId(), accessToken)
+            MemberResponse memberResponse = get("/api/members/" + member2.getSocialId(), accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(MemberResponse.class);
@@ -116,7 +116,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         @DisplayName("존재하지 않는 사용자를 조회할 수 없다.")
         void failToFindInvalidSocialId() {
             // when, then
-            get("/api/members/123", accessToken)
+            get("/api/members/123", accessToken1)
                 .statusCode(HttpStatus.NOT_FOUND.value());
         }
     }
@@ -131,10 +131,10 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             // when
             String nicknameToUpdate = "nickname to update";
             MemberUpdateNicknameRequest updateRequest = new MemberUpdateNicknameRequest(nicknameToUpdate);
-            put("/api/members/me", updateRequest, accessToken)
+            put("/api/members/me", updateRequest, accessToken1)
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
-            MemberResponse memberResponse = get("/api/members/" + savedMember.getSocialId(), accessToken)
+            MemberResponse memberResponse = get("/api/members/" + savedMember.getSocialId(), accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(MemberResponse.class);

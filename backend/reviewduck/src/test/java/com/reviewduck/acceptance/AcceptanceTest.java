@@ -26,15 +26,13 @@ public class AcceptanceTest {
     @Autowired
     protected MemberService memberService;
 
-    protected String accessToken;
-    protected Member savedMember;
-
-    protected final Long invalidReviewId = 99L;
-    protected final String invalidCode = "aaaaaaaa";
-    protected final String invalidToken = "tokentokentoken.invalidinvalidinvalid.tokentokentoken";
+    protected final Long INVALID_REVIEW_ID = 99L;
+    protected final String INVALID_CODE = "aaaaaaaa";
+    protected final String INVALID_TOKEN = "tokentokentoken.invalidinvalidinvalid.tokentokentoken";
 
     protected String accessToken1;
     protected String accessToken2;
+    protected Member savedMember;
 
     @BeforeEach
     public void setUp() {
