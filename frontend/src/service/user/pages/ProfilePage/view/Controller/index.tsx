@@ -22,7 +22,7 @@ const Container = ({ children }: ContainerProps) => {
 const Profile = ({ profileUrl }: Record<string, string>) => {
   return (
     <div className={styles.profileImage} style={{ backgroundImage: `url(${profileUrl})` }}>
-      <div className={styles.activeIcon}>🐤</div>
+      <Text className={styles.activeIcon}>😀</Text>
     </div>
   );
 };
