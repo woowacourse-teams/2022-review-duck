@@ -31,9 +31,11 @@ export interface ReviewForm {
 }
 
 export interface ReviewAnswer {
-  id: number;
   questions: AnsweredQuestion<false>[];
-  info: UserContentRequireField;
+  info: {
+    reviewTitle: string;
+    isPrivate: boolean;
+  };
 }
 
 export interface ReviewFormAnswer {
@@ -94,15 +96,12 @@ export interface GetReviewFormResponse extends ReviewFormResponse {
 }
 
 export interface GetReviewAnswerResponse {
-  id: number;
-  updatedAt: number;
-  creator: UserProfile;
-  isCreator: boolean;
+  reviewTitle: string;
+  isPrivate: boolean;
   contents: Array<{
     question: ServerQuestionRequireId;
     answer: ServerAnswerRequireId;
   }>;
-  isPrivate: boolean;
 }
 
 export type GetReviewFormAnswerResponse = {
