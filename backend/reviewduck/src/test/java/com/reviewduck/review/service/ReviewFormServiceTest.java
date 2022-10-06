@@ -347,7 +347,7 @@ public class ReviewFormServiceTest {
             // when
             int page = 0;
             int size = 3;
-            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page ,size)
+            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page, size)
                 .getContent();
 
             // then
@@ -377,7 +377,7 @@ public class ReviewFormServiceTest {
             // when
             int page = 0;
             int size = 3;
-            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page ,size)
+            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page, size)
                 .getContent();
 
             // then
@@ -516,7 +516,7 @@ public class ReviewFormServiceTest {
             // given
             ReviewForm savedReviewForm = saveReviewForm(member1);
             String code = savedReviewForm.getCode();
-            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, List.of(
+            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, "title", List.of(
                 new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
                 new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
             ));
