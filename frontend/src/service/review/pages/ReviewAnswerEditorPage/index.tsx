@@ -4,7 +4,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 
 import { PAGE_LIST } from 'constant';
-import { ErrorResponse } from 'types';
+import { ErrorResponse, Question } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/@shared/hooks/useQuestions';
@@ -30,9 +30,14 @@ function ReviewAnswerEditorPage() {
 
   const { authorProfile, reviewForm, reviewContents, submitCreateAnswer, submitUpdateAnswer } =
     useAnswerEditorPage(reviewFormCode, reviewId);
-  const { questions, answeredCount, isAnswerComplete, updateAnswer } = useQuestions(
-    reviewContents.questions,
-  );
+
+  const [questions, setQuestions] = useState<Question[]>(reviewContents.questions);
+  const {
+    questions: questionsWithKey,
+    answeredCount,
+    isAnswerComplete,
+    updateAnswer,
+  } = useQuestions(questions, setQuestions);
 
   const [isPrivate, setPrivate] = useState(!!reviewContents.info.isPrivate);
   const [focusQuestionIndex, setFocusQuestionIndex] = useState(0);
@@ -118,7 +123,7 @@ function ReviewAnswerEditorPage() {
       <Editor onSubmit={handleSubmit}>
         <Editor.Title>{reviewForm?.title}</Editor.Title>
 
-        {questions.map(({ key, answer, ...question }, index) => (
+        {questionsWithKey.map(({ key, answer, ...question }, index) => (
           <Editor.AnswerField
             key={key}
             question={question.value}
