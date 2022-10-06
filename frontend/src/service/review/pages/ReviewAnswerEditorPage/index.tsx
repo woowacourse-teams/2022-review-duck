@@ -130,7 +130,11 @@ function ReviewAnswerEditorPage() {
       </Status>
 
       <Editor onSubmit={handleSubmit}>
-        <Editor.TitleInput title={reviewTitle} onChange={handleReviewTitleChange} />
+        <Editor.TitleInput
+          placeholder={reviewId ? reviewAnswer.info.reviewTitle : `${nickname}의 회고`}
+          title={reviewTitle}
+          onChange={handleReviewTitleChange}
+        />
 
         {questions.map(({ key, answer, ...question }, index) => (
           <Editor.AnswerField

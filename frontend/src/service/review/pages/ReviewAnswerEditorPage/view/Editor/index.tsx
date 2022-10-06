@@ -25,11 +25,20 @@ const Container = ({ onSubmit, children, ...rest }: ContainerProps) => {
 
 interface TitleInputProps {
   title: string;
+  placeholder: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-const TitleInput = ({ title, onChange }: TitleInputProps) => {
-  return <TextBox onChange={onChange} value={title} theme="underline" size="large" />;
+const TitleInput = ({ title, placeholder, onChange }: TitleInputProps) => {
+  return (
+    <TextBox
+      onChange={onChange}
+      value={title}
+      placeholder={placeholder}
+      theme="underline"
+      size="large"
+    />
+  );
 };
 
 interface AnswerFieldProps {
