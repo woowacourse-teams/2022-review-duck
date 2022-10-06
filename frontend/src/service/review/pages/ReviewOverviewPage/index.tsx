@@ -153,7 +153,7 @@ function ReviewOverViewPage() {
                 ))}
               </React.Fragment>
             ))}
-            <div ref={targetRef}></div>
+            <div ref={targetRef} />
             {isFetching && <ListView.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
           </ListView.Content>
 
@@ -196,11 +196,11 @@ function ReviewOverViewPage() {
                 {page.data.reviews.map(({ id, info: { creator }, questions }, index) => (
                   <SheetView.Answers
                     key={id}
-                    ref={
-                      displayMode === 'sheet' && index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1
-                        ? targetRef
-                        : null
-                    }
+                    // ref={
+                    //   displayMode === 'sheet' && index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1
+                    //     ? targetRef
+                    //     : null
+                    // }
                   >
                     <SheetView.Creator
                       socialId={creator.id}
@@ -216,6 +216,7 @@ function ReviewOverViewPage() {
               </React.Fragment>
             ))}
             {isFetching && <SheetView.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
+            <div ref={targetRef} />
           </SheetView.ReviewList>
         </SheetView>
       )}

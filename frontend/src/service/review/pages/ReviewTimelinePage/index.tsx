@@ -36,13 +36,20 @@ type ReviewId = ReviewPublicAnswer['id'];
 function ReviewTimelinePage() {
   const [searchParam] = useSearchParams();
 
-  const currentTab = searchParam.get('filter') || 'trend';
+  const currentTab = searchParam.get('filter') || FILTER.TIMELINE_TAB.LATEST;
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
 
-  useEffect(() => {
+  useEffect(function queryStringFilter() {
     validateFilter([FILTER.TIMELINE_TAB.TREND, FILTER.TIMELINE_TAB.LATEST], currentTab);
   }, []);
+
+  useEffect(
+    function focusTop() {
+      window.scrollTo(0, 0);
+    },
+    [searchParam],
+  );
 
   const { mutate: reviewAnswerDelete } = useDeleteReviewAnswer();
   const { addFetch } = useStackFetch(2000);
@@ -156,23 +163,20 @@ function ReviewTimelinePage() {
 
         <SideMenu.List>
           <SideMenu.Menu
-            isCurrentTab={currentTab === FILTER.TIMELINE_TAB.TREND}
-            filter={FILTER.TIMELINE_TAB.TREND as TimelineFilterType}
-            icon={faArrowTrendUp}
-          >
-            트랜딩
-          </SideMenu.Menu>
-          <SideMenu.Menu
             isCurrentTab={currentTab === FILTER.TIMELINE_TAB.LATEST}
             filter={FILTER.TIMELINE_TAB.LATEST as TimelineFilterType}
             icon={faPenNib}
           >
             최신글
           </SideMenu.Menu>
-          {/* <SideMenu.Menu icon={faHeart}>구독</SideMenu.Menu> */}
+          <SideMenu.Menu
+            isCurrentTab={currentTab === FILTER.TIMELINE_TAB.TREND}
+            filter={FILTER.TIMELINE_TAB.TREND as TimelineFilterType}
+            icon={faArrowTrendUp}
+          >
+            트랜딩
+          </SideMenu.Menu>
         </SideMenu.List>
-
-        {/* <SideMenu.Title>나의 구독</SideMenu.Title> */}
       </SideMenu>
 
       <Feed>
