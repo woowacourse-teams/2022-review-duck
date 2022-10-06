@@ -88,7 +88,6 @@ function TemplateFormPage() {
     };
 
     if (!templateId) {
-      console.log('1');
       templateMutate.create(requestBody, {
         onSuccess: ({ templateId }) => handleSubmitSuccess(templateId, '템플릿을 등록하였습니다.'),
         onError: (error) => showSnackbar({ theme: 'danger', title: error.message }),
@@ -96,7 +95,6 @@ function TemplateFormPage() {
     }
 
     if (templateId) {
-      console.log('2');
       templateMutate.update(
         {
           templateId: Number(templateId),
@@ -108,6 +106,13 @@ function TemplateFormPage() {
         },
       );
     }
+  };
+
+  const handleCancel = () => {
+    if (!confirm('템플릿 생성 취소 시, 작성 중인 내용은 모두 사라집니다.\n정말 취소하시겠습니까?'))
+      return;
+
+    navigate(-1);
   };
 
   return PageSuspense(
@@ -151,7 +156,7 @@ function TemplateFormPage() {
             <span>{templateId ? '수정하기' : '생성하기'}</span>
           </Button>
 
-          <Button theme="outlined" onClick={() => false}>
+          <Button theme="outlined" onClick={handleCancel}>
             <FontAwesomeIcon icon={faArrowRightFromBracket} />
             <span>취소하기</span>
           </Button>
