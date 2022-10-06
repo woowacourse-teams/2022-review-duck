@@ -38,7 +38,7 @@ public class MemberControllerTest extends ControllerTest {
 
     private void assertBadRequestFromPut(String uri, Object request, String errorMessage) throws Exception {
         mockMvc.perform(put(uri)
-                .header("Authorization", "Bearer " + accessToken)
+                .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
                 .content(objectMapper.writeValueAsString(request))

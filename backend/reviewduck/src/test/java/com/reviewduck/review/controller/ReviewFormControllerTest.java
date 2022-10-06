@@ -101,7 +101,7 @@ public class ReviewFormControllerTest extends ControllerTest {
             ));
 
             // when, then
-            assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "회고 제목은 비어있을 수 없습니다.");
+            assertBadRequestFromPost("/api/review-forms/" + INVALID_CODE, request, "회고 제목은 비어있을 수 없습니다.");
         }
 
         @ParameterizedTest
@@ -112,7 +112,7 @@ public class ReviewFormControllerTest extends ControllerTest {
             ReviewCreateRequest request = new ReviewCreateRequest(false, "title", review);
 
             // when, then
-            assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "회고 내용은 비어있을 수 없습니다.");
+            assertBadRequestFromPost("/api/review-forms/" + INVALID_CODE, request, "회고 내용은 비어있을 수 없습니다.");
 
         }
 
@@ -126,7 +126,7 @@ public class ReviewFormControllerTest extends ControllerTest {
             ));
 
             // when, then
-            assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "질문 번호는 비어있을 수 없습니다.");
+            assertBadRequestFromPost("/api/review-forms/" + INVALID_CODE, request, "질문 번호는 비어있을 수 없습니다.");
         }
 
         @ParameterizedTest
@@ -139,7 +139,7 @@ public class ReviewFormControllerTest extends ControllerTest {
             ));
 
             // when, then
-            assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "회고 답변 생성 중 오류가 발생했습니다.");
+            assertBadRequestFromPost("/api/review-forms/" + INVALID_CODE, request, "회고 답변 생성 중 오류가 발생했습니다.");
         }
 
         @ParameterizedTest
@@ -152,7 +152,7 @@ public class ReviewFormControllerTest extends ControllerTest {
             ));
 
             // when, then
-            assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "답변은 비어있을 수 없습니다.");
+            assertBadRequestFromPost("/api/review-forms/" + INVALID_CODE, request, "답변은 비어있을 수 없습니다.");
         }
 
         @ParameterizedTest
@@ -165,7 +165,7 @@ public class ReviewFormControllerTest extends ControllerTest {
             ));
 
             // when, then
-            assertBadRequestFromPost("/api/review-forms/" + invalidCode, request, "공개 여부를 설정해야 합니다.");
+            assertBadRequestFromPost("/api/review-forms/" + INVALID_CODE, request, "공개 여부를 설정해야 합니다.");
         }
 
     }
@@ -182,7 +182,7 @@ public class ReviewFormControllerTest extends ControllerTest {
             ReviewFormUpdateRequest request = new ReviewFormUpdateRequest(title, List.of());
 
             // when, then
-            assertBadRequestFromPut("/api/review-forms/" + invalidCode, request, "회고 폼의 제목은 비어있을 수 없습니다.");
+            assertBadRequestFromPut("/api/review-forms/" + INVALID_CODE, request, "회고 폼의 제목은 비어있을 수 없습니다.");
         }
 
         @ParameterizedTest
@@ -193,7 +193,7 @@ public class ReviewFormControllerTest extends ControllerTest {
             ReviewFormUpdateRequest request = new ReviewFormUpdateRequest("new title", questions);
 
             // when, then
-            assertBadRequestFromPut("/api/review-forms/" + invalidCode, request, "회고 폼의 질문 목록 수정 중 오류가 발생했습니다.");
+            assertBadRequestFromPut("/api/review-forms/" + INVALID_CODE, request, "회고 폼의 질문 목록 수정 중 오류가 발생했습니다.");
         }
 
         @ParameterizedTest
@@ -205,7 +205,7 @@ public class ReviewFormControllerTest extends ControllerTest {
                 List.of(new ReviewFormQuestionUpdateRequest(1L, questionValue, "new description")));
 
             // when, then
-            assertBadRequestFromPut("/api/review-forms/" + invalidCode, request, "회고 폼의 질문은 비어있을 수 없습니다.");
+            assertBadRequestFromPut("/api/review-forms/" + INVALID_CODE, request, "회고 폼의 질문은 비어있을 수 없습니다.");
         }
 
         @ParameterizedTest
@@ -217,14 +217,14 @@ public class ReviewFormControllerTest extends ControllerTest {
                 List.of(new ReviewFormQuestionUpdateRequest(1L, "questionValue", questionDescription)));
 
             // when, then
-            assertBadRequestFromPut("/api/review-forms/" + invalidCode, request, "회고 폼의 질문 설명 수정시 문제가 발생했습니다.");
+            assertBadRequestFromPut("/api/review-forms/" + INVALID_CODE, request, "회고 폼의 질문 설명 수정시 문제가 발생했습니다.");
         }
 
     }
 
     private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {
         mockMvc.perform(post(uri)
-                .header("Authorization", "Bearer " + accessToken)
+                .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
             ).andExpect(status().isBadRequest())
@@ -233,7 +233,7 @@ public class ReviewFormControllerTest extends ControllerTest {
 
     private void assertBadRequestFromPut(String uri, Object request, String errorMessage) throws Exception {
         mockMvc.perform(put(uri)
-                .header("Authorization", "Bearer " + accessToken)
+                .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
             ).andExpect(status().isBadRequest())

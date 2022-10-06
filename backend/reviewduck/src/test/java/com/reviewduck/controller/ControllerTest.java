@@ -34,7 +34,7 @@ public class ControllerTest {
     @MockBean
     protected ReviewFormService reviewFormService;
 
-    protected final String accessToken = "access_token";
-    protected final Long invalidReviewId = 1L;
-    protected final String invalidCode = "aaaaaaaa";
+    protected final String ACCESS_TOKEN = "access_token";
+    protected final Long INVALID_REVIEW_ID = 1L;
+    protected final String INVALID_CODE = "aaaaaaaa";
 }
