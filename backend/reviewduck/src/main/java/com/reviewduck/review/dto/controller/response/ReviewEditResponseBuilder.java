@@ -6,10 +6,11 @@ import java.util.function.Function;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public enum ReviewEditResponseBuilder {
     SYNC(true, ReviewSynchronizedResponse::from),

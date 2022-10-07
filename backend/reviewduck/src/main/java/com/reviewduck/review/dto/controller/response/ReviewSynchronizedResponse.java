@@ -1,18 +1,14 @@
 package com.reviewduck.review.dto.controller.response;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.reviewduck.review.domain.Review;
-import com.reviewduck.review.domain.ReviewForm;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class ReviewSynchronizedResponse extends ReviewEditResponse {
 
