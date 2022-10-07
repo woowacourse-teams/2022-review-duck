@@ -61,7 +61,7 @@ function PageRoutes() {
 
           <Route path={PAGE_LIST.REVIEW_FORM}>
             <Route index element={<SplitPages.ReviewFormEditorPage />} />
-            <Route path=":" element={<SplitPages.ReviewFormEditorPage />} />
+            <Route path=":reviewFormCode" element={<SplitPages.ReviewFormEditorPage />} />
           </Route>
         </Route>
       </Route>
