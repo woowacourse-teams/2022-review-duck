@@ -15,7 +15,7 @@ import com.reviewduck.review.domain.ReviewFormQuestion;
  */
 public abstract class ReviewAbstractResponse {
 
-    static List<ReviewContentResponse> getReviewContents(Review review) {
+    static List<ReviewContentResponse> getSynchronizedReviewContents(Review review) {
         ReviewForm reviewForm = review.getReviewForm();
 
         Map<ReviewFormQuestion, Answer> reviewMap = review.getQuestionAnswers().stream()
