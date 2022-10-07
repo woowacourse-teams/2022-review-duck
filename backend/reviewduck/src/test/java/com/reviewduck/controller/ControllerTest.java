@@ -15,8 +15,11 @@ import com.reviewduck.review.controller.ReviewController;
 import com.reviewduck.review.controller.ReviewFormController;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
+import com.reviewduck.template.controller.TemplateController;
+import com.reviewduck.template.service.TemplateService;
 
-@WebMvcTest({AuthController.class, MemberController.class, ReviewController.class, ReviewFormController.class})
+@WebMvcTest({AuthController.class, MemberController.class, ReviewController.class,
+    ReviewFormController.class, TemplateController.class})
 public class ControllerTest {
 
     @Autowired
@@ -33,6 +36,8 @@ public class ControllerTest {
     protected ReviewService reviewService;
     @MockBean
     protected ReviewFormService reviewFormService;
+    @MockBean
+    protected TemplateService TemplateService;
 
     protected final String ACCESS_TOKEN = "access_token";
     protected final Long INVALID_REVIEW_ID = 1L;
