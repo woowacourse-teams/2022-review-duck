@@ -11,7 +11,7 @@ public enum ReviewSortType {
 
     LATEST("latest", "createdAt"),
     UPDATE("update", "updatedAt"),
-    TREND("trend", "likes");
+    TREND("trend", "createdAt");
 
     private final String param;
     private final String sortBy;
@@ -25,8 +25,12 @@ public enum ReviewSortType {
         return Arrays.stream(values())
             .filter(it -> it.param.equals(input))
             .findAny()
-            .orElse(TREND)
+            .orElse(UPDATE)
             .sortBy;
+    }
+
+    public static boolean isTrend(String param) {
+        return TREND.param.equals(param);
     }
 
     public String getSortBy() {

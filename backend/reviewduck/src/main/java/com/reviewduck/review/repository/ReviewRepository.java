@@ -22,6 +22,8 @@ public interface ReviewRepository extends Repository<Review, Long> {
 
     Page<Review> findByIsPrivateFalse(Pageable pageable);
 
+    Page<Review> findByIsPrivateFalseAndLikesGreaterThan(Pageable pageable,int likes);
+
     Page<Review> findByMember(Member member, Pageable pageable);
 
     Page<Review> findByMemberAndIsPrivateFalse(Member member, Pageable pageable);
