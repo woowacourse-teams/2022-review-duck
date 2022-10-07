@@ -1,4 +1,4 @@
-import { faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faLock, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
@@ -42,26 +42,26 @@ function CoverProfile({ socialId, image, title, description }: CoverProfileProps
 }
 
 interface TitleProps {
-  children?: string;
-}
-
-function Title({ children }: TitleProps) {
-  return (
-    <Text as="h1" className={styles.title} size={24} weight="bold">
-      {children}
-    </Text>
-  );
-}
-
-interface SubTitleProps {
   children: string;
+  isPrivate?: boolean;
+  subtitle?: string;
 }
 
-function SubTitle({ children }: SubTitleProps) {
+function Title({ children, isPrivate, subtitle }: TitleProps) {
   return (
-    <Text className={styles.subTitle} as="h3" size={16}>
-      {children}
-    </Text>
+    <FlexContainer className={styles.titleContainer}>
+      <FlexContainer direction="row" align="center" gap="medium">
+        <Text as="h1" className={styles.title} size={24} weight="bold">
+          {children}
+        </Text>
+        {isPrivate && <FontAwesomeIcon className={styles.lock} icon={faLock} />}
+      </FlexContainer>
+      {subtitle && (
+        <Text className={styles.subTitle} as="h3" size={16}>
+          {subtitle}
+        </Text>
+      )}
+    </FlexContainer>
   );
 }
 
@@ -151,13 +151,25 @@ function Reaction({ likeCount, onClickLike, onClickBookmark }: ReactionProps) {
   );
 }
 
+interface UpdatedTimeProps {
+  children: string;
+}
+
+function UpdatedTime({ children }: UpdatedTimeProps) {
+  return (
+    <Text className={styles.updatedAt} size={14}>
+      {children}
+    </Text>
+  );
+}
+
 const Questions = Object.assign(Container, {
   CoverProfile,
   Title,
-  SubTitle,
   EditButtons,
   Answer,
   Reaction,
+  UpdatedTime,
 });
 
 export default Questions;

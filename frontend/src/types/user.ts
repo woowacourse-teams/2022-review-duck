@@ -15,6 +15,9 @@ export interface UserArticleList {
     reviewFormCode?: string;
     title: string;
     reviewTitle?: string;
+    updatedAt: string;
+    isPrivate?: boolean;
+    likes?: number;
 
     contents: Array<{
       question: ServerQuestionRequireId;
@@ -31,6 +34,7 @@ export interface GetUserReviewAnswerResponse {
     title: string;
     isPrivate: boolean;
     updatedAt: number;
+    likes: number;
     contents: Array<{
       question: ServerQuestionRequireId;
       answer: ServerAnswerRequireId;
