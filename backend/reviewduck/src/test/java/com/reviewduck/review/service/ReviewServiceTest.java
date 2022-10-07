@@ -296,16 +296,18 @@ public class ReviewServiceTest {
         }
 
         @Test
-        @DisplayName("좋아요 수 순으로 특정 페이지를 조회한다.")
+        @DisplayName("좋아요가 특정 개수 이상이며 생성일로 정렬된 특정 페이지를 조회한다.")
         void findAllOrderByTrend() throws InterruptedException {
             // given
             Review review1 = saveReview(reviewForm1, member1, false);
             Review review2 = saveReview(reviewForm1, member2, false);
-            saveReview(reviewForm1, member1, true);
+            Review review3 = saveReview(reviewForm1, member1, true); // 비밀글
+            Review review4 = saveReview(reviewForm1, member1, false);
 
             // when
-            reviewService.increaseLikes(review1.getId(), 5);
-            reviewService.increaseLikes(review2.getId(), 3);
+            reviewService.increaseLikes(review1.getId(), 500);
+            reviewService.increaseLikes(review2.getId(), 300);
+            reviewService.increaseLikes(review4.getId(), 10); // 좋아요 개수 미만
 
             int page = 0;
             int size = 1;
@@ -316,8 +318,8 @@ public class ReviewServiceTest {
             // then
             assertAll(
                 () -> assertThat(reviews).hasSize(1),
-                () -> assertThat(reviews.get(0).getId()).isEqualTo(review1.getId()),
-                () -> assertThat(reviews.get(0).getLikes()).isEqualTo(5)
+                () -> assertThat(reviews.get(0).getId()).isEqualTo(review2.getId()),
+                () -> assertThat(reviews.get(0).getLikes()).isEqualTo(300)
             );
         }
     }

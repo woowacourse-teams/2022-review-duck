@@ -144,7 +144,7 @@ public class ReviewRepositoryTest {
 
     @Test
     @DisplayName("공개된 모든 회고 중 updatedAt 내림차순으로 정렬된 특정 페이지를 조회한다.")
-    void findByIsPrivateFalse() throws InterruptedException {
+    void findByIsPrivateFalseUpdate() throws InterruptedException {
         // given
         saveReview(savedMember, savedReviewForm, false);
         saveReview(savedMember, savedReviewForm, true);
@@ -158,6 +158,30 @@ public class ReviewRepositoryTest {
         assertAll(
             () -> assertThat(reviews).hasSize(1),
             () -> assertThat(reviews.get(0).getId()).isEqualTo(review.getId())
+        );
+    }
+
+    @Test
+    @DisplayName("공개된 모든 회고 중 likes가 특정 개수 이상이며 createdAt 내림차순으로 정렬된 특정 페이지를 조회한다.")
+    void findByIsPrivateFalseLikes() throws InterruptedException {
+        // given
+        Review savedReview1 = saveReview(savedMember, savedReviewForm, false);
+        Review savedReview2 = saveReview(savedMember, savedReviewForm, true); // isPrivateFalse이니 제외
+        Review savedReview3 = saveReview(savedMember, savedReviewForm, false);
+        Review savedReview4 = saveReview(savedMember, savedReviewForm, false);
+
+        reviewRepository.increaseLikes(savedReview1, 25);
+        reviewRepository.increaseLikes(savedReview3, 20);
+        reviewRepository.increaseLikes(savedReview4, 5); // 10 이하이니 제외
+
+        //when
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "createdAt"));
+        List<Review> reviews = reviewRepository.findByIsPrivateFalseAndLikesGreaterThan(pageable, 10).getContent();
+
+        //then
+        assertAll(
+            () -> assertThat(reviews).hasSize(1),
+            () -> assertThat(reviews.get(0).getId()).isEqualTo(savedReview3.getId())
         );
     }
 
@@ -217,20 +241,6 @@ public class ReviewRepositoryTest {
         assertThat(updatedAtAfterIncreaseLikes.isEqual(updatedAt)).isTrue();
     }
 
-    private Review saveReview(Member member, ReviewForm savedReviewForm, boolean isPrivate) throws
-        InterruptedException {
-        Thread.sleep(1);
-        Review review = new Review("title", member, savedReviewForm,
-            List.of(
-                new QuestionAnswerCreateDto(savedReviewForm.getQuestions().get(0), new Answer("answer1")),
-                new QuestionAnswerCreateDto(savedReviewForm.getQuestions().get(1), new Answer("answer2"))
-            ),
-            isPrivate
-        );
-
-        return reviewRepository.save(review);
-    }
-
     @Test
     @DisplayName("특정 회고 질문지로 만든 회고가 존재한다.")
     void existsByReviewForm_true() throws InterruptedException {
@@ -252,5 +262,19 @@ public class ReviewRepositoryTest {
 
         // then
         assertThat(actual).isFalse();
+    }
+
+    private Review saveReview(Member member, ReviewForm savedReviewForm, boolean isPrivate) throws
+        InterruptedException {
+        Thread.sleep(1);
+        Review review = new Review("title", member, savedReviewForm,
+            List.of(
+                new QuestionAnswerCreateDto(savedReviewForm.getQuestions().get(0), new Answer("answer1")),
+                new QuestionAnswerCreateDto(savedReviewForm.getQuestions().get(1), new Answer("answer2"))
+            ),
+            isPrivate
+        );
+
+        return reviewRepository.save(review);
     }
 }

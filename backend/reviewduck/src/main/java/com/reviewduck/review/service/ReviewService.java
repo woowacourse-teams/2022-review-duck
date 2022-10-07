@@ -44,7 +44,8 @@ public class ReviewService {
         ReviewForm reviewForm = reviewFormService.findByCode(code);
         List<QuestionAnswerCreateDto> questionAnswerCreateDtos = getReviewCreateDtos(request);
 
-        Review review = new Review(request.getTitle(), member, reviewForm, questionAnswerCreateDtos, request.getIsPrivate());
+        Review review = new Review(request.getTitle(), member, reviewForm, questionAnswerCreateDtos,
+            request.getIsPrivate());
         return reviewRepository.save(review);
     }
 
@@ -78,6 +79,10 @@ public class ReviewService {
     public Page<Review> findAllPublic(int page, int size, String sort) {
         String sortType = ReviewSortType.getSortBy(sort);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+
+        if (ReviewSortType.isTrend(sort)) {
+            return reviewRepository.findByIsPrivateFalseAndLikesGreaterThan(pageRequest, 100);
+        }
 
         return reviewRepository.findByIsPrivateFalse(pageRequest);
     }
