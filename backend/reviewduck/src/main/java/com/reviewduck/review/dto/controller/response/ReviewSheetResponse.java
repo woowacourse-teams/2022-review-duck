@@ -23,7 +23,7 @@ public class ReviewSheetResponse extends ReviewAbstractResponse {
     private List<ReviewContentResponse> contents;
 
     public static ReviewSheetResponse of(Member member, Review review) {
-        List<ReviewContentResponse> contents = getReviewContents(review);
+        List<ReviewContentResponse> contents = getSynchronizedReviewContents(review);
 
         return new ReviewSheetResponse(
             review.getId(),

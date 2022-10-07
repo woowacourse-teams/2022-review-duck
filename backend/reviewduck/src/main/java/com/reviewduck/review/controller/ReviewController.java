@@ -21,9 +21,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
+import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.ReviewLikesRequest;
 import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
+import com.reviewduck.review.dto.controller.response.ReviewEditResponse;
+import com.reviewduck.review.dto.controller.response.ReviewEditResponseBuilder;
 import com.reviewduck.review.dto.controller.response.ReviewLikesResponse;
+import com.reviewduck.review.dto.controller.response.ReviewNonSynchronizedResponse;
 import com.reviewduck.review.dto.controller.response.ReviewSynchronizedResponse;
 import com.reviewduck.review.dto.controller.response.ReviewsResponse;
 import com.reviewduck.review.dto.controller.response.TimelineReviewsResponse;
@@ -39,14 +43,16 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @Operation(summary = "특정한 회고 답변을 최신화된 회고 폼과 동기화하여 조회한다.")
+    @Operation(summary = "회고 답변 수정을 위해 특정한 회고 답변을 조회한다.")
     @GetMapping("/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewSynchronizedResponse findById(@AuthenticationPrincipal Member member, @PathVariable Long reviewId) {
+    public ReviewEditResponse findById(@AuthenticationPrincipal Member member, @PathVariable Long reviewId) {
 
         info("/api/reviews/" + reviewId, "GET", "");
 
-        return ReviewSynchronizedResponse.from(reviewService.findById(reviewId));
+        Review review = reviewService.findById(reviewId);
+
+        return ReviewEditResponseBuilder.createResponseFrom(review);
     }
 
     @Operation(summary = "사용자가 작성한 회고 답변을 모두 조회한다.")
