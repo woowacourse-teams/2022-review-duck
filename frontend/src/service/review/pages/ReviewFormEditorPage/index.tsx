@@ -12,8 +12,8 @@ import { getErrorMessage } from 'service/@shared/utils';
 import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
 
 import useReviewFormEditor from './useReviewFormEditor';
-import Editor from './views/Editor';
-import Status from './views/Status';
+import Editor from './view/Editor';
+import Status from './view/Status';
 import { validateReviewForm } from 'service/@shared/validator';
 
 function ReviewFormEditorPage() {

@@ -27,8 +27,8 @@ import Questions from 'service/@shared/components/Questions';
 
 import styles from './styles.module.scss';
 
-import Feed from './views/Feed';
-import SideMenu from './views/SideMenu';
+import Feed from './view/Feed';
+import SideMenu from './view/SideMenu';
 import queryClient from 'api/config/queryClient';
 import { updateReviewLike } from 'api/review.api';
 import { validateFilter } from 'service/@shared/validator';
