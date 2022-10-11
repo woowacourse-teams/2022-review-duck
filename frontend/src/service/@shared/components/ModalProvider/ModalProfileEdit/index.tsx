@@ -19,7 +19,7 @@ import { validateNickname } from 'service/@shared/validator';
 
 function ModalProfileEdit() {
   const modal = useModal();
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
   const [newNickname, setNewNickname] = useState('');
 
   const { data } = useGetAuthProfile();
@@ -38,7 +38,7 @@ function ModalProfileEdit() {
   };
 
   const handleEditSuccess = () => {
-    showSnackbar({
+    snackbar.show({
       title: '회원 정보를 수정했습니다.',
       description: '회원 정보는 마이페이지에서 언제든 수정할 수 있습니다.',
     });

@@ -31,7 +31,7 @@ const NUMBER_REGEX = /[0-9]$/; // refactor => constants
 
 function TemplateFormPage() {
   const { templateId: templateIdParams = '' } = useParams();
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
   const { navigate } = useNavigateHandler();
   const templateMutate = useTemplateMutation();
 
@@ -72,7 +72,7 @@ function TemplateFormPage() {
     };
 
   const handleSubmitSuccess = (id: number, message: string) => {
-    showSnackbar({
+    snackbar.show({
       title: message,
     });
     navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${id}`, {
@@ -90,7 +90,7 @@ function TemplateFormPage() {
     if (!templateId) {
       templateMutate.create(requestBody, {
         onSuccess: ({ templateId }) => handleSubmitSuccess(templateId, '템플릿을 등록하였습니다.'),
-        onError: (error) => showSnackbar({ theme: 'danger', title: error.message }),
+        onError: (error) => snackbar.show({ theme: 'danger', title: error.message }),
       });
     }
 
@@ -102,7 +102,7 @@ function TemplateFormPage() {
         },
         {
           onSuccess: () => handleSubmitSuccess(templateId, '템플릿을 수정하였습니다.'),
-          onError: (error) => showSnackbar({ theme: 'danger', title: error.message }),
+          onError: (error) => snackbar.show({ theme: 'danger', title: error.message }),
         },
       );
     }

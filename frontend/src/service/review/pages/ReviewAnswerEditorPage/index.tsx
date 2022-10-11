@@ -25,7 +25,7 @@ function ReviewAnswerEditorPage() {
   const queryClient = useQueryClient();
 
   const navigate = useNavigate();
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const redirectUri =
     searchParams.get('redirect') || `${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`;
@@ -69,7 +69,7 @@ function ReviewAnswerEditorPage() {
   };
 
   const handleSubmitSuccess = () => {
-    showSnackbar({
+    snackbar.show({
       icon: faCircleCheck,
       title: '작성하신 회고가 기록되었습니다.',
       description: '작성한 회고는 마이페이지를 통해 모아볼 수 있습니다.',

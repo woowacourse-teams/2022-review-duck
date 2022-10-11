@@ -8,10 +8,10 @@ import { snackbarStackWithActive } from 'common/recoil/snackbar';
 
 function SnackbarProvider() {
   const snackbarActivityStack = useRecoilValue(snackbarStackWithActive);
-  const { removeSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const onSnackbarDisappear = (snackbarId: number) => () => {
-    removeSnackbar(snackbarId);
+    snackbar.remove(snackbarId);
   };
 
   return (

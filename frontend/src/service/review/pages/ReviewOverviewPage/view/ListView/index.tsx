@@ -134,7 +134,7 @@ interface FormCopyLink {
 
 const FormCopyLink = ({ reviewFormCode }: FormCopyLink) => {
   const linkInputRef = useRef<HTMLInputElement>(null);
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const handleCopyInviteLink = async () => {
     const $copyLink = linkInputRef.current;
@@ -143,7 +143,7 @@ const FormCopyLink = ({ reviewFormCode }: FormCopyLink) => {
 
     try {
       await navigator.clipboard.writeText($copyLink.value);
-      showSnackbar({
+      snackbar.show({
         icon: faCircleCheck,
         title: '참여 링크를 클립보드에 복사했습니다.',
         description: '함께 회고할 팀원들에게 공유해주세요.',

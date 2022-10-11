@@ -39,7 +39,7 @@ function ReviewOverViewPage() {
     validateFilter([FILTER.DISPLAY_MODE.LIST, FILTER.DISPLAY_MODE.SHEET], displayMode);
   }, []);
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const {
     data: reviewAnswers,
@@ -73,7 +73,7 @@ function ReviewOverViewPage() {
 
     mutate(reviewId, {
       onSuccess: () => {
-        showSnackbar({
+        snackbar.show({
           title: '작성한 회고가 삭제되었습니다.',
           description: '더 이상 조회할 수 없으며, 삭제된 정보는 복구할 수 없습니다.',
           theme: 'danger',

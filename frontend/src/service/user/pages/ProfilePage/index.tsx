@@ -29,7 +29,7 @@ function ProfilePage() {
   const { socialId = '' } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const modal = useModal();
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const currentTab = searchParams.get('tab') || FILTER.USER_PROFILE_TAB.REVIEWS;
   const pageNumber = searchParams.get('page') || String(1);
@@ -97,7 +97,7 @@ function ProfilePage() {
   };
 
   const deleteSuccessOption = () => {
-    showSnackbar({
+    snackbar.show({
       icon: faTrash,
       title: `삭제 처리 되었습니다.`,
       description: '삭제된 정보는 복구할 수 없습니다.',
