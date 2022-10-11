@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 import {
   faPenToSquare,
@@ -22,7 +23,10 @@ import imageDefaultProfile from 'assets/images/profile.png';
 import styles from './styles.module.scss';
 
 function Header() {
+  const [search, setSearch] = useState('');
+
   const { isLogin, getUserProfileQuery } = useAuth();
+  const navigate = useNavigate();
   const modal = useModal();
 
   const { profileUrl: profileImage = imageDefaultProfile, socialId } =
@@ -30,6 +34,15 @@ function Header() {
 
   const onClickReviewStart = () => {
     modal.show({ key: MODAL_LIST.REVIEW_START });
+  };
+
+  const handleSearchChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(value);
+  };
+
+  const handleSubmitSearhTemplate = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    navigate(`${PAGE_LIST.TEMPLATE_LIST}?search=${search}`);
   };
 
   return (
@@ -41,12 +54,16 @@ function Header() {
           </Link>
         </div>
 
-        <div className={styles.navItemContainer}>
-          <TextBox placeholder="검색어를 입력해주세요." />
-          <Link to="/pending">
+        <form onSubmit={handleSubmitSearhTemplate} className={styles.navItemContainer}>
+          <TextBox
+            placeholder="템플릿 검색어를 입력하세요."
+            value={search}
+            onChange={handleSearchChange}
+          />
+          <Link to={`${PAGE_LIST.TEMPLATE_LIST}?search=${search}`}>
             <FontAwesomeIcon className={styles.searchIcon} icon={faSearch} />
           </Link>
-        </div>
+        </form>
 
         <ul className={styles.menuList}>
           <Link to="/pending">
