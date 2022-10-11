@@ -2,7 +2,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { MODAL_LIST, FILTER, PAGE_LIST } from 'constant';
 
-import useModal from 'common/hooks/useModal';
 import { useGetTemplates } from 'service/@shared/hooks/queries/template';
 
 import { getElapsedTimeText } from 'service/@shared/utils';
@@ -11,6 +10,7 @@ import { FlexContainer } from 'common/components';
 
 import PageSuspense from 'common/components/PageSuspense';
 
+import useModal from 'service/@shared/components/ModalProvider/useModal';
 import TemplateCard from 'service/template/components/TemplateCard';
 
 import styles from './styles.module.scss';
@@ -19,7 +19,7 @@ import Intro from './view/Intro';
 import TrendTemplate from './view/TrendTemplate';
 
 function MainPage() {
-  const { showModal } = useModal();
+  const modal = useModal();
   const navigate = useNavigate();
 
   const { data, isError, isLoading } = useGetTemplates({
@@ -32,7 +32,7 @@ function MainPage() {
   const { templates } = data;
 
   const handleClickReviewStart = () => {
-    showModal(MODAL_LIST.REVIEW_START);
+    modal.show({ key: MODAL_LIST.REVIEW_START });
   };
 
   const handleClickTemplateCard = (templateId: number) => () => {

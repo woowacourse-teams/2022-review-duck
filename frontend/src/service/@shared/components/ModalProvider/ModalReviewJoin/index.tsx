@@ -1,21 +1,22 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { MODAL_LIST, PAGE_LIST } from 'constant';
+import { faBan, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import useModal from 'common/hooks/useModal';
+import { MODAL_LIST, PAGE_LIST } from 'constant';
 
 import { getErrorMessage } from 'service/@shared/utils';
 
 import { Button, FieldSet, TextBox } from 'common/components';
 
-import { faBan, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import useModal from 'service/@shared/components/ModalProvider/useModal';
+
 import { validateReviewFormCode } from 'service/@shared/validator';
 
 function ModalReviewJoin() {
   const navigate = useNavigate();
-  const { showModal, hideModal } = useModal();
+  const modal = useModal();
 
   const onSubmitReviewFormCode = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -33,11 +34,11 @@ function ModalReviewJoin() {
     }
 
     navigate(`${PAGE_LIST.REVIEW}/${reviewFormCode}`);
-    hideModal();
+    modal.hide();
   };
 
   const onCancel = () => {
-    showModal(MODAL_LIST.REVIEW_START);
+    modal.show({ key: MODAL_LIST.REVIEW_START });
   };
 
   return (

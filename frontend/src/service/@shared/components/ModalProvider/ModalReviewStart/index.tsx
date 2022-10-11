@@ -1,13 +1,5 @@
 import { useNavigate } from 'react-router-dom';
 
-import { MODAL_LIST, PAGE_LIST } from 'constant';
-
-import useModal from 'common/hooks/useModal';
-
-import { Button, Text } from 'common/components';
-
-import styles from './styles.module.scss';
-
 import {
   faArrowRightFromBracket,
   faFeatherPointed,
@@ -15,21 +7,29 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import { MODAL_LIST, PAGE_LIST } from 'constant';
+
+import { Button, Text } from 'common/components';
+
+import useModal from 'service/@shared/components/ModalProvider/useModal';
+
+import styles from './styles.module.scss';
+
 function ModalReviewStart() {
   const navigate = useNavigate();
-  const { showModal, hideModal } = useModal();
+  const modal = useModal();
 
   const onClickCreateButton = () => {
     navigate(PAGE_LIST.REVIEW_FORM);
-    hideModal();
+    modal.hide();
   };
 
   const onClickJoinButton = () => {
-    showModal(MODAL_LIST.REVIEW_JOIN);
+    modal.show({ key: MODAL_LIST.REVIEW_JOIN });
   };
 
   const onCancel = () => {
-    hideModal();
+    modal.hide();
   };
 
   return (

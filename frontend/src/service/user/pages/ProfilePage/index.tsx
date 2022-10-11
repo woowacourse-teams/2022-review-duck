@@ -6,7 +6,6 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FILTER, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
 import { Tabs } from 'types';
 
-import useModal from 'common/hooks/useModal';
 import useSnackbar from 'common/hooks/useSnackbar';
 
 import { PaginationBar } from 'common/components';
@@ -15,6 +14,7 @@ import PageSuspense from 'common/components/PageSuspense';
 import { PaginationBarProps } from 'common/components/PaginationBar';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
+import useModal from 'service/@shared/components/ModalProvider/useModal';
 import Questions from 'service/@shared/components/Questions';
 
 import styles from './styles.module.scss';
@@ -28,7 +28,7 @@ function ProfilePage() {
   const navigate = useNavigate();
   const { socialId = '' } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { showModal } = useModal();
+  const modal = useModal();
   const { showSnackbar } = useSnackbar();
 
   const currentTab = searchParams.get('tab') || FILTER.USER_PROFILE_TAB.REVIEWS;
@@ -68,7 +68,7 @@ function ProfilePage() {
   };
 
   const handleEditProfile = () => {
-    showModal(MODAL_LIST.PROFILE_EDIT);
+    modal.show({ key: MODAL_LIST.PROFILE_EDIT });
   };
 
   const handlePagination = (pageNumber: number) => {
