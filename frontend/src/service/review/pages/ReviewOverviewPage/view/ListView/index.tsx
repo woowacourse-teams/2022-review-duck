@@ -30,9 +30,12 @@ interface ContentProps {
   children: React.ReactNode;
 }
 
-const Content = ({ isLoading, fallback, children }: ContentProps) => {
+const Content = (
+  { isLoading, fallback, children }: ContentProps,
+  ref: React.ForwardedRef<HTMLDivElement>,
+) => {
   return (
-    <FlexContainer direction="column" gap="large">
+    <FlexContainer ref={ref} direction="column" gap="large">
       {isLoading ? fallback : children}
     </FlexContainer>
   );
@@ -244,7 +247,7 @@ const Loading = ({ line }: LoadingProps) => {
 };
 
 export const ListView = Object.assign(Container, {
-  Content,
+  Content: React.forwardRef(Content),
   ParticipantList,
   Review,
   SideMenu,

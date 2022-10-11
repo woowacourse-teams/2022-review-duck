@@ -33,8 +33,15 @@ interface ReviewListProps {
   children: React.ReactNode;
 }
 
-const ReviewList = ({ children }: ReviewListProps) => {
-  return <tbody className={styles.reviewList}>{children}</tbody>;
+const ReviewList = (
+  { children }: ReviewListProps,
+  ref: React.ForwardedRef<HTMLTableSectionElement>,
+) => {
+  return (
+    <tbody ref={ref} className={styles.reviewList}>
+      {children}
+    </tbody>
+  );
 };
 
 interface AnswersProps {
@@ -97,7 +104,7 @@ const Loading = ({ line }: LoadingProps) => {
 };
 
 export const SheetView = Object.assign(Container, {
-  ReviewList,
+  ReviewList: React.forwardRef(ReviewList),
   Questions,
   Answers,
   Creator,

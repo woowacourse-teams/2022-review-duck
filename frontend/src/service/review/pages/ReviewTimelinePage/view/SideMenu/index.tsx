@@ -56,7 +56,7 @@ interface MenuProps {
 
 function Menu({ isCurrentTab, filter, icon, children }: MenuProps) {
   return (
-    <Link to={`${PAGE_LIST.TIMELINE}?filter=${filter}`}>
+    <Link to={`${PAGE_LIST.TIMELINE}?sort=${filter}`}>
       <li className={cn(styles.menu, { [styles.focus]: isCurrentTab })}>
         <FontAwesomeIcon icon={icon} /> {children}
       </li>
