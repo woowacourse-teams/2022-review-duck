@@ -1,6 +1,6 @@
 import * as ReviewType from '../types/review';
 
-import { API_URI } from '../constant';
+import { API_URI, PAGE_OPTION } from '../constant';
 import * as transformer from './review.transformer';
 import axiosInstance from 'api/config/axiosInstance';
 
@@ -16,12 +16,19 @@ export const getAnswer = async (reviewId: number): Promise<ReviewType.ReviewAnsw
   return transformer.transformAnswer(data);
 };
 
-export const getFormAnswer = async (
-  pageNumber: string,
-  size: number,
+interface GetReviewFormAnswerRequest {
+  pageNumber: number;
+  size: number;
+  reviewFormCode: string;
+  display?: ReviewType.DisplayModeType;
+}
+
+export const getFormAnswer = async ({
+  pageNumber = 1,
+  size = PAGE_OPTION.REVIEW_ITEM_SIZE,
   reviewFormCode = '',
-  display: ReviewType.DisplayModeType = 'list',
-): Promise<ReviewType.ReviewFormAnswerList> => {
+  display = 'list',
+}: GetReviewFormAnswerRequest): Promise<ReviewType.ReviewFormAnswerList> => {
   const { data } = await axiosInstance.get(
     API_URI.REVIEW.GET_FORM_ANSWER(reviewFormCode, display, pageNumber, size),
   );
