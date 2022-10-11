@@ -18,16 +18,23 @@
   }
 }
 
-.title {
-  padding: 1rem 0;
-  color: $THEME_COLOR_STATUS_PRIMARY_600;
-  line-height: 160%;
-}
-
-.sub-title {
-  padding-bottom: 1rem;
-  color: $THEME_COLOR_THEME_TEXT_400;
+.title-container {
   border-bottom: 1px solid $THEME_COLOR_STATUS_PRIMARY_100;
+
+  .title {
+    padding: 1rem 0;
+    color: $THEME_COLOR_STATUS_PRIMARY_600;
+    line-height: 160%;
+  }
+
+  .lock {
+    color: $THEME_COLOR_THEME_TEXT_150;
+  }
+
+  .sub-title {
+    padding-bottom: 1rem;
+    color: $THEME_COLOR_THEME_TEXT_400;
+  }
 }
 
 .answerContainer {
@@ -71,4 +78,8 @@
       color: $THEME_COLOR_STATUS_DANGER_400;
     }
   }
+}
+
+.updated-at {
+  color: $THEME_COLOR_THEME_TEXT_150;
 }

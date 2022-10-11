@@ -8,7 +8,7 @@ import { Tabs } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
-import { PaginationBar } from 'common/components';
+import { FlexContainer, PaginationBar } from 'common/components';
 
 import PageSuspense from 'common/components/PageSuspense';
 import { PaginationBarProps } from 'common/components/PaginationBar';
@@ -101,6 +101,7 @@ function ProfilePage() {
       icon: faTrash,
       title: `삭제 처리 되었습니다.`,
       description: '삭제된 정보는 복구할 수 없습니다.',
+      theme: 'warning',
     });
   };
 
@@ -166,11 +167,10 @@ function ProfilePage() {
                       : `${PAGE_LIST.REVIEW_OVERVIEW}/${article.reviewFormCode}`
                   }
                 >
-                  <Questions.Title>{article.title}</Questions.Title>
+                  <Questions.Title isPrivate={article.isPrivate} subtitle={article.reviewTitle}>
+                    {article.title}
+                  </Questions.Title>
                 </Link>
-                {article.reviewTitle && (
-                  <Questions.SubTitle>{article.reviewTitle}</Questions.SubTitle>
-                )}
                 <Questions.EditButtons
                   isVisible={userArticles.isMine}
                   onClickEdit={handleClickEdit(
@@ -189,11 +189,19 @@ function ProfilePage() {
                     {content.answer?.value}
                   </Questions.Answer>
                 ))}
-                <Questions.Reaction
-                  likeCount={0}
-                  onClickLike={() => null}
-                  onClickBookmark={() => null}
-                />
+                {currentTab === FILTER.USER_PROFILE_TAB.REVIEWS && (
+                  <FlexContainer direction="row" justify="space-between">
+                    <Questions.Reaction
+                      likeCount={article.likes || 0}
+                      onClickLike={() => null}
+                      onClickBookmark={() => null}
+                    />
+                    <Questions.UpdatedTime>{article.updatedAt}</Questions.UpdatedTime>
+                  </FlexContainer>
+                )}
+                {currentTab !== FILTER.USER_PROFILE_TAB.REVIEWS && (
+                  <Questions.UpdatedTime>{article.updatedAt}</Questions.UpdatedTime>
+                )}
               </Questions>
             </div>
           ))}
