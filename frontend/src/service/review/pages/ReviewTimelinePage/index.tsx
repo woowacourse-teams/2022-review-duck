@@ -1,16 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { faArrowTrendUp, faPenNib } from '@fortawesome/free-solid-svg-icons';
 import { InfiniteData } from '@tanstack/react-query';
 
-import { PAGE_LIST, PAGE_OPTION, QUERY_KEY, FILTER } from 'constant';
-import {
-  InfiniteItem,
-  ReviewPublicAnswer,
-  ReviewPublicAnswerList,
-  TimelineFilterType,
-} from 'types';
+import { PAGE_LIST, QUERY_KEY, FILTER } from 'constant';
+import { InfiniteItem, ReviewPublicAnswer, ReviewPublicAnswerList } from 'types';
 
 import useIntersectionObserver from 'common/hooks/useIntersectionObserver';
 import useSnackbar from 'common/hooks/useSnackbar';
@@ -19,6 +14,8 @@ import {
   useDeleteReviewAnswer,
   useGetInfiniteReviewPublicAnswer,
 } from 'service/@shared/hooks/queries/review';
+
+import { isInclude } from 'service/@shared/utils';
 
 import PageSuspense from 'common/components/PageSuspense';
 
@@ -31,20 +28,20 @@ import Feed from './view/Feed';
 import SideMenu from './view/SideMenu';
 import queryClient from 'api/config/queryClient';
 import { updateReviewLike } from 'api/review.api';
-import { validateFilter } from 'service/@shared/validator';
 
 type ReviewId = ReviewPublicAnswer['id'];
 
 function ReviewTimelinePage() {
+  const listRef = useRef<HTMLDivElement>(null);
   const [searchParam] = useSearchParams();
 
-  const currentTab = searchParam.get('filter') || FILTER.TIMELINE_TAB.LATEST;
+  const filterQueryString = searchParam.get('sort');
+  const currentTab = isInclude(Object.values(FILTER.TEMPLATE_TAB), filterQueryString)
+    ? filterQueryString
+    : FILTER.TEMPLATE_TAB.LATEST;
+
   const navigate = useNavigate();
   const snackbar = useSnackbar();
-
-  useEffect(function queryStringFilter() {
-    validateFilter([FILTER.TIMELINE_TAB.TREND, FILTER.TIMELINE_TAB.LATEST], currentTab);
-  }, []);
 
   useEffect(
     function focusTop() {
@@ -56,25 +53,19 @@ function ReviewTimelinePage() {
   const { mutate: reviewAnswerDelete } = useDeleteReviewAnswer();
   const { addFetch } = useStackFetch(2000);
 
-  const {
-    data: reviews,
-    isLoading,
-    isError,
-    fetchNextPage,
-    isFetching,
-  } = useGetInfiniteReviewPublicAnswer(currentTab as TimelineFilterType);
-
+  const getPublicAnswerQuery = useGetInfiniteReviewPublicAnswer(currentTab);
   const reviewsLikeStack = useRef<Record<ReviewId, number>>({});
 
-  const { targetRef } = useIntersectionObserver<ReviewPublicAnswerList, HTMLDivElement>(
-    fetchNextPage,
-    { threshold: 0.75 },
-    [reviews],
+  useIntersectionObserver(
+    listRef,
+    [getPublicAnswerQuery.data, currentTab],
+    getPublicAnswerQuery.fetchNextPage,
   );
 
-  if (isError || isLoading) return <>{/* Error Boundary, Suspense Used */}</>;
+  if (getPublicAnswerQuery.isError || getPublicAnswerQuery.isLoading)
+    return <>{/* Error Boundary, Suspense Used */}</>;
 
-  const { pages } = reviews;
+  const { pages: reviewsPageList } = getPublicAnswerQuery.data;
 
   const setUpdateLikeCount = (pageIndex: number, reviewId: number, count: number) => {
     queryClient.setQueryData<InfiniteData<InfiniteItem<ReviewPublicAnswerList>>>(
@@ -166,14 +157,14 @@ function ReviewTimelinePage() {
         <SideMenu.List>
           <SideMenu.Menu
             isCurrentTab={currentTab === FILTER.TIMELINE_TAB.LATEST}
-            filter={FILTER.TIMELINE_TAB.LATEST as TimelineFilterType}
+            filter={FILTER.TIMELINE_TAB.LATEST}
             icon={faPenNib}
           >
             최신글
           </SideMenu.Menu>
           <SideMenu.Menu
             isCurrentTab={currentTab === FILTER.TIMELINE_TAB.TREND}
-            filter={FILTER.TIMELINE_TAB.TREND as TimelineFilterType}
+            filter={FILTER.TIMELINE_TAB.TREND}
             icon={faArrowTrendUp}
           >
             트랜딩
@@ -184,53 +175,44 @@ function ReviewTimelinePage() {
       <Feed>
         <Feed.Title>타임라인</Feed.Title>
 
-        <Feed.List>
-          {pages.map((page, pageIndex) => (
-            <React.Fragment key={pageIndex}>
-              {page.data.reviews.map(
-                ({ id, reviewFormCode, questions, info: { creator, ...info }, likes }, index) => (
-                  <Feed.ReviewAnswer
-                    key={id}
-                    // ref={index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1 ? targetRef : null}
-                  >
-                    <Feed.UserProfile
-                      socialId={creator.id}
-                      profileUrl={creator.profileUrl}
-                      nickname={creator.nickname}
-                      update={info.updateDate}
-                    />
+        <Feed.List ref={listRef}>
+          {reviewsPageList.map(({ reviews }) =>
+            reviews.map(({ id, info: { creator, ...info }, reviewFormCode, questions, likes }) => (
+              <Feed.ReviewAnswer key={id}>
+                <Feed.UserProfile
+                  socialId={creator.id}
+                  profileUrl={creator.profileUrl}
+                  nickname={creator.nickname}
+                  update={info.updateDate}
+                />
 
-                    <Questions>
-                      <Questions.EditButtons
-                        className={styles.questionEdit}
-                        isVisible={info.isSelf}
-                        onClickEdit={handleClickEditButton(reviewFormCode, id)}
-                        onClickDelete={handleClickDeleteButton(id)}
-                      />
+                <Questions>
+                  <Questions.EditButtons
+                    className={styles.questionEdit}
+                    isVisible={info.isSelf}
+                    onClickEdit={handleClickEditButton(reviewFormCode, id)}
+                    onClickDelete={handleClickDeleteButton(id)}
+                  />
 
-                      {questions.map(({ answer, ...question }) => (
-                        <Questions.Answer
-                          key={question.id}
-                          question={question.value}
-                          description={question.description}
-                        >
-                          {answer.value}
-                        </Questions.Answer>
-                      ))}
+                  {questions.map(({ answer, ...question }) => (
+                    <Questions.Answer
+                      key={question.id}
+                      question={question.value}
+                      description={question.description}
+                    >
+                      {answer.value}
+                    </Questions.Answer>
+                  ))}
 
-                      <Questions.Reaction
-                        likeCount={likes}
-                        onClickLike={handleClickLikeButton(pageIndex, id, likes)}
-                        onClickBookmark={() => null}
-                      />
-                    </Questions>
-                  </Feed.ReviewAnswer>
-                ),
-              )}
-              {isFetching && <Feed.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
-            </React.Fragment>
-          ))}
-          <div ref={targetRef}></div>
+                  <Questions.Reaction
+                    likeCount={likes}
+                    onClickLike={() => null}
+                    onClickBookmark={() => null}
+                  />
+                </Questions>
+              </Feed.ReviewAnswer>
+            )),
+          )}
         </Feed.List>
       </Feed>
     </LayoutContainer>,

@@ -17,8 +17,8 @@ export const getAnswer = async (reviewId: number): Promise<ReviewType.ReviewAnsw
 };
 
 interface GetReviewFormAnswerRequest {
-  pageNumber: number;
-  size: number;
+  pageNumber?: number;
+  size?: number;
   reviewFormCode: string;
   display?: ReviewType.DisplayModeType;
 }
@@ -36,11 +36,17 @@ export const getFormAnswer = async ({
   return transformer.transformFormAnswer(data);
 };
 
-export const getPublicAnswer = async (
-  pageNumber: string,
-  size: number,
-  filter: ReviewType.TimelineFilterType = 'trend',
-): Promise<ReviewType.ReviewPublicAnswerList> => {
+interface GetReviewPublicAnswerRequest {
+  pageNumber?: number;
+  size?: number;
+  filter?: ReviewType.TimelineFilterType;
+}
+
+export const getPublicAnswer = async ({
+  pageNumber = 1,
+  size = PAGE_OPTION.REVIEW_ITEM_SIZE,
+  filter = 'trend',
+}: GetReviewPublicAnswerRequest): Promise<ReviewType.ReviewPublicAnswerList> => {
   const { data } = await axiosInstance.get(
     `${API_URI.REVIEW.GET_PUBLIC_ANSWER}?page=${pageNumber}&size=${size}&sort=${filter}`,
   );

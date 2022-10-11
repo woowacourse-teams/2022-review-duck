@@ -84,7 +84,7 @@ const FILTER = {
   TIMELINE_TAB: {
     TREND: 'trend',
     LATEST: 'latest',
-  },
+  } as const,
   DISPLAY_MODE: {
     LIST: 'list',
     SHEET: 'sheet',

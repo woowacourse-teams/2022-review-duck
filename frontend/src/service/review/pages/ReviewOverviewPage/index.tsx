@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { FILTER, PAGE_LIST, PAGE_OPTION } from 'constant';
@@ -32,6 +32,8 @@ import { validateFilter } from 'service/@shared/validator';
 */
 
 function ReviewOverViewPage() {
+  const listContainerRef = useRef<any>(null);
+
   const navigate = useNavigate();
   const { reviewFormCode = '', displayMode = FILTER.DISPLAY_MODE.LIST } = useParams();
 
@@ -53,10 +55,7 @@ function ReviewOverViewPage() {
     suspense: false,
   });
 
-  const { targetRef } = useIntersectionObserver<
-    ReviewFormAnswerList,
-    HTMLElement & HTMLTableRowElement
-  >(fetchNextPage, { threshold: 0.75 }, [reviewAnswers, reviewForm]);
+  useIntersectionObserver(listContainerRef, [reviewAnswers], fetchNextPage);
 
   const { mutate } = useDeleteReviewAnswer();
 
@@ -95,7 +94,11 @@ function ReviewOverViewPage() {
 
       {displayMode === FILTER.DISPLAY_MODE.LIST ? (
         <ListView>
-          <ListView.Content isLoading={isFormLoading} fallback={<Skeleton line={4} />}>
+          <ListView.Content
+            ref={listContainerRef}
+            isLoading={isFormLoading}
+            fallback={<Skeleton line={4} />}
+          >
             <ListView.ParticipantList>
               {reviewForm?.participants?.map((user) => (
                 <Profile
@@ -114,7 +117,7 @@ function ReviewOverViewPage() {
 
             {pages.map((page, pageIndex) => (
               <React.Fragment key={pageIndex}>
-                {page.data.reviews.map(({ id, info, questions }, index) => (
+                {page.reviews.map(({ id, info, questions }, index) => (
                   <ListView.Review
                     key={id}
                     // ref={index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1 ? targetRef : null}
@@ -153,7 +156,6 @@ function ReviewOverViewPage() {
                 ))}
               </React.Fragment>
             ))}
-            <div ref={targetRef} />
             {isFetching && <ListView.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
           </ListView.Content>
 
@@ -190,35 +192,32 @@ function ReviewOverViewPage() {
             ))}
           </SheetView.Questions>
 
-          <SheetView.ReviewList>
+          <SheetView.ReviewList ref={listContainerRef}>
             {pages.map((page, pageIndex) => (
               <React.Fragment key={pageIndex}>
-                {page.data.reviews.map(
-                  ({ id, info: { creator, reviewTitle }, questions }, index) => (
-                    <SheetView.Answers
-                      key={id}
-                      // ref={
-                      //   displayMode === 'sheet' && index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1
-                      //     ? targetRef
-                      //     : null
-                      // }
-                    >
-                      <SheetView.Creator
-                        socialId={creator.id}
-                        title={reviewTitle as string}
-                        profileImage={creator.profileUrl}
-                      />
+                {page.reviews.map(({ id, info: { creator, reviewTitle }, questions }, index) => (
+                  <SheetView.Answers
+                    key={id}
+                    // ref={
+                    //   displayMode === 'sheet' && index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1
+                    //     ? targetRef
+                    //     : null
+                    // }
+                  >
+                    <SheetView.Creator
+                      socialId={creator.id}
+                      title={reviewTitle as string}
+                      profileImage={creator.profileUrl}
+                    />
 
-                      {questions.map(({ answer, ...review }) => (
-                        <SheetView.Item key={review.id}>{answer && answer.value}</SheetView.Item>
-                      ))}
-                    </SheetView.Answers>
-                  ),
-                )}
+                    {questions.map(({ answer, ...review }) => (
+                      <SheetView.Item key={review.id}>{answer && answer.value}</SheetView.Item>
+                    ))}
+                  </SheetView.Answers>
+                ))}
               </React.Fragment>
             ))}
             {isFetching && <SheetView.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
-            <div ref={targetRef} />
           </SheetView.ReviewList>
         </SheetView>
       )}
