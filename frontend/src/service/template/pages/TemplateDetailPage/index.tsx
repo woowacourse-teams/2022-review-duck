@@ -52,7 +52,7 @@ function TemplateDetailPage() {
     if (!confirm('이 템플릿으로 회고를 시작하시겠습니까\n계속 진행하면 회고 질문지가 생성됩니다.'))
       return;
 
-    templateMutation.createForm(Number(templateId), {
+    templateMutation.createForm.mutate(Number(templateId), {
       onSuccess: ({ reviewFormCode }) => {
         snackbar.show({
           title: '템플릿을 이용해 회고를 생성했습니다.',
@@ -76,7 +76,7 @@ function TemplateDetailPage() {
   const handleDeleteTemplate = () => {
     if (!confirm('정말 템플릿을 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
 
-    templateMutation.remove(templateInfo.id, {
+    templateMutation.remove.mutate(templateInfo.id, {
       onSuccess: () => {
         snackbar.show({
           title: '템플릿이 삭제되었습니다.',

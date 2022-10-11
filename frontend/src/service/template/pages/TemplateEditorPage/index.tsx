@@ -54,7 +54,7 @@ function TemplateFormPage() {
   useEffect(function getTemplateEditData() {
     if (!templateId) return;
 
-    templateMutate.findById(Number(templateId), {
+    templateMutate.findById.mutate(Number(templateId), {
       onSuccess: ({ info: { title, description, ..._unused }, questions }) => {
         setTemplateInfo({ title, description });
         setQuestions(questions);
@@ -89,18 +89,16 @@ function TemplateFormPage() {
       questions,
     };
 
-    const isEditable = isNotNull(templateId);
-
-    !isEditable &&
-      templateMutate.create(requestBody, {
+    !templateId &&
+      templateMutate.create.mutate(requestBody, {
         onSuccess: ({ templateId }) => handleSubmitSuccess(templateId, '템플릿을 등록하였습니다.'),
         onError: (error) => snackbar.show({ theme: 'danger', title: error.message }),
       });
 
-    isEditable &&
-      templateMutate.update(
+    templateId &&
+      templateMutate.update.mutate(
         {
-          templateId: templateId,
+          templateId,
           ...requestBody,
         },
         {
