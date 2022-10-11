@@ -12,6 +12,8 @@ import useSnackbar from 'common/hooks/useSnackbar';
 import { useTemplateMutations } from 'service/@shared/hooks/queries/template';
 import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
 
+import { isNotNull } from 'common/utils/validator';
+
 import {
   Button,
   TextBox,
@@ -87,17 +89,18 @@ function TemplateFormPage() {
       questions,
     };
 
-    if (!templateId) {
+    const isEditable = isNotNull(templateId);
+
+    !isEditable &&
       templateMutate.create(requestBody, {
         onSuccess: ({ templateId }) => handleSubmitSuccess(templateId, '템플릿을 등록하였습니다.'),
         onError: (error) => snackbar.show({ theme: 'danger', title: error.message }),
       });
-    }
 
-    if (templateId) {
+    isEditable &&
       templateMutate.update(
         {
-          templateId: Number(templateId),
+          templateId: templateId,
           ...requestBody,
         },
         {
@@ -105,7 +108,6 @@ function TemplateFormPage() {
           onError: (error) => snackbar.show({ theme: 'danger', title: error.message }),
         },
       );
-    }
   };
 
   const handleCancel = () => {
