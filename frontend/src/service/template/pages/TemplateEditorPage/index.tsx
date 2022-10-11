@@ -118,15 +118,6 @@ function TemplateFormPage() {
   return PageSuspense(
     <LayoutContainer className={styles.container}>
       <FlexContainer
-        className={cn(styles.templateInfoContainer, styles.questionsEditor)}
-        gap="large"
-      >
-        <FlexContainer>
-          <QuestionsEditor value={questions} onChange={handleChangeQuestion} />
-        </FlexContainer>
-      </FlexContainer>
-
-      <FlexContainer
         className={cn(styles.templateInfoContainer, styles.informationEditor)}
         gap="large"
       >
@@ -161,6 +152,15 @@ function TemplateFormPage() {
             <span>취소하기</span>
           </Button>
         </div>
+      </FlexContainer>
+
+      <FlexContainer
+        className={cn(styles.templateInfoContainer, styles.questionsEditor)}
+        gap="large"
+      >
+        <FlexContainer>
+          <QuestionsEditor value={questions} onChange={handleChangeQuestion} />
+        </FlexContainer>
       </FlexContainer>
     </LayoutContainer>,
   );
