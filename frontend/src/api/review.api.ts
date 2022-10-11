@@ -61,10 +61,13 @@ export const createFormByTemplate = async ({
   reviewFormTitle,
   questions,
 }: ReviewType.CreateFormByTemplateRequest) => {
-  const { data } = await axiosInstance.post(API_URI.REVIEW.CREATE_FORM_BY_TEMPLATE(templateId), {
-    reviewFormTitle,
-    questions,
-  });
+  const { data } = await axiosInstance.post<ReviewType.CreateFormByTemplateResponse>(
+    API_URI.REVIEW.CREATE_FORM_BY_TEMPLATE(templateId),
+    {
+      reviewFormTitle,
+      questions,
+    },
+  );
 
   return data;
 };
