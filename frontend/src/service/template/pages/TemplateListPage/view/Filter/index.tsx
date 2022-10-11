@@ -1,4 +1,8 @@
-import { faPenToSquare, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPenToSquare,
+  faSquarePollHorizontal,
+  IconDefinition,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
@@ -68,9 +72,25 @@ function MoreButtons({ onClickCreate }: MoreButtonsProps) {
   );
 }
 
+interface SearchResultProps {
+  search: string;
+}
+
+function SearchResult({ search }: SearchResultProps) {
+  return (
+    <FlexContainer className={styles.searchResult} direction="row" gap="medium">
+      <FontAwesomeIcon className={styles.icon} icon={faSquarePollHorizontal} />
+      <span className={styles.resultText}>
+        &apos;<span className={styles.searchText}>{search}</span>&apos; 검색 결과
+      </span>
+    </FlexContainer>
+  );
+}
+
 const Filter = Object.assign(Container, {
   SortList,
   MoreButtons,
+  SearchResult,
 });
 
 export default Filter;

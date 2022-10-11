@@ -28,6 +28,8 @@ function TemplateListPage() {
   const pageNumber = isNumber(searchParam.get('page')) ? Number(searchParam.get('page')) : 1;
 
   const filterQueryString = searchParam.get('sort');
+  const searchQueryString = searchParam.get('search');
+
   const currentTab = isInclude(Object.values(FILTER.TEMPLATE_TAB), filterQueryString)
     ? filterQueryString
     : FILTER.TEMPLATE_TAB.LATEST;
@@ -62,14 +64,18 @@ function TemplateListPage() {
   return PageSuspense(
     <LayoutContainer>
       <Filter>
-        <Filter.SortList
-          focusedOption={currentTab}
-          sortOptions={[
-            { icon: faArrowTrendUp, query: FILTER.TEMPLATE_TAB.TREND, name: '트랜딩' },
-            { icon: faBarsStaggered, query: FILTER.TEMPLATE_TAB.LATEST, name: '최신' },
-          ]}
-          onClickSortButton={handleChangeSortList}
-        />
+        {searchQueryString ? (
+          <Filter.SearchResult search={searchQueryString} />
+        ) : (
+          <Filter.SortList
+            focusedOption={currentTab}
+            sortOptions={[
+              { icon: faArrowTrendUp, query: FILTER.TEMPLATE_TAB.TREND, name: '트랜딩' },
+              { icon: faBarsStaggered, query: FILTER.TEMPLATE_TAB.LATEST, name: '최신' },
+            ]}
+            onClickSortButton={handleChangeSortList}
+          />
+        )}
 
         <Filter.MoreButtons onClickCreate={handleMoveCreateTemplate} />
       </Filter>
