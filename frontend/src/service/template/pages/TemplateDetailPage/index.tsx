@@ -5,7 +5,7 @@ import { faArrowTrendUp } from '@fortawesome/free-solid-svg-icons';
 import { PAGE_LIST, FILTER } from 'constant';
 
 import useSnackbar from 'common/hooks/useSnackbar';
-import { useTemplateMutation } from 'service/@shared/hooks/queries/template';
+import { useTemplateMutations } from 'service/@shared/hooks/queries/template';
 import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
 
 import { getElapsedTimeText, isInclude } from 'service/@shared/utils';
@@ -28,7 +28,7 @@ function TemplateDetailPage() {
   const { templateId } = useParams();
 
   const [searchParam] = useSearchParams();
-  const templateMutation = useTemplateMutation();
+  const templateMutation = useTemplateMutations();
 
   const filterQueryString = searchParam.get('sort');
   const currentTab = isInclude(Object.values(FILTER.TEMPLATE_TAB), filterQueryString)

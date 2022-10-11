@@ -9,7 +9,7 @@ import { PAGE_LIST } from 'constant';
 import { Question } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
-import { useTemplateMutation } from 'service/@shared/hooks/queries/template';
+import { useTemplateMutations } from 'service/@shared/hooks/queries/template';
 import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
 
 import {
@@ -33,7 +33,7 @@ function TemplateFormPage() {
   const { templateId: templateIdParams = '' } = useParams();
   const snackbar = useSnackbar();
   const { navigate } = useNavigateHandler();
-  const templateMutate = useTemplateMutation();
+  const templateMutate = useTemplateMutations();
 
   const templateId = NUMBER_REGEX.test(templateIdParams) ? Number(templateIdParams) : null;
 

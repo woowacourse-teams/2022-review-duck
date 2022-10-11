@@ -1,2 +1,2 @@
 export * from './useGet';
-export { default as useTemplateMutation } from './useMutation';
+export { default as useTemplateMutations } from './useMutations';
