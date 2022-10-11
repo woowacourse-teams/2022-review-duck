@@ -7,7 +7,7 @@ import { TemplateFilterType } from 'types';
 
 import { useGetTemplates } from 'service/@shared/hooks/queries/template/useGet';
 
-import { isNumber } from 'common/utils/validator';
+import { isNumberString } from 'common/utils/validator';
 import { getElapsedTimeText, isInclude } from 'service/@shared/utils';
 
 import { PaginationBar } from 'common/components';
@@ -25,8 +25,8 @@ function TemplateListPage() {
   const [searchParam, setSearchParam] = useSearchParams();
   const navigate = useNavigate();
 
-  const pageNumberParams = Number(searchParam.get('page'));
-  const pageNumber = isNumber(pageNumberParams) ? pageNumberParams : 1;
+  const pageNumberParams = searchParam.get('page');
+  const pageNumber = isNumberString(pageNumberParams) ? Number(pageNumberParams) : 1;
 
   const filterQueryString = searchParam.get('sort');
   const currentTab = isInclude(Object.values(FILTER.TEMPLATE_TAB), filterQueryString)
