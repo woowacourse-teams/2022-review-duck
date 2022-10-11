@@ -9,14 +9,17 @@ import queryClient from 'api/config/queryClient';
 // TODO: invalidateQueries 무효화 대상 정확히 지정해주기
 
 function useReviewMutation(mutationOptions: UseCustomMutationOptions<unknown> = {}) {
-  const createFormMutation = useMutation(reviewAPI.createForm, {
+  const findForm = useMutation(reviewAPI.getForm);
+  const findAnswer = useMutation(reviewAPI.getFormAnswer);
+
+  const createForm = useMutation(reviewAPI.createForm, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW_FORM]);
     },
     ...mutationOptions,
   });
 
-  const createAnswerMutation = useMutation(reviewAPI.createAnswer, {
+  const createAnswer = useMutation(reviewAPI.createAnswer, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW_FORM]);
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
@@ -24,7 +27,7 @@ function useReviewMutation(mutationOptions: UseCustomMutationOptions<unknown> = 
     ...mutationOptions,
   });
 
-  const createFormByTemplateMutation = useMutation(reviewAPI.createFormByTemplate, {
+  const createFormByTemplate = useMutation(reviewAPI.createFormByTemplate, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
       queryClient.invalidateQueries([QUERY_KEY.DATA.TEMPLATE]);
@@ -32,20 +35,20 @@ function useReviewMutation(mutationOptions: UseCustomMutationOptions<unknown> = 
     ...mutationOptions,
   });
 
-  const updateFormMutation = useMutation(reviewAPI.updateForm, {
+  const updateForm = useMutation(reviewAPI.updateForm, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW_FORM]);
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
     },
   });
 
-  const updateAnswerMutation = useMutation(reviewAPI.updateAnswer, {
+  const updateAnswer = useMutation(reviewAPI.updateAnswer, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
     },
   });
 
-  const removeFormMutation = useMutation(reviewAPI.deleteForm, {
+  const removeForm = useMutation(reviewAPI.deleteForm, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW_FORM]);
@@ -53,7 +56,7 @@ function useReviewMutation(mutationOptions: UseCustomMutationOptions<unknown> = 
     ...mutationOptions,
   });
 
-  const removeAnswerMutation = useMutation(reviewAPI.deleteAnswer, {
+  const removeAnswer = useMutation(reviewAPI.deleteAnswer, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW_FORM]);
@@ -62,15 +65,18 @@ function useReviewMutation(mutationOptions: UseCustomMutationOptions<unknown> = 
   });
 
   return {
-    createForm: createFormMutation.mutate,
-    createAnswerMutation: createAnswerMutation.mutate,
-    createFormByTemplateMutation: createFormByTemplateMutation.mutate,
+    findForm,
+    findAnswer,
 
-    updateForm: updateFormMutation.mutate,
-    updateAnswer: updateAnswerMutation.mutate,
+    createForm,
+    createAnswer,
+    createFormByTemplate,
 
-    removeForm: removeFormMutation.mutate,
-    removeAnswer: removeAnswerMutation.mutate,
+    updateForm,
+    updateAnswer,
+
+    removeForm,
+    removeAnswer,
   };
 }
 
