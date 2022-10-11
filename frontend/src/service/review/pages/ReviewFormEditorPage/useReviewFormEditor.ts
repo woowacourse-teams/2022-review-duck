@@ -1,34 +1,37 @@
-import { UseMutationResult } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 
-import { CreateReviewFormRequest, UpdateReviewFormRequest, ErrorResponse } from 'types';
+import { useReviewMutations } from 'service/@shared/hooks/queries/review';
 
-import {
-  useCreateReviewForm,
-  useGetReviewForm,
-  useUpdateReviewForm,
-} from 'service/@shared/hooks/queries/review';
+function useReviewFormEditor(reviewFormCode?: string) {
+  const isEditMode = !!reviewFormCode;
 
-type SubmitMutationResult = UseMutationResult<
-  { reviewFormCode: string },
-  ErrorResponse,
-  CreateReviewFormRequest | UpdateReviewFormRequest
->;
+  const reviewMutations = useReviewMutations();
+  const isSubmitLoading = isEditMode
+    ? reviewMutations.updateForm.isLoading
+    : reviewMutations.createForm.isLoading;
 
-function useReviewFormEditor(reviewFormCode: string) {
-  const createMutation = useCreateReviewForm();
-  const updateMutation = useUpdateReviewForm();
+  const [reviewFormTitle, setReviewFormTitle] = useState('');
+  const [questions, setQuestions] = useState([{ value: '', description: '' }]);
 
-  const submitMutation = reviewFormCode ? updateMutation : createMutation;
+  useEffect(function getReviewFormEditData() {
+    if (!reviewFormCode) return;
 
-  const getReviewFormQuery = useGetReviewForm(reviewFormCode, {
-    enabled: !!reviewFormCode,
-  });
+    reviewMutations.findForm.mutate(reviewFormCode, {
+      onSuccess: ({ title, questions }) => {
+        setReviewFormTitle(title);
+        setQuestions(questions);
+      },
+    });
+  }, []);
 
   return {
-    reviewForm: getReviewFormQuery.data,
-    isNewReviewForm: !reviewFormCode,
-    isSubmitLoading: submitMutation.isLoading,
-    submitReviewForm: submitMutation as SubmitMutationResult,
+    reviewMutations,
+    isEditMode,
+    isSubmitLoading,
+    reviewFormTitle,
+    questions,
+    setQuestions,
+    setReviewFormTitle,
   };
 }
 
