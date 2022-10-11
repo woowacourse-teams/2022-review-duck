@@ -109,7 +109,7 @@ function TemplateDetailPage() {
           <Header.Buttons
             editable={template.isCreator}
             onClickCreateReviewForm={handleLinkPage(
-              `${PAGE_LIST.TEMPLATE_FORM}?templateId=${templateInfo.id}`,
+              `${PAGE_LIST.REVIEW_FORM}?template=${templateInfo.id}`,
             )}
             onClickStartReview={handleStartReview}
             onClickEdit={handleLinkPage(`${PAGE_LIST.TEMPLATE_FORM}/${templateInfo.id}`)}

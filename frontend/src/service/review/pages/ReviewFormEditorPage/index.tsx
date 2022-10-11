@@ -6,6 +6,7 @@ import { Question } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
+import { isNumberString } from 'common/utils/validator';
 import { getErrorMessage } from 'service/@shared/utils';
 
 import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
@@ -18,7 +19,10 @@ import { validateReviewForm } from 'service/@shared/validator';
 function ReviewFormEditorPage() {
   const { reviewFormCode = '' } = useParams();
   const [searchParams] = useSearchParams();
-  const redirectUri = searchParams.get('redirect');
+
+  const redirectUri = searchParams.get('redirect') || '';
+  const templateIdParam = searchParams.get('template') || '';
+  const templateId = isNumberString(templateIdParam) ? Number(templateIdParam) : null;
 
   const snackbar = useSnackbar();
   const navigate = useNavigate();
@@ -31,7 +35,7 @@ function ReviewFormEditorPage() {
     questions,
     setQuestions,
     setReviewFormTitle,
-  } = useReviewFormEditor(reviewFormCode);
+  } = useReviewFormEditor(reviewFormCode, templateId);
 
   const handleChangeReviewTitle = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
     setReviewFormTitle(target.value);
@@ -69,6 +73,18 @@ function ReviewFormEditorPage() {
     );
   };
 
+  const handleCreateByTemplate = () => {
+    if (!templateId) return;
+
+    reviewMutations.createFormByTemplate.mutate(
+      { templateId, reviewFormTitle, questions },
+      {
+        onSuccess: ({ reviewFormCode: createdReviewFormCode }) =>
+          handleSubmitSuccess(createdReviewFormCode, '회고가 생성되었습니다.'),
+      },
+    );
+  };
+
   const handleSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -79,7 +95,9 @@ function ReviewFormEditorPage() {
       return;
     }
 
-    isEditMode ? handleUpdateReviewForm() : handleCreateReviewForm();
+    if (isEditMode) handleUpdateReviewForm();
+    else if (!isEditMode && !templateId) handleCreateReviewForm();
+    else if (templateId) handleCreateByTemplate();
   };
 
   const handleCancel = () => {
