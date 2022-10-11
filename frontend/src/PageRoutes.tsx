@@ -10,7 +10,6 @@ import RequireAuth from 'service/@shared/components/RequireAuth';
 import MainLayout from 'service/@shared/layout/MainLayout';
 import ErrorPage from 'service/@shared/pages/ErrorPage';
 import ReviewLayout from 'service/review/layout/ReviewLayout';
-import Playground from 'service/review/pages/Playground';
 import MainPage from 'service/user/pages/MainPage';
 
 function PageRoutes() {
@@ -23,7 +22,6 @@ function PageRoutes() {
 
         <Route path={`${PAGE_LIST.USER_PROFILE}/:socialId`} element={<SplitPages.ProfilePage />} />
         <Route path={PAGE_LIST.TIMELINE} element={<SplitPages.ReviewTimelinePage />} />
-        <Route path="playground" element={<Playground />} />
 
         <Route path={PAGE_LIST.TEMPLATE_LIST} element={<SplitPages.TemplateListPage />} />
         <Route
