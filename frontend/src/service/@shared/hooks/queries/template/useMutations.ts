@@ -11,23 +11,23 @@ function useTemplateMutation(mutationOptions: UseCustomMutationOptions<unknown> 
     queryClient.invalidateQueries([QUERY_KEY.DATA.TEMPLATE]);
   };
 
-  const getTemplate = useMutation(templateAPI.getTemplate);
-  const getTemplates = useMutation(templateAPI.getTemplates, {
+  const findById = useMutation(templateAPI.getTemplate);
+  const findList = useMutation(templateAPI.getTemplates, {
     onSuccess: invalidateQueries,
     ...mutationOptions,
   });
 
-  const createTemplate = useMutation(templateAPI.createTemplate, {
+  const create = useMutation(templateAPI.createTemplate, {
     onSuccess: invalidateQueries,
     ...mutationOptions,
   });
 
-  const updateTemplate = useMutation(templateAPI.updateTemplate, {
+  const update = useMutation(templateAPI.updateTemplate, {
     onSuccess: invalidateQueries,
     ...mutationOptions,
   });
 
-  const removeTemplate = useMutation(templateAPI.deleteTemplate, {
+  const remove = useMutation(templateAPI.deleteTemplate, {
     onSuccess: invalidateQueries,
     ...mutationOptions,
   });
@@ -38,12 +38,12 @@ function useTemplateMutation(mutationOptions: UseCustomMutationOptions<unknown> 
   });
 
   return {
-    findById: getTemplate.mutate,
-    findList: getTemplates.mutate,
-    create: createTemplate.mutate,
-    createForm: createForm.mutate,
-    update: updateTemplate.mutate,
-    remove: removeTemplate.mutate,
+    findById,
+    findList,
+    create,
+    createForm,
+    update,
+    remove,
   };
 }
 

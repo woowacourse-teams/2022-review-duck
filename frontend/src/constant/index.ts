@@ -117,7 +117,7 @@ const API_URI = {
   REVIEW: {
     GET_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
     GET_ANSWER: (reviewId: numberString) => `/api/reviews/${reviewId}`,
-    GET_FORM_ANSWER: (reviewFormCode: string, display: string, page?: string, size?: number) =>
+    GET_FORM_ANSWER: (reviewFormCode: string, display: string, page?: number, size?: number) =>
       `/api/review-forms/${reviewFormCode}/reviews?displayType=${display}&page=${page}&size=${size}`,
     GET_PUBLIC_ANSWER: '/api/reviews/public',
 

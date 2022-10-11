@@ -1,34 +1,47 @@
-import { UseMutationResult } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 
-import { CreateReviewFormRequest, UpdateReviewFormRequest, ErrorResponse } from 'types';
+import { useReviewMutations } from 'service/@shared/hooks/queries/review';
+import { useTemplateMutations } from 'service/@shared/hooks/queries/template';
 
-import {
-  useCreateReviewForm,
-  useGetReviewForm,
-  useUpdateReviewForm,
-} from 'service/@shared/hooks/queries/review';
+function useReviewFormEditor(reviewFormCode: string, templateId: number | null) {
+  const isEditMode = !!reviewFormCode;
 
-type SubmitMutationResult = UseMutationResult<
-  { reviewFormCode: string },
-  ErrorResponse,
-  CreateReviewFormRequest | UpdateReviewFormRequest
->;
+  const reviewMutations = useReviewMutations();
+  const templateMutations = useTemplateMutations();
 
-function useReviewFormEditor(reviewFormCode: string) {
-  const createMutation = useCreateReviewForm();
-  const updateMutation = useUpdateReviewForm();
+  const isSubmitLoading = isEditMode
+    ? reviewMutations.updateForm.isLoading
+    : reviewMutations.createForm.isLoading;
 
-  const submitMutation = reviewFormCode ? updateMutation : createMutation;
+  const [reviewFormTitle, setReviewFormTitle] = useState('');
+  const [questions, setQuestions] = useState([{ value: '', description: '' }]);
 
-  const getReviewFormQuery = useGetReviewForm(reviewFormCode, {
-    enabled: !!reviewFormCode,
-  });
+  useEffect(function getReviewFormEditData() {
+    reviewFormCode &&
+      reviewMutations.findForm.mutate(reviewFormCode, {
+        onSuccess: ({ title, questions }) => {
+          setReviewFormTitle(title);
+          setQuestions(questions);
+        },
+      });
+
+    templateId &&
+      templateMutations.findById.mutate(templateId, {
+        onSuccess: ({ questions, info: { title } }) => {
+          setReviewFormTitle(title);
+          setQuestions(questions);
+        },
+      });
+  }, []);
 
   return {
-    reviewForm: getReviewFormQuery.data,
-    isNewReviewForm: !reviewFormCode,
-    isSubmitLoading: submitMutation.isLoading,
-    submitReviewForm: submitMutation as SubmitMutationResult,
+    reviewMutations,
+    isEditMode,
+    isSubmitLoading,
+    reviewFormTitle,
+    questions,
+    setQuestions,
+    setReviewFormTitle,
   };
 }
 

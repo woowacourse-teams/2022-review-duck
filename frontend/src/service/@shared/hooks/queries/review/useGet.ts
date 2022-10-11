@@ -46,12 +46,12 @@ function useGetInfiniteReviewFormAnswer(
   queryOptions?: any,
 ) {
   const fetchFunc = async ({ pageParam = 1 }) => {
-    const data = await reviewAPI.getFormAnswer(
-      String(pageParam),
-      PAGE_OPTION.REVIEW_ITEM_SIZE,
+    const data = await reviewAPI.getFormAnswer({
+      pageNumber: pageParam,
+      size: PAGE_OPTION.REVIEW_ITEM_SIZE,
       reviewFormCode,
       display,
-    );
+    });
 
     return {
       data,
