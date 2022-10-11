@@ -1,18 +1,18 @@
+import React from 'react';
+
 import { useRecoilState } from 'recoil';
 
-import Modal from '../Modal';
-import modalAtom from 'common/recoil/modal';
+import { Modal } from 'common/components';
 
-interface ModalProviderProps {
-  contentList: Record<string, (props: unknown) => JSX.Element>;
-}
+import * as modals from './modals';
+import modalAtom from 'service/@shared/recoil/modalProvider';
 
-function ModalProvider({ contentList }: ModalProviderProps) {
+function ModalProvider() {
   const [modalState, setModal] = useRecoilState(modalAtom);
 
   const { key: modalKey, isVisible } = modalState;
 
-  const ModalContent = contentList[modalKey];
+  const ModalContent = modalKey ? modals[modalKey] : React.Fragment;
 
   const onCloseModal = ({ target, currentTarget }: React.MouseEvent) => {
     const isCapturing = target !== currentTarget;
@@ -25,11 +25,7 @@ function ModalProvider({ contentList }: ModalProviderProps) {
   return (
     <div id="modal-container">
       <Modal isVisible={isVisible} onCloseModal={onCloseModal}>
-        {ModalContent ? (
-          <ModalContent />
-        ) : (
-          <p>찾을 수 없는 모달 컨텐츠입니다. 모달 Key를 확인해주세요.</p>
-        )}
+        <ModalContent />
       </Modal>
     </div>
   );

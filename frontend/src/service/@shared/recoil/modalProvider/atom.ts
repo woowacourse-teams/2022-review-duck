@@ -1,7 +1,9 @@
 import { atom } from 'recoil';
 
-export interface ModalAtom<TModalContentKey = string> {
-  key: TModalContentKey;
+import * as modals from 'service/@shared/components/ModalProvider/modals';
+
+export interface ModalAtom {
+  key?: keyof typeof modals;
   isVisible: boolean;
   props?: Record<string, unknown>;
 }
@@ -9,7 +11,6 @@ export interface ModalAtom<TModalContentKey = string> {
 const modalAtom = atom<ModalAtom>({
   key: 'modal',
   default: {
-    key: '',
     isVisible: false,
     props: {},
   },

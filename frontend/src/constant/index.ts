@@ -17,7 +17,7 @@ const MODAL_LIST = {
   REVIEW_JOIN: 'ModalReviewJoin',
 
   PROFILE_EDIT: 'ModalProfileEdit',
-};
+} as const;
 
 const API_REQUEST_TIMEOUT = 5000;
 

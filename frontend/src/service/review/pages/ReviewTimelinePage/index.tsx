@@ -40,7 +40,7 @@ function ReviewTimelinePage() {
 
   const currentTab = searchParam.get('filter') || FILTER.TIMELINE_TAB.LATEST;
   const navigate = useNavigate();
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   useEffect(function queryStringFilter() {
     validateFilter([FILTER.TIMELINE_TAB.TREND, FILTER.TIMELINE_TAB.LATEST], currentTab);
@@ -116,14 +116,14 @@ function ReviewTimelinePage() {
 
     reviewAnswerDelete(reviewId, {
       onSuccess: () =>
-        showSnackbar({
+        snackbar.show({
           title: '회고가 삭제되었습니다.',
           description: '삭제된 회고는 복구할 수 없습니다.',
           theme: 'warning',
         }),
 
       onError: (error) =>
-        showSnackbar({
+        snackbar.show({
           title: '회고 삭제에 실패하였습니다.',
           description: error.message,
           theme: 'danger',
@@ -143,7 +143,7 @@ function ReviewTimelinePage() {
       onError: (error) => {
         const originCount = likes - (reviewLikeStack - 1);
         setUpdateLikeCount(pageIndex, reviewId, originCount);
-        showSnackbar({
+        snackbar.show({
           theme: 'danger',
           title: '회고 좋아요에 실패하였습니다.',
           description: error.message,

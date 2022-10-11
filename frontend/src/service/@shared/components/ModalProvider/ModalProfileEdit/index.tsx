@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 
-import useModal from 'common/hooks/useModal';
+import { faBan, faUserPen } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import useSnackbar from 'common/hooks/useSnackbar';
 import { useGetAuthProfile } from 'service/@shared/hooks/queries/auth';
 import { useUpdateProfile } from 'service/@shared/hooks/queries/user/useUpdate';
@@ -9,15 +11,15 @@ import { getErrorMessage } from 'service/@shared/utils';
 
 import { Button, FieldSet, TextBox } from 'common/components';
 
+import useModal from 'service/@shared/components/ModalProvider/useModal';
+
 import styles from './styles.module.scss';
 
-import { faBan, faUserPen } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { validateNickname } from 'service/@shared/validator';
 
 function ModalProfileEdit() {
-  const { hideModal } = useModal();
-  const { showSnackbar } = useSnackbar();
+  const modal = useModal();
+  const snackbar = useSnackbar();
   const [newNickname, setNewNickname] = useState('');
 
   const { data } = useGetAuthProfile();
@@ -36,11 +38,11 @@ function ModalProfileEdit() {
   };
 
   const handleEditSuccess = () => {
-    showSnackbar({
+    snackbar.show({
       title: '회원 정보를 수정했습니다.',
       description: '회원 정보는 마이페이지에서 언제든 수정할 수 있습니다.',
     });
-    hideModal();
+    modal.hide();
   };
 
   const handleEditError = ({ message }: Record<'message', string>) => {
@@ -79,7 +81,7 @@ function ModalProfileEdit() {
       </FieldSet>
 
       <div className={styles.buttons}>
-        <Button theme="outlined" onClick={hideModal}>
+        <Button theme="outlined" onClick={modal.hide}>
           <FontAwesomeIcon icon={faBan} />
           취소하기
         </Button>

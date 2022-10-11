@@ -29,7 +29,7 @@ function ReviewFormEditorPage() {
     reviewForm?.questions || [{ value: '', description: '' }],
   );
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const redirectUri = searchParams.get('redirect');
 
@@ -55,7 +55,7 @@ function ReviewFormEditorPage() {
       { reviewFormTitle, reviewFormCode, questions },
       {
         onSuccess: ({ reviewFormCode }) => {
-          showSnackbar({
+          snackbar.show({
             title: isNewReviewForm ? '회고가 생성되었습니다.' : '회고가 수정되었습니다.',
             description: '회고 참여코드를 공유하여, 회고를 시작할 수 있습니다.',
           });

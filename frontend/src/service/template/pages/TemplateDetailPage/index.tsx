@@ -32,7 +32,7 @@ function TemplateDetailPage() {
     ? filterQueryString
     : FILTER.TEMPLATE_TAB.LATEST;
 
-  const { showSnackbar } = useSnackbar();
+  const snackbar = useSnackbar();
 
   const queries = useTemplateDetailQueries(Number(templateId));
 
@@ -51,7 +51,7 @@ function TemplateDetailPage() {
 
     createFormMutation.mutate(Number(templateId), {
       onSuccess: ({ reviewFormCode }) => {
-        showSnackbar({
+        snackbar.show({
           title: '템플릿을 이용해 회고를 생성했습니다.',
           description: '답변을 바로 작성하고 팀원과 공유할 수 있습니다.',
         });
@@ -61,7 +61,7 @@ function TemplateDetailPage() {
         });
       },
       onError: ({ message }) => {
-        showSnackbar({ theme: 'danger', title: '오류가 발생하였습니다.', description: message });
+        snackbar.show({ theme: 'danger', title: '오류가 발생하였습니다.', description: message });
       },
     });
   };
@@ -71,7 +71,7 @@ function TemplateDetailPage() {
 
     deleteMutation.mutate(templateInfo.id, {
       onSuccess: () => {
-        showSnackbar({
+        snackbar.show({
           title: '템플릿이 삭제되었습니다.',
           description: '사람들과 공유할 새로운 템플릿을 만들어보세요.',
         });
