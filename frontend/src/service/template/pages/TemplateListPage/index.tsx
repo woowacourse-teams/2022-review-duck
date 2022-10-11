@@ -25,7 +25,8 @@ function TemplateListPage() {
   const [searchParam, setSearchParam] = useSearchParams();
   const navigate = useNavigate();
 
-  const pageNumber = isNumber(searchParam.get('page')) ? Number(searchParam.get('page')) : 1;
+  const pageNumberParams = Number(searchParam.get('page'));
+  const pageNumber = isNumber(pageNumberParams) ? pageNumberParams : 1;
 
   const filterQueryString = searchParam.get('sort');
   const currentTab = isInclude(Object.values(FILTER.TEMPLATE_TAB), filterQueryString)
