@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { faArrowTrendUp, faPenNib } from '@fortawesome/free-solid-svg-icons';
@@ -6,7 +5,6 @@ import { faArrowTrendUp, faPenNib } from '@fortawesome/free-solid-svg-icons';
 import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
 
 import useSnackbar from 'common/hooks/useSnackbar';
-import useStackFetch from 'common/hooks/useStackFetch';
 
 import { isInclude } from 'service/@shared/utils';
 
@@ -23,7 +21,6 @@ import SideMenu from './view/SideMenu';
 import { updateReviewLike } from 'api/review.api';
 
 function ReviewTimelinePage() {
-  const { addFetch } = useStackFetch(2000);
   const [searchParam] = useSearchParams();
 
   const filterQueryString = searchParam.get('sort');
@@ -34,7 +31,6 @@ function ReviewTimelinePage() {
   const navigate = useNavigate();
   const snackbar = useSnackbar();
 
-  const reviewsLikeStack = useRef<Record<number, number>>({});
   const reviewTimelineQueries = useReviewTimeline(currentTab);
 
   if (!reviewTimelineQueries) return <>{/* Error Boundary, Suspense Used */}</>;
@@ -42,9 +38,11 @@ function ReviewTimelinePage() {
   const {
     reviewMutations,
     reviews,
+    reviewsLikeStack,
     reviewsOptimisticUpdater,
     infiniteScrollContainerRef,
     isAnswerFetching,
+    addFetch,
   } = reviewTimelineQueries;
 
   const handleClickEditButton = (reviewFormCode: string, reviewId: number) => () => {
