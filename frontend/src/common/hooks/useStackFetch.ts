@@ -11,7 +11,7 @@ type FetchCallbackFunction = () => Promise<any>;
 interface FetchHandler<FetchCallback extends FetchCallbackFunction> {
   onStart?: () => void;
   onUpdate?: () => void;
-  onSuccess?: (data: Awaited<PickReturnType<FetchCallback>>) => void;
+  onSuccess?: (data: Awaited<ReturnType<FetchCallback>>) => void;
   onError?: (error: ErrorResponse) => void;
 }
 
