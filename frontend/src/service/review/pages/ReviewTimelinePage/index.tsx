@@ -1,19 +1,10 @@
-import { useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { faArrowTrendUp, faPenNib } from '@fortawesome/free-solid-svg-icons';
-import { InfiniteData } from '@tanstack/react-query';
 
-import { PAGE_LIST, QUERY_KEY, FILTER } from 'constant';
-import { InfiniteItem, ReviewPublicAnswer, ReviewPublicAnswerList } from 'types';
+import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
 
-import useIntersectionObserver from 'common/hooks/useIntersectionObserver';
 import useSnackbar from 'common/hooks/useSnackbar';
-import useStackFetch from 'common/hooks/useStackFetch';
-import {
-  useDeleteReviewAnswer,
-  useGetInfiniteReviewPublicAnswer,
-} from 'service/@shared/hooks/queries/review';
 
 import { isInclude } from 'service/@shared/utils';
 
@@ -24,15 +15,12 @@ import Questions from 'service/@shared/components/Questions';
 
 import styles from './styles.module.scss';
 
+import useReviewTimeline from './useReviewTimeline';
 import Feed from './view/Feed';
 import SideMenu from './view/SideMenu';
-import queryClient from 'api/config/queryClient';
 import { updateReviewLike } from 'api/review.api';
 
-type ReviewId = ReviewPublicAnswer['id'];
-
 function ReviewTimelinePage() {
-  const listRef = useRef<HTMLDivElement>(null);
   const [searchParam] = useSearchParams();
 
   const filterQueryString = searchParam.get('sort');
@@ -43,54 +31,19 @@ function ReviewTimelinePage() {
   const navigate = useNavigate();
   const snackbar = useSnackbar();
 
-  useEffect(
-    function focusTop() {
-      window.scrollTo(0, 0);
-    },
-    [searchParam],
-  );
+  const reviewTimelineQueries = useReviewTimeline(currentTab);
 
-  const { mutate: reviewAnswerDelete } = useDeleteReviewAnswer();
-  const { addFetch } = useStackFetch(2000);
+  if (!reviewTimelineQueries) return <>{/* Error Boundary, Suspense Used */}</>;
 
-  const getPublicAnswerQuery = useGetInfiniteReviewPublicAnswer(currentTab);
-  const reviewsLikeStack = useRef<Record<ReviewId, number>>({});
-
-  useIntersectionObserver(
-    listRef,
-    [getPublicAnswerQuery.data, currentTab],
-    getPublicAnswerQuery.fetchNextPage,
-  );
-
-  if (getPublicAnswerQuery.isError || getPublicAnswerQuery.isLoading)
-    return <>{/* Error Boundary, Suspense Used */}</>;
-
-  const { pages: reviewsPageList } = getPublicAnswerQuery.data;
-
-  const setUpdateLikeCount = (pageIndex: number, reviewId: number, count: number) => {
-    queryClient.setQueryData<InfiniteData<InfiniteItem<ReviewPublicAnswerList>>>(
-      [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEW_PUBLIC_ANSWER, { filter: currentTab }],
-      (previousData) => {
-        if (!previousData) return previousData;
-
-        const updatedReviews = previousData.pages[pageIndex].data.reviews.map((review) => {
-          if (review.id !== reviewId) return review;
-
-          return { ...review, likes: count };
-        });
-
-        const newPages = [...previousData.pages];
-        const newPage = { ...previousData.pages[pageIndex] };
-        const newData = { ...newPage.data };
-
-        newData.reviews = updatedReviews;
-        newPage.data = newData;
-        newPages[pageIndex] = newPage;
-
-        return { pages: newPages, pageParams: previousData.pageParams };
-      },
-    );
-  };
+  const {
+    reviewMutations,
+    reviews,
+    reviewsLikeStack,
+    reviewsOptimisticUpdater,
+    infiniteScrollContainerRef,
+    isAnswerFetching,
+    addFetch,
+  } = reviewTimelineQueries;
 
   const handleClickEditButton = (reviewFormCode: string, reviewId: number) => () => {
     navigate(
@@ -105,7 +58,7 @@ function ReviewTimelinePage() {
       return;
     }
 
-    reviewAnswerDelete(reviewId, {
+    reviewMutations.removeAnswer.mutate(reviewId, {
       onSuccess: () =>
         snackbar.show({
           title: '회고가 삭제되었습니다.',
@@ -122,7 +75,7 @@ function ReviewTimelinePage() {
     });
   };
 
-  const handleClickLikeButton = (pageIndex: number, reviewId: number, likes: number) => () => {
+  const handleClickLikeButton = (reviewId: number, likes: number) => () => {
     if (!reviewsLikeStack.current[reviewId]) {
       reviewsLikeStack.current[reviewId] = 0;
     }
@@ -130,20 +83,17 @@ function ReviewTimelinePage() {
     const reviewLikeStack = (reviewsLikeStack.current[reviewId] += 1);
 
     addFetch(reviewId, () => updateReviewLike({ reviewId, likes: reviewLikeStack }), {
-      onUpdate: () => setUpdateLikeCount(pageIndex, reviewId, likes + 1),
+      onUpdate: () => reviewsOptimisticUpdater.basedOnKey('id', reviewId, { likes: likes + 1 }),
       onError: (error) => {
-        const originCount = likes - (reviewLikeStack - 1);
-        setUpdateLikeCount(pageIndex, reviewId, originCount);
+        reviewsOptimisticUpdater.rollback();
         snackbar.show({
           theme: 'danger',
           title: '회고 좋아요에 실패하였습니다.',
           description: error.message,
         });
-
-        delete reviewsLikeStack.current[reviewId];
       },
       onSuccess: ({ likes: latestLikes }) => {
-        setUpdateLikeCount(pageIndex, reviewId, latestLikes);
+        reviewsOptimisticUpdater.basedOnKey('id', reviewId, { likes: latestLikes });
         delete reviewsLikeStack.current[reviewId];
       },
     });
@@ -175,44 +125,44 @@ function ReviewTimelinePage() {
       <Feed>
         <Feed.Title>타임라인</Feed.Title>
 
-        <Feed.List ref={listRef}>
-          {reviewsPageList.map(({ reviews }) =>
-            reviews.map(({ id, info: { creator, ...info }, reviewFormCode, questions, likes }) => (
-              <Feed.ReviewAnswer key={id}>
-                <Feed.UserProfile
-                  socialId={creator.id}
-                  profileUrl={creator.profileUrl}
-                  nickname={creator.nickname}
-                  update={info.updateDate}
+        <Feed.List ref={infiniteScrollContainerRef}>
+          {reviews.map(({ id, info: { creator, ...info }, reviewFormCode, questions, likes }) => (
+            <Feed.ReviewAnswer key={id}>
+              <Feed.UserProfile
+                socialId={creator.id}
+                profileUrl={creator.profileUrl}
+                nickname={creator.nickname}
+                update={info.updateDate}
+              />
+
+              <Questions>
+                <Questions.EditButtons
+                  className={styles.questionEdit}
+                  isVisible={info.isSelf}
+                  onClickEdit={handleClickEditButton(reviewFormCode, id)}
+                  onClickDelete={handleClickDeleteButton(id)}
                 />
 
-                <Questions>
-                  <Questions.EditButtons
-                    className={styles.questionEdit}
-                    isVisible={info.isSelf}
-                    onClickEdit={handleClickEditButton(reviewFormCode, id)}
-                    onClickDelete={handleClickDeleteButton(id)}
-                  />
+                {questions.map(({ answer, ...question }) => (
+                  <Questions.Answer
+                    key={question.id}
+                    question={question.value}
+                    description={question.description}
+                  >
+                    {answer.value}
+                  </Questions.Answer>
+                ))}
 
-                  {questions.map(({ answer, ...question }) => (
-                    <Questions.Answer
-                      key={question.id}
-                      question={question.value}
-                      description={question.description}
-                    >
-                      {answer.value}
-                    </Questions.Answer>
-                  ))}
+                <Questions.Reaction
+                  likeCount={likes}
+                  onClickLike={handleClickLikeButton(id, likes)}
+                  onClickBookmark={() => null}
+                />
+              </Questions>
+            </Feed.ReviewAnswer>
+          ))}
 
-                  <Questions.Reaction
-                    likeCount={likes}
-                    onClickLike={() => null}
-                    onClickBookmark={() => null}
-                  />
-                </Questions>
-              </Feed.ReviewAnswer>
-            )),
-          )}
+          {isAnswerFetching && <Feed.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
         </Feed.List>
       </Feed>
     </LayoutContainer>,

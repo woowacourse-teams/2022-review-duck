@@ -36,14 +36,6 @@ type RequiredPartialType<Type, P extends keyof Type> = Type & {
   [key in P]-?: Type[key];
 };
 
-type PickParameterType<T extends (...rest: any[]) => any> = T extends (...rest: infer P) => any
-  ? P
-  : never;
-
-type PickReturnType<T extends (...rest: any[]) => any> = T extends (...rest: any[]) => infer P
-  ? P
-  : never;
-
 type ValueOf<T extends Record<string, unknown>> = T[keyof T];
 
 type Mutable<T> = { -readonly [P in keyof T]: T[P] };

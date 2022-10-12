@@ -44,7 +44,7 @@ export const transformAnswer = (data: GetReviewAnswerResponse): ReviewAnswer => 
 };
 
 export const transformFormAnswer = (data: GetReviewFormAnswerResponse): ReviewFormAnswerList => {
-  const { numberOfReviews, isLastPage, reviews } = data;
+  const { isLastPage, reviews } = data;
 
   const transformReviews = reviews.map((review) => {
     const { id, reviewTitle, updatedAt, likes, isCreator, creator, contents } = review;
@@ -63,6 +63,7 @@ export const transformFormAnswer = (data: GetReviewFormAnswerResponse): ReviewFo
         isSelf: isCreator,
         updateDate: getElapsedTimeText(updatedAt),
       },
+      likes,
     };
   });
 
