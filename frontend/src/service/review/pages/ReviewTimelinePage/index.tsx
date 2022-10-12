@@ -4,7 +4,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { faArrowTrendUp, faPenNib } from '@fortawesome/free-solid-svg-icons';
 
 import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
-import { ReviewPublicAnswer } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useStackFetch from 'common/hooks/useStackFetch';
@@ -23,10 +22,7 @@ import Feed from './view/Feed';
 import SideMenu from './view/SideMenu';
 import { updateReviewLike } from 'api/review.api';
 
-type ReviewId = ReviewPublicAnswer['id'];
-
 function ReviewTimelinePage() {
-  const reviewsLikeStack = useRef<Record<ReviewId, number>>({});
   const { addFetch } = useStackFetch(2000);
   const [searchParam] = useSearchParams();
 
@@ -38,14 +34,15 @@ function ReviewTimelinePage() {
   const navigate = useNavigate();
   const snackbar = useSnackbar();
 
+  const reviewsLikeStack = useRef<Record<number, number>>({});
   const reviewTimelineQueries = useReviewTimeline(currentTab);
 
   if (!reviewTimelineQueries) return <>{/* Error Boundary, Suspense Used */}</>;
 
   const {
     reviewMutations,
-    answers,
-    answersOptimisticUpdater,
+    reviews,
+    reviewsOptimisticUpdater,
     infiniteScrollContainerRef,
     isAnswerFetching,
   } = reviewTimelineQueries;
@@ -88,9 +85,9 @@ function ReviewTimelinePage() {
     const reviewLikeStack = (reviewsLikeStack.current[reviewId] += 1);
 
     addFetch(reviewId, () => updateReviewLike({ reviewId, likes: reviewLikeStack }), {
-      onUpdate: () => answersOptimisticUpdater.basedOnKey('id', reviewId, { likes: likes + 1 }),
+      onUpdate: () => reviewsOptimisticUpdater.basedOnKey('id', reviewId, { likes: likes + 1 }),
       onError: (error) => {
-        answersOptimisticUpdater.rollback();
+        reviewsOptimisticUpdater.rollback();
         snackbar.show({
           theme: 'danger',
           title: '회고 좋아요에 실패하였습니다.',
@@ -98,7 +95,7 @@ function ReviewTimelinePage() {
         });
       },
       onSuccess: ({ likes: latestLikes }) => {
-        answersOptimisticUpdater.basedOnKey('id', reviewId, { likes: latestLikes });
+        reviewsOptimisticUpdater.basedOnKey('id', reviewId, { likes: latestLikes });
         delete reviewsLikeStack.current[reviewId];
       },
     });
@@ -131,7 +128,7 @@ function ReviewTimelinePage() {
         <Feed.Title>타임라인</Feed.Title>
 
         <Feed.List ref={infiniteScrollContainerRef}>
-          {answers.map(({ id, info: { creator, ...info }, reviewFormCode, questions, likes }) => (
+          {reviews.map(({ id, info: { creator, ...info }, reviewFormCode, questions, likes }) => (
             <Feed.ReviewAnswer key={id}>
               <Feed.UserProfile
                 socialId={creator.id}

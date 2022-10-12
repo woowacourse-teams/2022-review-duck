@@ -13,19 +13,18 @@ import {
 function useReviewTimeline(currentTab: TimelineFilterType) {
   const reviewMutations = useReviewMutations();
   const {
-    data: answersPages,
+    data: reviewsPages,
     fetchNextPage,
     isLoading,
     isError,
     isFetching: isAnswerFetching,
   } = useGetInfiniteReviewPublicAnswer(currentTab);
 
+  const reviewsOrigin = useSimplifiedPageData(reviewsPages ? reviewsPages.pages : [], 'reviews');
+  const [reviews, reviewsOptimisticUpdater] = useOptimisticUpdate(reviewsOrigin);
+
   const infiniteScrollContainerRef = useRef<HTMLDivElement>(null);
-  const answersOrigin = useSimplifiedPageData(answersPages ? answersPages.pages : [], 'reviews');
-
-  const [answers, answersOptimisticUpdater] = useOptimisticUpdate(answersOrigin);
-
-  useIntersectionObserver(infiniteScrollContainerRef, [answers], fetchNextPage);
+  useIntersectionObserver(infiniteScrollContainerRef, [reviews], fetchNextPage);
 
   useEffect(
     function scrollTopOnUpdatedTab() {
@@ -37,8 +36,8 @@ function useReviewTimeline(currentTab: TimelineFilterType) {
   if (isLoading || isError) return;
 
   return {
-    answers,
-    answersOptimisticUpdater,
+    reviews,
+    reviewsOptimisticUpdater,
     reviewMutations,
     infiniteScrollContainerRef,
     isAnswerFetching,
