@@ -33,23 +33,6 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember2.getId()));
     }
 
-    private long saveTemplateAndGetId(String accessToken, String title) {
-        String description = "test description";
-        List<TemplateQuestionCreateRequest> questions = List.of(
-            new TemplateQuestionCreateRequest("question1", "description1"),
-            new TemplateQuestionCreateRequest("question2", "description2"));
-        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(title, description, questions);
-
-        return post("/api/templates", templateCreateRequest, accessToken)
-            .extract()
-            .as(TemplateIdResponse.class)
-            .getTemplateId();
-    }
-
-    private long saveTemplateAndGetId(String accessToken) {
-        return saveTemplateAndGetId(accessToken, "title");
-    }
-
     @Nested
     @DisplayName("템플릿 생성")
     class createTemplate {
@@ -415,6 +398,22 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             // when, then
             delete("/api/templates/" + 9999L, accessToken1).statusCode(HttpStatus.NOT_FOUND.value());
         }
+    }
 
+    private long saveTemplateAndGetId(String accessToken, String title) {
+        String description = "test description";
+        List<TemplateQuestionCreateRequest> questions = List.of(
+            new TemplateQuestionCreateRequest("question1", "description1"),
+            new TemplateQuestionCreateRequest("question2", "description2"));
+        TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(title, description, questions);
+
+        return post("/api/templates", templateCreateRequest, accessToken)
+            .extract()
+            .as(TemplateIdResponse.class)
+            .getTemplateId();
+    }
+
+    private long saveTemplateAndGetId(String accessToken) {
+        return saveTemplateAndGetId(accessToken, "title");
     }
 }
