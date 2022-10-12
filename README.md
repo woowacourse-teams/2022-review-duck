@@ -17,4 +17,4 @@
 
 ## 🤝🏻 Backend Architecture
 
-![KakaoTalk_20221012_172701774](https://user-images.githubusercontent.com/39939886/195292170-f740720d-f469-45a7-ad99-c8f2d42cbba0.jpg)
+![BackendArchitecture](https://user-images.githubusercontent.com/39939886/195292170-f740720d-f469-45a7-ad99-c8f2d42cbba0.jpg)
