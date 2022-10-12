@@ -2,10 +2,9 @@ import { useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { faArrowTrendUp, faPenNib } from '@fortawesome/free-solid-svg-icons';
-import { InfiniteData } from '@tanstack/react-query';
 
-import { PAGE_LIST, QUERY_KEY, FILTER, PAGE_OPTION } from 'constant';
-import { InfiniteItem, ReviewPublicAnswer, ReviewPublicAnswerList } from 'types';
+import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
+import { ReviewPublicAnswer } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useStackFetch from 'common/hooks/useStackFetch';
@@ -22,7 +21,6 @@ import styles from './styles.module.scss';
 import useReviewTimeline from './useReviewTimeline';
 import Feed from './view/Feed';
 import SideMenu from './view/SideMenu';
-import queryClient from 'api/config/queryClient';
 import { updateReviewLike } from 'api/review.api';
 
 type ReviewId = ReviewPublicAnswer['id'];
@@ -44,33 +42,13 @@ function ReviewTimelinePage() {
 
   if (!reviewTimelineQueries) return <>{/* Error Boundary, Suspense Used */}</>;
 
-  const { publicAnswerScrollQuery, reviewMutations, reviewsPageList, infiniteScrollContainerRef } =
-    reviewTimelineQueries;
-
-  const setUpdateLikeCount = (pageIndex: number, reviewId: number, count: number) => {
-    queryClient.setQueryData<InfiniteData<InfiniteItem<ReviewPublicAnswerList>>>(
-      [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEW_PUBLIC_ANSWER, { filter: currentTab }],
-      (previousData) => {
-        if (!previousData) return previousData;
-
-        const updatedReviews = previousData.pages[pageIndex].data.reviews.map((review) => {
-          if (review.id !== reviewId) return review;
-
-          return { ...review, likes: count };
-        });
-
-        const newPages = [...previousData.pages];
-        const newPage = { ...previousData.pages[pageIndex] };
-        const newData = { ...newPage.data };
-
-        newData.reviews = updatedReviews;
-        newPage.data = newData;
-        newPages[pageIndex] = newPage;
-
-        return { pages: newPages, pageParams: previousData.pageParams };
-      },
-    );
-  };
+  const {
+    reviewMutations,
+    answers,
+    answersOptimisticUpdater,
+    infiniteScrollContainerRef,
+    isAnswerFetching,
+  } = reviewTimelineQueries;
 
   const handleClickEditButton = (reviewFormCode: string, reviewId: number) => () => {
     navigate(
@@ -102,7 +80,7 @@ function ReviewTimelinePage() {
     });
   };
 
-  const handleClickLikeButton = (pageIndex: number, reviewId: number, likes: number) => () => {
+  const handleClickLikeButton = (reviewId: number, likes: number) => () => {
     if (!reviewsLikeStack.current[reviewId]) {
       reviewsLikeStack.current[reviewId] = 0;
     }
@@ -110,20 +88,17 @@ function ReviewTimelinePage() {
     const reviewLikeStack = (reviewsLikeStack.current[reviewId] += 1);
 
     addFetch(reviewId, () => updateReviewLike({ reviewId, likes: reviewLikeStack }), {
-      onUpdate: () => setUpdateLikeCount(pageIndex, reviewId, likes + 1),
+      onUpdate: () => answersOptimisticUpdater.basedOnKey('id', reviewId, { likes: likes + 1 }),
       onError: (error) => {
-        const originCount = likes - (reviewLikeStack - 1);
-        setUpdateLikeCount(pageIndex, reviewId, originCount);
+        answersOptimisticUpdater.rollback();
         snackbar.show({
           theme: 'danger',
           title: '회고 좋아요에 실패하였습니다.',
           description: error.message,
         });
-
-        delete reviewsLikeStack.current[reviewId];
       },
       onSuccess: ({ likes: latestLikes }) => {
-        setUpdateLikeCount(pageIndex, reviewId, latestLikes);
+        answersOptimisticUpdater.basedOnKey('id', reviewId, { likes: latestLikes });
         delete reviewsLikeStack.current[reviewId];
       },
     });
@@ -156,47 +131,43 @@ function ReviewTimelinePage() {
         <Feed.Title>타임라인</Feed.Title>
 
         <Feed.List ref={infiniteScrollContainerRef}>
-          {reviewsPageList.map(({ reviews }) =>
-            reviews.map(({ id, info: { creator, ...info }, reviewFormCode, questions, likes }) => (
-              <Feed.ReviewAnswer key={id}>
-                <Feed.UserProfile
-                  socialId={creator.id}
-                  profileUrl={creator.profileUrl}
-                  nickname={creator.nickname}
-                  update={info.updateDate}
+          {answers.map(({ id, info: { creator, ...info }, reviewFormCode, questions, likes }) => (
+            <Feed.ReviewAnswer key={id}>
+              <Feed.UserProfile
+                socialId={creator.id}
+                profileUrl={creator.profileUrl}
+                nickname={creator.nickname}
+                update={info.updateDate}
+              />
+
+              <Questions>
+                <Questions.EditButtons
+                  className={styles.questionEdit}
+                  isVisible={info.isSelf}
+                  onClickEdit={handleClickEditButton(reviewFormCode, id)}
+                  onClickDelete={handleClickDeleteButton(id)}
                 />
 
-                <Questions>
-                  <Questions.EditButtons
-                    className={styles.questionEdit}
-                    isVisible={info.isSelf}
-                    onClickEdit={handleClickEditButton(reviewFormCode, id)}
-                    onClickDelete={handleClickDeleteButton(id)}
-                  />
+                {questions.map(({ answer, ...question }) => (
+                  <Questions.Answer
+                    key={question.id}
+                    question={question.value}
+                    description={question.description}
+                  >
+                    {answer.value}
+                  </Questions.Answer>
+                ))}
 
-                  {questions.map(({ answer, ...question }) => (
-                    <Questions.Answer
-                      key={question.id}
-                      question={question.value}
-                      description={question.description}
-                    >
-                      {answer.value}
-                    </Questions.Answer>
-                  ))}
+                <Questions.Reaction
+                  likeCount={likes}
+                  onClickLike={handleClickLikeButton(id, likes)}
+                  onClickBookmark={() => null}
+                />
+              </Questions>
+            </Feed.ReviewAnswer>
+          ))}
 
-                  <Questions.Reaction
-                    likeCount={likes}
-                    onClickLike={() => null}
-                    onClickBookmark={() => null}
-                  />
-                </Questions>
-              </Feed.ReviewAnswer>
-            )),
-          )}
-
-          {publicAnswerScrollQuery.isFetching && (
-            <Feed.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />
-          )}
+          {isAnswerFetching && <Feed.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
         </Feed.List>
       </Feed>
     </LayoutContainer>,

@@ -3,6 +3,8 @@ import { useEffect, useRef } from 'react';
 import { TimelineFilterType } from 'types';
 
 import useIntersectionObserver from 'common/hooks/useIntersectionObserver';
+import useOptimisticUpdate from 'common/hooks/useOptimisticUpdate';
+import useSimplifiedPageData from 'common/hooks/useSimplifiedPageData';
 import {
   useGetInfiniteReviewPublicAnswer,
   useReviewMutations,
@@ -10,15 +12,20 @@ import {
 
 function useReviewTimeline(currentTab: TimelineFilterType) {
   const reviewMutations = useReviewMutations();
-  const publicAnswerScrollQuery = useGetInfiniteReviewPublicAnswer(currentTab);
+  const {
+    data: answersPages,
+    fetchNextPage,
+    isLoading,
+    isError,
+    isFetching: isAnswerFetching,
+  } = useGetInfiniteReviewPublicAnswer(currentTab);
 
   const infiniteScrollContainerRef = useRef<HTMLDivElement>(null);
+  const answersOrigin = useSimplifiedPageData(answersPages ? answersPages.pages : [], 'reviews');
 
-  useIntersectionObserver(
-    infiniteScrollContainerRef,
-    [publicAnswerScrollQuery.data, currentTab],
-    publicAnswerScrollQuery.fetchNextPage,
-  );
+  const [answers, answersOptimisticUpdater] = useOptimisticUpdate(answersOrigin);
+
+  useIntersectionObserver(infiniteScrollContainerRef, [answers], fetchNextPage);
 
   useEffect(
     function scrollTopOnUpdatedTab() {
@@ -27,13 +34,14 @@ function useReviewTimeline(currentTab: TimelineFilterType) {
     [currentTab],
   );
 
-  if (publicAnswerScrollQuery.isLoading || publicAnswerScrollQuery.isError) return;
+  if (isLoading || isError) return;
 
   return {
-    publicAnswerScrollQuery,
-    reviewsPageList: publicAnswerScrollQuery.data.pages,
+    answers,
+    answersOptimisticUpdater,
     reviewMutations,
     infiniteScrollContainerRef,
+    isAnswerFetching,
   };
 }
 
