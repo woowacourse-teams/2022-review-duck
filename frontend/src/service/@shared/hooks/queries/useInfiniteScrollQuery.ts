@@ -22,7 +22,7 @@ function useInfiniteScrollQuery<
     queryKey,
     async ({ pageParam = 1 }) => {
       pageNumber.current += 1;
-      return (await queryFn(pageParam)) as TData;
+      return await queryFn(pageParam);
     },
     {
       getNextPageParam: (data) =>
