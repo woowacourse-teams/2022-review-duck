@@ -1,16 +1,10 @@
-import React, { useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { FILTER, PAGE_LIST, PAGE_OPTION } from 'constant';
-import { DisplayModeType, ReviewFormAnswerList } from 'types';
 
-import useIntersectionObserver from 'common/hooks/useIntersectionObserver';
 import useSnackbar from 'common/hooks/useSnackbar';
-import {
-  useDeleteReviewAnswer,
-  useGetInfiniteReviewFormAnswer,
-  useGetReviewForm,
-} from 'service/@shared/hooks/queries/review';
+
+import { isInclude } from 'service/@shared/utils';
 
 import { FlexContainer, Skeleton } from 'common/components';
 
@@ -19,10 +13,11 @@ import Questions from 'service/@shared/components/Questions';
 
 import styles from './styles.module.scss';
 
+import useReviewOverviewPage from './useReviewOverviewPage';
 import { Header } from './view/Header';
 import { ListView } from './view/ListView';
 import { SheetView } from './view/SheetView';
-import { validateFilter } from 'service/@shared/validator';
+import { updateReviewLike } from 'api/review.api';
 
 /*
   TODO:
@@ -32,36 +27,32 @@ import { validateFilter } from 'service/@shared/validator';
 */
 
 function ReviewOverViewPage() {
-  const listContainerRef = useRef<any>(null);
-
   const navigate = useNavigate();
-  const { reviewFormCode = '', displayMode = FILTER.DISPLAY_MODE.LIST } = useParams();
-
-  useEffect(function queryStringFilter() {
-    validateFilter([FILTER.DISPLAY_MODE.LIST, FILTER.DISPLAY_MODE.SHEET], displayMode);
-  }, []);
-
   const snackbar = useSnackbar();
 
+  const { reviewFormCode = '', displayMode: displayModeParams = '' } = useParams();
+  const displayMode = isInclude(
+    [FILTER.DISPLAY_MODE.LIST, FILTER.DISPLAY_MODE.SHEET],
+    displayModeParams,
+  )
+    ? displayModeParams
+    : FILTER.DISPLAY_MODE.LIST;
+
+  const pageQueries = useReviewOverviewPage(reviewFormCode, displayMode);
+
+  if (!pageQueries) return <>{/* Error Boundary, Suspense Used */}</>;
+
   const {
-    data: reviewAnswers,
-    fetchNextPage,
-    isFetching,
-    isError: isAnswerError,
-    isLoading: isAnswerLoading,
-  } = useGetInfiniteReviewFormAnswer(reviewFormCode, displayMode as DisplayModeType);
-
-  const { data: reviewForm, isLoading: isFormLoading } = useGetReviewForm(reviewFormCode, {
-    suspense: false,
-  });
-
-  useIntersectionObserver(listContainerRef, [reviewAnswers], fetchNextPage);
-
-  const { mutate } = useDeleteReviewAnswer();
-
-  if (isAnswerError || isAnswerLoading) return <>{/* Error Boundary, Suspense Used */}</>;
-
-  const { pages } = reviewAnswers;
+    infiniteScrollContainerRef,
+    reviewsLikeStack,
+    reviewMutations,
+    reviews,
+    reviewForm,
+    reviewsOptimisticUpdater,
+    isReviewsFetching,
+    isFormLoading,
+    addFetch,
+  } = pageQueries;
 
   const handleEditAnswer = (reviewId: number) => () => {
     navigate(`${PAGE_LIST.REVIEW}/${reviewFormCode}/${reviewId}`);
@@ -70,13 +61,37 @@ function ReviewOverViewPage() {
   const handleDeleteAnswer = (reviewId: number) => () => {
     if (!confirm('정말 해당 회고를 삭제하시겠습니까?')) return;
 
-    mutate(reviewId, {
+    reviewMutations.removeAnswer.mutate(reviewId, {
       onSuccess: () => {
         snackbar.show({
           title: '작성한 회고가 삭제되었습니다.',
           description: '더 이상 조회할 수 없으며, 삭제된 정보는 복구할 수 없습니다.',
           theme: 'danger',
         });
+      },
+    });
+  };
+
+  const handleClickLikeButton = (reviewId: number, likes: number) => () => {
+    if (!reviewsLikeStack.current[reviewId]) {
+      reviewsLikeStack.current[reviewId] = 0;
+    }
+
+    const reviewLikeStack = (reviewsLikeStack.current[reviewId] += 1);
+
+    addFetch(reviewId, () => updateReviewLike({ reviewId, likes: reviewLikeStack }), {
+      onUpdate: () => reviewsOptimisticUpdater.basedOnKey('id', reviewId, { likes: likes + 1 }),
+      onError: (error) => {
+        reviewsOptimisticUpdater.rollback();
+        snackbar.show({
+          theme: 'danger',
+          title: '회고 좋아요에 실패하였습니다.',
+          description: error.message,
+        });
+      },
+      onSuccess: ({ likes: latestLikes }) => {
+        reviewsOptimisticUpdater.basedOnKey('id', reviewId, { likes: latestLikes });
+        delete reviewsLikeStack.current[reviewId];
       },
     });
   };
@@ -95,7 +110,7 @@ function ReviewOverViewPage() {
       {displayMode === FILTER.DISPLAY_MODE.LIST ? (
         <ListView>
           <ListView.Content
-            ref={listContainerRef}
+            ref={infiniteScrollContainerRef}
             isLoading={isFormLoading}
             fallback={<Skeleton line={4} />}
           >
@@ -115,48 +130,41 @@ function ReviewOverViewPage() {
               ))}
             </ListView.ParticipantList>
 
-            {pages.map((page, pageIndex) => (
-              <React.Fragment key={pageIndex}>
-                {page.reviews.map(({ id, info, questions }, index) => (
-                  <ListView.Review
-                    key={id}
-                    // ref={index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1 ? targetRef : null}
-                  >
-                    <Questions>
-                      <Questions.CoverProfile
-                        socialId={info.creator.id}
-                        image={info.creator.profileUrl}
-                        title={info.reviewTitle as string}
-                        description={info.updateDate}
-                      />
+            {reviews.map(({ id, info, questions, likes }) => (
+              <ListView.Review key={id}>
+                <Questions>
+                  <Questions.CoverProfile
+                    socialId={info.creator.id}
+                    image={info.creator.profileUrl}
+                    title={info.reviewTitle as string}
+                    description={info.updateDate}
+                  />
 
-                      <Questions.EditButtons
-                        isVisible={info.isSelf}
-                        onClickEdit={handleEditAnswer(id)}
-                        onClickDelete={handleDeleteAnswer(id)}
-                      ></Questions.EditButtons>
+                  <Questions.EditButtons
+                    isVisible={info.isSelf}
+                    onClickEdit={handleEditAnswer(id)}
+                    onClickDelete={handleDeleteAnswer(id)}
+                  ></Questions.EditButtons>
 
-                      {questions.map(({ description, answer, ...question }, index) => (
-                        <Questions.Answer
-                          key={question.id}
-                          question={`${index + 1}. ${question.value}`}
-                          description={description}
-                        >
-                          {answer.value}
-                        </Questions.Answer>
-                      ))}
+                  {questions.map(({ description, answer, ...question }, index) => (
+                    <Questions.Answer
+                      key={question.id}
+                      question={`${index + 1}. ${question.value}`}
+                      description={description}
+                    >
+                      {answer.value}
+                    </Questions.Answer>
+                  ))}
 
-                      <Questions.Reaction
-                        likeCount={0}
-                        onClickLike={() => null}
-                        onClickBookmark={() => null}
-                      />
-                    </Questions>
-                  </ListView.Review>
-                ))}
-              </React.Fragment>
+                  <Questions.Reaction
+                    likeCount={likes}
+                    onClickLike={handleClickLikeButton(id, likes)}
+                    onClickBookmark={() => null}
+                  />
+                </Questions>
+              </ListView.Review>
             ))}
-            {isFetching && <ListView.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
+            {isReviewsFetching && <ListView.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
           </ListView.Content>
 
           <ListView.SideMenu isLoading={isFormLoading} fallback={<Skeleton line={3} />}>
@@ -192,32 +200,21 @@ function ReviewOverViewPage() {
             ))}
           </SheetView.Questions>
 
-          <SheetView.ReviewList ref={listContainerRef}>
-            {pages.map((page, pageIndex) => (
-              <React.Fragment key={pageIndex}>
-                {page.reviews.map(({ id, info: { creator, reviewTitle }, questions }, index) => (
-                  <SheetView.Answers
-                    key={id}
-                    // ref={
-                    //   displayMode === 'sheet' && index === PAGE_OPTION.REVIEW_ITEM_SIZE - 1
-                    //     ? targetRef
-                    //     : null
-                    // }
-                  >
-                    <SheetView.Creator
-                      socialId={creator.id}
-                      title={reviewTitle as string}
-                      profileImage={creator.profileUrl}
-                    />
+          <SheetView.ReviewList ref={infiniteScrollContainerRef}>
+            {reviews.map(({ id, info: { creator, reviewTitle }, questions }) => (
+              <SheetView.Answers key={id}>
+                <SheetView.Creator
+                  socialId={creator.id}
+                  title={reviewTitle as string}
+                  profileImage={creator.profileUrl}
+                />
 
-                    {questions.map(({ answer, ...review }) => (
-                      <SheetView.Item key={review.id}>{answer && answer.value}</SheetView.Item>
-                    ))}
-                  </SheetView.Answers>
+                {questions.map(({ answer, ...review }) => (
+                  <SheetView.Item key={review.id}>{answer && answer.value}</SheetView.Item>
                 ))}
-              </React.Fragment>
+              </SheetView.Answers>
             ))}
-            {isFetching && <SheetView.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
+            {isReviewsFetching && <SheetView.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
           </SheetView.ReviewList>
         </SheetView>
       )}

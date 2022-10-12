@@ -88,7 +88,7 @@ const FILTER = {
   DISPLAY_MODE: {
     LIST: 'list',
     SHEET: 'sheet',
-  },
+  } as const,
 };
 
 const REVIEW_FORM_TITLE_LENGTH = 100;
