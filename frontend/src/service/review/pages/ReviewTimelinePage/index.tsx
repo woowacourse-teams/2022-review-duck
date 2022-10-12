@@ -1,19 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { faArrowTrendUp, faPenNib } from '@fortawesome/free-solid-svg-icons';
 import { InfiniteData } from '@tanstack/react-query';
 
-import { PAGE_LIST, QUERY_KEY, FILTER } from 'constant';
+import { PAGE_LIST, QUERY_KEY, FILTER, PAGE_OPTION } from 'constant';
 import { InfiniteItem, ReviewPublicAnswer, ReviewPublicAnswerList } from 'types';
 
-import useIntersectionObserver from 'common/hooks/useIntersectionObserver';
 import useSnackbar from 'common/hooks/useSnackbar';
 import useStackFetch from 'common/hooks/useStackFetch';
-import {
-  useDeleteReviewAnswer,
-  useGetInfiniteReviewPublicAnswer,
-} from 'service/@shared/hooks/queries/review';
 
 import { isInclude } from 'service/@shared/utils';
 
@@ -24,6 +19,7 @@ import Questions from 'service/@shared/components/Questions';
 
 import styles from './styles.module.scss';
 
+import useReviewTimeline from './useReviewTimeline';
 import Feed from './view/Feed';
 import SideMenu from './view/SideMenu';
 import queryClient from 'api/config/queryClient';
@@ -32,7 +28,8 @@ import { updateReviewLike } from 'api/review.api';
 type ReviewId = ReviewPublicAnswer['id'];
 
 function ReviewTimelinePage() {
-  const listRef = useRef<HTMLDivElement>(null);
+  const reviewsLikeStack = useRef<Record<ReviewId, number>>({});
+  const { addFetch } = useStackFetch(2000);
   const [searchParam] = useSearchParams();
 
   const filterQueryString = searchParam.get('sort');
@@ -43,29 +40,12 @@ function ReviewTimelinePage() {
   const navigate = useNavigate();
   const snackbar = useSnackbar();
 
-  useEffect(
-    function focusTop() {
-      window.scrollTo(0, 0);
-    },
-    [searchParam],
-  );
+  const reviewTimelineQueries = useReviewTimeline(currentTab);
 
-  const { mutate: reviewAnswerDelete } = useDeleteReviewAnswer();
-  const { addFetch } = useStackFetch(2000);
+  if (!reviewTimelineQueries) return <>{/* Error Boundary, Suspense Used */}</>;
 
-  const getPublicAnswerQuery = useGetInfiniteReviewPublicAnswer(currentTab);
-  const reviewsLikeStack = useRef<Record<ReviewId, number>>({});
-
-  useIntersectionObserver(
-    listRef,
-    [getPublicAnswerQuery.data, currentTab],
-    getPublicAnswerQuery.fetchNextPage,
-  );
-
-  if (getPublicAnswerQuery.isError || getPublicAnswerQuery.isLoading)
-    return <>{/* Error Boundary, Suspense Used */}</>;
-
-  const { pages: reviewsPageList } = getPublicAnswerQuery.data;
+  const { publicAnswerScrollQuery, reviewMutations, reviewsPageList, infiniteScrollContainerRef } =
+    reviewTimelineQueries;
 
   const setUpdateLikeCount = (pageIndex: number, reviewId: number, count: number) => {
     queryClient.setQueryData<InfiniteData<InfiniteItem<ReviewPublicAnswerList>>>(
@@ -105,7 +85,7 @@ function ReviewTimelinePage() {
       return;
     }
 
-    reviewAnswerDelete(reviewId, {
+    reviewMutations.removeAnswer.mutate(reviewId, {
       onSuccess: () =>
         snackbar.show({
           title: '회고가 삭제되었습니다.',
@@ -175,7 +155,7 @@ function ReviewTimelinePage() {
       <Feed>
         <Feed.Title>타임라인</Feed.Title>
 
-        <Feed.List ref={listRef}>
+        <Feed.List ref={infiniteScrollContainerRef}>
           {reviewsPageList.map(({ reviews }) =>
             reviews.map(({ id, info: { creator, ...info }, reviewFormCode, questions, likes }) => (
               <Feed.ReviewAnswer key={id}>
@@ -212,6 +192,10 @@ function ReviewTimelinePage() {
                 </Questions>
               </Feed.ReviewAnswer>
             )),
+          )}
+
+          {publicAnswerScrollQuery.isFetching && (
+            <Feed.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />
           )}
         </Feed.List>
       </Feed>
