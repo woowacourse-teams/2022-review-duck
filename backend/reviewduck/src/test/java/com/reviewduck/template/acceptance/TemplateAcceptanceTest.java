@@ -173,17 +173,15 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
         @DisplayName("검색 쿼리를 포함하는 템플릿을 조회한다.")
         void search() {
             // given
-            for (int i = 0; i < DEFAULT_SIZE + 5; i++) {
-                saveTemplateAndGetId(accessToken1, "title1");
-            }
-            long templateId = saveTemplateAndGetId(accessToken2, "title2");
+            saveTemplateAndGetId(accessToken1, "TemplateTitle1");
+            long templateId = saveTemplateAndGetId(accessToken2, "TemplateTitle2");
             post("/api/templates/" + templateId + "/review-forms", accessToken1);
 
             // when, then
-            get("/api/templates/search?query=itl", accessToken1).statusCode(HttpStatus.OK.value())
-                .assertThat().body("numberOfTemplates", equalTo(DEFAULT_SIZE + 6))
-                .assertThat().body("templates", hasSize(DEFAULT_SIZE))
-                .assertThat().body("templates[0].info.title", equalTo("title2"))
+            get("/api/templates/search?query=Title2&page=1&size=10&sort=trend", accessToken1).statusCode(HttpStatus.OK.value())
+                .assertThat().body("numberOfTemplates", equalTo(1))
+                .assertThat().body("templates", hasSize(1))
+                .assertThat().body("templates[0].info.title", equalTo("TemplateTitle2"))
                 .assertThat().body("templates[0].isCreator", equalTo(false));
         }
 

@@ -201,7 +201,7 @@ public class TemplateServiceTest {
 
         @Test
         @DisplayName("템플릿 검색 결과를 조회한다.")
-        void searchAll() throws InterruptedException {
+        void search() throws InterruptedException {
             // given
             // create template
             Template template1 = saveTemplate(member1, "title1", "description1", questions1);

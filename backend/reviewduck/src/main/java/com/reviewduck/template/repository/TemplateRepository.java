@@ -25,7 +25,7 @@ public interface TemplateRepository extends Repository<Template, Long> {
 
     List<Template> findAllByMember(Member member);
 
-    Page<Template> findByTemplateTitleContaining(PageRequest pageRequest, String query);
+    Page<Template> findByTemplateTitleContaining(Pageable pageable, String query);
 
     void delete(Template template);
 

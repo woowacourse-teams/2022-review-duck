@@ -139,6 +139,30 @@ public class TemplateRepositoryTest {
     }
 
     @Test
+    @DisplayName("특정 문자열을 포함하는 템플릿을 검색한다.")
+    void findByTemplateTitleContaining() {
+        // given
+        Template template1 = new Template(member1, "title1", "description1", questions1);
+        templateRepository.save(template1);
+
+        Template template2 = new Template(member2, "title2", "description2", questions2);
+        templateRepository.save(template2);
+
+        // when
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "updatedAt"));
+        List<Template> searched = templateRepository.findByTemplateTitleContaining(pageable, "title2").getContent();
+
+        // then
+        assertAll(
+            () -> assertThat(searched).hasSize(1),
+            () -> assertThat(searched.get(0).getQuestions())
+                .usingRecursiveComparison()
+                .ignoringFields("id", "template")
+                .isEqualTo(toEntity(questions2))
+        );
+    }
+
+    @Test
     @DisplayName("템플릿을 삭제한다.")
     void deleteTemplate() throws InterruptedException {
         // given
