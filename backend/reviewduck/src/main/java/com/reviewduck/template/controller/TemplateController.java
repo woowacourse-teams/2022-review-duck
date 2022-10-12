@@ -4,9 +4,11 @@ import static com.reviewduck.common.util.Logging.*;
 import static com.reviewduck.common.vo.PageConstant.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +41,7 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("/api/templates")
 @AllArgsConstructor
+@Validated
 public class TemplateController {
 
     private final TemplateService templateService;
@@ -99,7 +102,7 @@ public class TemplateController {
     @GetMapping(params = "member")
     @ResponseStatus(HttpStatus.OK)
     public MemberTemplatesResponse findAllByMemberId(@AuthenticationPrincipal Member member,
-        @RequestParam(value = "member") String socialId,
+        @NotBlank @RequestParam(value = "member") String socialId,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
         @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size) {
 

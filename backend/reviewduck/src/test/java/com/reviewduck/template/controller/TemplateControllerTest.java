@@ -101,8 +101,8 @@ public class TemplateControllerTest extends ControllerTest {
     class SearchTest {
 
         @Test
-        @DisplayName("query 파라미터에 값이 없을 경우 예외가 발생한다.")
-        void emptyQuery() throws Exception {
+        @DisplayName("query 파라미터 키를 포함하지 않을 경우 예외가 발생한다.")
+        void queryNotExist() throws Exception {
             assertBadRequestFromGet("/api/templates/search", "파라미터 정보가 올바르지 않습니다.");
         }
     }
@@ -112,9 +112,16 @@ public class TemplateControllerTest extends ControllerTest {
     class findByMemberSocialId {
 
         @Test
-        @DisplayName("member 파라미터에 값이 없을 경우 예외가 발생한다.")
-        void emptyMember() throws Exception {
+        @DisplayName("member 파라미터 키를 포함하지 않을 경우 예외가 발생한다.")
+        void memberNotExist() throws Exception {
             assertBadRequestFromGet("/api/templates?", "파라미터 정보가 올바르지 않습니다.");
+        }
+
+
+        @Test
+        @DisplayName("member 파라미터에 값이 존재하지 않을 경우 예외가 발생한다.")
+        void emptyMember() throws Exception {
+            assertBadRequestFromGet("/api/templates?member=", "파라미터 정보가 올바르지 않습니다.");
         }
     }
 
