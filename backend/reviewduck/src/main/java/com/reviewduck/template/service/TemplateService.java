@@ -52,6 +52,13 @@ public class TemplateService {
         return templateRepository.findAll(pageRequest);
     }
 
+    public Page<Template> search(String query, int page, int size, String sort) {
+        String sortType = TemplateSortType.getSortBy(sort);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+
+        return templateRepository.findByTemplateTitleContaining(pageRequest, query);
+    }
+
     public Page<Template> findAllBySocialId(String id, int page, int size) {
         Member member = memberService.getBySocialId(id);
 

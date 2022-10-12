@@ -94,7 +94,17 @@ public class TemplateControllerTest extends ControllerTest {
             // when, then
             assertBadRequestFromPost("/api/templates", request, "템플릿의 질문 설명 생성 중 오류가 발생했습니다.");
         }
+    }
 
+    @Nested
+    @DisplayName("템플릿 검색 결과 조회")
+    class SearchTest {
+
+        @Test
+        @DisplayName("query 파라미터에 값이 없을 경우 예외가 발생한다.")
+        void emptyQuery() throws Exception {
+            assertBadRequestFromGet("/api/templates/search", "파라미터 정보가 올바르지 않습니다.");
+        }
     }
 
     @Nested
@@ -104,9 +114,8 @@ public class TemplateControllerTest extends ControllerTest {
         @Test
         @DisplayName("member 파라미터에 값이 없을 경우 예외가 발생한다.")
         void emptyMember() throws Exception {
-            assertBadRequestFromGet("/api/templates?member=", "파라미터 정보가 올바르지 않습니다.");
+            assertBadRequestFromGet("/api/templates?", "파라미터 정보가 올바르지 않습니다.");
         }
-
     }
 
     @Nested
@@ -173,7 +182,7 @@ public class TemplateControllerTest extends ControllerTest {
     }
 
     private void assertBadRequestFromGet(String uri, String errorMessage) throws Exception {
-        mockMvc.perform(post(uri)
+        mockMvc.perform(get(uri)
                 .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isBadRequest())

@@ -110,6 +110,21 @@ public class TemplateController {
         return MemberTemplatesResponse.of(templates, socialId, member);
     }
 
+    @Operation(summary = "템플릿 검색 결과를 조회한다.")
+    @GetMapping(value = "/search")
+    @ResponseStatus(HttpStatus.OK)
+    public TemplatesResponse search(@AuthenticationPrincipal Member member,
+        @RequestParam String query,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
+        @RequestParam(required = false, defaultValue = "trend") String sort) {
+
+        info("/api/templates/search?query=" + query + " page=" + page + " size=" + size, "GET", "");
+
+        Page<Template> templates = templateService.search(query, page - 1, size, sort);
+        return TemplatesResponse.of(templates, member);
+    }
+
     @Operation(summary = "특정 템플릿을 조회한다.")
     @GetMapping("/{templateId}")
     @ResponseStatus(HttpStatus.OK)

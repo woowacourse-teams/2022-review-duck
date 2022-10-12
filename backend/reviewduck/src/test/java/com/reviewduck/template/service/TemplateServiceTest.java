@@ -193,8 +193,36 @@ public class TemplateServiceTest {
                 () -> assertThat(templates.get(0)).isEqualTo(template2)
             );
         }
+    }
 
+    @Nested
+    @DisplayName("전체 템플릿 조회")
+    class SearchTest {
 
+        @Test
+        @DisplayName("템플릿 검색 결과를 조회한다.")
+        void searchAll() throws InterruptedException {
+            // given
+            // create template
+            Template template1 = saveTemplate(member1, "title1", "description1", questions1);
+            Template template2 = saveTemplate(member1, "title2", "description2", questions2);
+
+            templateService.increaseUsedCount(template1.getId());
+
+            // when
+            String query = "tle1";
+            int page = 0;
+            int size = 1;
+            String sort = "trend";
+
+            List<Template> templates = templateService.search(query, page, size, sort).getContent();
+
+            // then
+            assertAll(
+                () -> assertThat(templates).hasSize(1),
+                () -> assertThat(templates.get(0)).isEqualTo(template1)
+            );
+        }
     }
 
     @Nested

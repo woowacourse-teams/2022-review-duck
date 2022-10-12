@@ -75,12 +75,12 @@ public class ControllerAdvice {
         return new ErrorResponse("파라미터 정보가 올바르지 않습니다.");
     }
 
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleException(Exception e) {
-
-        error(e.getMessage());
-
-        return new ErrorResponse("예상치 못한 오류가 발생하였습니다.");
-    }
+    // @ExceptionHandler(Exception.class)
+    // @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    // public ErrorResponse handleException(Exception e) {
+    //
+    //     error(e.getMessage());
+    //
+    //     return new ErrorResponse("예상치 못한 오류가 발생하였습니다.");
+    // }
 }
