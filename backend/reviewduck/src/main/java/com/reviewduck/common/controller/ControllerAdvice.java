@@ -2,6 +2,8 @@ package com.reviewduck.common.controller;
 
 import static com.reviewduck.common.util.Logging.*;
 
+import javax.validation.ConstraintViolationException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -65,7 +67,8 @@ public class ControllerAdvice {
     @ExceptionHandler({
         HttpMessageNotReadableException.class,
         UnsatisfiedServletRequestParameterException.class,
-        MissingServletRequestParameterException.class
+        MissingServletRequestParameterException.class,
+        ConstraintViolationException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleHttpMessageNotReadableException(Exception e) {
