@@ -80,16 +80,16 @@ const FILTER = {
   TEMPLATE_TAB: {
     TREND: 'trend',
     LATEST: 'latest',
-  } as const,
+  },
   TIMELINE_TAB: {
     TREND: 'trend',
     LATEST: 'latest',
-  } as const,
+  },
   DISPLAY_MODE: {
     LIST: 'list',
     SHEET: 'sheet',
-  } as const,
-};
+  },
+} as const;
 
 const REVIEW_FORM_TITLE_LENGTH = 100;
 
