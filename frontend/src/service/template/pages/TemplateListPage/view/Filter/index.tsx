@@ -64,7 +64,7 @@ interface MoreButtonsProps {
 function MoreButtons({ onClickCreate }: MoreButtonsProps) {
   return (
     <FlexContainer>
-      <Button type="button" size="small" onClick={onClickCreate}>
+      <Button type="button" onClick={onClickCreate}>
         <FontAwesomeIcon icon={faPenToSquare} />
         <span>템플릿 만들기</span>
       </Button>
