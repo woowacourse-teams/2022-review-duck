@@ -42,7 +42,9 @@ function Header() {
 
   const handleSubmitSearhTemplate = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    navigate(`${PAGE_LIST.TEMPLATE_LIST}?search=${search}`);
+    if (search.length > 0) {
+      navigate(`${PAGE_LIST.TEMPLATE_LIST}?search=${search}`);
+    }
   };
 
   return (

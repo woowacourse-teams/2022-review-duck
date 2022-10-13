@@ -20,11 +20,30 @@ function useGetTemplates(
   queryOptions?: UseQueryOptions<GetTemplatesResponse, ErrorResponse>,
 ) {
   return useQuery<GetTemplatesResponse, ErrorResponse>(
-    [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_TEMPLATES, { filter, pageNumber, itemCount }],
+    [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_TEMPLATES, { filter, pageNumber }],
     () => templateAPI.getTemplates(filter, pageNumber, itemCount),
     {
       ...queryOptions,
       keepPreviousData: true,
+    },
+  );
+}
+
+interface UseGetSearchTemplatesParameter {
+  search: string;
+  pageNumber?: number;
+  itemCount?: number;
+}
+
+function useGetSearchTemplates(
+  { search, pageNumber, itemCount }: UseGetSearchTemplatesParameter,
+  queryOptions?: UseQueryOptions<GetTemplatesResponse, ErrorResponse>,
+) {
+  return useQuery<GetTemplatesResponse, ErrorResponse>(
+    [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_SEARCH_TEMPLATES, { search, pageNumber }],
+    () => templateAPI.getSearchTemplates(search, pageNumber, itemCount),
+    {
+      ...queryOptions,
     },
   );
 }
@@ -42,4 +61,4 @@ function useGetTemplate(
   );
 }
 
-export { useGetTemplates, useGetTemplate };
+export { useGetTemplates, useGetSearchTemplates, useGetTemplate };

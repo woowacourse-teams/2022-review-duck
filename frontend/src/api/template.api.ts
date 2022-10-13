@@ -24,6 +24,18 @@ export const getTemplates = async (
   return data;
 };
 
+export const getSearchTemplates = async (
+  search: string,
+  pageNumber = 1,
+  itemCount = PAGE_OPTION.TEMPLATE_ITEM_SIZE,
+) => {
+  const { data } = await axiosInstance.get<GetTemplatesResponse>(
+    `${API_URI.TEMPLATE.GET_SEARCH_TEMPLATES}?query=${search}&page=${pageNumber}&size=${itemCount}`,
+  );
+
+  return data;
+};
+
 export const getTemplate = async (templateId: number) => {
   const { data } = await axiosInstance.get<GetTemplateResponse>(
     API_URI.TEMPLATE.GET_TEMPLATE(templateId),
