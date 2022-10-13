@@ -4,9 +4,11 @@ import static com.reviewduck.common.util.Logging.*;
 import static com.reviewduck.common.vo.PageConstant.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,16 +23,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
+import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
+import com.reviewduck.review.dto.controller.response.ReviewFormCodeResponse;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.template.domain.Template;
-import com.reviewduck.template.dto.request.TemplateCreateRequest;
-import com.reviewduck.template.dto.request.TemplateUpdateRequest;
-import com.reviewduck.template.dto.response.MemberTemplatesResponse;
-import com.reviewduck.template.dto.response.TemplateIdResponse;
-import com.reviewduck.template.dto.response.TemplateResponse;
-import com.reviewduck.template.dto.response.TemplatesResponse;
+import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
+import com.reviewduck.template.dto.controller.response.MemberTemplatesResponse;
+import com.reviewduck.template.dto.controller.response.TemplateIdResponse;
+import com.reviewduck.template.dto.controller.response.TemplateResponse;
+import com.reviewduck.template.dto.controller.response.TemplatesResponse;
 import com.reviewduck.template.service.TemplateService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,6 +41,7 @@ import lombok.AllArgsConstructor;
 @RestController
 @RequestMapping("/api/templates")
 @AllArgsConstructor
+@Validated
 public class TemplateController {
 
     private final TemplateService templateService;
@@ -87,7 +90,7 @@ public class TemplateController {
     public TemplatesResponse findAll(@AuthenticationPrincipal Member member,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
         @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
-        @RequestParam(required = false) String sort) {
+        @RequestParam(required = false, defaultValue = "trend") String sort) {
 
         info("/api/templates?page=" + page + " size=" + size, "GET", "");
 
@@ -99,7 +102,7 @@ public class TemplateController {
     @GetMapping(params = "member")
     @ResponseStatus(HttpStatus.OK)
     public MemberTemplatesResponse findAllByMemberId(@AuthenticationPrincipal Member member,
-        @RequestParam(value = "member") String socialId,
+        @NotBlank @RequestParam(value = "member") String socialId,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
         @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size) {
 
@@ -108,6 +111,21 @@ public class TemplateController {
         Page<Template> templates = templateService.findAllBySocialId(socialId, page - 1, size);
 
         return MemberTemplatesResponse.of(templates, socialId, member);
+    }
+
+    @Operation(summary = "템플릿 검색 결과를 조회한다.")
+    @GetMapping(value = "/search")
+    @ResponseStatus(HttpStatus.OK)
+    public TemplatesResponse search(@AuthenticationPrincipal Member member,
+        @RequestParam String query,
+        @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
+        @RequestParam(required = false, defaultValue = "trend") String sort) {
+
+        info("/api/templates/search?query=" + query + " page=" + page + " size=" + size, "GET", "");
+
+        Page<Template> templates = templateService.search(query, page - 1, size, sort);
+        return TemplatesResponse.of(templates, member);
     }
 
     @Operation(summary = "특정 템플릿을 조회한다.")

@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { API_REQUEST_TIMEOUT } from 'constant';
 
 const axiosInstance = axios.create({
   baseURL: process.env.API_URL,
-  timeout: 5000,
+  timeout: API_REQUEST_TIMEOUT,
   withCredentials: true,
 });
 

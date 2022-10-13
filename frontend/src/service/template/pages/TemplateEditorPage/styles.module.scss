@@ -1,0 +1,34 @@
+@import 'styles/@global.scss';
+
+.container {
+  margin: 3rem auto;
+  display: flex;
+  flex-direction: row;
+  gap: 5%;
+
+  .template-info-container {
+  }
+
+  .questions-editor {
+    width: 50%;
+    padding: 2rem;
+    border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+    background-color: $THEME_COLOR_THEME_BACKGROUND_100;
+    box-shadow: 0 5px 10px 10px $GLOBAL_COLOR_BLACK_20;
+  }
+
+  .information-editor {
+    width: 45%;
+    position: sticky;
+    padding: 2rem 0;
+    top: 8.6rem;
+    align-self: start;
+  }
+
+  .submit-buttons {
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(auto, 47.5%) minmax(auto, 47.5%);
+    gap: 5%;
+  }
+}

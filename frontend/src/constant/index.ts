@@ -7,7 +7,7 @@ const PAGE_LIST = {
   LOGOUT: '/logout',
   TEMPLATE_LIST: '/template/list',
   TEMPLATE_DETAIL: '/template/view',
-  TEMPLATE_FORM: '/template/review-form',
+  TEMPLATE_FORM: '/template/editor',
   USER_PROFILE: '/profile',
   TIMELINE: '/timeline',
 };
@@ -17,7 +17,9 @@ const MODAL_LIST = {
   REVIEW_JOIN: 'ModalReviewJoin',
 
   PROFILE_EDIT: 'ModalProfileEdit',
-};
+} as const;
+
+const API_REQUEST_TIMEOUT = 5000;
 
 const QUERY_KEY = {
   DATA: {
@@ -87,15 +89,15 @@ const FILTER = {
     LIST: 'list',
     SHEET: 'sheet',
   },
-};
+} as const;
 
 const REVIEW_FORM_TITLE_LENGTH = 100;
 
 const REVIEW_FORM_CODE_LENGTH = 8;
 
 const REGEX = {
-  REVIEW_FORM_CODE: `(?=.*[A-Za-z])(?=.*[0-9])[a-zA-Z0-9]{${REVIEW_FORM_CODE_LENGTH}}$`,
-  NICKNAME: '^[a-zA-Z0-9]{2,10}$',
+  REVIEW_FORM_CODE: `^[a-zA-Z0-9]{${REVIEW_FORM_CODE_LENGTH}}$`,
+  NICKNAME: '^[a-zA-Z가-힣ㄱ-ㅎ0-9]{2,10}$',
 };
 
 const PAGE_OPTION = {
@@ -115,7 +117,7 @@ const API_URI = {
   REVIEW: {
     GET_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
     GET_ANSWER: (reviewId: numberString) => `/api/reviews/${reviewId}`,
-    GET_FORM_ANSWER: (reviewFormCode: string, display: string, page?: string, size?: number) =>
+    GET_FORM_ANSWER: (reviewFormCode: string, display: string, page?: number, size?: number) =>
       `/api/review-forms/${reviewFormCode}/reviews?displayType=${display}&page=${page}&size=${size}`,
     GET_PUBLIC_ANSWER: '/api/reviews/public',
 
@@ -152,6 +154,7 @@ const API_URI = {
 
 export {
   API_URI,
+  API_REQUEST_TIMEOUT,
   PAGE_LIST,
   MODAL_LIST,
   QUERY_KEY,

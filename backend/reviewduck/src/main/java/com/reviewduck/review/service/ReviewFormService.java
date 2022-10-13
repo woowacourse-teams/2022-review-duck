@@ -14,10 +14,12 @@ import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.domain.ReviewFormQuestion;
-import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
+import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
+import com.reviewduck.review.dto.service.ServiceDtoConverter;
 import com.reviewduck.review.repository.ReviewFormRepository;
+import com.reviewduck.review.repository.ReviewRepository;
 import com.reviewduck.review.vo.ReviewFormSortType;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.service.TemplateService;
@@ -30,18 +32,14 @@ import lombok.AllArgsConstructor;
 public class ReviewFormService {
 
     private final ReviewFormRepository reviewFormRepository;
+    private final ReviewRepository reviewRepository;
 
-    private final ReviewFormQuestionService reviewFormQuestionService;
     private final TemplateService templateService;
     private final MemberService memberService;
 
     @Transactional
     public ReviewForm save(Member member, ReviewFormCreateRequest createRequest) {
-        List<ReviewFormQuestion> questions = createRequest.getQuestions().stream()
-            .map(request -> reviewFormQuestionService.save(request.getValue(), request.getDescription()))
-            .collect(Collectors.toUnmodifiableList());
-
-        ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewFormTitle(), questions);
+        ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewFormTitle(), ServiceDtoConverter.toReviewFormQuestionCreateDtos(createRequest.getQuestions()));
         return reviewFormRepository.save(reviewForm);
     }
 
@@ -50,8 +48,8 @@ public class ReviewFormService {
         Template template = templateService.findById(templateId);
         templateService.increaseUsedCount(templateId);
 
-        List<ReviewFormQuestion> questions = template.getQuestions().stream()
-            .map(question -> reviewFormQuestionService.save(question.getValue(), question.getDescription()))
+        List<ReviewFormQuestionCreateDto> questions = template.getQuestions().stream()
+            .map(question -> new ReviewFormQuestionCreateDto(question.getValue(), question.getDescription()))
             .collect(Collectors.toUnmodifiableList());
 
         ReviewForm reviewForm = new ReviewForm(member, template.getTemplateTitle(), questions);
@@ -84,12 +82,10 @@ public class ReviewFormService {
         ReviewForm reviewForm = findByCode(code);
         validateReviewFormIsMine(member, reviewForm, "본인이 생성한 회고 폼이 아니면 수정할 수 없습니다.");
 
-        List<ReviewFormQuestion> reviewFormQuestions = updateRequest.getQuestions().stream()
-            .map(request -> reviewFormQuestionService.saveOrUpdateQuestion(request.getId(), request.getValue(),
-                request.getDescription()))
-            .collect(Collectors.toUnmodifiableList());
-
-        reviewForm.update(updateRequest.getReviewFormTitle(), reviewFormQuestions);
+        reviewForm.update(
+            updateRequest.getReviewFormTitle(),
+            ServiceDtoConverter.toReviewFormQuestionUpdateDtos(updateRequest.getQuestions())
+        );
 
         return reviewForm;
     }
@@ -98,6 +94,10 @@ public class ReviewFormService {
     public void deleteByCode(Member member, String reviewFormCode) {
         ReviewForm reviewForm = findByCode(reviewFormCode);
         validateReviewFormIsMine(member, reviewForm, "본인이 생성한 회고 폼이 아니면 삭제할 수 없습니다.");
+        if (reviewRepository.existsByReviewForm(reviewForm)) {
+            reviewFormRepository.inactivate(reviewForm);
+            return;
+        }
         reviewFormRepository.delete(reviewForm);
     }
 

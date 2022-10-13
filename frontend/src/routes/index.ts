@@ -20,8 +20,8 @@ export const TemplateDetailPage = React.lazy(
   () => import('service/template/pages/TemplateDetailPage'),
 );
 
-export const TemplateFormEditorPage = React.lazy(
-  () => import('service/template/pages/TemplateFormEditorPage'),
+export const TemplateEditorPage = React.lazy(
+  () => import('service/template/pages/TemplateEditorPage'),
 );
 
 export const TemplateListPage = React.lazy(() => import('service/template/pages/TemplateListPage'));

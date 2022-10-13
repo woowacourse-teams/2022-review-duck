@@ -1,30 +1,24 @@
 import { useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
+import { faCircleQuestion, faFaceSurprise } from '@fortawesome/free-regular-svg-icons';
+import {
+  faCircleChevronLeft,
+  faHome,
+  faUnlockKeyhole,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import { GITHUB_OAUTH_LOGIN_URL, PAGE_LIST } from 'constant';
 
 import { Button, FlexContainer, Text } from 'common/components';
 
+import { ErrorBoundaryFallbackProps } from 'common/components/ErrorBoundary';
+
 import styles from './styles.module.scss';
 
-import {
-  faCircleChevronLeft,
-  faFaceSurprise,
-  faHome,
-  faTriangleExclamation,
-  faUser,
-  faUserLock,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-interface ErrorPageProps {
-  status?: string | number;
-  title: string;
-  description: string;
-  onResetError?: () => void;
-}
-
-function ErrorPage({ status, title, description, onResetError }: ErrorPageProps) {
+function ErrorPage({ status, title, description, onResetError }: ErrorBoundaryFallbackProps) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -33,17 +27,16 @@ function ErrorPage({ status, title, description, onResetError }: ErrorPageProps)
   }, [pathname, onResetError]);
 
   const handlePreviousPage = () => {
-    onResetError && onResetError();
     navigate(-1);
   };
 
   const errorIcon = () => {
     switch (status) {
       case 403:
-        return faUserLock;
+        return faUnlockKeyhole;
 
       case 404:
-        return faTriangleExclamation;
+        return faCircleQuestion;
 
       default:
         return faFaceSurprise;
@@ -64,7 +57,7 @@ function ErrorPage({ status, title, description, onResetError }: ErrorPageProps)
       </FlexContainer>
 
       <FlexContainer className={styles.textContainer} gap="medium">
-        <Text as="h1" className={styles.title} size={32}>
+        <Text as="h1" className={styles.title} size={32} weight="bold">
           {title}
         </Text>
       </FlexContainer>

@@ -1,56 +1,47 @@
-import { ReviewForm, CreateReviewFormRequest, UpdateReviewFormRequest, ErrorResponse } from 'types';
+import { useEffect, useState } from 'react';
 
-import {
-  useCreateReviewForm,
-  useGetReviewForm,
-  useUpdateReviewForm,
-} from 'service/@shared/hooks/queries/review';
+import { useReviewMutations } from 'service/@shared/hooks/queries/review';
+import { useTemplateMutations } from 'service/@shared/hooks/queries/template';
 
-import { UseMutationResult } from '@tanstack/react-query';
+function useReviewFormEditor(reviewFormCode: string, templateId: number | null) {
+  const isEditMode = !!reviewFormCode;
 
-type SubmitMutationResult = UseMutationResult<
-  { reviewFormCode: string },
-  ErrorResponse,
-  CreateReviewFormRequest | UpdateReviewFormRequest
->;
+  const reviewMutations = useReviewMutations();
+  const templateMutations = useTemplateMutations();
 
-function useReviewFormEditor(reviewFormCode: string) {
-  const createMutation = useCreateReviewForm();
-  const updateMutation = useUpdateReviewForm();
+  const isSubmitLoading = isEditMode
+    ? reviewMutations.updateForm.isLoading
+    : reviewMutations.createForm.isLoading;
 
-  const submitMutation = reviewFormCode ? updateMutation : createMutation;
+  const [reviewFormTitle, setReviewFormTitle] = useState('');
+  const [questions, setQuestions] = useState([{ value: '', description: '' }]);
 
-  const getReviewFormQuery = useGetReviewForm(reviewFormCode, {
-    enabled: !!reviewFormCode,
-  });
+  useEffect(function getReviewFormEditData() {
+    reviewFormCode &&
+      reviewMutations.findForm.mutate(reviewFormCode, {
+        onSuccess: ({ title, questions }) => {
+          setReviewFormTitle(title);
+          setQuestions(questions);
+        },
+      });
 
-  const initialReviewForm: ReviewForm = getReviewFormQuery.data || {
-    title: '',
-    questions: [
-      {
-        value: '',
-        description: '',
-      },
-    ],
-    info: {
-      creator: {
-        id: -1,
-        socialNickname: 'user-id',
-        profileUrl: '',
-        nickname: '알 수 없음',
-      },
-      isSelf: false,
-      updateDate: '오류',
-    },
-  };
+    templateId &&
+      templateMutations.findById.mutate(templateId, {
+        onSuccess: ({ questions, info: { title } }) => {
+          setReviewFormTitle(title);
+          setQuestions(questions);
+        },
+      });
+  }, []);
 
   return {
-    initialReviewForm,
-    isNewReviewForm: !reviewFormCode,
-    isLoadError: getReviewFormQuery.isError,
-    loadError: getReviewFormQuery.error,
-    isSubmitLoading: submitMutation.isLoading,
-    submitReviewForm: submitMutation as SubmitMutationResult,
+    reviewMutations,
+    isEditMode,
+    isSubmitLoading,
+    reviewFormTitle,
+    questions,
+    setQuestions,
+    setReviewFormTitle,
   };
 }
 

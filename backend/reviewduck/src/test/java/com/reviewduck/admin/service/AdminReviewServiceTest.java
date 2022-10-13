@@ -19,11 +19,11 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.dto.request.AnswerCreateRequest;
-import com.reviewduck.review.dto.request.ReviewContentCreateRequest;
-import com.reviewduck.review.dto.request.ReviewCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
@@ -108,7 +108,7 @@ public class AdminReviewServiceTest {
     }
 
     private Review saveReview(Member member) {
-        ReviewCreateRequest createRequest = new ReviewCreateRequest(false, List.of(
+        ReviewCreateRequest createRequest = new ReviewCreateRequest(false, "title", List.of(
             new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
             new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
         ));

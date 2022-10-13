@@ -1,6 +1,5 @@
 package com.reviewduck.auth.service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -58,8 +57,8 @@ public class AuthService {
 
     @Transactional
     public TokensDto regenerateTokens(String refreshToken) {
-        jwtTokenProvider.validateToken(refreshToken);
-        Long memberId = Long.parseLong(jwtTokenProvider.getPayload(refreshToken));
+        jwtTokenProvider.validateRefreshToken(refreshToken);
+        Long memberId = Long.parseLong(jwtTokenProvider.getRefreshTokenPayload(refreshToken));
         Member member = memberService.findById(memberId);
         return generateTokens(member.getId());
     }
@@ -90,7 +89,7 @@ public class AuthService {
     }
 
     private void validateTokenResponse(GithubTokenResponse githubTokenResponse) {
-        if (Objects.isNull(githubTokenResponse.getAccessToken())) {
+        if (githubTokenResponse != null && githubTokenResponse.getAccessToken() == null) {
             throw new AuthorizationException("깃허브 로그인이 실패했습니다.");
         }
     }
@@ -116,7 +115,7 @@ public class AuthService {
     }
 
     private void validateMemberResponse(GithubMemberResponse githubMemberResponse) {
-        if (Objects.isNull(githubMemberResponse)) {
+        if (githubMemberResponse == null) {
             throw new AuthorizationException("깃허브 유저 정보 가져오기가 실패했습니다.");
         }
     }

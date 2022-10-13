@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 import { Answer, Question } from 'types';
 
@@ -13,18 +13,17 @@ interface AddQuestion {
   customValue?: Question;
 }
 
-function useQuestions(initState?: Question[]) {
-  const initialQuestion: QuestionWithKey[] = useMemo(
+function useQuestions(originQuestion: Question[], setQuestions: (question: Question[]) => void) {
+  const questions: QuestionWithKey[] = useMemo(
     () =>
-      initState?.map((value, index) => ({
+      originQuestion?.map((value, index) => ({
         ...value,
         key: index,
       })) || [],
-    [],
+    [originQuestion],
   );
 
-  const [questions, setQuestions] = useState(initialQuestion);
-  const getUniqueKey = useUniqueKey(initialQuestion.length);
+  const getUniqueKey = useUniqueKey(questions.length);
 
   const answeredCount = questions.filter(({ answer }) => answer?.value).length;
   const isAnswerComplete = questions.length === answeredCount;
@@ -74,11 +73,7 @@ function useQuestions(initState?: Question[]) {
   const removeBlankQuestions = (questions: QuestionWithKey[]) => {
     const updateQuestion = questions.filter((question) => !!question.value?.trim());
 
-    return updateQuestion.map((question) => {
-      delete question.key;
-
-      return question;
-    });
+    return updateQuestion.map(({ key: _removed, ...question }) => ({ ...question }));
   };
 
   return {

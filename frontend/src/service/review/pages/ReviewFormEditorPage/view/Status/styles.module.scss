@@ -1,0 +1,8 @@
+.status-container {
+  gap: 2.5rem;
+
+  &.sticky {
+    position: sticky;
+    top: 3rem;
+  }
+}

@@ -8,7 +8,6 @@
   &:hover .tooltip-box {
     visibility: visible;
     opacity: 1;
-    filter: blur(0);
   }
 
   .tooltip-box {
@@ -23,8 +22,7 @@
     font-size: 0.75rem;
 
     opacity: 0;
-    transition: all 0.3s ease;
-    filter: blur(1rem);
+    transition: all 0.2s ease;
 
     z-index: 5;
 

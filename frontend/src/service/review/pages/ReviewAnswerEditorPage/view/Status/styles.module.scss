@@ -1,0 +1,87 @@
+@import 'styles/@global.scss';
+
+.container {
+  width: 100%;
+  position: sticky;
+  top: 0;
+}
+
+.form-title {
+  margin-top: 1rem;
+  color: $LIGHT_COLOR_STATUS_PRIMARY_700;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 150%;
+}
+
+.focus-question {
+  margin-bottom: 2rem;
+
+  .title {
+    width: 80%;
+    margin-top: 1.75rem;
+    letter-spacing: 0.25rem;
+    line-height: 140%;
+    word-break: break-word;
+
+    @include animation(0.5s ease) {
+      from {
+        opacity: 0;
+        filter: blur(1rem);
+        transform: scale(1.2) translateX(-50%);
+      }
+
+      to {
+        opacity: 1;
+        filter: blur(0rem);
+        transform: scale(1) translateY(0%);
+      }
+    }
+  }
+
+  .description {
+    display: block;
+    color: $THEME_COLOR_THEME_TEXT_900;
+    line-height: 160%;
+
+    @include animation(1.5s ease) {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0%);
+      }
+    }
+  }
+}
+
+.answered-state {
+  margin-bottom: 3rem;
+
+  .progressText {
+    color: $THEME_COLOR_THEME_TEXT_400;
+  }
+}
+
+.user-profile {
+  .profile {
+    width: 5.9375rem;
+    height: 8.125rem;
+    border-radius: 62.4375rem;
+    background-size: cover;
+    background-position: center;
+    background-color: rgba(255, 255, 255, 0.3);
+    margin-bottom: 2rem;
+  }
+
+  .nickname {
+    letter-spacing: 0.1rem;
+    color: $THEME_COLOR_STATUS_PRIMARY_600;
+  }
+
+  .description {
+    color: $GLOBAL_COLOR_GRAY_500;
+  }
+}

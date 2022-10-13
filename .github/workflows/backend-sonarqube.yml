@@ -33,6 +33,7 @@ jobs:
       clientId: ${{ secrets.CLIENTID }}
       clientSecret: ${{ secrets.CLIENTSECRET }}
       jwtKey: ${{ secrets.JWTKEY }}
+      jwtRefreshKey: ${{ secrets.JWTREFRESHKEY }}
       jwtExpireLength: ${{ secrets.JWTEXPIRELENGTH }}
       jwtRefreshExpireLength: ${{ secrets.JWTREFRESHEXPIRELENGTH }}
 
@@ -56,6 +57,7 @@ jobs:
           clientId: ${{ secrets.CLIENTID }}
           clientSecret: ${{ secrets.CLIENTSECRET }}
           jwtKey: ${{ secrets.JWTKEY }}
+          jwtRefreshKey: ${{ secrets.JWTREFRESHKEY }}
           jwtExpireLength: ${{ secrets.JWTEXPIRELENGTH }}
           jwtRefreshExpireLength: ${{ secrets.JWTREFRESHEXPIRELENGTH }}
 

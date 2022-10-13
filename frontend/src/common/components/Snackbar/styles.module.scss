@@ -1,6 +1,6 @@
 @import 'styles/@global.scss';
 
-.container {
+.component-snackbar {
   $snackbarIndex: 10;
 
   position: fixed;
@@ -53,6 +53,25 @@
     width: 100%;
     text-overflow: ellipsis;
     overflow: hidden;
+
+    &:only-child {
+      margin: 0;
+    }
+
+    &:only-child::before {
+      content: '회고덕 알림';
+      display: block;
+
+      font-size: 0.875rem;
+      font-weight: normal;
+
+      color: $THEME_COLOR_THEME_TEXT_100;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+
+      margin-bottom: 0.5rem;
+    }
   }
 
   .description {

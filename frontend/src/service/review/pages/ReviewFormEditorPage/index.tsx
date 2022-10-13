@@ -1,149 +1,129 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useParams, Link, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
 import { PAGE_LIST } from 'constant';
 import { Question } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
-import useQuestions from 'service/@shared/hooks/useQuestions';
 
+import { isNumberString } from 'common/utils/validator';
 import { getErrorMessage } from 'service/@shared/utils';
 
-import { Button, FlexContainer, Logo, TextBox } from 'common/components';
-
-import QuestionCard from 'service/@shared/components/QuestionCard';
 import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
 
-import styles from './styles.module.scss';
-
 import useReviewFormEditor from './useReviewFormEditor';
-import { faArrowRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Editor from './view/Editor';
+import Status from './view/Status';
 import { validateReviewForm } from 'service/@shared/validator';
 
 function ReviewFormEditorPage() {
   const { reviewFormCode = '' } = useParams();
   const [searchParams] = useSearchParams();
+
+  const redirectUri = searchParams.get('redirect') || '';
+  const templateIdParam = searchParams.get('template') || '';
+  const templateId = isNumberString(templateIdParam) ? Number(templateIdParam) : null;
+
+  const snackbar = useSnackbar();
   const navigate = useNavigate();
 
   const {
-    initialReviewForm,
-    isNewReviewForm,
+    reviewMutations,
+    isEditMode,
     isSubmitLoading,
-    isLoadError,
-    loadError,
-    submitReviewForm,
-  } = useReviewFormEditor(reviewFormCode);
-
-  const [reviewFormTitle, setReviewTitle] = useState(initialReviewForm.title);
-  const { removeBlankQuestions } = useQuestions();
-  const [questions, setQuestion] = useState(initialReviewForm.questions);
-
-  const { showSnackbar } = useSnackbar();
-  const redirectUri = searchParams.get('redirect');
-
-  useEffect(() => {
-    if (isLoadError) {
-      alert(loadError?.message);
-      navigate(redirectUri || PAGE_LIST.HOME);
-    }
-  }, []);
+    reviewFormTitle,
+    questions,
+    setQuestions,
+    setReviewFormTitle,
+  } = useReviewFormEditor(reviewFormCode, templateId);
 
   const handleChangeReviewTitle = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-    setReviewTitle(target.value);
+    setReviewFormTitle(target.value);
   };
 
   const handleChangeQuestions = (questions: Question[]) => {
-    setQuestion(questions);
+    setQuestions(questions);
+  };
+
+  const handleSubmitSuccess = (updatedFormCode: string, message: string) => {
+    snackbar.show({
+      title: message,
+      description: '회고 참여 코드를 통해 다른 사람들과 회고를 진행할 수 있습니다.',
+    });
+
+    navigate(redirectUri || `${PAGE_LIST.REVIEW_OVERVIEW}/${updatedFormCode}`, {
+      replace: true,
+    });
+  };
+
+  const handleUpdateReviewForm = () => {
+    reviewMutations.updateForm.mutate(
+      { reviewFormCode, reviewFormTitle, questions },
+      { onSuccess: () => handleSubmitSuccess(reviewFormCode, '회고가 수정되었습니다.') },
+    );
+  };
+
+  const handleCreateReviewForm = () => {
+    reviewMutations.createForm.mutate(
+      { reviewFormTitle, questions },
+      {
+        onSuccess: ({ reviewFormCode: createdReviewFormCode }) =>
+          handleSubmitSuccess(createdReviewFormCode, '회고가 생성되었습니다.'),
+      },
+    );
+  };
+
+  const handleCreateByTemplate = () => {
+    if (!templateId) return;
+
+    reviewMutations.createFormByTemplate.mutate(
+      { templateId, reviewFormTitle, questions },
+      {
+        onSuccess: ({ reviewFormCode: createdReviewFormCode }) =>
+          handleSubmitSuccess(createdReviewFormCode, '회고가 생성되었습니다.'),
+      },
+    );
   };
 
   const handleSubmitReviewForm = (event: React.FormEvent) => {
     event.preventDefault();
 
-    const submitQuestions = removeBlankQuestions(questions);
-
     try {
-      validateReviewForm(reviewFormTitle, submitQuestions);
+      validateReviewForm(reviewFormTitle, questions);
     } catch (error) {
       alert(getErrorMessage(error));
       return;
     }
 
-    submitReviewForm.mutate(
-      { reviewFormTitle, reviewFormCode, questions: submitQuestions },
-      {
-        onSuccess: ({ reviewFormCode }) => {
-          showSnackbar({
-            title: isNewReviewForm ? '회고가 생성되었습니다.' : '회고가 수정되었습니다.',
-            description: '회고 참여코드를 공유하여, 회고를 시작할 수 있습니다.',
-          });
-
-          navigate(redirectUri || `${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`, {
-            replace: true,
-          });
-        },
-        onError: ({ message }) => {
-          alert(message);
-        },
-      },
-    );
+    if (isEditMode) handleUpdateReviewForm();
+    else if (!isEditMode && !templateId) handleCreateReviewForm();
+    else if (templateId) handleCreateByTemplate();
   };
 
   const handleCancel = () => {
     if (!confirm('회고 생성을 정말 취소하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
 
-    navigate(-1);
+    navigate(redirectUri || PAGE_LIST.HOME);
   };
 
   return (
     <>
-      <FlexContainer className={styles.container} direction="column">
-        <Link to={PAGE_LIST.HOME}>
-          <Logo />
-        </Link>
+      <Status>
+        <Status.LinkedLogo linkTo={PAGE_LIST.HOME} />
+        <Status.QuestionPreview questions={questions} />
+      </Status>
 
-        <FlexContainer direction="column" gap="small">
-          {questions.map(
-            (question, index) =>
-              question.value && (
-                <QuestionCard
-                  key={index}
-                  numbering={index + 1}
-                  type="text"
-                  title={question.value}
-                  description={question.description}
-                />
-              ),
-          )}
-        </FlexContainer>
-      </FlexContainer>
+      <Editor>
+        <Editor.TitleInput title={reviewFormTitle} onTitleChange={handleChangeReviewTitle} />
+        <QuestionsEditor value={questions} onChange={handleChangeQuestions} />
 
-      <div>
-        <FlexContainer className={cn(styles.container, styles.sticky)} direction="column">
-          <TextBox
-            theme="underline"
-            size="large"
-            placeholder="회고의 제목을 입력해주세요."
-            value={reviewFormTitle}
-            onChange={handleChangeReviewTitle}
-          />
-
-          <QuestionsEditor initialQuestions={questions} onUpdate={handleChangeQuestions} />
-
-          <div className={cn('button-container horizontal')}>
-            <Button theme="outlined" onClick={handleCancel}>
-              <FontAwesomeIcon icon={faArrowRightFromBracket} />
-              <span>취소하기</span>
-            </Button>
-
-            <Button type="button" onClick={handleSubmitReviewForm} disabled={isSubmitLoading}>
-              <FontAwesomeIcon icon={faPenToSquare} />
-              <span>{isNewReviewForm ? '생성하기' : '수정하기'}</span>
-            </Button>
-          </div>
-        </FlexContainer>
-      </div>
+        <div className={cn('button-container horizontal')}>
+          <Editor.CancelButton onCancel={handleCancel}>취소하기</Editor.CancelButton>
+          <Editor.SubmitButton onSubmit={handleSubmitReviewForm} disabled={isSubmitLoading}>
+            {isEditMode ? '수정하기' : '생성하기'}
+          </Editor.SubmitButton>
+        </div>
+      </Editor>
     </>
   );
 }

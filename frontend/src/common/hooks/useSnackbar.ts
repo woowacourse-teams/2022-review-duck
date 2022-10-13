@@ -26,7 +26,7 @@ function useSnackbar() {
     });
   };
 
-  return { showSnackbar, removeSnackbar, resetSnackbar };
+  return { show: showSnackbar, remove: removeSnackbar, reset: resetSnackbar };
 }
 
 export default useSnackbar;

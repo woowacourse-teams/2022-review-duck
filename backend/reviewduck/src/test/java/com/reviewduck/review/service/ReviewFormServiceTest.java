@@ -2,6 +2,7 @@ package com.reviewduck.review.service;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,13 +24,16 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
-import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormQuestionUpdateRequest;
-import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
+import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormQuestionUpdateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
 import com.reviewduck.template.domain.Template;
-import com.reviewduck.template.dto.request.TemplateCreateRequest;
-import com.reviewduck.template.dto.request.TemplateQuestionCreateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.service.TemplateService;
 
 @SpringBootTest
@@ -38,9 +42,16 @@ import com.reviewduck.template.service.TemplateService;
 public class ReviewFormServiceTest {
 
     private final String invalidCode = "aaaaaaaa";
+    private final ReviewForm mockReviewForm = mock(ReviewForm.class);
 
     @Autowired
     private ReviewFormService reviewFormService;
+
+    @Autowired
+    private ReviewFormQuestionService reviewFormQuestionService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     @Autowired
     private TemplateService templateService;
@@ -78,7 +89,7 @@ public class ReviewFormServiceTest {
             List<ReviewFormQuestion> expected = questions.stream()
                 .map(questionRequest -> new ReviewFormQuestion(
                     questionRequest.getValue(),
-                    questionRequest.getDescription()))
+                    questionRequest.getDescription(), mockReviewForm))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -96,9 +107,9 @@ public class ReviewFormServiceTest {
                 () -> assertThat(reviewForm.getMember().getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(reviewForm.getCode().length()).isEqualTo(8),
                 () -> assertThat(reviewForm.getTitle()).isEqualTo(reviewFormTitle),
-                () -> assertThat(reviewForm.getReviewFormQuestions())
+                () -> assertThat(reviewForm.getQuestions())
                     .usingRecursiveComparison()
-                    .ignoringFields("id")
+                    .ignoringFields("id", "reviewForm")
                     .isEqualTo(expected)
             );
         }
@@ -131,7 +142,7 @@ public class ReviewFormServiceTest {
             ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(member1, templateId);
 
             List<ReviewFormQuestion> expected = questions.stream()
-                .map(question -> new ReviewFormQuestion(question.getValue(), question.getDescription()))
+                .map(question -> new ReviewFormQuestion(question.getValue(), question.getDescription(), mockReviewForm))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -147,9 +158,9 @@ public class ReviewFormServiceTest {
                 () -> assertThat(savedReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(savedReviewForm.getCode().length()).isEqualTo(8),
                 () -> assertThat(savedReviewForm.getTitle()).isEqualTo(templateTitle),
-                () -> assertThat(savedReviewForm.getReviewFormQuestions())
+                () -> assertThat(savedReviewForm.getQuestions())
                     .usingRecursiveComparison()
-                    .ignoringFields("id")
+                    .ignoringFields("id", "reviewForm")
                     .isEqualTo(expected),
                 // template usedCount ++
                 // DB에 반영된 usedCount를 확인하기 위해 새로 조회
@@ -212,7 +223,7 @@ public class ReviewFormServiceTest {
             List<ReviewFormQuestion> expected = reviewFromQuestions.stream()
                 .map(request -> new ReviewFormQuestion(
                     request.getValue(),
-                    request.getDescription()))
+                    request.getDescription(), mockReviewForm))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -233,9 +244,9 @@ public class ReviewFormServiceTest {
                 () -> assertThat(createdReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(createdReviewForm.getCode().length()).isEqualTo(8),
                 () -> assertThat(createdReviewForm.getTitle()).isEqualTo(reviewFormTitle),
-                () -> assertThat(createdReviewForm.getReviewFormQuestions())
+                () -> assertThat(createdReviewForm.getQuestions())
                     .usingRecursiveComparison()
-                    .ignoringFields("id")
+                    .ignoringFields("id", "reviewForm")
                     .isEqualTo(expected),
                 // usedCount ++
                 // DB에 반영된 usedCount를 확인하기 위해 새로 조회
@@ -268,7 +279,7 @@ public class ReviewFormServiceTest {
             List<ReviewFormQuestion> expected = reviewFromQuestions.stream()
                 .map(request -> new ReviewFormQuestion(
                     request.getValue(),
-                    request.getDescription()))
+                    request.getDescription(), mockReviewForm))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -336,7 +347,7 @@ public class ReviewFormServiceTest {
             // when
             int page = 0;
             int size = 3;
-            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page ,size)
+            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page, size)
                 .getContent();
 
             // then
@@ -347,10 +358,10 @@ public class ReviewFormServiceTest {
                 () -> assertThat(myReviewForms.get(0).getId()).isNotNull(),
                 () -> assertThat(myReviewForms.get(0).getCode().length()).isEqualTo(8),
                 () -> assertThat(myReviewForms.get(0).getUpdatedAt()).isEqualTo(expected.getUpdatedAt()),
-                () -> assertThat(myReviewForms.get(0).getReviewFormQuestions())
+                () -> assertThat(myReviewForms.get(0).getQuestions())
                     .usingRecursiveComparison()
                     .ignoringFields("id")
-                    .isEqualTo(expected.getReviewFormQuestions())
+                    .isEqualTo(expected.getQuestions())
             );
         }
 
@@ -366,7 +377,7 @@ public class ReviewFormServiceTest {
             // when
             int page = 0;
             int size = 3;
-            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page ,size)
+            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page, size)
                 .getContent();
 
             // then
@@ -377,10 +388,10 @@ public class ReviewFormServiceTest {
                 () -> assertThat(myReviewForms.get(0).getId()).isNotNull(),
                 () -> assertThat(myReviewForms.get(0).getCode().length()).isEqualTo(8),
                 () -> assertThat(myReviewForms.get(0).getUpdatedAt()).isEqualTo(expected.getUpdatedAt()),
-                () -> assertThat(myReviewForms.get(0).getReviewFormQuestions())
+                () -> assertThat(myReviewForms.get(0).getQuestions())
                     .usingRecursiveComparison()
                     .ignoringFields("id")
-                    .isEqualTo(expected.getReviewFormQuestions())
+                    .isEqualTo(expected.getQuestions())
             );
         }
     }
@@ -395,7 +406,7 @@ public class ReviewFormServiceTest {
             // given
             ReviewForm savedReviewForm = saveReviewForm(member1);
             String code = savedReviewForm.getCode();
-            Long questionId = savedReviewForm.getReviewFormQuestions().get(0).getId();
+            Long questionId = savedReviewForm.getQuestions().get(0).getId();
 
             // when
             String reviewFormTitle = "new title";
@@ -407,7 +418,7 @@ public class ReviewFormServiceTest {
 
             List<ReviewFormQuestion> expected = updateRequests.stream()
                 .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(),
-                    questionRequest.getDescription()))
+                    questionRequest.getDescription(), mockReviewForm))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -424,9 +435,9 @@ public class ReviewFormServiceTest {
                 () -> assertThat(foundReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
                 () -> assertThat(foundReviewForm.getCode().length()).isEqualTo(8),
                 () -> assertThat(foundReviewForm.getTitle()).isEqualTo(reviewFormTitle),
-                () -> assertThat(foundReviewForm.getReviewFormQuestions())
+                () -> assertThat(foundReviewForm.getQuestions())
                     .usingRecursiveComparison()
-                    .ignoringFields("id")
+                    .ignoringFields("id", "reviewForm")
                     .isEqualTo(expected)
             );
         }
@@ -437,7 +448,7 @@ public class ReviewFormServiceTest {
             // given
             ReviewForm savedReviewForm = saveReviewForm(member1);
             String code = savedReviewForm.getCode();
-            Long questionId = savedReviewForm.getReviewFormQuestions().get(0).getId();
+            Long questionId = savedReviewForm.getQuestions().get(0).getId();
 
             // when
             String reviewFormTitle = "new title";
@@ -448,7 +459,7 @@ public class ReviewFormServiceTest {
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewFormTitle, updateRequests);
 
             List<ReviewFormQuestion> expected = updateRequests.stream()
-                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(), ""))
+                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(), "", mockReviewForm))
                 .collect(Collectors.toUnmodifiableList());
 
             int index = 0;
@@ -500,8 +511,29 @@ public class ReviewFormServiceTest {
     class deleteByCode {
 
         @Test
-        @DisplayName("회고 폼을 삭제한다.")
-        void deleteReviewForm() throws InterruptedException {
+        @DisplayName("회고 폼을 삭제한다(생성한 회고 있는 상태).")
+        void deleteReviewForm_reviewExists() throws InterruptedException {
+            // given
+            ReviewForm savedReviewForm = saveReviewForm(member1);
+            String code = savedReviewForm.getCode();
+            ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, "title", List.of(
+                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+            ));
+            reviewService.save(member1, code, reviewCreateRequest);
+
+            // when
+            reviewFormService.deleteByCode(member1, code);
+
+            // then
+            assertThatThrownBy(() -> reviewFormService.findByCode(code))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessageContaining("존재하지 않는 회고 폼입니다.");
+        }
+
+        @Test
+        @DisplayName("회고 폼을 삭제한다(생성한 회고 없는 상태).")
+        void deleteReviewForm_reviewNotExists() throws InterruptedException {
             // given
             ReviewForm savedReviewForm = saveReviewForm(member1);
             String code = savedReviewForm.getCode();

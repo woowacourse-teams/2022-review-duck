@@ -15,10 +15,6 @@
 
 <br> 
 
-## 🤝🏻 CI / CD
-- ### develop
-![develop](https://user-images.githubusercontent.com/18046394/180352374-05085fb1-174a-4c44-bd34-31250f92f8ee.jpeg)
+## 🤝🏻 Backend Architecture
 
-
-- ### production
-![prod](https://user-images.githubusercontent.com/18046394/180352406-2b14b7a0-eabb-4b7b-8947-82df072f677d.jpeg)
+![BackendArchitecture](https://user-images.githubusercontent.com/39939886/195292170-f740720d-f469-45a7-ad99-c8f2d42cbba0.jpg)

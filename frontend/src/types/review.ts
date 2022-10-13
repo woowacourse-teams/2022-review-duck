@@ -21,6 +21,7 @@ export interface UserContentRequireField {
   isSelf: boolean;
   updateDate: string;
   isPrivate?: boolean;
+  reviewTitle?: string;
 }
 
 export interface ReviewForm {
@@ -31,20 +32,22 @@ export interface ReviewForm {
 }
 
 export interface ReviewAnswer {
-  id: number;
   questions: AnsweredQuestion<false>[];
-  info: UserContentRequireField;
+  info: {
+    reviewTitle: string;
+    isPrivate: boolean;
+  };
 }
 
 export interface ReviewFormAnswer {
   id: number;
   questions: AnsweredQuestion[];
   info: UserContentRequireField;
+  likes: number;
 }
 
 export interface ReviewPublicAnswer extends ReviewFormAnswer {
   reviewFormCode: string;
-  likes: number;
 }
 
 export type ReviewFormAnswerList = {
@@ -94,15 +97,12 @@ export interface GetReviewFormResponse extends ReviewFormResponse {
 }
 
 export interface GetReviewAnswerResponse {
-  id: number;
-  updatedAt: number;
-  creator: UserProfile;
-  isCreator: boolean;
+  reviewTitle: string;
+  isPrivate: boolean;
   contents: Array<{
     question: ServerQuestionRequireId;
     answer: ServerAnswerRequireId;
   }>;
-  isPrivate: boolean;
 }
 
 export type GetReviewFormAnswerResponse = {
@@ -147,6 +147,7 @@ export interface CreateReviewFormResponse {
 
 export interface CreateReviewAnswerRequest {
   reviewFormCode: string;
+  reviewTitle: string;
   contents: Array<{
     questionId: number;
     answer: ServerAnswer;
@@ -173,6 +174,7 @@ export interface UpdateReviewFormResponse {
 }
 
 export interface UpdateReviewAnswerRequest {
+  reviewTitle: string;
   reviewId: number;
   contents: Array<{
     questionId: number;

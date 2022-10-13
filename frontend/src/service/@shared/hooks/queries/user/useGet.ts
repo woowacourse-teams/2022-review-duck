@@ -23,7 +23,7 @@ function useGetUserProfile(
 
 function useGetUserReviewForms(
   socialId: number,
-  pageNumber: string,
+  pageNumber: number,
   queryOptions?: UseQueryOptions<UserArticleList, ErrorResponse>,
 ) {
   return useQuery<UserArticleList, ErrorResponse>(
@@ -38,7 +38,7 @@ function useGetUserReviewForms(
 
 function useGetUserReviewAnswer(
   socialId: number,
-  pageNumber: string,
+  pageNumber: number,
   queryOptions?: UseQueryOptions<UserArticleList, ErrorResponse>,
 ) {
   return useQuery<UserArticleList, ErrorResponse>(
@@ -53,7 +53,7 @@ function useGetUserReviewAnswer(
 
 function useGetUserTemplates(
   socialId: number,
-  pageNumber: string,
+  pageNumber: number,
   queryOptions?: UseQueryOptions<UserArticleList, ErrorResponse>,
 ) {
   return useQuery<UserArticleList, ErrorResponse>(

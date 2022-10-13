@@ -14,6 +14,10 @@ export interface UserArticleList {
     id?: number;
     reviewFormCode?: string;
     title: string;
+    reviewTitle?: string;
+    updatedAt: string;
+    isPrivate?: boolean;
+    likes?: number;
 
     contents: Array<{
       question: ServerQuestionRequireId;
@@ -28,7 +32,9 @@ export interface GetUserReviewAnswerResponse {
   reviews: Array<{
     id: number;
     title: string;
+    isPrivate: boolean;
     updatedAt: number;
+    likes: number;
     contents: Array<{
       question: ServerQuestionRequireId;
       answer: ServerAnswerRequireId;

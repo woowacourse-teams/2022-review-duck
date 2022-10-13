@@ -22,10 +22,10 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.domain.TemplateQuestion;
-import com.reviewduck.template.dto.request.TemplateCreateRequest;
-import com.reviewduck.template.dto.request.TemplateQuestionCreateRequest;
-import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
-import com.reviewduck.template.dto.request.TemplateUpdateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateQuestionUpdateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")
@@ -73,10 +73,9 @@ public class TemplateServiceTest {
                 new TemplateQuestionCreateRequest("question1", "description1"),
                 new TemplateQuestionCreateRequest("question2", "description2"));
 
-            List<TemplateQuestion> expected = convertRequestToQuestions(questions);
-
             // when
             Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
+            List<TemplateQuestion> expected = convertRequestToQuestions(questions);
 
             // then
             assertAll(
@@ -86,10 +85,11 @@ public class TemplateServiceTest {
                 () -> assertThat(template.getTemplateDescription()).isEqualTo(templateDescription),
                 () -> assertThat(template.getQuestions())
                     .usingRecursiveComparison()
-                    .ignoringFields("id")
+                    .ignoringFields("id", "template")
                     .isEqualTo(expected)
             );
         }
+
 
     }
 
@@ -108,13 +108,13 @@ public class TemplateServiceTest {
                 new TemplateQuestionCreateRequest("question1", "description1"),
                 new TemplateQuestionCreateRequest("question2", "description2"));
 
-            List<TemplateQuestion> expected = convertRequestToQuestions(questions);
             Template template = null;
             try {
                 template = saveTemplate(member1, templateTitle, templateDescription, questions);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            List<TemplateQuestion> expected = convertRequestToQuestions(questions);
 
             // when
             Template foundTemplate = templateService.findById(template.getId());
@@ -127,7 +127,7 @@ public class TemplateServiceTest {
                 () -> assertThat(foundTemplate.getTemplateDescription()).isEqualTo(templateDescription),
                 () -> assertThat(foundTemplate.getQuestions())
                     .usingRecursiveComparison()
-                    .ignoringFields("id")
+                    .ignoringFields("id", "template")
                     .isEqualTo(expected)
             );
         }
@@ -140,6 +140,7 @@ public class TemplateServiceTest {
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 템플릿입니다.");
         }
+
 
     }
 
@@ -192,7 +193,36 @@ public class TemplateServiceTest {
                 () -> assertThat(templates.get(0)).isEqualTo(template2)
             );
         }
+    }
 
+    @Nested
+    @DisplayName("전체 템플릿 조회")
+    class SearchTest {
+
+        @Test
+        @DisplayName("템플릿 검색 결과를 조회한다.")
+        void search() throws InterruptedException {
+            // given
+            // create template
+            Template template1 = saveTemplate(member1, "title1", "description1", questions1);
+            Template template2 = saveTemplate(member1, "title2", "description2", questions2);
+
+            templateService.increaseUsedCount(template1.getId());
+
+            // when
+            String query = "tle1";
+            int page = 0;
+            int size = 1;
+            String sort = "trend";
+
+            List<Template> templates = templateService.search(query, page, size, sort).getContent();
+
+            // then
+            assertAll(
+                () -> assertThat(templates).hasSize(1),
+                () -> assertThat(templates.get(0)).isEqualTo(template1)
+            );
+        }
     }
 
     @Nested
@@ -231,6 +261,7 @@ public class TemplateServiceTest {
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 사용자입니다.");
         }
+
 
     }
 
@@ -278,7 +309,7 @@ public class TemplateServiceTest {
                 () -> assertThat(updatedTemplate.getTemplateDescription()).isEqualTo("new description"),
                 () -> assertThat(updatedTemplate.getQuestions())
                     .usingRecursiveComparison()
-                    .ignoringFields("id")
+                    .ignoringFields("id", "template")
                     .isEqualTo(expectedTemplateQuestions)
             );
         }
@@ -317,6 +348,7 @@ public class TemplateServiceTest {
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 템플릿입니다.");
         }
+
 
     }
 
@@ -369,6 +401,7 @@ public class TemplateServiceTest {
 
     }
 
+
     private List<TemplateQuestion> convertRequestToQuestions(List<TemplateQuestionCreateRequest> questions) {
         List<TemplateQuestion> expected = questions.stream()
             .map(questionRequest -> new TemplateQuestion(questionRequest.getValue(), questionRequest.getDescription()))
@@ -378,6 +411,7 @@ public class TemplateServiceTest {
         for (TemplateQuestion templateQuestion : expected) {
             templateQuestion.setPosition(index++);
         }
+
         return expected;
     }
 
@@ -387,5 +421,4 @@ public class TemplateServiceTest {
         TemplateCreateRequest createRequest = new TemplateCreateRequest(templateTitle, templateDescription, questions);
         return templateService.save(member, createRequest);
     }
-
 }

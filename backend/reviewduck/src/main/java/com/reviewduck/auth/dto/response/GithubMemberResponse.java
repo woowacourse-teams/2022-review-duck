@@ -1,7 +1,5 @@
 package com.reviewduck.auth.dto.response;
 
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.reviewduck.member.domain.Member;
 
@@ -28,7 +26,7 @@ public class GithubMemberResponse {
     private String avatarUrl;
 
     public Member toMember() {
-        if (Objects.isNull(nickname)) {
+        if (nickname == null) {
             nickname = socialNickname;
         }
         return new Member(socialId, socialNickname, nickname, avatarUrl);

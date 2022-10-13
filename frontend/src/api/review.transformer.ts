@@ -27,10 +27,9 @@ export const transformForm = (data: GetReviewFormResponse): ReviewForm => {
 };
 
 export const transformAnswer = (data: GetReviewAnswerResponse): ReviewAnswer => {
-  const { id, contents, creator, isCreator, updatedAt, isPrivate } = data;
+  const { contents, reviewTitle, isPrivate } = data;
 
   return {
-    id: id,
     questions: contents.map((content) => ({
       id: content.question.id,
       value: content.question.value,
@@ -38,16 +37,14 @@ export const transformAnswer = (data: GetReviewAnswerResponse): ReviewAnswer => 
       answer: content.answer,
     })),
     info: {
-      creator,
-      isSelf: isCreator,
-      updateDate: getElapsedTimeText(updatedAt),
+      reviewTitle,
       isPrivate,
     },
   };
 };
 
 export const transformFormAnswer = (data: GetReviewFormAnswerResponse): ReviewFormAnswerList => {
-  const { numberOfReviews, isLastPage, reviews } = data;
+  const { isLastPage, reviews } = data;
 
   const transformReviews = reviews.map((review) => {
     const { id, reviewTitle, updatedAt, likes, isCreator, creator, contents } = review;
@@ -61,10 +58,12 @@ export const transformFormAnswer = (data: GetReviewFormAnswerResponse): ReviewFo
         answer: content.answer,
       })),
       info: {
+        reviewTitle,
         creator,
         isSelf: isCreator,
         updateDate: getElapsedTimeText(updatedAt),
       },
+      likes,
     };
   });
 

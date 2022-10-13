@@ -1,12 +1,13 @@
 package com.reviewduck.template.domain;
 
-import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.reviewduck.template.exception.TemplateQuestionException;
@@ -35,17 +36,27 @@ public class TemplateQuestion {
     @Column(nullable = false)
     private int position = -1;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "template_id")
+    private Template template;
+
     public TemplateQuestion(String value, String description) {
-        validateValue(value);
-        validateDescription(description);
+        validateQuestion(value, description);
 
         this.value = value;
         this.description = description;
     }
 
+    public TemplateQuestion(String value, String description, Template template) {
+        validateQuestion(value, description);
+
+        this.value = value;
+        this.description = description;
+        this.template = template;
+    }
+
     public void update(String value, String description) {
-        validateValue(value);
-        validateDescription(description);
+        validateQuestion(value, description);
 
         this.value = value;
         this.description = description;
@@ -54,6 +65,11 @@ public class TemplateQuestion {
     public void setPosition(int position) {
         validatePosition(position);
         this.position = position;
+    }
+
+    private void validateQuestion(final String value, final String description) {
+        validateValue(value);
+        validateDescription(description);
     }
 
     private void validateValue(String value) {
@@ -67,7 +83,7 @@ public class TemplateQuestion {
     }
 
     private void validateNull(String value) {
-        if (Objects.isNull(value)) {
+        if (value == null) {
             throw new TemplateQuestionException("질문 생성 중 에러가 발생하였습니다.");
         }
     }

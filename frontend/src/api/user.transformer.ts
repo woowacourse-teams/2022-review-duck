@@ -5,6 +5,8 @@ import {
   GetUserTemplatesResponse,
 } from 'types';
 
+import { getElapsedTimeText } from 'service/@shared/utils';
+
 export const transformUserReviews = (data: GetUserReviewAnswerResponse): UserArticleList => {
   const { numberOfReviews, isMine, reviews } = data;
 
@@ -15,6 +17,10 @@ export const transformUserReviews = (data: GetUserReviewAnswerResponse): UserArt
       id: review.id,
       reviewFormCode: review.reviewForm.code,
       title: review.reviewForm.title,
+      reviewTitle: review.title,
+      updatedAt: getElapsedTimeText(review.updatedAt),
+      isPrivate: review.isPrivate,
+      likes: review.likes,
       contents: review.contents.map((content) => ({
         question: {
           id: content.question.id,
@@ -38,6 +44,7 @@ export const transformUserReviewForms = (data: GetUserReviewFormsResponse): User
     articleList: reviewForms.map((reviewForm) => ({
       reviewFormCode: reviewForm.code,
       title: reviewForm.title,
+      updatedAt: getElapsedTimeText(reviewForm.updatedAt),
       contents: reviewForm.questions.map((question) => ({
         question: {
           id: question.id,
@@ -58,6 +65,7 @@ export const transformUserTemplates = (data: GetUserTemplatesResponse): UserArti
     articleList: templates.map((template) => ({
       id: template.info.id,
       title: template.info.title,
+      updatedAt: getElapsedTimeText(template.info.updatedAt),
       contents: template.questions.map((question) => ({
         question: {
           id: question.id,

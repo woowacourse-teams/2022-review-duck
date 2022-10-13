@@ -30,18 +30,12 @@
 
     @include animation(2s ease) {
       from {
-        opacity: 0;
-        transform: rotate(0deg) translateY(200%);
+        transform: translate(0, 200%);
         filter: blur(0.55em);
       }
 
-      50% {
-        opacity: 1;
+      80% {
         filter: blur(0);
-      }
-
-      to {
-        transform: rotate(-30deg);
       }
     }
   }
@@ -64,7 +58,7 @@
     @include animation(2s ease) {
       from {
         opacity: 0;
-        transform: rotate(0deg) translateY(200%);
+        transform: translate(0, -100%);
       }
 
       60% {
@@ -73,7 +67,6 @@
 
       to {
         opacity: 1;
-        transform: rotate(-30deg);
       }
     }
   }
@@ -105,7 +98,8 @@
   }
 
   .description {
-    color: $THEME_COLOR_THEME_TEXT_50;
+    color: $THEME_COLOR_THEME_TEXT_100;
+    text-align: center;
   }
 }
 

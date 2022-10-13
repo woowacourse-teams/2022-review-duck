@@ -15,50 +15,21 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.reviewduck.auth.support.JwtTokenProvider;
+import com.reviewduck.controller.ControllerTest;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.service.MemberService;
-import com.reviewduck.review.service.ReviewFormService;
-import com.reviewduck.template.dto.request.TemplateCreateRequest;
-import com.reviewduck.template.dto.request.TemplateQuestionCreateRequest;
-import com.reviewduck.template.dto.request.TemplateQuestionUpdateRequest;
-import com.reviewduck.template.dto.request.TemplateUpdateRequest;
-import com.reviewduck.template.service.TemplateService;
+import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateQuestionUpdateRequest;
+import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
 
-@WebMvcTest(TemplateController.class)
-public class TemplateControllerTest {
-
-    private static final String accessToken = "access_token";
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @MockBean
-    private TemplateService TemplateService;
-
-    @MockBean
-    private ReviewFormService reviewFormService;
-
-    @MockBean
-    private JwtTokenProvider jwtTokenProvider;
-
-    @MockBean
-    private MemberService memberService;
+public class TemplateControllerTest extends ControllerTest {
 
     @BeforeEach
     void createMemberAndGetAccessToken() {
         Member member = new Member("1", "panda", "제이슨", "profileUrl");
-        given(jwtTokenProvider.getPayload(any())).willReturn("1");
+        given(jwtTokenProvider.getAccessTokenPayload(any())).willReturn("1");
         given(memberService.findById(any())).willReturn(member);
     }
 
@@ -123,7 +94,17 @@ public class TemplateControllerTest {
             // when, then
             assertBadRequestFromPost("/api/templates", request, "템플릿의 질문 설명 생성 중 오류가 발생했습니다.");
         }
+    }
 
+    @Nested
+    @DisplayName("템플릿 검색 결과 조회")
+    class SearchTest {
+
+        @Test
+        @DisplayName("query 파라미터 키를 포함하지 않을 경우 예외가 발생한다.")
+        void queryNotExist() throws Exception {
+            assertBadRequestFromGet("/api/templates/search", "파라미터 정보가 올바르지 않습니다.");
+        }
     }
 
     @Nested
@@ -131,11 +112,17 @@ public class TemplateControllerTest {
     class findByMemberSocialId {
 
         @Test
-        @DisplayName("member 파라미터에 값이 없을 경우 예외가 발생한다.")
+        @DisplayName("member 파라미터 키를 포함하지 않을 경우 예외가 발생한다.")
+        void memberNotExist() throws Exception {
+            assertBadRequestFromGet("/api/templates?", "파라미터 정보가 올바르지 않습니다.");
+        }
+
+
+        @Test
+        @DisplayName("member 파라미터에 값이 존재하지 않을 경우 예외가 발생한다.")
         void emptyMember() throws Exception {
             assertBadRequestFromGet("/api/templates?member=", "파라미터 정보가 올바르지 않습니다.");
         }
-
     }
 
     @Nested
@@ -202,8 +189,8 @@ public class TemplateControllerTest {
     }
 
     private void assertBadRequestFromGet(String uri, String errorMessage) throws Exception {
-        mockMvc.perform(post(uri)
-                .header("Authorization", "Bearer " + accessToken)
+        mockMvc.perform(get(uri)
+                .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON)
             ).andExpect(status().isBadRequest())
             .andExpect(jsonPath("$.message", containsString(errorMessage)));
@@ -211,7 +198,7 @@ public class TemplateControllerTest {
 
     private void assertBadRequestFromPost(String uri, Object request, String errorMessage) throws Exception {
         mockMvc.perform(post(uri)
-                .header("Authorization", "Bearer " + accessToken)
+                .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
             ).andExpect(status().isBadRequest())
@@ -220,7 +207,7 @@ public class TemplateControllerTest {
 
     private void assertBadRequestFromPut(String uri, Object request, String errorMessage) throws Exception {
         mockMvc.perform(put(uri)
-                .header("Authorization", "Bearer " + accessToken)
+                .header("Authorization", "Bearer " + ACCESS_TOKEN)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request))
             ).andExpect(status().isBadRequest())

@@ -12,9 +12,8 @@ export interface Template {
   creator: {
     id: number;
     nickname: string;
-    profileUrl: string;
-    socialNickname?: string;
-    bio?: string;
+    profileUrl: URLString;
+    socialNickname: string;
   };
 }
 

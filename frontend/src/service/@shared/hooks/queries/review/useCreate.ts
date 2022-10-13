@@ -28,6 +28,7 @@ function useCreateReviewAnswer(
   return useMutation(reviewAPI.createAnswer, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
+      queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW_FORM]);
     },
     ...mutationOptions,
   });

@@ -1,56 +1,61 @@
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
-import { faEraser } from '@fortawesome/free-solid-svg-icons';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import { FILTER, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
 import { Tabs } from 'types';
 
-import useModal from 'common/hooks/useModal';
 import useSnackbar from 'common/hooks/useSnackbar';
 
-import { PaginationBar } from 'common/components';
+import { isNumberString } from 'common/utils/validator';
+import { isInclude } from 'service/@shared/utils';
 
+import { FlexContainer, PaginationBar } from 'common/components';
+
+import PageSuspense from 'common/components/PageSuspense';
 import { PaginationBarProps } from 'common/components/PaginationBar';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
+import useModal from 'service/@shared/components/ModalProvider/useModal';
+import Questions from 'service/@shared/components/Questions';
 
 import styles from './styles.module.scss';
 
-import useProfilePageQueries from './useProfilePageQueries';
-import { ArticleList } from './view/ArticleList';
-import { Controller } from './view/Controller';
-import { validateFilter } from 'service/@shared/validator';
+import useProfilePage from './useProfilePage';
+import ArticleList from './view/ArticleList';
+import Controller from './view/Controller';
+import { updateReviewLike } from 'api/review.api';
 
 function ProfilePage() {
   const navigate = useNavigate();
-
   const { socialId = '' } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
-  const { showModal } = useModal();
-  const { showSnackbar } = useSnackbar();
+  const modal = useModal();
+  const snackbar = useSnackbar();
 
-  const currentTab = searchParams.get('tab') || FILTER.USER_PROFILE_TAB.REVIEWS;
-  const pageNumber = searchParams.get('page') || String(1);
+  const currentTabParam = searchParams.get('tab');
+  const currentTab = isInclude(Object.values(FILTER.USER_PROFILE_TAB), currentTabParam)
+    ? currentTabParam
+    : FILTER.USER_PROFILE_TAB.REVIEWS;
 
-  validateFilter(
-    [
-      FILTER.USER_PROFILE_TAB.REVIEWS,
-      FILTER.USER_PROFILE_TAB.REVIEW_FORMS,
-      FILTER.USER_PROFILE_TAB.TEMPLATES,
-    ],
-    currentTab,
-  );
+  const pageNumber = isNumberString(searchParams.get('page'))
+    ? Number(searchParams.get('page'))
+    : 1;
 
-  const queries = useProfilePageQueries(currentTab as Tabs, socialId, pageNumber);
-  if (!queries) return <>{/* Error Boundary, Suspense Used */}</>;
+  const pageQueries = useProfilePage(currentTab, socialId, pageNumber);
+
+  if (!pageQueries) return <>{/* Error Boundary, Suspense Used */}</>;
 
   const {
-    userArticles,
+    reviewMutations,
+    templateMutations,
+    articles,
+    articlesLikeStack,
+    articlesPages,
+    articlesOptimisticUpdater,
     userProfile,
-    deleteReviewMutation,
-    deleteReviewFormMutation,
-    deleteTemplateMutation,
-  } = queries;
+    addFetch,
+  } = pageQueries;
 
   const subjectTitle = {
     [FILTER.USER_PROFILE_TAB.REVIEWS]: '작성한 회고',
@@ -63,60 +68,91 @@ function ProfilePage() {
   };
 
   const handleEditProfile = () => {
-    showModal(MODAL_LIST.PROFILE_EDIT);
+    modal.show({ key: MODAL_LIST.PROFILE_EDIT });
   };
 
-  const movePage = (pageNumber: number) => {
+  const handlePagination = (pageNumber: number) => {
     setSearchParams({ tab: currentTab, page: String(pageNumber) });
     window.scrollTo(0, 0);
   };
 
-  const handleClickEdit = (editLink: string) => () => {
-    navigate(editLink);
+  const handleClickEdit = (id?: number, code?: string, socialId?: string) => () => {
+    switch (currentTab) {
+      case FILTER.USER_PROFILE_TAB.REVIEWS:
+        navigate(
+          `${PAGE_LIST.REVIEW}/${code}/${id}?redirect=${PAGE_LIST.USER_PROFILE}/${socialId}?tab=${currentTab}`,
+        );
+        break;
+
+      case FILTER.USER_PROFILE_TAB.REVIEW_FORMS:
+        navigate(
+          `${PAGE_LIST.REVIEW_FORM}/${code}?redirect=${PAGE_LIST.USER_PROFILE}/${socialId}?tab=${currentTab}`,
+        );
+        break;
+
+      case FILTER.USER_PROFILE_TAB.TEMPLATES:
+        navigate(`${PAGE_LIST.TEMPLATE_FORM}?templateId=${id}&templateEditMode=true`);
+        break;
+    }
   };
 
-  const deleteSuccessOption = () => {
-    showSnackbar({
-      icon: faEraser,
-      title: `${subjectTitle[currentTab].substring(
-        3,
-        subjectTitle[currentTab].length,
-      )}가(이) 삭제되었습니다.`,
-      description: '더 이상 조회할 수 없으며, 삭제된 정보는 복구할 수 없습니다.',
+  const handleSuccessRemoveMessage = () => {
+    snackbar.show({
+      icon: faTrash,
+      title: '삭제 처리 되었습니다.',
+      description: '삭제된 정보는 복구할 수 없습니다.',
+      theme: 'warning',
     });
   };
 
-  const handleDeleteReview = (index: number | string) => () => {
-    if (
-      confirm(
-        `정말 ${subjectTitle[currentTab].substring(
-          3,
-          subjectTitle[currentTab].length,
-        )}를(을) 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.`,
-      )
-    ) {
+  const handleDeleteReview = (targetID: number | string) => () => {
+    if (confirm(`정말 삭제하시겠습니까?\n삭제 후 복구를 할 수 없습니다.`)) {
       if (currentTab === FILTER.USER_PROFILE_TAB.REVIEWS) {
-        deleteReviewMutation.mutate(index as number, {
-          onSuccess: deleteSuccessOption,
+        reviewMutations.removeAnswer.mutate(targetID as number, {
+          onSuccess: handleSuccessRemoveMessage,
           onError: ({ message }) => alert(message),
         });
       }
       if (currentTab === FILTER.USER_PROFILE_TAB.REVIEW_FORMS) {
-        deleteReviewFormMutation.mutate(index as string, {
-          onSuccess: deleteSuccessOption,
+        reviewMutations.removeForm.mutate(String(targetID), {
+          onSuccess: handleSuccessRemoveMessage,
           onError: ({ message }) => alert(message),
         });
       }
       if (currentTab === FILTER.USER_PROFILE_TAB.TEMPLATES) {
-        deleteTemplateMutation.mutate(index as number, {
-          onSuccess: deleteSuccessOption,
+        templateMutations.remove.mutate(targetID as number, {
+          onSuccess: handleSuccessRemoveMessage,
           onError: ({ message }) => alert(message),
         });
       }
     }
   };
 
-  return (
+  const handleClickLikeButton = (reviewId: number, likes: number) => () => {
+    if (!articlesLikeStack.current[reviewId]) {
+      articlesLikeStack.current[reviewId] = 0;
+    }
+
+    const reviewLikeStack = (articlesLikeStack.current[reviewId] += 1);
+
+    addFetch(reviewId, () => updateReviewLike({ reviewId, likes: reviewLikeStack }), {
+      onUpdate: () => articlesOptimisticUpdater.basedOnKey('id', reviewId, { likes: likes + 1 }),
+      onError: (error) => {
+        articlesOptimisticUpdater.rollback();
+        snackbar.show({
+          theme: 'danger',
+          title: '회고 좋아요에 실패하였습니다.',
+          description: error.message,
+        });
+      },
+      onSuccess: ({ likes: latestLikes }) => {
+        articlesOptimisticUpdater.basedOnKey('id', reviewId, { likes: latestLikes });
+        delete articlesLikeStack.current[reviewId];
+      },
+    });
+  };
+
+  return PageSuspense(
     <>
       <div
         className={styles.profileBackground}
@@ -136,41 +172,86 @@ function ProfilePage() {
             onEditButtonClick={handleEditProfile}
           />
           <hr className={styles.line} />
+
           <Controller.TabNavigator currentTab={currentTab as Tabs} onTabClick={handleChangeTab} />
           <hr className={styles.line} />
+
           <Controller.Record
             title={subjectTitle[currentTab]}
-            numberOfItems={userArticles.totalNumber}
+            numberOfItems={articlesPages.totalNumber}
           />
         </Controller>
 
         <ArticleList>
-          {userArticles.articleList.map((article) => (
-            <ArticleList.Article
-              key={article.id || article.reviewFormCode}
-              isMine={userArticles.isMine}
-              article={article}
-              titleLink={`${PAGE_LIST.REVIEW_OVERVIEW}/${article.reviewFormCode}`}
-              editUrl={`${PAGE_LIST.REVIEW}/${article.reviewFormCode}/${article.id}`}
-              onEdit={handleClickEdit}
-              onDelete={handleDeleteReview}
-            />
+          {articles.map((article) => (
+            <div className={styles.reviewContainer} key={article.id || article.reviewFormCode}>
+              <Questions>
+                <Link
+                  to={
+                    currentTab === FILTER.USER_PROFILE_TAB.TEMPLATES
+                      ? `${PAGE_LIST.TEMPLATE_DETAIL}/${article.id}`
+                      : `${PAGE_LIST.REVIEW_OVERVIEW}/${article.reviewFormCode}`
+                  }
+                >
+                  <Questions.Title isPrivate={article.isPrivate} subtitle={article.reviewTitle}>
+                    {article.title}
+                  </Questions.Title>
+                </Link>
+
+                <Questions.EditButtons
+                  isVisible={articlesPages.isMine}
+                  onClickEdit={handleClickEdit(
+                    article.id,
+                    article.reviewFormCode,
+                    userProfile.socialId,
+                  )}
+                  onClickDelete={handleDeleteReview(article.id || article.reviewFormCode || '')}
+                />
+
+                {article.contents.map((content) => (
+                  <Questions.Answer
+                    key={content.question.id}
+                    question={content.question.value}
+                    description={content.question.description}
+                  >
+                    {content.answer?.value}
+                  </Questions.Answer>
+                ))}
+
+                {currentTab === FILTER.USER_PROFILE_TAB.REVIEWS && article.id && article.likes && (
+                  <FlexContainer direction="row" justify="space-between">
+                    <Questions.Reaction
+                      likeCount={article.likes || 0}
+                      onClickLike={handleClickLikeButton(article.id, article.likes)}
+                      onClickBookmark={() => null}
+                    />
+                    <Questions.UpdatedTime>{article.updatedAt}</Questions.UpdatedTime>
+                  </FlexContainer>
+                )}
+
+                {currentTab !== FILTER.USER_PROFILE_TAB.REVIEWS && (
+                  <Questions.UpdatedTime>{article.updatedAt}</Questions.UpdatedTime>
+                )}
+              </Questions>
+            </div>
           ))}
-          <ArticleList.NoArticleResult totalNumber={userArticles.totalNumber}>
+
+          <ArticleList.NoArticleResult totalNumber={articlesPages.totalNumber}>
             {`${subjectTitle[currentTab]}가(이) 없습니다.`}
           </ArticleList.NoArticleResult>
+
           <PaginationBar
             visiblePageButtonLength={
               PAGE_OPTION.REVIEW_BUTTON_LENGTH as PaginationBarProps['visiblePageButtonLength']
             }
             itemCountInPage={PAGE_OPTION.REVIEW_ITEM_SIZE}
-            totalItemCount={userArticles.totalNumber}
+            totalItemCount={articlesPages.totalNumber}
             focusedPage={Number(pageNumber)}
-            onClickPageButton={movePage}
+            onClickPageButton={handlePagination}
           />
         </ArticleList>
       </LayoutContainer>
-    </>
+    </>,
   );
 }
 

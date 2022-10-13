@@ -1,143 +1,82 @@
-import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { MODAL_LIST, FILTER, PAGE_LIST } from 'constant';
 
-import cn from 'classnames';
-import { MODAL_LIST, PAGE_OPTION, FILTER } from 'constant';
-import { PAGE_LIST } from 'constant';
-import { TemplateFilterType } from 'types';
-
-import useModal from 'common/hooks/useModal';
 import { useGetTemplates } from 'service/@shared/hooks/queries/template';
 
-import { Button, Text, TransitionDiv } from 'common/components';
+import { getElapsedTimeText } from 'service/@shared/utils';
 
-import ScrollPanel from 'common/components/ScrollPanel';
+import { FlexContainer } from 'common/components';
 
-import LayoutContainer from 'service/@shared/components/LayoutContainer';
-import QuestionCard from 'service/@shared/components/QuestionCard';
+import PageSuspense from 'common/components/PageSuspense';
+
+import useModal from 'service/@shared/components/ModalProvider/useModal';
 import TemplateCard from 'service/template/components/TemplateCard';
 
 import styles from './styles.module.scss';
 
+import Intro from './view/Intro';
+import TrendTemplate from './view/TrendTemplate';
+
 function MainPage() {
-  const { showModal } = useModal();
-  const onClickReviewStart = () => {
-    showModal(MODAL_LIST.REVIEW_START);
+  const modal = useModal();
+  const navigate = useNavigate();
+
+  const { data, isError, isLoading } = useGetTemplates({
+    filter: FILTER.TEMPLATE_TAB.TREND,
+    pageNumber: 1,
+  });
+
+  if (isError || isLoading) return <>{/* Error Boundary, Suspense Used */}</>;
+
+  const { templates } = data;
+
+  const handleClickReviewStart = () => {
+    modal.show({ key: MODAL_LIST.REVIEW_START });
   };
-  const { data, isError, error } = useGetTemplates(
-    FILTER.TEMPLATE_TAB.TREND as TemplateFilterType,
-    String(1),
-    PAGE_OPTION.TEMPLATE_TREND_ITEM_SIZE,
-  );
-  const { templates } = data || { templates: [] };
 
-  useEffect(() => {
-    if (isError) {
-      alert(error.message);
-    }
-  }, [isError, error]);
+  const handleClickTemplateCard = (templateId: number) => () => {
+    navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${templateId}`);
+  };
 
-  return (
-    <>
-      <section className={styles.background}>
-        <LayoutContainer className={styles.introContainer}>
-          <div className={styles.leftContainer}>
-            <Text className={styles.title} size={40}>
-              <span className={styles.bold}>회고덕</span>으로 함께 회고를 시작해보세요
-            </Text>
+  return PageSuspense(
+    <FlexContainer className={styles.mainPageContainer}>
+      <Intro>
+        <div className={styles.leftContainer}>
+          <Intro.Title>
+            <span className={styles.bold}>회고덕</span>으로 함께 회고를 시작해보세요
+          </Intro.Title>
+          <Intro.SubTitle>함께 성장하는 회고 플랫폼</Intro.SubTitle>
+          <Intro.ReviewButton onClick={handleClickReviewStart}>회고 시작하기</Intro.ReviewButton>
+        </div>
 
-            <Text className={styles.subTitle} size={16}>
-              함께 성장하는 회고 플랫폼
-            </Text>
+        <Intro.HeroCards />
+      </Intro>
 
-            <Button
-              className={styles.button}
-              theme="outlined"
-              size="medium"
-              onClick={onClickReviewStart}
+      <TrendTemplate>
+        <TrendTemplate.Title>인기 템플릿</TrendTemplate.Title>
+        <TrendTemplate.Content>
+          {templates.map(({ info, creator }) => (
+            <TemplateCard
+              key={info.id}
+              className={styles.mainCard}
+              onClick={handleClickTemplateCard(info.id)}
             >
-              <FontAwesomeIcon icon={faPenToSquare} />
-              회고 시작하기
-            </Button>
-          </div>
+              <TemplateCard.Tag usedCount={info.usedCount} />
+              <TemplateCard.Title>{info.title}</TemplateCard.Title>
+              <TemplateCard.UpdatedAt>{getElapsedTimeText(info.updatedAt)}</TemplateCard.UpdatedAt>
+              <TemplateCard.Description>{info.description}</TemplateCard.Description>
 
-          <div className={styles.rightContainer}>
-            <TransitionDiv
-              className={styles.decorative}
-              duration={400}
-              appear="drop"
-              direction="up"
-            >
-              <QuestionCard
-                className={cn(styles.question, styles.small)}
-                numbering={1}
-                title="오늘의 체크인 점수는 몇점인가요?"
-                description="1점에서 10점까지 숫자로 입력해주세요."
+              <TemplateCard.Profile
+                profileUrl={creator.profileUrl}
+                nickname={creator.nickname}
+                socialNickname={creator.socialNickname}
               />
-            </TransitionDiv>
-
-            <TransitionDiv
-              className={styles.decorative}
-              duration={600}
-              appear="drop"
-              direction="down"
-            >
-              <QuestionCard
-                className={styles.question}
-                numbering={2}
-                title="이번 프로젝트에서 배운 점은 무엇인가요?"
-                description="200자 이내로 간단하게 작성해주세요."
-              />
-            </TransitionDiv>
-
-            <TransitionDiv
-              className={styles.decorative}
-              duration={800}
-              appear="drop"
-              direction="right"
-            >
-              <QuestionCard
-                className={cn(styles.question, styles.medium)}
-                numbering={3}
-                title="개선할 수 있는 점은 무엇이 있을까요?"
-                description="개선을 위해 어떤 노력을 할 수 있을지 생각해봐요."
-              />
-            </TransitionDiv>
-          </div>
-        </LayoutContainer>
-      </section>
-
-      <LayoutContainer className={styles.contentHeader}>
-        <Text as="h1" size={24}>
-          인기 템플릿
-        </Text>
-      </LayoutContainer>
-
-      <ScrollPanel className={styles.cardList}>
-        {templates.map((template) => (
-          <TemplateCard
-            key={template.info.id}
-            className={styles.mainCard}
-            link={`${PAGE_LIST.TEMPLATE_DETAIL}/${template.info.id}`}
-          >
-            <TemplateCard.Tag usedCount={template.info.usedCount} />
-            <TemplateCard.Title title={template.info.title} />
-            <TemplateCard.UpdatedAt updatedAt={template.info.updatedAt} />
-            <TemplateCard.Description description={template.info.description} />
-
-            <TemplateCard.Profile
-              profileUrl={template.creator.profileUrl}
-              nickname={template.creator.nickname}
-              socialNickname={template.creator.socialNickname || ''}
-            />
-          </TemplateCard>
-        ))}
-      </ScrollPanel>
-
-      <div className={styles.temp}></div>
-    </>
+            </TemplateCard>
+          ))}
+        </TrendTemplate.Content>
+      </TrendTemplate>
+    </FlexContainer>,
   );
 }
 

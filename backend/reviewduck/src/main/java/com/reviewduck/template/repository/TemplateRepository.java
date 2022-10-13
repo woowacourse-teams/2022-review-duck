@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -23,6 +24,8 @@ public interface TemplateRepository extends Repository<Template, Long> {
     Page<Template> findByMember(Pageable pageable, Member member);
 
     List<Template> findAllByMember(Member member);
+
+    Page<Template> findByTemplateTitleContaining(Pageable pageable, String query);
 
     void delete(Template template);
 

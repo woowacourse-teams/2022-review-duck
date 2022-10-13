@@ -1,6 +1,6 @@
 {
   "name": "review-duck-frontend",
-  "version": "0.26.8",
+  "version": "0.31.2",
   "main": "index.tsx",
   "license": "MIT",
   "scripts": {
@@ -28,6 +28,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",
+    "@babel/plugin-proposal-class-properties": "^7.18.6",
+    "@babel/plugin-proposal-decorators": "^7.19.1",
     "@babel/preset-env": "^7.18.6",
     "@babel/preset-react": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",

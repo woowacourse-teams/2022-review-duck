@@ -11,10 +11,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cn from 'classnames';
 import { GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST } from 'constant';
 
-import useModal from 'common/hooks/useModal';
 import useAuth from 'service/@shared/hooks/useAuth';
 
 import { Button, Logo, Text, TextBox, PopupBox } from 'common/components';
+
+import useModal from 'service/@shared/components/ModalProvider/useModal';
 
 import imageDefaultProfile from 'assets/images/profile.png';
 
@@ -22,13 +23,13 @@ import styles from './styles.module.scss';
 
 function Header() {
   const { isLogin, getUserProfileQuery } = useAuth();
-  const { showModal } = useModal();
+  const modal = useModal();
 
   const { profileUrl: profileImage = imageDefaultProfile, socialId } =
     getUserProfileQuery.data || {};
 
   const onClickReviewStart = () => {
-    showModal(MODAL_LIST.REVIEW_START);
+    modal.show({ key: MODAL_LIST.REVIEW_START });
   };
 
   return (

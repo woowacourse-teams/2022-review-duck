@@ -4,6 +4,8 @@ import cn from 'classnames';
 
 import styles from './styles.module.scss';
 
+import FlexContainer from '../FlexContainer';
+
 interface TagLabelProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   children: ReactNode;
@@ -11,9 +13,9 @@ interface TagLabelProps extends React.HTMLAttributes<HTMLDivElement> {
 
 function TagLabel({ className, children, ...rest }: TagLabelProps) {
   return (
-    <div className={cn(className, styles.tag)} {...rest}>
-      <div className={styles.tagWrapper}>{children}</div>
-    </div>
+    <FlexContainer className={cn(className, styles.componentTagLabel)} direction="row" {...rest}>
+      {children}
+    </FlexContainer>
   );
 }
 

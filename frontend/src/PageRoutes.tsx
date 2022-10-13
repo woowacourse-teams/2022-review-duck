@@ -10,7 +10,6 @@ import RequireAuth from 'service/@shared/components/RequireAuth';
 import MainLayout from 'service/@shared/layout/MainLayout';
 import ErrorPage from 'service/@shared/pages/ErrorPage';
 import ReviewLayout from 'service/review/layout/ReviewLayout';
-import Playground from 'service/review/pages/Playground';
 import MainPage from 'service/user/pages/MainPage';
 
 function PageRoutes() {
@@ -21,16 +20,22 @@ function PageRoutes() {
       <Route element={<MainLayout />}>
         <Route index element={<MainPage />} />
 
-        <Route path={PAGE_LIST.TEMPLATE_LIST} element={<SplitPages.TemplateListPage />} />
+        <Route path={`${PAGE_LIST.USER_PROFILE}/:socialId`} element={<SplitPages.ProfilePage />} />
+        <Route path={PAGE_LIST.TIMELINE} element={<SplitPages.ReviewTimelinePage />} />
 
+        <Route path={PAGE_LIST.TEMPLATE_LIST} element={<SplitPages.TemplateListPage />} />
         <Route
           path={`${PAGE_LIST.TEMPLATE_DETAIL}/:templateId`}
           element={<SplitPages.TemplateDetailPage />}
         />
 
-        <Route path={`${PAGE_LIST.USER_PROFILE}/:socialId`} element={<SplitPages.ProfilePage />} />
-        <Route path={PAGE_LIST.TIMELINE} element={<SplitPages.ReviewTimelinePage />} />
-        <Route path="playground" element={<Playground />} />
+        <Route element={<RequireAuth />}>
+          <Route path={PAGE_LIST.TEMPLATE_FORM} element={<SplitPages.TemplateEditorPage />} />
+          <Route
+            path={`${PAGE_LIST.TEMPLATE_FORM}/:templateId`}
+            element={<SplitPages.TemplateEditorPage />}
+          />
+        </Route>
 
         {/* 데모 데이용 */}
         <Route
@@ -56,8 +61,6 @@ function PageRoutes() {
             <Route index element={<SplitPages.ReviewFormEditorPage />} />
             <Route path=":reviewFormCode" element={<SplitPages.ReviewFormEditorPage />} />
           </Route>
-
-          <Route path={PAGE_LIST.TEMPLATE_FORM} element={<SplitPages.TemplateFormEditorPage />} />
         </Route>
       </Route>
 

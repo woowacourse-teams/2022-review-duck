@@ -1,84 +1,106 @@
-import { Link, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
-import { faArrowUp, faBarsStaggered, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowTrendUp, faBarsStaggered } from '@fortawesome/free-solid-svg-icons';
 
-import cn from 'classnames';
-import { PAGE_LIST, FILTER } from 'constant';
+import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
 import { TemplateFilterType } from 'types';
 
 import { useGetTemplates } from 'service/@shared/hooks/queries/template/useGet';
 
-import { Button, FlexContainer } from 'common/components';
+import { isNumberString } from 'common/utils/validator';
+import { getElapsedTimeText, isInclude } from 'service/@shared/utils';
+
+import { PaginationBar } from 'common/components';
+
+import PageSuspense from 'common/components/PageSuspense';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
+import TemplateCard from 'service/template/components/TemplateCard';
 
 import styles from './styles.module.scss';
 
-import TemplateListContainer from './TemplateListContainer';
-import { validateFilter } from 'service/@shared/validator';
+import Filter from './view/Filter';
 
 function TemplateListPage() {
-  const [searchParam] = useSearchParams();
+  const [searchParam, setSearchParam] = useSearchParams();
+  const navigate = useNavigate();
 
-  const currentTab = searchParam.get('filter') || FILTER.TEMPLATE_TAB.TREND;
-  const pageNumber = searchParam.get('page') || String(1);
+  const pageNumberParams = searchParam.get('page');
+  const pageNumber = isNumberString(pageNumberParams) ? Number(pageNumberParams) : 1;
 
-  validateFilter([FILTER.TEMPLATE_TAB.TREND, FILTER.TEMPLATE_TAB.LATEST], currentTab);
+  const filterQueryString = searchParam.get('sort');
+  const currentTab = isInclude(Object.values(FILTER.TEMPLATE_TAB), filterQueryString)
+    ? filterQueryString
+    : FILTER.TEMPLATE_TAB.LATEST;
 
-  const initialTemplates = {
-    numberOfTemplates: 0,
-    templates: [],
+  const getTemplates = useGetTemplates({
+    filter: currentTab,
+    pageNumber,
+  });
+
+  if (getTemplates.isError || getTemplates.isLoading)
+    return <>{/* Suspense, ErrorBoundary Used */}</>;
+
+  const { numberOfTemplates, templates } = getTemplates.data;
+
+  const handleTemplateView = (id: number) => () => {
+    navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${id}?sort=${currentTab}`);
   };
-  const { data } = useGetTemplates(currentTab as TemplateFilterType, pageNumber);
 
-  const { numberOfTemplates, templates } = data || initialTemplates;
+  const handleChangeSortList = (query: TemplateFilterType) => () => {
+    navigate(`${PAGE_LIST.TEMPLATE_LIST}?sort=${query}`);
+  };
 
-  return (
+  const handleMoveCreateTemplate = () => {
+    navigate(PAGE_LIST.TEMPLATE_FORM);
+  };
+
+  const handleClickPagination = (pageNumber: number) => {
+    setSearchParam({ sort: currentTab, page: String(pageNumber) });
+    window.scrollTo(0, 0);
+  };
+
+  return PageSuspense(
     <LayoutContainer>
-      <FlexContainer className={styles.header} direction="row" justify="space-between">
-        <FlexContainer direction="row">
-          <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${FILTER.TEMPLATE_TAB.TREND}`}>
-            <button className={styles.button}>
-              <div
-                className={cn(styles.buttonBox, {
-                  [styles.focus]: currentTab === FILTER.TEMPLATE_TAB.TREND,
-                })}
-              >
-                <FontAwesomeIcon className={styles.icon} icon={faArrowUp} />
-                트랜딩
-              </div>
-            </button>
-          </Link>
-          <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${FILTER.TEMPLATE_TAB.LATEST}`}>
-            <button className={styles.button}>
-              <div
-                className={cn(styles.buttonBox, {
-                  [styles.focus]: currentTab === FILTER.TEMPLATE_TAB.LATEST,
-                })}
-              >
-                <FontAwesomeIcon className={styles.icon} icon={faBarsStaggered} />
-                최신
-              </div>
-            </button>
-          </Link>
-        </FlexContainer>
-        <div className={styles.buttonContainer}>
-          <Link to={PAGE_LIST.TEMPLATE_FORM}>
-            <Button>
-              <FontAwesomeIcon icon={faPenToSquare} />
-              템플릿 만들기
-            </Button>
-          </Link>
-        </div>
-      </FlexContainer>
-      <TemplateListContainer
-        templates={templates}
-        numberOfTemplates={numberOfTemplates}
-        currentTab={currentTab as TemplateFilterType}
-        pageNumber={pageNumber}
-      />
-    </LayoutContainer>
+      <Filter>
+        <Filter.SortList
+          focusedOption={currentTab}
+          sortOptions={[
+            { icon: faArrowTrendUp, query: FILTER.TEMPLATE_TAB.TREND, name: '트랜딩' },
+            { icon: faBarsStaggered, query: FILTER.TEMPLATE_TAB.LATEST, name: '최신' },
+          ]}
+          onClickSortButton={handleChangeSortList}
+        />
+
+        <Filter.MoreButtons onClickCreate={handleMoveCreateTemplate} />
+      </Filter>
+
+      <div className={styles.templateContainer}>
+        {templates.map(({ info, creator }) => (
+          <TemplateCard key={info.id} className={styles.card} onClick={handleTemplateView(info.id)}>
+            <TemplateCard.Tag usedCount={info.usedCount} />
+            <TemplateCard.Title>{info.title}</TemplateCard.Title>
+            <TemplateCard.UpdatedAt>{getElapsedTimeText(info.updatedAt)}</TemplateCard.UpdatedAt>
+            <TemplateCard.Description>{info.description}</TemplateCard.Description>
+
+            <TemplateCard.Profile
+              profileUrl={creator.profileUrl}
+              nickname={creator.nickname}
+              socialNickname={creator.socialNickname}
+            />
+          </TemplateCard>
+        ))}
+
+        <PaginationBar
+          className={styles.pagination}
+          visiblePageButtonLength={PAGE_OPTION.TEMPLATE_BUTTON_LENGTH}
+          itemCountInPage={PAGE_OPTION.TEMPLATE_ITEM_SIZE}
+          totalItemCount={numberOfTemplates}
+          focusedPage={Number(pageNumber)}
+          onClickPageButton={handleClickPagination}
+        />
+      </div>
+    </LayoutContainer>,
   );
 }
 

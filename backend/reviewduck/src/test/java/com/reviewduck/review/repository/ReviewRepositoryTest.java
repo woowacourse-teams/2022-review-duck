@@ -23,10 +23,10 @@ import com.reviewduck.config.JpaAuditingConfig;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.review.domain.Answer;
-import com.reviewduck.review.domain.QuestionAnswer;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.domain.ReviewFormQuestion;
+import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
+import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
 
 @DataJpaTest
 @Import(JpaAuditingConfig.class)
@@ -54,8 +54,8 @@ public class ReviewRepositoryTest {
         savedMember = memberRepository.save(member);
 
         ReviewForm reviewForm = new ReviewForm(member, "title", List.of(
-            new ReviewFormQuestion("question1", "description1"),
-            new ReviewFormQuestion("question2", "description2")));
+            new ReviewFormQuestionCreateDto("question1", "description1"),
+            new ReviewFormQuestionCreateDto("question2", "description2")));
         savedReviewForm = reviewFormRepository.save(reviewForm);
     }
 
@@ -144,7 +144,7 @@ public class ReviewRepositoryTest {
 
     @Test
     @DisplayName("공개된 모든 회고 중 updatedAt 내림차순으로 정렬된 특정 페이지를 조회한다.")
-    void findByIsPrivateFalse() throws InterruptedException {
+    void findByIsPrivateFalseUpdate() throws InterruptedException {
         // given
         saveReview(savedMember, savedReviewForm, false);
         saveReview(savedMember, savedReviewForm, true);
@@ -158,6 +158,30 @@ public class ReviewRepositoryTest {
         assertAll(
             () -> assertThat(reviews).hasSize(1),
             () -> assertThat(reviews.get(0).getId()).isEqualTo(review.getId())
+        );
+    }
+
+    @Test
+    @DisplayName("공개된 모든 회고 중 likes가 특정 개수 이상이며 createdAt 내림차순으로 정렬된 특정 페이지를 조회한다.")
+    void findByIsPrivateFalseLikes() throws InterruptedException {
+        // given
+        Review savedReview1 = saveReview(savedMember, savedReviewForm, false);
+        Review savedReview2 = saveReview(savedMember, savedReviewForm, true); // isPrivateFalse이니 제외
+        Review savedReview3 = saveReview(savedMember, savedReviewForm, false);
+        Review savedReview4 = saveReview(savedMember, savedReviewForm, false);
+
+        reviewRepository.increaseLikes(savedReview1, 25);
+        reviewRepository.increaseLikes(savedReview3, 20);
+        reviewRepository.increaseLikes(savedReview4, 5); // 10 이하이니 제외
+
+        //when
+        Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "createdAt"));
+        List<Review> reviews = reviewRepository.findByIsPrivateFalseAndLikesGreaterThan(pageable, 10).getContent();
+
+        //then
+        assertAll(
+            () -> assertThat(reviews).hasSize(1),
+            () -> assertThat(reviews.get(0).getId()).isEqualTo(savedReview3.getId())
         );
     }
 
@@ -217,13 +241,36 @@ public class ReviewRepositoryTest {
         assertThat(updatedAtAfterIncreaseLikes.isEqual(updatedAt)).isTrue();
     }
 
+    @Test
+    @DisplayName("특정 회고 질문지로 만든 회고가 존재한다.")
+    void existsByReviewForm_true() throws InterruptedException {
+        // given
+        Review savedReview = saveReview(savedMember, savedReviewForm, false);
+
+        // when
+        boolean actual = reviewRepository.existsByReviewForm(savedReviewForm);
+
+        // then
+        assertThat(actual).isTrue();
+    }
+
+    @Test
+    @DisplayName("특정 회고 질문지로 만든 회고가 존재하지 않는다.")
+    void existsByReviewForm_false() {
+        // when
+        boolean actual = reviewRepository.existsByReviewForm(savedReviewForm);
+
+        // then
+        assertThat(actual).isFalse();
+    }
+
     private Review saveReview(Member member, ReviewForm savedReviewForm, boolean isPrivate) throws
         InterruptedException {
         Thread.sleep(1);
         Review review = new Review("title", member, savedReviewForm,
             List.of(
-                new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(0), new Answer("answer1")),
-                new QuestionAnswer(savedReviewForm.getReviewFormQuestions().get(1), new Answer("answer2"))
+                new QuestionAnswerCreateDto(savedReviewForm.getQuestions().get(0), new Answer("answer1")),
+                new QuestionAnswerCreateDto(savedReviewForm.getQuestions().get(1), new Answer("answer2"))
             ),
             isPrivate
         );

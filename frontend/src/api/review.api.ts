@@ -1,6 +1,6 @@
 import * as ReviewType from '../types/review';
 
-import { API_URI } from '../constant';
+import { API_URI, PAGE_OPTION } from '../constant';
 import * as transformer from './review.transformer';
 import axiosInstance from 'api/config/axiosInstance';
 
@@ -16,12 +16,19 @@ export const getAnswer = async (reviewId: number): Promise<ReviewType.ReviewAnsw
   return transformer.transformAnswer(data);
 };
 
-export const getFormAnswer = async (
-  pageNumber: string,
-  size: number,
+interface GetReviewFormAnswerRequest {
+  pageNumber?: number;
+  size?: number;
+  reviewFormCode: string;
+  display?: ReviewType.DisplayModeType;
+}
+
+export const getFormAnswer = async ({
+  pageNumber = 1,
+  size = PAGE_OPTION.REVIEW_ITEM_SIZE,
   reviewFormCode = '',
-  display: ReviewType.DisplayModeType = 'list',
-): Promise<ReviewType.ReviewFormAnswerList> => {
+  display = 'list',
+}: GetReviewFormAnswerRequest): Promise<ReviewType.ReviewFormAnswerList> => {
   const { data } = await axiosInstance.get(
     API_URI.REVIEW.GET_FORM_ANSWER(reviewFormCode, display, pageNumber, size),
   );
@@ -29,11 +36,17 @@ export const getFormAnswer = async (
   return transformer.transformFormAnswer(data);
 };
 
-export const getPublicAnswer = async (
-  pageNumber: string,
-  size: number,
-  filter: ReviewType.TimelineFilterType = 'trend',
-): Promise<ReviewType.ReviewPublicAnswerList> => {
+interface GetReviewPublicAnswerRequest {
+  pageNumber?: number;
+  size?: number;
+  filter?: ReviewType.TimelineFilterType;
+}
+
+export const getPublicAnswer = async ({
+  pageNumber = 1,
+  size = PAGE_OPTION.REVIEW_ITEM_SIZE,
+  filter = 'trend',
+}: GetReviewPublicAnswerRequest): Promise<ReviewType.ReviewPublicAnswerList> => {
   const { data } = await axiosInstance.get(
     `${API_URI.REVIEW.GET_PUBLIC_ANSWER}?page=${pageNumber}&size=${size}&sort=${filter}`,
   );
@@ -54,20 +67,25 @@ export const createFormByTemplate = async ({
   reviewFormTitle,
   questions,
 }: ReviewType.CreateFormByTemplateRequest) => {
-  const { data } = await axiosInstance.post(API_URI.REVIEW.CREATE_FORM_BY_TEMPLATE(templateId), {
-    reviewFormTitle,
-    questions,
-  });
+  const { data } = await axiosInstance.post<ReviewType.CreateFormByTemplateResponse>(
+    API_URI.REVIEW.CREATE_FORM_BY_TEMPLATE(templateId),
+    {
+      reviewFormTitle,
+      questions,
+    },
+  );
 
   return data;
 };
 
 export const createAnswer = async ({
   reviewFormCode,
+  reviewTitle,
   contents,
   isPrivate,
 }: ReviewType.CreateReviewAnswerRequest): Promise<ReviewType.CreateReviewAnswerResponse> => {
   const { data } = await axiosInstance.post(API_URI.REVIEW.CREATE_ANSWER(reviewFormCode), {
+    title: reviewTitle,
     contents,
     isPrivate,
   });
@@ -89,11 +107,13 @@ export const updateForm = async ({
 };
 
 export const updateAnswer = async ({
+  reviewTitle,
   reviewId,
   contents,
   isPrivate,
 }: ReviewType.UpdateReviewAnswerRequest): Promise<ReviewType.UpdateReviewAnswerResponse> => {
   const { data } = await axiosInstance.put(API_URI.REVIEW.UPDATE_ANSWER(reviewId), {
+    title: reviewTitle,
     contents,
     isPrivate,
   });

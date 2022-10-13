@@ -22,7 +22,7 @@ const Container = ({ children }: ContainerProps) => {
 const Profile = ({ profileUrl }: Record<string, string>) => {
   return (
     <div className={styles.profileImage} style={{ backgroundImage: `url(${profileUrl})` }}>
-      <div className={styles.activeIcon}>🐤</div>
+      <Text className={styles.activeIcon}>😀</Text>
     </div>
   );
 };
@@ -134,10 +134,12 @@ const Record = ({ numberOfItems, title }: RecordProps) => {
   );
 };
 
-export const Controller = Object.assign(Container, {
+const Controller = Object.assign(Container, {
   Profile,
   NameCard,
   ProfileManager,
   TabNavigator,
   Record,
 });
+
+export default Controller;

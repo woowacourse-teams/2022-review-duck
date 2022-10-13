@@ -1,242 +1,176 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 
-import {
-  faBackspace,
-  faClock,
-  faDownload,
-  faFeatherPointed,
-  faHome,
-  faList,
-  faPenToSquare,
-  faUser,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowTrendUp } from '@fortawesome/free-solid-svg-icons';
 
-import cn from 'classnames';
-import { GITHUB_PROFILE_URL, PAGE_LIST, FILTER } from 'constant';
+import { PAGE_LIST, FILTER } from 'constant';
 
 import useSnackbar from 'common/hooks/useSnackbar';
+import { useTemplateMutations } from 'service/@shared/hooks/queries/template';
+import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
 
-import { getElapsedTimeText } from 'service/@shared/utils';
+import { getElapsedTimeText, isInclude } from 'service/@shared/utils';
 
-import { Button, FlexContainer, Text } from 'common/components';
-
-import ScrollPanel from 'common/components/ScrollPanel';
-import TagLabel from 'common/components/TagLabel';
+import PageSuspense from 'common/components/PageSuspense';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
 import Questions from 'service/@shared/components/Questions';
-import SmallProfileCard from 'service/@shared/components/SmallProfileCard';
 import TemplateCard from 'service/template/components/TemplateCard';
-
-import GithubIcon from 'assets/images/github.svg';
 
 import styles from './styles.module.scss';
 
 import useTemplateDetailQueries from './useTemplateDetailQueries';
+import Content from './view/Content';
+import Header from './view/Header';
+import Trending from './view/Trending';
 
 function TemplateDetailPage() {
+  const { navigate, handleLinkPage } = useNavigateHandler();
   const { templateId } = useParams();
-  const navigate = useNavigate();
-  const { showSnackbar } = useSnackbar();
 
-  const { template, templates, createFormMutation, deleteMutation } = useTemplateDetailQueries(
-    Number(templateId),
-  );
+  const [searchParam] = useSearchParams();
+  const templateMutation = useTemplateMutations();
 
-  const { templates: trendingTemplates } = templates || { templates: [] };
+  const filterQueryString = searchParam.get('sort');
+  const currentTab = isInclude(Object.values(FILTER.TEMPLATE_TAB), filterQueryString)
+    ? filterQueryString
+    : FILTER.TEMPLATE_TAB.LATEST;
 
-  const handleDeleteTemplate = (templateId: number) => () => {
-    if (confirm('정말 템플릿을 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) {
-      deleteMutation.mutate(templateId, {
-        onSuccess: () => {
-          showSnackbar({
-            title: '템플릿이 삭제되었습니다.',
-            description: '사람들과 공유할 새로운 템플릿을 만들어보세요.',
-          });
-          navigate(-1);
-        },
-        onError: ({ message }) => {
-          alert(message);
-        },
-      });
-    }
-  };
+  const snackbar = useSnackbar();
 
-  const handleCreateSuccess = ({ reviewFormCode }: Record<'reviewFormCode', string>) => {
-    showSnackbar({
-      title: '템플릿을 이용해 회고를 생성했습니다.',
-      description: '답변을 바로 작성하고 팀원과 공유할 수 있습니다.',
-    });
+  const queries = useTemplateDetailQueries(Number(templateId));
 
-    navigate(`${PAGE_LIST.REVIEW}/${reviewFormCode}`, {
-      replace: true,
-    });
+  if (!queries) return <>{/* Suspense, Error Boundary Used */}</>;
+
+  const { trendingTemplates } = queries;
+  const { info: templateInfo, creator: templateCreator, ...template } = queries.template;
+
+  const handleTemplateView = (id: number) => () => {
+    navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${id}?sort=${currentTab}`);
   };
 
   const handleStartReview = () => {
     if (!confirm('이 템플릿으로 회고를 시작하시겠습니까\n계속 진행하면 회고 질문지가 생성됩니다.'))
       return;
 
-    createFormMutation.mutate(Number(templateId), {
-      onSuccess: handleCreateSuccess,
+    templateMutation.createForm.mutate(Number(templateId), {
+      onSuccess: ({ reviewFormCode }) => {
+        snackbar.show({
+          title: '템플릿을 이용해 회고를 생성했습니다.',
+          description: '답변을 바로 작성하고 팀원과 공유할 수 있습니다.',
+        });
+
+        navigate(`${PAGE_LIST.REVIEW}/${reviewFormCode}`, {
+          replace: true,
+        });
+      },
       onError: ({ message }) => {
-        showSnackbar({ theme: 'danger', title: '오류가 발생하였습니다.', description: message });
+        snackbar.show({
+          theme: 'danger',
+          title: '회고 생성에 실패하였습니다.',
+          description: message,
+        });
       },
     });
   };
 
-  return (
-    <LayoutContainer>
-      <section className={styles.header}>
-        <div className={styles.titleContainer}>
-          <Text as="h1" className={styles.title} size={28} weight="bold">
-            {template.info.title}
-          </Text>
-          <div className={styles.info}>
-            <TagLabel>
-              <FontAwesomeIcon icon={faDownload} />
-              <span>{`${template.info.usedCount}회`}</span>
-            </TagLabel>
-            <div className={styles.iconText}>
-              <FontAwesomeIcon icon={faUser} />
-              <span>{template.creator.nickname}</span>
-            </div>
-            <div className={styles.iconText}>
-              <FontAwesomeIcon icon={faClock} />
-              <span>{getElapsedTimeText(template.info.updatedAt)}</span>
-            </div>
-          </div>
-        </div>
-        <FlexContainer className={styles.buttonContainer} gap="medium" justify="center">
-          <div className={styles.templateButtons}>
-            <Link to={`${PAGE_LIST.TEMPLATE_FORM}?templateId=${template.info.id}`}>
-              <Button>
-                <FontAwesomeIcon icon={faPenToSquare} />
-                템플릿으로 질문지 만들기
-              </Button>
-            </Link>
-            <Button theme="outlined" onClick={handleStartReview}>
-              <FontAwesomeIcon icon={faFeatherPointed} />
-              템플릿으로 회고하기
-            </Button>
-          </div>
-          {template.isCreator && (
-            <div className={styles.iconButtons}>
-              <div className={styles.iconButton} onClick={handleDeleteTemplate(template.info.id)}>
-                <FontAwesomeIcon icon={faBackspace} />
-                <Text as="span" size={14}>
-                  템플릿 삭제
-                </Text>
-              </div>
+  const handleDeleteTemplate = () => {
+    if (!confirm('정말 템플릿을 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
 
-              <Link
-                to={`${PAGE_LIST.TEMPLATE_FORM}?templateId=${templateId}&templateEditMode=true`}
-              >
-                <div className={styles.iconButton}>
-                  <FontAwesomeIcon icon={faPenToSquare} />
+    templateMutation.remove.mutate(templateInfo.id, {
+      onSuccess: () => {
+        snackbar.show({
+          title: '템플릿이 삭제되었습니다.',
+          description: '사람들과 공유할 새로운 템플릿을 만들어보세요.',
+        });
+        navigate(-1);
+      },
+      onError: ({ message }) => {
+        snackbar.show({
+          theme: 'danger',
+          title: '템플릿 삭제에 실패하였습니다.',
+          description: message,
+        });
+      },
+    });
+  };
 
-                  <Text as="span" size={14}>
-                    템플릿 수정
-                  </Text>
-                </div>
-              </Link>
-            </div>
-          )}
-        </FlexContainer>
-      </section>
-      <section className={styles.contentsContainer}>
-        <div className={styles.descriptionContainer}>
-          <Text size={18} weight="bold">
-            템플릿 소개
-          </Text>
-          <Text className={styles.text} size={16} weight="lighter">
-            {template.info.description}
-          </Text>
-        </div>
-        <Questions>
-          {template.questions.map((question, index) => {
-            const questionText = `${index + 1}. ${question.value}`;
-
-            return (
-              <Questions.Answer key={question.id} question={questionText}>
-                {question.description}
-              </Questions.Answer>
-            );
-          })}
-        </Questions>
-      </section>
-      <div className={styles.profileContainer}>
-        <Link to={`${PAGE_LIST.USER_PROFILE}/${template.creator.id}`}>
-          <SmallProfileCard
-            size="large"
-            profileUrl={template.creator.profileUrl}
-            primaryText={template.creator.nickname}
-            secondaryText={template.creator.bio || template.creator.socialNickname || ''}
-          />
-        </Link>
-        <div className={styles.iconContainer}>
-          <a
-            href={`${GITHUB_PROFILE_URL}${template.creator.socialNickname}`}
-            target="_blank"
-            rel=" noopener noreferrer"
+  return PageSuspense(
+    <>
+      <LayoutContainer>
+        <Header>
+          <Header.Title
+            usedCount={templateInfo.usedCount}
+            nickname={templateCreator.nickname}
+            elapsedTime={getElapsedTimeText(templateInfo.updatedAt)}
           >
-            <GithubIcon className={styles.icon} />
-          </a>
-          <Link to={`${PAGE_LIST.USER_PROFILE}/${template.creator.id}`}>
-            <FontAwesomeIcon className={styles.icon} icon={faHome} />
-          </Link>
-        </div>
-      </div>
+            {templateInfo.title}
+          </Header.Title>
 
-      <section className={styles.footer}>
-        <section className={styles.headerContainer}>
-          <div className={styles.alignCenter}>
-            <FontAwesomeIcon className={styles.icon} icon={faUser} />
-            <Text size={18} weight="bold">
-              인기 템플릿
-            </Text>
-          </div>
+          <Header.Buttons
+            editable={template.isCreator}
+            onClickCreateReviewForm={handleLinkPage(
+              `${PAGE_LIST.REVIEW_FORM}?template=${templateInfo.id}`,
+            )}
+            onClickStartReview={handleStartReview}
+            onClickEdit={handleLinkPage(`${PAGE_LIST.TEMPLATE_FORM}/${templateInfo.id}`)}
+            onClickDelete={handleDeleteTemplate}
+          />
+        </Header>
 
-          <div className={cn(styles.alignCenter, styles.buttonContainer)}>
-            <Link to={PAGE_LIST.TEMPLATE_FORM}>
-              <Button size="medium">
-                <FontAwesomeIcon icon={faPenToSquare} />
-                <span>새 템플릿 작성</span>
-              </Button>
-            </Link>
-            <Link to={`${PAGE_LIST.TEMPLATE_LIST}?filter=${FILTER.TEMPLATE_TAB.TREND}`}>
-              <Button size="medium" theme="outlined">
-                <FontAwesomeIcon icon={faList} />
-                <span>목록</span>
-              </Button>
-            </Link>
-          </div>
-        </section>
+        <Content>
+          <Content.Detail description={templateInfo.description}>
+            <Questions>
+              {template.questions.map((question, index) => {
+                const questionText = `${index + 1}. ${question.value}`;
 
-        <section className={styles.trend}>
-          <ScrollPanel className={styles.scrollContainer} centerDisabled={true}>
-            {trendingTemplates.map((template) => (
-              <TemplateCard
-                key={template.info.id}
-                className={styles.card}
-                link={`${PAGE_LIST.TEMPLATE_DETAIL}/${template.info.id}`}
-              >
-                <TemplateCard.Tag usedCount={template.info.usedCount} />
-                <TemplateCard.Title title={template.info.title} />
-                <TemplateCard.UpdatedAt updatedAt={template.info.updatedAt} />
-                <TemplateCard.Description description={template.info.description} />
-                <TemplateCard.Profile
-                  profileUrl={template.creator.profileUrl}
-                  nickname={template.creator.nickname}
-                  socialNickname={template.creator.socialNickname || ''}
-                />
-              </TemplateCard>
-            ))}
-          </ScrollPanel>
-        </section>
-      </section>
-    </LayoutContainer>
+                return (
+                  <Questions.Answer key={question.id} question={questionText}>
+                    {question.description}
+                  </Questions.Answer>
+                );
+              })}
+            </Questions>
+          </Content.Detail>
+
+          <Content.MoreButtons
+            onClickCreateTemplate={handleLinkPage(PAGE_LIST.TEMPLATE_FORM)}
+            onClickList={handleLinkPage(`${PAGE_LIST.TEMPLATE_LIST}?sort=${currentTab}`)}
+          />
+        </Content>
+      </LayoutContainer>
+
+      <Trending>
+        <Trending.ProfileCard
+          snsKey={templateCreator.id}
+          profileImage={templateCreator.profileUrl}
+          nickname={templateCreator.nickname}
+          description={templateCreator.socialNickname}
+        />
+
+        <Trending.ListTextCard icon={faArrowTrendUp} description="지금 주목 받고 있는 템플릿은?">
+          인기 템플릿
+        </Trending.ListTextCard>
+
+        {trendingTemplates.map(({ info, creator }) => (
+          <TemplateCard
+            key={info.id}
+            className={styles.templateCard}
+            onClick={handleTemplateView(info.id)}
+          >
+            <TemplateCard.Tag usedCount={info.usedCount} />
+            <TemplateCard.Title>{info.title}</TemplateCard.Title>
+            <TemplateCard.UpdatedAt>{getElapsedTimeText(info.updatedAt)}</TemplateCard.UpdatedAt>
+            <TemplateCard.Description>{info.description}</TemplateCard.Description>
+
+            <TemplateCard.Profile
+              profileUrl={creator.profileUrl}
+              nickname={creator.nickname}
+              socialNickname={creator.socialNickname}
+            />
+          </TemplateCard>
+        ))}
+      </Trending>
+    </>,
   );
 }
 

@@ -22,15 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
-import com.reviewduck.review.dto.request.ReviewCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.request.ReviewFormUpdateRequest;
-import com.reviewduck.review.dto.response.MemberReviewFormsResponse;
-import com.reviewduck.review.dto.response.ReviewFormCodeResponse;
-import com.reviewduck.review.dto.response.ReviewFormResponse;
-import com.reviewduck.review.dto.response.ReviewsOfReviewFormResponse;
+import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
+import com.reviewduck.review.dto.controller.response.MemberReviewFormsResponse;
+import com.reviewduck.review.dto.controller.response.ReviewFormCodeResponse;
+import com.reviewduck.review.dto.controller.response.ReviewFormResponse;
+import com.reviewduck.review.dto.controller.response.ReviewsOfReviewFormResponse;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
@@ -44,6 +45,7 @@ public class ReviewFormController {
 
     private final ReviewFormService reviewFormService;
     private final ReviewService reviewService;
+    private final MemberService memberService;
 
     @Operation(summary = "회고 폼을 생성한다.")
     @PostMapping
@@ -77,7 +79,7 @@ public class ReviewFormController {
         info("/api/review-forms/" + reviewFormCode, "GET", "");
 
         ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
-        List<Member> participants = reviewService.findAllParticipantsByCode(reviewFormCode);
+        List<Member> participants = memberService.findAllParticipantsByCode(reviewForm);
 
         return ReviewFormResponse.of(reviewForm, member, participants);
     }
@@ -104,7 +106,7 @@ public class ReviewFormController {
         @PathVariable String reviewFormCode,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
         @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
-        @RequestParam String displayType) {
+        @RequestParam(required = false, defaultValue = "list") String displayType) {
 
         info("/api/review-forms/" + reviewFormCode + "/reviews?displayType=" + displayType, "GET", "");
 
