@@ -81,7 +81,7 @@ public class ReviewService {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
 
         if (ReviewSortType.isTrend(sort)) {
-            return reviewRepository.findByIsPrivateFalseAndLikesGreaterThan(pageRequest, 100);
+            return reviewRepository.findByIsPrivateFalseAndLikesGreaterThan(pageRequest, 50);
         }
 
         return reviewRepository.findByIsPrivateFalse(pageRequest);
