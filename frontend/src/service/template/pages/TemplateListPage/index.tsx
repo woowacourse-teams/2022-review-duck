@@ -5,8 +5,6 @@ import { faArrowTrendUp, faBarsStaggered } from '@fortawesome/free-solid-svg-ico
 import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
 import { TemplateFilterType } from 'types';
 
-import { useGetTemplates } from 'service/@shared/hooks/queries/template/useGet';
-
 import { isNumberString } from 'common/utils/validator';
 import { getElapsedTimeText, isInclude } from 'service/@shared/utils';
 
@@ -15,10 +13,12 @@ import { PaginationBar } from 'common/components';
 import PageSuspense from 'common/components/PageSuspense';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
+import NoResult from 'service/@shared/components/NoResult';
 import TemplateCard from 'service/template/components/TemplateCard';
 
 import styles from './styles.module.scss';
 
+import useTemplateList from './useTemplateListPage';
 import Filter from './view/Filter';
 
 function TemplateListPage() {
@@ -29,19 +29,17 @@ function TemplateListPage() {
   const pageNumber = isNumberString(pageNumberParams) ? Number(pageNumberParams) : 1;
 
   const filterQueryString = searchParam.get('sort');
+  const searchQueryString = searchParam.get('search') || '';
+
   const currentTab = isInclude(Object.values(FILTER.TEMPLATE_TAB), filterQueryString)
     ? filterQueryString
     : FILTER.TEMPLATE_TAB.LATEST;
 
-  const getTemplates = useGetTemplates({
-    filter: currentTab,
+  const { numberOfTemplates, templates } = useTemplateList(
+    currentTab,
     pageNumber,
-  });
-
-  if (getTemplates.isError || getTemplates.isLoading)
-    return <>{/* Suspense, ErrorBoundary Used */}</>;
-
-  const { numberOfTemplates, templates } = getTemplates.data;
+    searchQueryString,
+  );
 
   const handleTemplateView = (id: number) => () => {
     navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${id}?sort=${currentTab}`);
@@ -56,21 +54,30 @@ function TemplateListPage() {
   };
 
   const handleClickPagination = (pageNumber: number) => {
-    setSearchParam({ sort: currentTab, page: String(pageNumber) });
+    if (searchQueryString) {
+      setSearchParam({ search: searchQueryString, page: String(pageNumber) });
+    }
+    if (filterQueryString) {
+      setSearchParam({ sort: currentTab, page: String(pageNumber) });
+    }
     window.scrollTo(0, 0);
   };
 
   return PageSuspense(
     <LayoutContainer>
       <Filter>
-        <Filter.SortList
-          focusedOption={currentTab}
-          sortOptions={[
-            { icon: faArrowTrendUp, query: FILTER.TEMPLATE_TAB.TREND, name: '트랜딩' },
-            { icon: faBarsStaggered, query: FILTER.TEMPLATE_TAB.LATEST, name: '최신' },
-          ]}
-          onClickSortButton={handleChangeSortList}
-        />
+        {searchQueryString ? (
+          <Filter.SearchResult search={searchQueryString} />
+        ) : (
+          <Filter.SortList
+            focusedOption={currentTab}
+            sortOptions={[
+              { icon: faArrowTrendUp, query: FILTER.TEMPLATE_TAB.TREND, name: '트랜딩' },
+              { icon: faBarsStaggered, query: FILTER.TEMPLATE_TAB.LATEST, name: '최신' },
+            ]}
+            onClickSortButton={handleChangeSortList}
+          />
+        )}
 
         <Filter.MoreButtons onClickCreate={handleMoveCreateTemplate} />
       </Filter>
@@ -100,6 +107,7 @@ function TemplateListPage() {
           onClickPageButton={handleClickPagination}
         />
       </div>
+      {numberOfTemplates === 0 && <NoResult>템플릿이 없습니다.</NoResult>}
     </LayoutContainer>,
   );
 }

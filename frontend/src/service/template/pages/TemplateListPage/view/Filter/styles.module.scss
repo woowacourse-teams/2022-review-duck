@@ -36,4 +36,22 @@
       color: $THEME_COLOR_THEME_TEXT_900;
     }
   }
+
+  .search-result {
+    padding: 2rem 0;
+
+    .icon {
+      font-size: 1.5rem;
+      color: $THEME_COLOR_STATUS_PRIMARY_500;
+    }
+
+    .result-text {
+      align-self: center;
+
+      .search-text {
+        font-size: 1.3rem;
+        font-weight: bold;
+      }
+    }
+  }
 }

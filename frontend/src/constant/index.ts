@@ -46,6 +46,7 @@ const QUERY_KEY = {
     GET_USER_TEMPLATES: 'getUserTemplates',
 
     GET_TEMPLATES: 'getTemplates',
+    GET_SEARCH_TEMPLATES: 'getSearchTemplates',
     GET_TEMPLATE: 'getTemplate',
   },
 };
@@ -141,6 +142,7 @@ const API_URI = {
   },
   TEMPLATE: {
     GET_TEMPLATES: '/api/templates/all',
+    GET_SEARCH_TEMPLATES: '/api/templates/search',
     GET_TEMPLATE: (templateId: numberString) => `/api/templates/${templateId}`,
 
     CREATE_FORM: (templateId: numberString) => `/api/templates/${templateId}/review-forms`,
