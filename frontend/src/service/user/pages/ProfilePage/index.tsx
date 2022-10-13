@@ -128,29 +128,33 @@ function ProfilePage() {
     }
   };
 
-  const handleClickLikeButton = (reviewId: number, likes: number) => () => {
-    if (!articlesLikeStack.current[reviewId]) {
-      articlesLikeStack.current[reviewId] = 0;
-    }
+  const handleClickLikeButton =
+    (reviewId: number | null = null, likes = 0) =>
+    () => {
+      if (!reviewId) return;
 
-    const reviewLikeStack = (articlesLikeStack.current[reviewId] += 1);
+      if (!articlesLikeStack.current[reviewId]) {
+        articlesLikeStack.current[reviewId] = 0;
+      }
 
-    addFetch(reviewId, () => updateReviewLike({ reviewId, likes: reviewLikeStack }), {
-      onUpdate: () => articlesOptimisticUpdater.basedOnKey('id', reviewId, { likes: likes + 1 }),
-      onError: (error) => {
-        articlesOptimisticUpdater.rollback();
-        snackbar.show({
-          theme: 'danger',
-          title: '회고 좋아요에 실패하였습니다.',
-          description: error.message,
-        });
-      },
-      onSuccess: ({ likes: latestLikes }) => {
-        articlesOptimisticUpdater.basedOnKey('id', reviewId, { likes: latestLikes });
-        delete articlesLikeStack.current[reviewId];
-      },
-    });
-  };
+      const reviewLikeStack = (articlesLikeStack.current[reviewId] += 1);
+
+      addFetch(reviewId, () => updateReviewLike({ reviewId, likes: reviewLikeStack }), {
+        onUpdate: () => articlesOptimisticUpdater.basedOnKey('id', reviewId, { likes: likes + 1 }),
+        onError: (error) => {
+          articlesOptimisticUpdater.rollback();
+          snackbar.show({
+            theme: 'danger',
+            title: '회고 좋아요에 실패하였습니다.',
+            description: error.message,
+          });
+        },
+        onSuccess: ({ likes: latestLikes }) => {
+          articlesOptimisticUpdater.basedOnKey('id', reviewId, { likes: latestLikes });
+          delete articlesLikeStack.current[reviewId];
+        },
+      });
+    };
 
   return PageSuspense(
     <>
@@ -218,11 +222,11 @@ function ProfilePage() {
                   </Questions.Answer>
                 ))}
 
-                {currentTab === FILTER.USER_PROFILE_TAB.REVIEWS && article.id && article.likes && (
+                {currentTab === FILTER.USER_PROFILE_TAB.REVIEWS && (
                   <FlexContainer direction="row" justify="space-between">
                     <Questions.Reaction
                       likeCount={article.likes || 0}
-                      onClickLike={handleClickLikeButton(article.id, article.likes)}
+                      onClickLike={handleClickLikeButton(article?.id, article?.likes)}
                       onClickBookmark={() => null}
                     />
                     <Questions.UpdatedTime>{article.updatedAt}</Questions.UpdatedTime>
