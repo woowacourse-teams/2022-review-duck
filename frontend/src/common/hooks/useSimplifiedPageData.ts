@@ -28,7 +28,7 @@ import { useMemo } from 'react';
  */
 
 function useSimplifiedPageData<PageData, ExportKey extends keyof PageData>(
-  pages: PageData[],
+  pages: PageData[] = [],
   exportKey: ExportKey,
 ) {
   return useMemo(() => {

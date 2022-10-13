@@ -21,7 +21,7 @@ function useReviewTimeline(currentTab: TimelineFilterType) {
     isFetching: isAnswerFetching,
   } = useGetInfiniteReviewPublicAnswer(currentTab);
 
-  const reviewsOrigin = useSimplifiedPageData(reviewsPages ? reviewsPages.pages : [], 'reviews');
+  const reviewsOrigin = useSimplifiedPageData(reviewsPages?.pages, 'reviews');
 
   const [reviews, reviewsOptimisticUpdater] = useOptimisticUpdate(reviewsOrigin);
   const reviewsLikeStack = useRef<Record<number, number>>({});
