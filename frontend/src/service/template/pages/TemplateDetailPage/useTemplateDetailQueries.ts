@@ -1,19 +1,10 @@
-import { PAGE_OPTION, FILTER } from 'constant';
-import { TemplateFilterType } from 'types';
+import { FILTER } from 'constant';
 
 import { useGetTemplate, useGetTemplates } from 'service/@shared/hooks/queries/template';
-import { useCreateForm } from 'service/@shared/hooks/queries/template/useCreate';
-import { useDeleteTemplate } from 'service/@shared/hooks/queries/template/useDelete';
-import { useUpdateTemplate } from 'service/@shared/hooks/queries/template/useUpdate';
 
 function useTemplateDetailQueries(templateId: number) {
   const getTemplateQuery = useGetTemplate(templateId);
   const getTrendTemplateQuery = useGetTemplates({ filter: FILTER.TEMPLATE_TAB.TREND });
-
-  const createFormMutation = useCreateForm();
-
-  const updateMutation = useUpdateTemplate();
-  const deleteMutation = useDeleteTemplate();
 
   const isLoading = getTrendTemplateQuery.isLoading || getTemplateQuery.isLoading;
   const isError = getTrendTemplateQuery.isError || getTemplateQuery.isError;
@@ -23,9 +14,6 @@ function useTemplateDetailQueries(templateId: number) {
   return {
     trendingTemplates: getTrendTemplateQuery.data.templates,
     template: getTemplateQuery.data,
-    createFormMutation,
-    updateMutation,
-    deleteMutation,
   };
 }
 

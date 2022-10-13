@@ -34,8 +34,12 @@ interface ListProps {
   children: React.ReactNode;
 }
 
-function List({ children }: ListProps) {
-  return <FlexContainer gap="large">{children}</FlexContainer>;
+function List({ children }: ListProps, ref: React.ForwardedRef<unknown>) {
+  return (
+    <FlexContainer ref={ref} gap="large">
+      {children}
+    </FlexContainer>
+  );
 }
 
 interface ReviewAnswerProps {
@@ -90,7 +94,7 @@ const Loading = ({ line }: LoadingProps) => {
 
 const Feed = Object.assign(Container, {
   Title,
-  List,
+  List: React.forwardRef(List),
   ReviewAnswer,
   UserProfile,
   Loading,

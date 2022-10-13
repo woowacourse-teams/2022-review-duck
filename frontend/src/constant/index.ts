@@ -80,7 +80,7 @@ const FILTER = {
   TEMPLATE_TAB: {
     TREND: 'trend',
     LATEST: 'latest',
-  } as const,
+  },
   TIMELINE_TAB: {
     TREND: 'trend',
     LATEST: 'latest',
@@ -89,7 +89,7 @@ const FILTER = {
     LIST: 'list',
     SHEET: 'sheet',
   },
-};
+} as const;
 
 const REVIEW_FORM_TITLE_LENGTH = 100;
 
@@ -117,7 +117,7 @@ const API_URI = {
   REVIEW: {
     GET_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
     GET_ANSWER: (reviewId: numberString) => `/api/reviews/${reviewId}`,
-    GET_FORM_ANSWER: (reviewFormCode: string, display: string, page?: string, size?: number) =>
+    GET_FORM_ANSWER: (reviewFormCode: string, display: string, page?: number, size?: number) =>
       `/api/review-forms/${reviewFormCode}/reviews?displayType=${display}&page=${page}&size=${size}`,
     GET_PUBLIC_ANSWER: '/api/reviews/public',
 

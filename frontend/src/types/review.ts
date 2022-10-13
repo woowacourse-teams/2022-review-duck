@@ -43,11 +43,11 @@ export interface ReviewFormAnswer {
   id: number;
   questions: AnsweredQuestion[];
   info: UserContentRequireField;
+  likes: number;
 }
 
 export interface ReviewPublicAnswer extends ReviewFormAnswer {
   reviewFormCode: string;
-  likes: number;
 }
 
 export type ReviewFormAnswerList = {

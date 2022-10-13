@@ -1,85 +1,31 @@
-import { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 
-import { FetchNextPageOptions, InfiniteQueryObserverResult } from '@tanstack/react-query';
-
-import { InfiniteItem } from 'types';
-
-interface ObserverOptionType {
-  root?: HTMLDivElement;
-  rootMargin?: string;
-  threshold: number;
-}
-
-function useIntersectionObserver<DataType, RefElementType extends Element>(
-  onIntersect: (
-    options?: FetchNextPageOptions,
-  ) => Promise<InfiniteQueryObserverResult<InfiniteItem<DataType>>>,
-  option: ObserverOptionType,
-  dependArray: unknown[],
+function useIntersectionObserver<T extends Element>(
+  listContainerRef: React.RefObject<T>,
+  dependency: unknown[] = [],
+  callback: () => void,
 ) {
-  const targetRef = useRef<RefElementType>(null);
+  const handleObserver = (entries: IntersectionObserverEntry[]) => {
+    if (!entries[0].isIntersecting) return;
 
-  const handleIntersect: IntersectionObserverCallback = ([entry]) => {
-    if (entry.isIntersecting) {
-      onIntersect();
-    }
+    callback();
   };
 
-  useEffect(() => {
-    if (!targetRef || !targetRef.current) {
-      return;
-    }
+  useEffect(function registerObserver() {
+    if (!listContainerRef.current) return;
 
-    const target = targetRef.current;
-    const observer = new IntersectionObserver(handleIntersect, option);
+    const $target = listContainerRef.current.lastElementChild;
 
-    observer.observe(target);
+    if (!$target) return;
+
+    const observer = new IntersectionObserver(handleObserver, { threshold: 0.75 });
+
+    observer.observe($target);
 
     return () => {
       observer.disconnect();
     };
-  }, dependArray);
-
-  return { targetRef };
+  }, dependency);
 }
-// function useIntersectionObserver<DataType, RefElementType extends Element>(
-//   onIntersect: (
-//     options?: FetchNextPageOptions,
-//   ) => Promise<InfiniteQueryObserverResult<InfiniteItem<DataType>>>,
-//   option: ObserverOptionType,
-//   dependArray: unknown[],
-// ) {
-//   const targetRef = useRef<RefElementType>(null);
-//   console.log('outer targetRef: ', targetRef);
-
-//   const handleIntersect: IntersectionObserverCallback = ([entry]) => {
-//     if (entry.isIntersecting) {
-//       console.log('intersected target: ', entry.target);
-//       onIntersect();
-//     }
-//   };
-
-//   const observer = new IntersectionObserver(handleIntersect, option);
-
-//   useEffect(() => {
-//     console.log('useEffect outer targetRef: ', targetRef);
-
-//     if (!targetRef || !targetRef.current) {
-//       return;
-//     }
-//     const target = targetRef.current;
-
-//     observer.observe(target);
-
-//     return () => {
-//       if (targetRef && target) {
-//         console.log('unobserve targetRef: ', targetRef);
-//         observer.unobserve(target);
-//       }
-//     };
-//   }, dependArray);
-
-//   return { targetRef };
-// }
 
 export default useIntersectionObserver;

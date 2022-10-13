@@ -1,10 +1,11 @@
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 import { faArrowTrendUp } from '@fortawesome/free-solid-svg-icons';
 
 import { PAGE_LIST, FILTER } from 'constant';
 
 import useSnackbar from 'common/hooks/useSnackbar';
+import { useTemplateMutations } from 'service/@shared/hooks/queries/template';
 import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
 
 import { getElapsedTimeText, isInclude } from 'service/@shared/utils';
@@ -23,9 +24,11 @@ import Header from './view/Header';
 import Trending from './view/Trending';
 
 function TemplateDetailPage() {
-  const [searchParam] = useSearchParams();
   const { navigate, handleLinkPage } = useNavigateHandler();
   const { templateId } = useParams();
+
+  const [searchParam] = useSearchParams();
+  const templateMutation = useTemplateMutations();
 
   const filterQueryString = searchParam.get('sort');
   const currentTab = isInclude(Object.values(FILTER.TEMPLATE_TAB), filterQueryString)
@@ -38,7 +41,7 @@ function TemplateDetailPage() {
 
   if (!queries) return <>{/* Suspense, Error Boundary Used */}</>;
 
-  const { trendingTemplates, deleteMutation, createFormMutation } = queries;
+  const { trendingTemplates } = queries;
   const { info: templateInfo, creator: templateCreator, ...template } = queries.template;
 
   const handleTemplateView = (id: number) => () => {
@@ -49,7 +52,7 @@ function TemplateDetailPage() {
     if (!confirm('이 템플릿으로 회고를 시작하시겠습니까\n계속 진행하면 회고 질문지가 생성됩니다.'))
       return;
 
-    createFormMutation.mutate(Number(templateId), {
+    templateMutation.createForm.mutate(Number(templateId), {
       onSuccess: ({ reviewFormCode }) => {
         snackbar.show({
           title: '템플릿을 이용해 회고를 생성했습니다.',
@@ -61,7 +64,11 @@ function TemplateDetailPage() {
         });
       },
       onError: ({ message }) => {
-        snackbar.show({ theme: 'danger', title: '오류가 발생하였습니다.', description: message });
+        snackbar.show({
+          theme: 'danger',
+          title: '회고 생성에 실패하였습니다.',
+          description: message,
+        });
       },
     });
   };
@@ -69,7 +76,7 @@ function TemplateDetailPage() {
   const handleDeleteTemplate = () => {
     if (!confirm('정말 템플릿을 삭제하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
 
-    deleteMutation.mutate(templateInfo.id, {
+    templateMutation.remove.mutate(templateInfo.id, {
       onSuccess: () => {
         snackbar.show({
           title: '템플릿이 삭제되었습니다.',
@@ -78,7 +85,11 @@ function TemplateDetailPage() {
         navigate(-1);
       },
       onError: ({ message }) => {
-        alert(message);
+        snackbar.show({
+          theme: 'danger',
+          title: '템플릿 삭제에 실패하였습니다.',
+          description: message,
+        });
       },
     });
   };
@@ -98,7 +109,7 @@ function TemplateDetailPage() {
           <Header.Buttons
             editable={template.isCreator}
             onClickCreateReviewForm={handleLinkPage(
-              `${PAGE_LIST.TEMPLATE_FORM}?templateId=${templateInfo.id}`,
+              `${PAGE_LIST.REVIEW_FORM}?template=${templateInfo.id}`,
             )}
             onClickStartReview={handleStartReview}
             onClickEdit={handleLinkPage(`${PAGE_LIST.TEMPLATE_FORM}/${templateInfo.id}`)}

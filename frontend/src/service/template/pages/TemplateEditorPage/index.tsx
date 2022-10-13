@@ -1,4 +1,3 @@
-import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { faArrowRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
@@ -9,8 +8,9 @@ import { PAGE_LIST } from 'constant';
 import { Question } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
-import { useTemplateMutation } from 'service/@shared/hooks/queries/template';
 import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
+
+import { isNumberString } from 'common/utils/validator';
 
 import {
   Button,
@@ -27,38 +27,17 @@ import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
 
 import styles from './styles.module.scss';
 
-const NUMBER_REGEX = /[0-9]$/; // refactor => constants
+import useTemplateEditor from './useTemplateEditor';
 
 function TemplateFormPage() {
   const { templateId: templateIdParams = '' } = useParams();
   const snackbar = useSnackbar();
   const { navigate } = useNavigateHandler();
-  const templateMutate = useTemplateMutation();
 
-  const templateId = NUMBER_REGEX.test(templateIdParams) ? Number(templateIdParams) : null;
+  const templateId = isNumberString(templateIdParams) ? Number(templateIdParams) : null;
 
-  const [templateInfo, setTemplateInfo] = useState({ title: '', description: '' });
-  const [questions, setQuestions] = useState<Question[]>([{ value: '', description: '' }]);
-
-  const enteredQuestionsCount = useMemo(
-    () => questions.filter((data) => data.value !== '').length,
-    [questions],
-  );
-
-  const isAllEntered = Boolean(
-    !templateInfo.title.length || !templateInfo.description.length || enteredQuestionsCount === 0,
-  );
-
-  useEffect(function getTemplateEditData() {
-    if (!templateId) return;
-
-    templateMutate.findById(Number(templateId), {
-      onSuccess: ({ info: { title, description, ..._unused }, questions }) => {
-        setTemplateInfo({ title, description });
-        setQuestions(questions);
-      },
-    });
-  }, []);
+  const { templateMutation, templateInfo, questions, isAllEntered, setQuestions, setTemplateInfo } =
+    useTemplateEditor(templateId);
 
   const handleChangeQuestion = (questions: Question[]) => {
     setQuestions(questions);
@@ -80,32 +59,39 @@ function TemplateFormPage() {
     });
   };
 
-  const handleSubmit = () => {
-    const requestBody = {
-      templateTitle: templateInfo.title,
-      templateDescription: templateInfo.description,
-      questions,
-    };
-
-    if (!templateId) {
-      templateMutate.create(requestBody, {
+  const handleCreateTemplate = () => {
+    templateMutation.create.mutate(
+      {
+        templateTitle: templateInfo.title,
+        templateDescription: templateInfo.description,
+        questions,
+      },
+      {
         onSuccess: ({ templateId }) => handleSubmitSuccess(templateId, '템플릿을 등록하였습니다.'),
         onError: (error) => snackbar.show({ theme: 'danger', title: error.message }),
-      });
-    }
+      },
+    );
+  };
 
-    if (templateId) {
-      templateMutate.update(
-        {
-          templateId: Number(templateId),
-          ...requestBody,
-        },
-        {
-          onSuccess: () => handleSubmitSuccess(templateId, '템플릿을 수정하였습니다.'),
-          onError: (error) => snackbar.show({ theme: 'danger', title: error.message }),
-        },
-      );
-    }
+  const handleUpdateTemplate = () => {
+    if (!templateId) return;
+
+    templateMutation.update.mutate(
+      {
+        templateId,
+        templateTitle: templateInfo.title,
+        templateDescription: templateInfo.description,
+        questions,
+      },
+      {
+        onSuccess: () => handleSubmitSuccess(templateId, '템플릿을 수정하였습니다.'),
+        onError: (error) => snackbar.show({ theme: 'danger', title: error.message }),
+      },
+    );
+  };
+
+  const handleSubmit = () => {
+    templateId ? handleUpdateTemplate() : handleCreateTemplate();
   };
 
   const handleCancel = () => {

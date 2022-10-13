@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
@@ -7,38 +6,83 @@ import { Question } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
+import { isNumberString } from 'common/utils/validator';
 import { getErrorMessage } from 'service/@shared/utils';
 
 import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
 
 import useReviewFormEditor from './useReviewFormEditor';
-import Editor from './views/Editor';
-import Status from './views/Status';
+import Editor from './view/Editor';
+import Status from './view/Status';
 import { validateReviewForm } from 'service/@shared/validator';
 
 function ReviewFormEditorPage() {
   const { reviewFormCode = '' } = useParams();
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
 
-  const { reviewForm, isNewReviewForm, isSubmitLoading, submitReviewForm } =
-    useReviewFormEditor(reviewFormCode);
-
-  const [reviewFormTitle, setReviewTitle] = useState(reviewForm?.title || '');
-  const [questions, setQuestion] = useState(
-    reviewForm?.questions || [{ value: '', description: '' }],
-  );
+  const redirectUri = searchParams.get('redirect') || '';
+  const templateIdParam = searchParams.get('template') || '';
+  const templateId = isNumberString(templateIdParam) ? Number(templateIdParam) : null;
 
   const snackbar = useSnackbar();
+  const navigate = useNavigate();
 
-  const redirectUri = searchParams.get('redirect');
+  const {
+    reviewMutations,
+    isEditMode,
+    isSubmitLoading,
+    reviewFormTitle,
+    questions,
+    setQuestions,
+    setReviewFormTitle,
+  } = useReviewFormEditor(reviewFormCode, templateId);
 
   const handleChangeReviewTitle = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
-    setReviewTitle(target.value);
+    setReviewFormTitle(target.value);
   };
 
   const handleChangeQuestions = (questions: Question[]) => {
-    setQuestion(questions);
+    setQuestions(questions);
+  };
+
+  const handleSubmitSuccess = (updatedFormCode: string, message: string) => {
+    snackbar.show({
+      title: message,
+      description: '회고 참여 코드를 통해 다른 사람들과 회고를 진행할 수 있습니다.',
+    });
+
+    navigate(redirectUri || `${PAGE_LIST.REVIEW_OVERVIEW}/${updatedFormCode}`, {
+      replace: true,
+    });
+  };
+
+  const handleUpdateReviewForm = () => {
+    reviewMutations.updateForm.mutate(
+      { reviewFormCode, reviewFormTitle, questions },
+      { onSuccess: () => handleSubmitSuccess(reviewFormCode, '회고가 수정되었습니다.') },
+    );
+  };
+
+  const handleCreateReviewForm = () => {
+    reviewMutations.createForm.mutate(
+      { reviewFormTitle, questions },
+      {
+        onSuccess: ({ reviewFormCode: createdReviewFormCode }) =>
+          handleSubmitSuccess(createdReviewFormCode, '회고가 생성되었습니다.'),
+      },
+    );
+  };
+
+  const handleCreateByTemplate = () => {
+    if (!templateId) return;
+
+    reviewMutations.createFormByTemplate.mutate(
+      { templateId, reviewFormTitle, questions },
+      {
+        onSuccess: ({ reviewFormCode: createdReviewFormCode }) =>
+          handleSubmitSuccess(createdReviewFormCode, '회고가 생성되었습니다.'),
+      },
+    );
   };
 
   const handleSubmitReviewForm = (event: React.FormEvent) => {
@@ -51,24 +95,9 @@ function ReviewFormEditorPage() {
       return;
     }
 
-    submitReviewForm.mutate(
-      { reviewFormTitle, reviewFormCode, questions },
-      {
-        onSuccess: ({ reviewFormCode }) => {
-          snackbar.show({
-            title: isNewReviewForm ? '회고가 생성되었습니다.' : '회고가 수정되었습니다.',
-            description: '회고 참여코드를 공유하여, 회고를 시작할 수 있습니다.',
-          });
-
-          navigate(redirectUri || `${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`, {
-            replace: true,
-          });
-        },
-        onError: ({ message }) => {
-          alert(message);
-        },
-      },
-    );
+    if (isEditMode) handleUpdateReviewForm();
+    else if (!isEditMode && !templateId) handleCreateReviewForm();
+    else if (templateId) handleCreateByTemplate();
   };
 
   const handleCancel = () => {
@@ -87,10 +116,11 @@ function ReviewFormEditorPage() {
       <Editor>
         <Editor.TitleInput title={reviewFormTitle} onTitleChange={handleChangeReviewTitle} />
         <QuestionsEditor value={questions} onChange={handleChangeQuestions} />
+
         <div className={cn('button-container horizontal')}>
           <Editor.CancelButton onCancel={handleCancel}>취소하기</Editor.CancelButton>
           <Editor.SubmitButton onSubmit={handleSubmitReviewForm} disabled={isSubmitLoading}>
-            {isNewReviewForm ? '생성하기' : '수정하기'}
+            {isEditMode ? '수정하기' : '생성하기'}
           </Editor.SubmitButton>
         </div>
       </Editor>
