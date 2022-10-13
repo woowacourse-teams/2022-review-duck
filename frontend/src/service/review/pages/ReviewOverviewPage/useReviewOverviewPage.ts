@@ -22,7 +22,7 @@ function useReviewOverviewPage(reviewFormCode: string, displayMode: DisplayModeT
     isError: isReviewsError,
     isLoading: isReviewsLoading,
   } = useGetInfiniteReviewFormAnswer(reviewFormCode, displayMode);
-  const reviewsOrigin = useSimplifiedPageData(reviewsPages ? reviewsPages.pages : [], 'reviews');
+  const reviewsOrigin = useSimplifiedPageData(reviewsPages?.pages, 'reviews');
 
   const [reviews, reviewsOptimisticUpdater] = useOptimisticUpdate(reviewsOrigin);
   const reviewsLikeStack = useRef<Record<number, number>>({});

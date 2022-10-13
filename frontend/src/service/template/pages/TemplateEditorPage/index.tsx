@@ -91,7 +91,7 @@ function TemplateFormPage() {
   };
 
   const handleSubmit = () => {
-    templateId ? handleUpdateTemplate : handleCreateTemplate;
+    templateId ? handleUpdateTemplate() : handleCreateTemplate();
   };
 
   const handleCancel = () => {
