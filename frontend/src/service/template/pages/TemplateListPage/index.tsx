@@ -56,8 +56,7 @@ function TemplateListPage() {
   const handleClickPagination = (pageNumber: number) => {
     if (searchQueryString) {
       setSearchParam({ search: searchQueryString, page: String(pageNumber) });
-    }
-    if (filterQueryString) {
+    } else {
       setSearchParam({ sort: currentTab, page: String(pageNumber) });
     }
     window.scrollTo(0, 0);
