@@ -11,6 +11,7 @@ import { ErrorBoundary, SnackbarProvider } from 'common/components';
 import ModalProvider from 'service/@shared/components/ModalProvider';
 
 import queryClient from 'api/config/queryClient';
+import UserAgentProvider from 'common/contexts/UserAgent';
 import ErrorPage from 'service/@shared/pages/ErrorPage';
 import 'styles/@app.scss';
 
@@ -20,7 +21,7 @@ function ContextWrapper({ children }: { children: ReactNode }) {
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <ModalProvider />
-          {children}
+          <UserAgentProvider>{children}</UserAgentProvider>
         </QueryClientProvider>
       </BrowserRouter>
     </RecoilRoot>
