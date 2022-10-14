@@ -1,6 +1,8 @@
-import { HTMLAttributes, useMemo } from 'react';
+import { HTMLAttributes, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
+import { FILTER } from 'constant';
 
 import styles from './styles.module.scss';
 
@@ -24,6 +26,7 @@ function PaginationBar({
   ...args
 }: PaginationBarProps) {
   const totalPageLength = Math.ceil(totalItemCount / itemCountInPage);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const isFirstPage = focusedPage === 1;
   const isLastPage = focusedPage === totalPageLength;
@@ -55,6 +58,16 @@ function PaginationBar({
   const handleClickPageButton = (pageNumber: number) => () => {
     onClickPageButton(pageNumber);
   };
+
+  useEffect(() => {
+    if (focusedPage > totalPageLength) {
+      setSearchParams({
+        tab: searchParams.get('tab') || FILTER.USER_PROFILE_TAB.REVIEWS,
+        page: String(totalPageLength),
+      });
+      window.scrollTo(0, 0);
+    }
+  }, [focusedPage, totalItemCount]);
 
   if (totalItemCount === 0) return <></>;
 
