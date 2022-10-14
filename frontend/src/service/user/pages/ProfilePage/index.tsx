@@ -240,7 +240,7 @@ function ProfilePage() {
             </div>
           ))}
 
-          <ArticleList.NoArticleResult totalNumber={articlesPages.totalNumber}>
+          <ArticleList.NoArticleResult totalNumber={articles.length}>
             {`${subjectTitle[currentTab]}가(이) 없습니다.`}
           </ArticleList.NoArticleResult>
 
