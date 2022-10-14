@@ -1,5 +1,6 @@
-import React, { createContext, useMemo, useState, useEffect } from 'react';
+import React, { createContext, useMemo, useState, useEffect, useCallback } from 'react';
 
+import useThrottle from 'common/hooks/useThrottle';
 import useThrottleCallback from 'common/hooks/ussThrottleCallback';
 
 export const UserAgentContext = createContext({ isMobile: false, isPwa: false });
@@ -11,16 +12,25 @@ interface UserAgentProviderProps {
 const BREAK_POINT_MOBILE = 480;
 
 function UserAgentProvider({ children }: UserAgentProviderProps) {
+  const setThrottle = useThrottle();
   const [userAgent, setUserAgent] = useState({ isMobile: false, isPwa: false });
-  const userAgentMemo = useMemo(() => userAgent, [userAgent.isMobile, userAgent.isPwa]);
+  const userAgentMemo = useMemo(() => userAgent, [...Object.values(userAgent)]);
 
-  const handleResizeWindow = useThrottleCallback(() => {
-    setUserAgent({ ...userAgent, isMobile: BREAK_POINT_MOBILE >= document.body.clientWidth });
-  }, 1000);
+  const handleResizeWindow = () => {
+    const isMobile = BREAK_POINT_MOBILE >= document.body.clientWidth;
+
+    setUserAgent((prevState) => {
+      if (isMobile === prevState.isMobile) {
+        return prevState;
+      }
+
+      return { ...prevState, isMobile };
+    });
+  };
 
   useEffect(function addWindowSizeObserve() {
     window.addEventListener('DOMContentLoaded', handleResizeWindow, { once: true });
-    window.addEventListener('resize', handleResizeWindow);
+    window.addEventListener('resize', () => setThrottle(handleResizeWindow, 1000));
 
     return () => {
       window.removeEventListener('resize', handleResizeWindow);
