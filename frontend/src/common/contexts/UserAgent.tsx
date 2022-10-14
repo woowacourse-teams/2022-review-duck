@@ -11,11 +11,11 @@ interface UserAgentProviderProps {
 const BREAK_POINT_MOBILE = 480;
 
 function UserAgentProvider({ children }: UserAgentProviderProps) {
-  const [userAgent, setUserAgent] = useState({ isMobile: false });
-  const userAgentMemo = useMemo(() => userAgent, [userAgent]);
+  const [userAgent, setUserAgent] = useState({ isMobile: false, isPwa: false });
+  const userAgentMemo = useMemo(() => userAgent, [userAgent.isMobile, userAgent.isPwa]);
 
   const handleResizeWindow = useThrottleCallback(() => {
-    setUserAgent({ isMobile: BREAK_POINT_MOBILE >= document.body.clientWidth });
+    setUserAgent({ ...userAgent, isMobile: BREAK_POINT_MOBILE >= document.body.clientWidth });
   }, 1000);
 
   useEffect(function addWindowSizeObserve() {
