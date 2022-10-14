@@ -34,7 +34,7 @@ function PaginationBar({
     const currentPageStack = Math.ceil(focusedPage / visiblePageButtonLength);
 
     const pageButtonLength =
-      totalPageStack === currentPageStack && totalPageLength !== visiblePageButtonLength
+      totalPageStack === currentPageStack && totalPageLength % visiblePageButtonLength !== 0
         ? totalPageLength % visiblePageButtonLength
         : visiblePageButtonLength;
 
