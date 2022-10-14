@@ -18,3 +18,9 @@
 ## 🤝🏻 Backend Architecture
 
 ![BackendArchitecture](https://user-images.githubusercontent.com/39939886/195292170-f740720d-f469-45a7-ad99-c8f2d42cbba0.jpg)
+
+![BackendStack](https://user-images.githubusercontent.com/18046394/195746412-8798509d-4fe3-4c8e-a60e-08a1a4e42a30.jpeg)
+
+## 🤝🏻 FrontEnd Architecture
+
+![FrontArchitecture](https://user-images.githubusercontent.com/18046394/195746430-bea5f01b-62fb-46b6-8971-d794f2770402.jpeg)
