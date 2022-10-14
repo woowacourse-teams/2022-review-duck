@@ -1,10 +1,18 @@
 @import 'styles/@global.scss';
 
 .background {
+  @include mobile {
+    width: 100%;
+    min-width: 100%;
+  }
+
   position: relative;
   min-width: 768px;
 
   &::before {
+    @include mobile {
+      display: none;
+    }
     content: '';
 
     display: block;
@@ -28,6 +36,10 @@
   }
 
   &::after {
+    @include mobile {
+      display: none;
+    }
+
     content: '';
 
     position: absolute;
@@ -42,6 +54,12 @@
 }
 
 .container {
+  @include mobile {
+    display: flex;
+    justify-content: center;
+    min-width: 100%;
+  }
+
   position: relative;
   display: grid;
   grid-template-columns: repeat(auto-fit, 50%);
