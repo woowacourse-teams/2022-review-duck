@@ -6,6 +6,11 @@
     min-width: 100%;
   }
 
+  @include tablet {
+    width: 100%;
+    min-width: 100%;
+  }
+
   position: relative;
   min-width: 768px;
 
@@ -13,6 +18,11 @@
     @include mobile {
       display: none;
     }
+
+    @include tablet {
+      display: none;
+    }
+
     content: '';
 
     display: block;
@@ -40,6 +50,10 @@
       display: none;
     }
 
+    @include tablet {
+      display: none;
+    }
+
     content: '';
 
     position: absolute;
@@ -55,6 +69,12 @@
 
 .container {
   @include mobile {
+    display: flex;
+    justify-content: center;
+    min-width: 100%;
+  }
+
+  @include tablet {
     display: flex;
     justify-content: center;
     min-width: 100%;
