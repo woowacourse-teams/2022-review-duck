@@ -6,23 +6,19 @@ function useThrottleCallback<Parameter extends any[]>(
   delay: number,
 ) {
   const timerRef = useRef<NodeJS.Timeout>();
-  const restRef = useRef<Parameter>();
-
-  const timeoutCallback = () => {
-    restRef.current && callback(...restRef.current);
+  const timeoutCallback = (parameter: Parameter) => () => {
+    callback(...parameter);
 
     if (timerRef.current) {
       timerRef.current = undefined;
     }
   };
 
-  return (...rest: Parameter): void => {
-    restRef.current = rest;
-
+  return (...callbackParameter: Parameter): void => {
     if (timerRef.current) return;
 
     clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(timeoutCallback, delay);
+    timerRef.current = setTimeout(timeoutCallback(callbackParameter), delay);
   };
 }
 
