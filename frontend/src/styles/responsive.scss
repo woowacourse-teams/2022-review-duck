@@ -8,7 +8,7 @@ $desktop: 1056px;
 }
 
 @mixin tablet {
-  @media #{(min-width: $mobile) and (max-width: #{$desktop - 1px})} {
+  @media (min-width: #{$mobile}) and (max-width: #{$desktop - 1px}) {
     @content;
   }
 }
