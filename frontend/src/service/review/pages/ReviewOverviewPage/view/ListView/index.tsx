@@ -35,7 +35,7 @@ const Content = (
   ref: React.ForwardedRef<HTMLDivElement>,
 ) => {
   return (
-    <FlexContainer ref={ref} direction="column" gap="large">
+    <FlexContainer className={styles.contentContainer} ref={ref} direction="column" gap="large">
       {isLoading ? fallback : children}
     </FlexContainer>
   );
@@ -47,7 +47,7 @@ const ParticipantList = ({ children }: ParticipantListProps) => {
   return (
     <FlexContainer className={styles.cardBox} direction="column" gap="medium">
       <div className={styles.title}>
-        <Text as="h5" size={20}>
+        <Text className={styles.titleText} as="h5" size={20}>
           이 회고에 참여한 사람
         </Text>
       </div>
@@ -88,7 +88,7 @@ type FormDetailProps = ContainerProps;
 const FormDetail = ({ children }: FormDetailProps) => {
   return (
     <FlexContainer className={cn(styles.cardBox, styles.formDetail)}>
-      <Text size={20} weight="bold">
+      <Text className={styles.formDetailTitle} size={20} weight="bold">
         회고 정보
       </Text>
 
@@ -192,7 +192,9 @@ const FormManageButtons = ({ reviewFormCode, isMine }: FormManageButtonsProps) =
       </Text>
 
       <div className={styles.buttonContainer}>
-        <Link to={`${PAGE_LIST.REVIEW_FORM}/${reviewFormCode}`}>
+        <Link
+          to={`${PAGE_LIST.REVIEW_FORM}/${reviewFormCode}?redirect=${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`}
+        >
           <Button size="small">
             <FontAwesomeIcon icon={faPenToSquare} />
             <span>질문 수정</span>

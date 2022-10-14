@@ -29,12 +29,27 @@ interface CoverProfileProps {
   image: string;
   title: string;
   description?: string;
+  size?: 'small' | 'medium' | 'large';
+  textAlign?: 'left' | 'center' | 'right';
 }
 
-function CoverProfile({ socialId, image, title, description }: CoverProfileProps) {
+function CoverProfile({
+  socialId,
+  image,
+  title,
+  description,
+  size,
+  textAlign = 'center',
+}: CoverProfileProps) {
   return (
-    <Profile socialId={socialId} align="center" textAlign="center" textGap="medium">
-      <Profile.Image src={image} />
+    <Profile
+      className={styles.coverProfile}
+      socialId={socialId}
+      align="center"
+      textAlign={textAlign}
+      textGap="medium"
+    >
+      <Profile.Image src={image} size={size} />
       <Profile.Nickname size={20}>{title}</Profile.Nickname>
       {description && <Profile.Description>{description}</Profile.Description>}
     </Profile>

@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { FILTER, PAGE_LIST, PAGE_OPTION } from 'constant';
@@ -18,6 +19,7 @@ import { Header } from './view/Header';
 import { ListView } from './view/ListView';
 import { SheetView } from './view/SheetView';
 import { updateReviewLike } from 'api/review.api';
+import { UserAgentContext } from 'common/contexts/UserAgent';
 
 /*
   TODO:
@@ -29,6 +31,7 @@ import { updateReviewLike } from 'api/review.api';
 function ReviewOverViewPage() {
   const navigate = useNavigate();
   const snackbar = useSnackbar();
+  const { isMobile } = useContext(UserAgentContext);
 
   const { reviewFormCode = '', displayMode: displayModeParams = '' } = useParams();
   const displayMode = isInclude(
@@ -123,7 +126,11 @@ function ReviewOverViewPage() {
                   textAlign="center"
                   align="center"
                 >
-                  <Profile.Image size="large" edge="pointed" src={user.profileUrl} />
+                  <Profile.Image
+                    size={isMobile ? 'small' : 'large'}
+                    edge="pointed"
+                    src={user.profileUrl}
+                  />
                   <Profile.Nickname size={14}>{user.nickname}</Profile.Nickname>
                   <Profile.Description size={12}></Profile.Description>
                 </Profile>
@@ -138,6 +145,8 @@ function ReviewOverViewPage() {
                     image={info.creator.profileUrl}
                     title={info.reviewTitle as string}
                     description={info.updateDate}
+                    size={isMobile ? 'small' : undefined}
+                    textAlign={isMobile ? 'left' : undefined}
                   />
 
                   <Questions.EditButtons
@@ -169,7 +178,7 @@ function ReviewOverViewPage() {
 
           <ListView.SideMenu isLoading={isFormLoading} fallback={<Skeleton line={3} />}>
             <ListView.FormDetail>
-              <FlexContainer gap="small">
+              <FlexContainer className={styles.formInfo} gap="small">
                 <ListView.InfoText name="크리에이터">
                   {reviewForm?.info.creator.nickname}
                 </ListView.InfoText>
