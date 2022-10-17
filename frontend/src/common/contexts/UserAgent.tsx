@@ -1,7 +1,6 @@
-import React, { createContext, useMemo, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useMemo, useState, useEffect } from 'react';
 
 import useThrottle from 'common/hooks/useThrottle';
-import useThrottleCallback from 'common/hooks/ussThrottleCallback';
 
 export const UserAgentContext = createContext({ isMobile: false, isPwa: false });
 
@@ -29,7 +28,7 @@ function UserAgentProvider({ children }: UserAgentProviderProps) {
   };
 
   useEffect(function addWindowSizeObserve() {
-    window.addEventListener('DOMContentLoaded', handleResizeWindow, { once: true });
+    handleResizeWindow();
     window.addEventListener('resize', () => setThrottle(handleResizeWindow, 1000));
 
     return () => {

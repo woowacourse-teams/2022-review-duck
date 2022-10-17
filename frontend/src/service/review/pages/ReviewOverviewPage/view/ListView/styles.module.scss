@@ -1,6 +1,14 @@
 @import 'styles/@global.scss';
 
 .container {
+  @include mobile {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    min-width: 0;
+    padding: 1rem 1.5rem;
+  }
+
   display: grid;
   grid-template-columns: 63% 32%;
   gap: 5%;
@@ -9,9 +17,21 @@
   max-width: 1056px;
   height: 100%;
   margin: 0 auto;
+
+  .content-container {
+    @include mobile {
+      min-width: 0;
+      gap: 1rem;
+      padding-top: 19rem;
+    }
+  }
 }
 
 .card-box {
+  @include mobile {
+    padding: 1.5rem;
+  }
+
   width: 100%;
   padding: 2rem;
 
@@ -22,6 +42,12 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+
+    .title-text {
+      @include mobile {
+        font-size: 0.8rem;
+      }
+    }
   }
 }
 
@@ -42,13 +68,28 @@
 }
 
 .side-menu {
+  @include mobile {
+    position: absolute;
+    top: 5rem;
+    left: 0;
+    width: 100%;
+    padding: 1rem 1.5rem;
+  }
+
   align-self: start;
   position: sticky;
   top: 8rem;
+  min-width: 15.3125rem;
 }
 
 .form-detail {
   gap: 1.5rem;
+
+  .form-detail-title {
+    @include mobile {
+      display: none;
+    }
+  }
 }
 
 .info-text {

@@ -3,7 +3,11 @@
 .header {
   height: 6.5rem;
 
-  .fixedContainer {
+  @include mobile {
+    height: 4rem;
+  }
+
+  .fixed-container {
     position: fixed;
     top: 0;
     width: 100%;
@@ -13,21 +17,47 @@
 
     z-index: 5;
 
+    .container {
+      min-width: 768px;
+      max-width: 1056px;
+      padding: 0 1rem;
+      height: 100%;
+      margin: 0 auto;
+
+      .button-container {
+        @include mobile {
+          display: none;
+        }
+      }
+    }
+
     .menu-bar {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       border-bottom: 1px solid $THEME_COLOR_STATUS_PRIMARY_100;
       padding: 1.5rem 1rem;
+
+      @include mobile {
+        padding: 0.5rem 1rem;
+      }
     }
   }
 }
 
 .form-title {
   color: $THEME_COLOR_STATUS_PRIMARY_700;
+
+  @include mobile {
+    font-size: 1.1rem;
+  }
 }
 
 .form-description {
   color: $THEME_COLOR_THEME_TEXT_400;
   text-shadow: 0 0 1rem $THEME_COLOR_THEME_BACKGROUND_100;
+
+  @include mobile {
+    font-size: 0.8rem;
+  }
 }
