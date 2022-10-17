@@ -61,10 +61,7 @@ function PaginationBar({
 
   useEffect(() => {
     if (focusedPage > totalPageLength) {
-      setSearchParams({
-        tab: searchParams.get('tab') || FILTER.USER_PROFILE_TAB.REVIEWS,
-        page: String(totalPageLength),
-      });
+      setSearchParams({});
       window.scrollTo(0, 0);
     }
   }, [focusedPage, totalItemCount]);
