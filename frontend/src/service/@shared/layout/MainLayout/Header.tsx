@@ -45,6 +45,7 @@ function Header() {
     if (search.length > 0) {
       navigate(`${PAGE_LIST.TEMPLATE_LIST}?search=${search}`);
     }
+    setSearch('');
   };
 
   return (
