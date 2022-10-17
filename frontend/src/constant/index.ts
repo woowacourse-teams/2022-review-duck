@@ -90,6 +90,10 @@ const FILTER = {
     LIST: 'list',
     SHEET: 'sheet',
   },
+  PAGE: 'page',
+  SORT: 'sort',
+  SEARCH: 'search',
+  SIZE: 'size',
 } as const;
 
 const REVIEW_FORM_TITLE_LENGTH = 100;
@@ -119,7 +123,7 @@ const API_URI = {
     GET_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
     GET_ANSWER: (reviewId: numberString) => `/api/reviews/${reviewId}`,
     GET_FORM_ANSWER: (reviewFormCode: string, display: string, page?: number, size?: number) =>
-      `/api/review-forms/${reviewFormCode}/reviews?displayType=${display}&page=${page}&size=${size}`,
+      `/api/review-forms/${reviewFormCode}/reviews?displayType=${display}&${FILTER.PAGE}=${page}&${FILTER.SIZE}=${size}`,
     GET_PUBLIC_ANSWER: '/api/reviews/public',
 
     CREATE_FORM: '/api/review-forms',
@@ -142,7 +146,7 @@ const API_URI = {
   },
   TEMPLATE: {
     GET_TEMPLATES: '/api/templates/all',
-    GET_SEARCH_TEMPLATES: '/api/templates/search',
+    GET_SEARCH_TEMPLATES: `/api/templates/${FILTER.SEARCH}`,
     GET_TEMPLATE: (templateId: numberString) => `/api/templates/${templateId}`,
 
     CREATE_FORM: (templateId: numberString) => `/api/templates/${templateId}/review-forms`,

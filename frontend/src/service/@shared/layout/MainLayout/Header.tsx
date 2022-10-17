@@ -10,7 +10,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
-import { GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST } from 'constant';
+import { FILTER, GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST } from 'constant';
 
 import useAuth from 'service/@shared/hooks/useAuth';
 
@@ -43,7 +43,7 @@ function Header() {
   const handleSubmitSearhTemplate = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (search.length > 0) {
-      navigate(`${PAGE_LIST.TEMPLATE_LIST}?search=${search}`);
+      navigate(`${PAGE_LIST.TEMPLATE_LIST}?${FILTER.SEARCH}=${search}`);
     }
     setSearch('');
   };
@@ -63,7 +63,7 @@ function Header() {
             value={search}
             onChange={handleSearchChange}
           />
-          <Link to={`${PAGE_LIST.TEMPLATE_LIST}?search=${search}`}>
+          <Link to={`${PAGE_LIST.TEMPLATE_LIST}?${FILTER.SEARCH}=${search}`}>
             <FontAwesomeIcon className={styles.searchIcon} icon={faSearch} />
           </Link>
         </form>

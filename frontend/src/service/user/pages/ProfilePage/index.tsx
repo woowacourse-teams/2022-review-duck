@@ -38,8 +38,8 @@ function ProfilePage() {
     ? currentTabParam
     : FILTER.USER_PROFILE_TAB.REVIEWS;
 
-  const pageNumber = isNumberString(searchParams.get('page'))
-    ? Number(searchParams.get('page'))
+  const pageNumber = isNumberString(searchParams.get(FILTER.PAGE))
+    ? Number(searchParams.get(FILTER.PAGE))
     : 1;
 
   const pageQueries = useProfilePage(currentTab, socialId, pageNumber);

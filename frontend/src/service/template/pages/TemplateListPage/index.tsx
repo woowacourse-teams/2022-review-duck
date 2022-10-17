@@ -25,11 +25,11 @@ function TemplateListPage() {
   const [searchParam, setSearchParam] = useSearchParams();
   const navigate = useNavigate();
 
-  const pageNumberParams = searchParam.get('page');
+  const pageNumberParams = searchParam.get(FILTER.PAGE);
   const pageNumber = isNumberString(pageNumberParams) ? Number(pageNumberParams) : 1;
 
-  const filterQueryString = searchParam.get('sort');
-  const searchQueryString = searchParam.get('search') || '';
+  const filterQueryString = searchParam.get(FILTER.SORT);
+  const searchQueryString = searchParam.get(FILTER.SEARCH) || '';
 
   const currentTab = isInclude(Object.values(FILTER.TEMPLATE_TAB), filterQueryString)
     ? filterQueryString
@@ -42,11 +42,11 @@ function TemplateListPage() {
   );
 
   const handleTemplateView = (id: number) => () => {
-    navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${id}?sort=${currentTab}`);
+    navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${id}?${FILTER.SORT}=${currentTab}`);
   };
 
   const handleChangeSortList = (query: TemplateFilterType) => () => {
-    navigate(`${PAGE_LIST.TEMPLATE_LIST}?sort=${query}`);
+    navigate(`${PAGE_LIST.TEMPLATE_LIST}?${FILTER.SORT}=${query}`);
   };
 
   const handleMoveCreateTemplate = () => {
