@@ -81,32 +81,39 @@ function TemplateListPage() {
         <Filter.MoreButtons onClickCreate={handleMoveCreateTemplate} />
       </Filter>
 
-      <div className={styles.templateContainer}>
-        {templates.map(({ info, creator }) => (
-          <TemplateCard key={info.id} className={styles.card} onClick={handleTemplateView(info.id)}>
-            <TemplateCard.Tag usedCount={info.usedCount} />
-            <TemplateCard.Title>{info.title}</TemplateCard.Title>
-            <TemplateCard.UpdatedAt>{getElapsedTimeText(info.updatedAt)}</TemplateCard.UpdatedAt>
-            <TemplateCard.Description>{info.description}</TemplateCard.Description>
+      {numberOfTemplates === 0 ? (
+        <NoResult>템플릿이 없습니다.</NoResult>
+      ) : (
+        <div className={styles.templateContainer}>
+          {templates.map(({ info, creator }) => (
+            <TemplateCard
+              key={info.id}
+              className={styles.card}
+              onClick={handleTemplateView(info.id)}
+            >
+              <TemplateCard.Tag usedCount={info.usedCount} />
+              <TemplateCard.Title>{info.title}</TemplateCard.Title>
+              <TemplateCard.UpdatedAt>{getElapsedTimeText(info.updatedAt)}</TemplateCard.UpdatedAt>
+              <TemplateCard.Description>{info.description}</TemplateCard.Description>
 
-            <TemplateCard.Profile
-              profileUrl={creator.profileUrl}
-              nickname={creator.nickname}
-              socialNickname={creator.socialNickname}
-            />
-          </TemplateCard>
-        ))}
+              <TemplateCard.Profile
+                profileUrl={creator.profileUrl}
+                nickname={creator.nickname}
+                socialNickname={creator.socialNickname}
+              />
+            </TemplateCard>
+          ))}
 
-        <PaginationBar
-          className={styles.pagination}
-          visiblePageButtonLength={PAGE_OPTION.TEMPLATE_BUTTON_LENGTH}
-          itemCountInPage={PAGE_OPTION.TEMPLATE_ITEM_SIZE}
-          totalItemCount={numberOfTemplates}
-          focusedPage={Number(pageNumber)}
-          onClickPageButton={handleClickPagination}
-        />
-      </div>
-      {numberOfTemplates === 0 && <NoResult>템플릿이 없습니다.</NoResult>}
+          <PaginationBar
+            className={styles.pagination}
+            visiblePageButtonLength={PAGE_OPTION.TEMPLATE_BUTTON_LENGTH}
+            itemCountInPage={PAGE_OPTION.TEMPLATE_ITEM_SIZE}
+            totalItemCount={numberOfTemplates}
+            focusedPage={Number(pageNumber)}
+            onClickPageButton={handleClickPagination}
+          />
+        </div>
+      )}
     </LayoutContainer>,
   );
 }
