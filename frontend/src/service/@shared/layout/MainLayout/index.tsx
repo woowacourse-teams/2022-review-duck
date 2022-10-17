@@ -12,7 +12,7 @@ import ErrorPage from 'service/@shared/pages/ErrorPage';
 
 function MainLayout() {
   return (
-    <div className={styles.layout}>
+    <div className={styles.layoutMain}>
       <Header />
 
       <main className={styles.main}>
