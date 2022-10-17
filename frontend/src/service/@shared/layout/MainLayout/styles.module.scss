@@ -189,4 +189,9 @@
 .main {
   width: 100%;
   min-height: 31.25rem;
+
+  @include mobile {
+    min-height: unset;
+    padding: 1.5rem;
+  }
 }
