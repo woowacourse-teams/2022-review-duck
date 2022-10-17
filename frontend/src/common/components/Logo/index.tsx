@@ -28,8 +28,8 @@ function Logo({ className, theme, weight, size, ...rest }: LogoProps) {
   const TargetLogo = LOGO_LIST[theme][weight];
 
   return (
-    <div className={cn(styles[size])} {...rest}>
-      <TargetLogo className={cn(styles.logo, className)} />
+    <div className={cn(styles.componentLogo, styles[size], className)} {...rest}>
+      <TargetLogo className={styles.svg} />
     </div>
   );
 }
