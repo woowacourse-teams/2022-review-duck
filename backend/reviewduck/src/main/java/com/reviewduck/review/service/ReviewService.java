@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.domain.Review;
@@ -34,10 +35,10 @@ import lombok.AllArgsConstructor;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final MemberRepository memberRepository;
 
     private final ReviewFormService reviewFormService;
     private final ReviewFormQuestionService reviewFormQuestionService;
-    private final MemberService memberService;
 
     @Transactional
     public Review save(Member member, String code, ReviewCreateRequest request) {
@@ -55,7 +56,8 @@ public class ReviewService {
     }
 
     public Page<Review> findBySocialId(String socialId, Member member, int page, int size) {
-        Member owner = memberService.getBySocialId(socialId);
+        Member owner = memberRepository.findBySocialId(socialId)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
 
         Sort sort = Sort.by(Sort.Direction.DESC, ReviewSortType.LATEST.getSortBy());
         PageRequest pageRequest = PageRequest.of(page, size, sort);

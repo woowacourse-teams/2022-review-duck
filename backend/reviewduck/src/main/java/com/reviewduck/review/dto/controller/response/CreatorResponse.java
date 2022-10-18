@@ -1,6 +1,7 @@
 package com.reviewduck.review.dto.controller.response;
 
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberResponse;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,7 +16,7 @@ public class CreatorResponse {
     private String socialNickname;
     private String profileUrl;
 
-    public static CreatorResponse from(Member member) {
+    public static CreatorResponse from(MemberResponse member) {
         return new CreatorResponse(
             Long.parseLong(member.getSocialId()),
             member.getNickname(),

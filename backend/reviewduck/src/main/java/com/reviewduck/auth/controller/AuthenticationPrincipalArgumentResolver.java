@@ -13,6 +13,7 @@ import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.auth.support.AuthorizationExtractor;
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.service.MemberService;
 
 import lombok.AllArgsConstructor;
@@ -29,13 +30,13 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public Member resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+    public MemberResponse resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
 
         if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
-            return Member.getMemberNotLogin();
+            return MemberResponse.from(Member.getMemberNotLogin());
         }
 
         String token = AuthorizationExtractor.extract(request);

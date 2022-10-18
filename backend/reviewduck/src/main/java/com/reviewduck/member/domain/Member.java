@@ -17,12 +17,14 @@ import org.hibernate.Hibernate;
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.exception.MemberException;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
+@AllArgsConstructor
 public class Member extends BaseDate {
 
     @Transient
@@ -44,13 +46,13 @@ public class Member extends BaseDate {
 
     private boolean isAdmin;
 
-    public Member(String socialId, String socialNickname, String nickname, String profileUrl) {
+    public Member(Long id, String socialId, String socialNickname, String nickname, String profileUrl) {
+        this(id, socialId, socialNickname, nickname, profileUrl, false);
         validate(nickname);
-        this.socialId = socialId;
-        this.socialNickname = socialNickname;
-        this.nickname = nickname;
-        this.profileUrl = profileUrl;
-        this.isAdmin = false;
+    }
+
+    public Member(String socialId, String socialNickname, String nickname, String profileUrl) {
+        this(null, socialId, socialNickname, nickname, profileUrl);
     }
 
     public static Member getMemberNotLogin() {

@@ -32,12 +32,12 @@ public class MemberController {
     @Operation(summary = "사용자 정보를 조회한다.")
     @GetMapping("/{socialId}")
     @ResponseStatus(HttpStatus.OK)
-    public MemberResponse findMemberInfo(@AuthenticationPrincipal Member member,
+    public MemberResponse findMemberInfo(@AuthenticationPrincipal MemberResponse member,
         @PathVariable String socialId) {
 
         info("/api/members/" + socialId, "GET", "");
 
-        Member foundMember = memberService.getBySocialId(socialId);
+        MemberResponse foundMember = memberService.getBySocialId(socialId);
 
         return MemberResponse.of(foundMember, member);
     }
@@ -45,21 +45,21 @@ public class MemberController {
     @Operation(summary = "본인의 사용자 정보를 조회한다.")
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
-    public MemberResponse findMyInfo(@AuthenticationPrincipal Member member) {
+    public MemberResponse findMyInfo(@AuthenticationPrincipal MemberResponse member) {
 
         info("/api/members/me", "GET", "");
 
-        return MemberResponse.from(member);
+        return member;
     }
 
     @Operation(summary = "본인의 닉네임을 변경한다.")
     @PutMapping("/me")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateMyNickname(@AuthenticationPrincipal Member member, @Valid @RequestBody
+    public void updateMyNickname(@AuthenticationPrincipal MemberResponse member, @Valid @RequestBody
         MemberUpdateNicknameRequest request) {
 
         info("/api/members/me", "PUT", request.toString());
 
-        memberService.updateNickname(member, request.getNickname());
+        memberService.updateNickname(member.toEntity(), request.getNickname());
     }
 }

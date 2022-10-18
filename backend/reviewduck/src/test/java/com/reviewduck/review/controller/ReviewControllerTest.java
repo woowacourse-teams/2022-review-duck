@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 
 import com.reviewduck.controller.ControllerTest;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.review.dto.controller.request.AnswerUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewLikesRequest;
@@ -27,7 +28,7 @@ public class ReviewControllerTest extends ControllerTest {
 
     @BeforeEach
     void createMemberAndGetAccessToken() {
-        Member member = new Member("1", "jason", "제이슨", "profileUrl");
+        MemberResponse member = MemberResponse.from(new Member("1", "jason", "제이슨", "profileUrl"));
         given(jwtTokenProvider.getAccessTokenPayload(any())).willReturn("1");
         given(memberService.findById(any())).willReturn(member);
     }

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
@@ -79,7 +80,7 @@ public class ReviewFormController {
         info("/api/review-forms/" + reviewFormCode, "GET", "");
 
         ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
-        List<Member> participants = memberService.findAllParticipantsByCode(reviewForm);
+        List<MemberResponse> participants = memberService.findAllParticipantsByCode(reviewForm);
 
         return ReviewFormResponse.of(reviewForm, member, participants);
     }

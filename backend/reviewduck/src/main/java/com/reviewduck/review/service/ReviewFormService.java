@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.service.MemberService;
+import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
@@ -35,7 +35,7 @@ public class ReviewFormService {
     private final ReviewRepository reviewRepository;
 
     private final TemplateService templateService;
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public ReviewForm save(Member member, ReviewFormCreateRequest createRequest) {
@@ -69,7 +69,8 @@ public class ReviewFormService {
     }
 
     public Page<ReviewForm> findBySocialId(String socialId, int page, int size) {
-        Member member = memberService.getBySocialId(socialId);
+        Member member = memberRepository.findBySocialId(socialId)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
 
         Sort sort = Sort.by(Sort.Direction.DESC, ReviewFormSortType.LATEST.getSortBy());
         PageRequest pageRequest = PageRequest.of(page, size, sort);

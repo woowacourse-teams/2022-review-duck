@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.review.domain.Review;
 
 import lombok.AccessLevel;
@@ -31,7 +32,8 @@ public class ReviewSheetResponse extends ReviewAbstractResponse {
             Timestamp.valueOf(review.getUpdatedAt()).getTime(),
             review.getLikes(),
             review.isMine(member),
-            CreatorResponse.from(review.getMember()),
+            // todo
+            CreatorResponse.from(MemberResponse.from(review.getMember())),
             contents
         );
     }

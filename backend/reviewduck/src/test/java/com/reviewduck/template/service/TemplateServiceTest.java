@@ -52,10 +52,10 @@ public class TemplateServiceTest {
     @BeforeEach
     void createAndSaveMember() {
         Member tempMember1 = new Member("1", "panda", "제이슨", "testUrl1");
-        member1 = memberService.save(tempMember1);
+        member1 = memberService.save(tempMember1).toEntity();
 
         Member tempMember2 = new Member("2", "ariari", "브리", "testUrl2");
-        member2 = memberService.save(tempMember2);
+        member2 = memberService.save(tempMember2).toEntity();
     }
 
     @Nested

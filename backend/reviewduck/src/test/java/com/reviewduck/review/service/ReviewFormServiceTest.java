@@ -65,10 +65,10 @@ public class ReviewFormServiceTest {
     @BeforeEach
     void setUp() {
         Member tempMember1 = new Member("1", "jason", "제이슨", "testUrl1");
-        member1 = memberService.save(tempMember1);
+        member1 = memberService.save(tempMember1).toEntity();
 
         Member tempMember2 = new Member("2", "woni", "워니", "testUrl2");
-        member2 = memberService.save(tempMember2);
+        member2 = memberService.save(tempMember2).toEntity();
     }
 
     @Nested

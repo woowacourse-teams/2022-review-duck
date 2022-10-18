@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
@@ -26,7 +27,7 @@ import lombok.AllArgsConstructor;
 public class TemplateService {
 
     private final TemplateRepository templateRepository;
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public Template save(Member member, TemplateCreateRequest createRequest) {
@@ -59,8 +60,9 @@ public class TemplateService {
         return templateRepository.findByTemplateTitleContaining(pageRequest, query);
     }
 
-    public Page<Template> findAllBySocialId(String id, int page, int size) {
-        Member member = memberService.getBySocialId(id);
+    public Page<Template> findAllBySocialId(String socialId, int page, int size) {
+        Member member = memberRepository.findBySocialId(socialId)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
 
         Sort sort = Sort.by(Sort.Direction.DESC, TemplateSortType.LATEST.getSortBy());
         PageRequest pageRequest = PageRequest.of(page, size, sort);

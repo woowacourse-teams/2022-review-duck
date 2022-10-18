@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.exception.MemberException;
 
 @SpringBootTest
@@ -32,7 +33,7 @@ public class MemberServiceTest {
     @BeforeEach
     void createAndSaveMember() {
         Member member = new Member("1", "panda", "제이슨", "testUrl");
-        savedMember = memberService.save(member);
+        savedMember = memberService.save(member).toEntity();
     }
 
     @Test
@@ -42,7 +43,7 @@ public class MemberServiceTest {
         Member member = new Member("2", "panda", "제이슨", "testUrl");
 
         // when
-        Member savedMember = memberService.save(member);
+        Member savedMember = memberService.save(member).toEntity();
 
         // then
         assertThat(savedMember).usingRecursiveComparison().isEqualTo(savedMember);
@@ -52,31 +53,7 @@ public class MemberServiceTest {
     @DisplayName("아이디로 멤버를 조회한다.")
     void findMemberById() {
         // when
-        Member foundMember = memberService.findById(savedMember.getId());
-
-        // then
-        assertThat(foundMember).usingRecursiveComparison().isEqualTo(savedMember);
-    }
-
-    @Test
-    @DisplayName("소셜 아이디가 존재하지 않으면 비어있는 Optional 값을 전달한다.")
-    void existsMemberBySocialId() {
-        // when
-        Optional<Member> foundMember1 = memberService.findBySocialId("1");
-        Optional<Member> foundMember2 = memberService.findBySocialId("2");
-
-        // then
-        assertAll(
-            () -> assertThat(foundMember1.isPresent()).isTrue(),
-            () -> assertThat(foundMember2.isPresent()).isFalse()
-        );
-    }
-
-    @Test
-    @DisplayName("소셜 아이디로 멤버를 조회한다.")
-    void findMemberBySocialId() {
-        // when
-        Member foundMember = memberService.findBySocialId(savedMember.getSocialId()).get();
+        Member foundMember = memberService.findById(savedMember.getId()).toEntity();
 
         // then
         assertThat(foundMember).usingRecursiveComparison().isEqualTo(savedMember);

@@ -16,6 +16,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
@@ -51,10 +52,10 @@ public class AdminReviewServiceTest {
     @BeforeEach
     void setUp() {
         Member tempMember1 = new Member("1", "jason", "제이슨", "testUrl1");
-        member1 = memberService.save(tempMember1);
+        member1 = memberService.save(tempMember1).toEntity();
 
         Member tempMember2 = new Member("2", "woni", "워니", "testUrl2");
-        member2 = memberService.save(tempMember2);
+        member2 = memberService.save(tempMember2).toEntity();
 
         String reviewTitle = "title";
         List<ReviewFormQuestionCreateRequest> questions = List.of(
@@ -62,7 +63,8 @@ public class AdminReviewServiceTest {
             new ReviewFormQuestionCreateRequest("question2", "description2"));
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
 
-        this.reviewForm = reviewFormService.save(member1, createRequest);
+        this.reviewForm = reviewFormService.save(new Member(member1.getId(), member1.getSocialId(), member1.getSocialNickname(),
+            member1.getNickname(), member1.getProfileUrl()), createRequest);
     }
 
     @Test

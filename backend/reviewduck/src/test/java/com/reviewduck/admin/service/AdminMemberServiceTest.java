@@ -15,6 +15,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.service.MemberService;
 
 @SpringBootTest
@@ -33,7 +34,7 @@ public class AdminMemberServiceTest {
     @BeforeEach
     void createAndSaveMember() {
         Member member = new Member("1", "panda", "제이슨", "testUrl");
-        savedMember = memberService.save(member);
+        savedMember = memberService.save(member).toEntity();
     }
 
     @Test

@@ -15,12 +15,13 @@ import org.springframework.http.MediaType;
 import com.reviewduck.controller.ControllerTest;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.request.MemberUpdateNicknameRequest;
+import com.reviewduck.member.dto.response.MemberResponse;
 
 public class MemberControllerTest extends ControllerTest {
 
     @BeforeEach
     void createMemberAndGetAccessToken() {
-        Member member = new Member("1", "jason", "제이슨", "profileUrl");
+        MemberResponse member = MemberResponse.from(new Member("1", "jason", "제이슨", "profileUrl"));
         given(jwtTokenProvider.getAccessTokenPayload(any())).willReturn("1");
         given(memberService.findById(any())).willReturn(member);
     }

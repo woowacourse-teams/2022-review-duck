@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.review.domain.ReviewForm;
 
 import lombok.AccessLevel;
@@ -22,7 +23,7 @@ public class ReviewFormResponse {
     private List<ReviewFormQuestionResponse> questions;
     private List<CreatorResponse> participants;
 
-    public static ReviewFormResponse of(ReviewForm reviewForm, Member member, List<Member> participants) {
+    public static ReviewFormResponse of(ReviewForm reviewForm, Member member, List<MemberResponse> participants) {
         List<ReviewFormQuestionResponse> reviewFormQuestionResponse = reviewForm.getQuestions().stream()
             .map(ReviewFormQuestionResponse::from)
             .collect(Collectors.toUnmodifiableList());
@@ -34,7 +35,7 @@ public class ReviewFormResponse {
         return new ReviewFormResponse(
             reviewForm.getTitle(),
             Timestamp.valueOf(reviewForm.getUpdatedAt()).getTime(),
-            CreatorResponse.from(reviewForm.getMember()),
+            CreatorResponse.from(MemberResponse.from(reviewForm.getMember())),
             reviewForm.isMine(member),
             reviewFormQuestionResponse,
             participantsResponse

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 
@@ -37,7 +38,7 @@ public class ReviewResponse extends ReviewAbstractResponse {
             review.getTitle(),
             Timestamp.valueOf(review.getUpdatedAt()).getTime(),
             review.getLikes(),
-            CreatorResponse.from(review.getMember()),
+            CreatorResponse.from(MemberResponse.from(review.getMember())),
             review.isMine(member),
             contents,
             reviewForm.getCode()

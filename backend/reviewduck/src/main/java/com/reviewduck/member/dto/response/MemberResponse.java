@@ -1,5 +1,7 @@
 package com.reviewduck.member.dto.response;
 
+import java.util.Objects;
+
 import com.reviewduck.member.domain.Member;
 
 import lombok.AccessLevel;
@@ -11,6 +13,7 @@ import lombok.Getter;
 public class MemberResponse {
 
     private boolean isMine;
+    private Long id;
     private String socialId;
     private String socialNickname;
     private String nickname;
@@ -19,6 +22,7 @@ public class MemberResponse {
     public static MemberResponse from(Member member) {
         return new MemberResponse(
             true,
+            member.getId(),
             member.getSocialId(),
             member.getSocialNickname(),
             member.getNickname(),
@@ -26,9 +30,10 @@ public class MemberResponse {
         );
     }
 
-    public static MemberResponse of(Member member, Member loginMember) {
+    public static MemberResponse of(MemberResponse member, MemberResponse loginMember) {
         return new MemberResponse(
-            member.equals(loginMember),
+            Objects.equals(member.getId(), loginMember.getId()),
+            member.getId(),
             member.getSocialId(),
             member.getSocialNickname(),
             member.getNickname(),
@@ -38,5 +43,9 @@ public class MemberResponse {
 
     public boolean getIsMine() {
         return isMine;
+    }
+
+    public Member toEntity() {
+        return new Member(id, socialId, socialNickname, nickname, profileUrl);
     }
 }

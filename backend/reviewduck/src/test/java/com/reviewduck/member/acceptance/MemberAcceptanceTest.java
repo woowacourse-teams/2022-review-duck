@@ -19,7 +19,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     void createMemberAndGetAccessToken() {
         Member member = new Member("1", "jason", "제이슨", "profileUrl");
-        savedMember = memberService.save(member);
+        savedMember = memberService.save(member).toEntity();
 
         accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
     }
@@ -33,7 +33,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         void findMyMemberInfo() {
             // given
             Member member = new Member("2", "jason", "제이슨", "profileUrl");
-            Member savedMember = memberService.save(member);
+            MemberResponse savedMember = memberService.save(member);
 
             String accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
 
