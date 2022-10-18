@@ -23,7 +23,7 @@ import { updateReviewLike } from 'api/review.api';
 function ReviewTimelinePage() {
   const [searchParam] = useSearchParams();
 
-  const filterQueryString = searchParam.get('sort');
+  const filterQueryString = searchParam.get(FILTER.SORT);
   const currentTab = isInclude(Object.values(FILTER.TEMPLATE_TAB), filterQueryString)
     ? filterQueryString
     : FILTER.TEMPLATE_TAB.LATEST;
