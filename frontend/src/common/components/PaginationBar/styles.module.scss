@@ -1,6 +1,9 @@
 @import 'styles/@global.scss';
 
 .component-pagination-bar {
+  @include tablet {
+    min-width: 840px;
+  }
   width: 100%;
 
   .page-button-container {
