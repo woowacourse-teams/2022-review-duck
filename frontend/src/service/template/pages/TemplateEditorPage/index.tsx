@@ -103,10 +103,7 @@ function TemplateFormPage() {
 
   return PageSuspense(
     <LayoutContainer className={styles.container}>
-      <FlexContainer
-        className={cn(styles.templateInfoContainer, styles.informationEditor)}
-        gap="large"
-      >
+      <FlexContainer className={styles.informationEditor} gap="large">
         <FlexContainer gap="medium">
           <Text size={14}>템플릿 제목</Text>
           <TextBox
