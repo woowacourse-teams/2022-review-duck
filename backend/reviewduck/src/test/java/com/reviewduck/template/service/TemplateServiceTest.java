@@ -26,6 +26,8 @@ import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
+import com.reviewduck.template.dto.controller.response.MemberTemplateResponse;
+import com.reviewduck.template.dto.controller.response.TemplateSummaryResponse;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")
@@ -117,7 +119,7 @@ public class TemplateServiceTest {
             List<TemplateQuestion> expected = convertRequestToQuestions(questions);
 
             // when
-            Template foundTemplate = templateService.findById(template.getId());
+            TemplateDto foundTemplate = templateService.findById(template.getId());
 
             // then
             assertAll(
@@ -163,12 +165,14 @@ public class TemplateServiceTest {
             int size = 1;
             String sort = "trend";
 
-            List<Template> templates = templateService.findAll(page, size, sort).getContent();
+            List<TemplateSummaryResponse> templates = templateService.findAllByMember(page, size, sort, member1)
+                .getTemplates();
 
             // then
             assertAll(
                 () -> assertThat(templates).hasSize(1),
-                () -> assertThat(templates.get(0)).isEqualTo(template1)
+                () -> assertThat(templates.get(0).getInfo().getId()).isEqualTo(template1.getId()),
+                () -> assertThat(templates.get(0).getInfo().getTitle()).isEqualTo(template1.getTemplateTitle())
             );
         }
 
@@ -185,12 +189,14 @@ public class TemplateServiceTest {
             int size = 1;
             String sort = "latest";
 
-            List<Template> templates = templateService.findAll(page, size, sort).getContent();
+            List<TemplateSummaryResponse> templates = templateService.findAllByMember(page, size, sort, member1)
+                .getTemplates();
 
             // then
             assertAll(
                 () -> assertThat(templates).hasSize(1),
-                () -> assertThat(templates.get(0)).isEqualTo(template2)
+                () -> assertThat(templates.get(0).getInfo().getId()).isEqualTo(template2.getId()),
+                () -> assertThat(templates.get(0).getInfo().getTitle()).isEqualTo(template2.getTemplateTitle())
             );
         }
     }
@@ -215,12 +221,14 @@ public class TemplateServiceTest {
             int size = 1;
             String sort = "trend";
 
-            List<Template> templates = templateService.search(query, page, size, sort).getContent();
+            List<TemplateSummaryResponse> templates = templateService.search(query, page, size, sort, member1)
+                .getTemplates();
 
             // then
             assertAll(
                 () -> assertThat(templates).hasSize(1),
-                () -> assertThat(templates.get(0)).isEqualTo(template1)
+                () -> assertThat(templates.get(0).getInfo().getId()).isEqualTo(template1.getId()),
+                () -> assertThat(templates.get(0).getInfo().getTitle()).isEqualTo(template1.getTemplateTitle())
             );
         }
     }
@@ -244,12 +252,14 @@ public class TemplateServiceTest {
             int page = 0;
             int size = 1;
 
-            List<Template> templates = templateService.findAllBySocialId("1", page, size).getContent();
+            List<MemberTemplateResponse> templates = templateService.findAllBySocialId("1", page, size, true)
+                .getTemplates();
 
             // then
             assertAll(
                 () -> assertThat(templates).hasSize(1),
-                () -> assertThat(templates.get(0)).isEqualTo(template2)
+                () -> assertThat(templates.get(0).getInfo().getId()).isEqualTo(template2.getId()),
+                () -> assertThat(templates.get(0).getInfo().getTitle()).isEqualTo(template2.getTemplateTitle())
             );
         }
 
@@ -257,7 +267,7 @@ public class TemplateServiceTest {
         @DisplayName("존재하지 않는 사용자에 대해 조회할 수 없다.")
         void invalidSocialId() {
             // when, then
-            assertThatThrownBy(() -> templateService.findAllBySocialId("999999", 0, 1))
+            assertThatThrownBy(() -> templateService.findAllBySocialId("999999", 0, 1, false))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 사용자입니다.");
         }
@@ -299,7 +309,7 @@ public class TemplateServiceTest {
                 reviewFormQuestion.setPosition(index++);
             }
 
-            Template updatedTemplate = templateService.findById(template.getId());
+            TemplateDto updatedTemplate = templateService.findById(template.getId());
 
             // then
             assertAll(
@@ -419,6 +429,6 @@ public class TemplateServiceTest {
         List<TemplateQuestionCreateRequest> questions) throws InterruptedException {
         Thread.sleep(1);
         TemplateCreateRequest createRequest = new TemplateCreateRequest(templateTitle, templateDescription, questions);
-        return templateService.save(member, createRequest);
+        return templateService.save(member, createRequest).toEntity();
     }
 }

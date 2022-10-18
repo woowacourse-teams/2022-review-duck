@@ -34,6 +34,7 @@ import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
+import com.reviewduck.template.service.TemplateDto;
 import com.reviewduck.template.service.TemplateService;
 
 @SpringBootTest
@@ -182,7 +183,7 @@ public class ReviewFormServiceTest {
 
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 questions);
-            Template savedTemplate = templateService.save(member1, templateRequest);
+            TemplateDto savedTemplate = templateService.save(member1, templateRequest);
             Long templateId = savedTemplate.getId();
 
             // 초기 수정 시간

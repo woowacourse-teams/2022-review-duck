@@ -134,6 +134,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             saveTemplateAndGetId(accessToken2, "title2");
 
             // when, then
+            // 마지막 페이지인 page=2를 조회한다.
             get("/api/templates/all?page=2&size=1&sort=latest", accessToken1).statusCode(HttpStatus.OK.value())
                 .assertThat().body("numberOfTemplates", equalTo(2))
                 .assertThat().body("templates", hasSize(1))

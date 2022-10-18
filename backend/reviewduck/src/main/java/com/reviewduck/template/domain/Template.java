@@ -53,6 +53,18 @@ public class Template extends BaseDate {
     @Column
     private int usedCount;
 
+    public Template(Long id, Member member, String templateTitle, String templateDescription,
+        List<TemplateQuestionCreateDto> questions, int userCount) {
+        validateWhenCreate(member, templateTitle, templateDescription, questions);
+        this.id = id;
+        this.templateTitle = templateTitle;
+        this.member = member;
+        this.templateDescription = templateDescription;
+        this.usedCount = userCount;
+        this.questions.addAll(createQuestionsFrom(questions));
+        sortQuestions();
+    }
+
     public Template(Member member, String templateTitle, String templateDescription,
         List<TemplateQuestionCreateDto> questions) {
         validateWhenCreate(member, templateTitle, templateDescription, questions);

@@ -22,7 +22,7 @@ import com.reviewduck.review.repository.ReviewFormRepository;
 import com.reviewduck.review.repository.ReviewRepository;
 import com.reviewduck.review.vo.ReviewFormSortType;
 import com.reviewduck.template.domain.Template;
-import com.reviewduck.template.service.TemplateService;
+import com.reviewduck.template.repository.TemplateRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -34,7 +34,7 @@ public class ReviewFormService {
     private final ReviewFormRepository reviewFormRepository;
     private final ReviewRepository reviewRepository;
 
-    private final TemplateService templateService;
+    private final TemplateRepository templateRepository;
     private final MemberRepository memberRepository;
 
     @Transactional
@@ -45,8 +45,9 @@ public class ReviewFormService {
 
     @Transactional
     public ReviewForm saveFromTemplate(Member member, Long templateId) {
-        Template template = templateService.findById(templateId);
-        templateService.increaseUsedCount(templateId);
+        Template template = templateRepository.findById(templateId)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
+        templateRepository.increaseUsedCount(templateId);
 
         List<ReviewFormQuestionCreateDto> questions = template.getQuestions().stream()
             .map(question -> new ReviewFormQuestionCreateDto(question.getValue(), question.getDescription()))
@@ -58,7 +59,7 @@ public class ReviewFormService {
 
     @Transactional
     public ReviewForm saveFromTemplate(Member member, Long templateId, ReviewFormCreateRequest request) {
-        templateService.increaseUsedCount(templateId);
+        templateRepository.increaseUsedCount(templateId);
 
         return save(member, request);
     }

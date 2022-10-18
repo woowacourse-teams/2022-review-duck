@@ -12,10 +12,12 @@ import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
-import com.reviewduck.member.service.MemberService;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
+import com.reviewduck.template.dto.controller.response.MemberTemplatesResponse;
+import com.reviewduck.template.dto.controller.response.TemplateResponse;
+import com.reviewduck.template.dto.controller.response.TemplatesResponse;
 import com.reviewduck.template.repository.TemplateRepository;
 import com.reviewduck.template.vo.TemplateSortType;
 
@@ -30,7 +32,7 @@ public class TemplateService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Template save(Member member, TemplateCreateRequest createRequest) {
+    public TemplateDto save(Member member, TemplateCreateRequest createRequest) {
         Template template = new Template(
             member,
             createRequest.getTemplateTitle(),
@@ -38,41 +40,55 @@ public class TemplateService {
             toTemplateQuestionCreateDtos(createRequest.getQuestions())
         );
 
-        return templateRepository.save(template);
+        Template savedTemplate = templateRepository.save(template);
+        return TemplateDto.from(savedTemplate);
     }
 
-    public Template findById(Long id) {
-        return templateRepository.findById(id)
+    public TemplatesResponse search(String query, int page, int size, String sort, Member member) {
+        String sortType = TemplateSortType.getSortBy(sort);
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+
+        Page<Template> templates = templateRepository.findByTemplateTitleContaining(pageRequest, query);
+        return TemplatesResponse.of(templates, member);
+    }
+
+    public TemplateResponse findById(final Long id, final Member member) {
+        Template template = templateRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
+
+        return TemplateResponse.of(template, member);
     }
 
-    public Page<Template> findAll(int page, int size, String sort) {
+    public TemplateDto findById(final Long id) {
+        Template template = templateRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
+
+        return TemplateDto.from(template);
+    }
+
+    public TemplatesResponse findAllByMember(int page, int size, String sort, Member member) {
         String sortType = TemplateSortType.getSortBy(sort);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
 
-        return templateRepository.findAll(pageRequest);
+        Page<Template> templates = templateRepository.findAll(pageRequest);
+        return TemplatesResponse.of(templates, member);
     }
 
-    public Page<Template> search(String query, int page, int size, String sort) {
-        String sortType = TemplateSortType.getSortBy(sort);
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
-
-        return templateRepository.findByTemplateTitleContaining(pageRequest, query);
-    }
-
-    public Page<Template> findAllBySocialId(String socialId, int page, int size) {
+    public MemberTemplatesResponse findAllBySocialId(String socialId, int page, int size, boolean isMine) {
         Member member = memberRepository.findBySocialId(socialId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
 
         Sort sort = Sort.by(Sort.Direction.DESC, TemplateSortType.LATEST.getSortBy());
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-        return templateRepository.findByMember(pageRequest, member);
+        Page<Template> templates = templateRepository.findByMember(pageRequest, member);
+        return MemberTemplatesResponse.of(templates, socialId, isMine);
     }
 
     @Transactional
-    public Template update(Member member, Long id, TemplateUpdateRequest templateUpdateRequest) {
-        Template template = findById(id);
+    public void update(Member member, Long id, TemplateUpdateRequest templateUpdateRequest) {
+        Template template = templateRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
         validateTemplateIsMine(template, member, "본인이 생성한 템플릿이 아니면 수정할 수 없습니다.");
 
         template.update(
@@ -80,8 +96,6 @@ public class TemplateService {
             templateUpdateRequest.getTemplateDescription(),
             toTemplateQuestionUpdateDtos(templateUpdateRequest.getQuestions())
         );
-
-        return template;
     }
 
     @Transactional
@@ -91,7 +105,8 @@ public class TemplateService {
 
     @Transactional
     public void deleteById(Member member, Long id) {
-        Template template = findById(id);
+        Template template = templateRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
         validateTemplateIsMine(template, member, "본인이 생성한 템플릿이 아니면 삭제할 수 없습니다.");
 
         templateRepository.delete(template);
