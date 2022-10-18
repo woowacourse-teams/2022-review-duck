@@ -20,7 +20,6 @@ function PageRoutes() {
       <Route element={<MainLayout />}>
         <Route index element={<MainPage />} />
 
-        <Route path={`${PAGE_LIST.USER_PROFILE}/:socialId`} element={<SplitPages.ProfilePage />} />
         <Route path={PAGE_LIST.TIMELINE} element={<SplitPages.ReviewTimelinePage />} />
 
         <Route path={PAGE_LIST.TEMPLATE_LIST} element={<SplitPages.TemplateListPage />} />
@@ -37,6 +36,7 @@ function PageRoutes() {
           />
         </Route>
 
+        <Route path={`${PAGE_LIST.USER_PROFILE}/:socialId`} element={<SplitPages.ProfilePage />} />
         {/* 데모 데이용 */}
         <Route
           path="/pending"
