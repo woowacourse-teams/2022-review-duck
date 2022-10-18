@@ -1,8 +1,28 @@
 @import 'styles/@global.scss';
 
 .component-page-header {
+  @include mobile {
+    flex-direction: column;
+    padding: 1.5rem;
+    gap: 1rem;
+  }
+
+  @include tablet {
+    min-width: 800px;
+  }
+
   width: 100%;
   padding: 2.5rem 0;
+
+  .title {
+    @include mobile {
+      font-size: 1.4rem;
+    }
+
+    word-break: keep-all;
+    line-height: 130%;
+    white-space: pre-wrap;
+  }
 
   .article-info {
     color: $THEME_COLOR_THEME_TEXT_600;

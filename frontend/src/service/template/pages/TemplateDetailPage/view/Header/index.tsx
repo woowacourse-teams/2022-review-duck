@@ -39,7 +39,7 @@ interface TitleProps {
 function Title({ usedCount, nickname, elapsedTime, children }: TitleProps) {
   return (
     <FlexContainer gap="medium">
-      <Text as="h1" size={28} weight="bold">
+      <Text className={styles.title} as="h1" size={28} weight="bold">
         {children}
       </Text>
 
