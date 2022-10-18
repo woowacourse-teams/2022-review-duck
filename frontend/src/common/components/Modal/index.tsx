@@ -23,7 +23,7 @@ function Modal({ isVisible, onCloseModal, children }: ModalProps) {
 
   return (
     <TransitionDiv
-      className={styles.dimmer}
+      className={styles.componentModal}
       all="fade"
       duration={200}
       isVisible={isDimmerVisible}
