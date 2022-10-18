@@ -12,4 +12,6 @@ public interface AdminMemberRepository extends Repository<Member, Long> {
     List<Member> findAll();
 
     Optional<Member> findById(Long memberId);
+
+    Optional<Member> findBySocialId(String socialId);
 }

@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 @RestController
 @AllArgsConstructor
 public class WebRestController {
+
     private final Environment env;
 
     @Operation(summary = "스프링 프로파일을 조회한다.")

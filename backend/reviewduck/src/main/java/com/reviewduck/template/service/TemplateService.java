@@ -2,6 +2,9 @@ package com.reviewduck.template.service;
 
 import static com.reviewduck.template.dto.service.ServiceDtoConverter.*;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -40,11 +43,13 @@ public class TemplateService {
         return templateRepository.save(template);
     }
 
+    @Cacheable(value = "templateCacheStore", key = "#id")
     public Template findById(Long id) {
         return templateRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
     }
 
+    @Cacheable(value = "templateCacheStore", key = "#page + #size + #sort")
     public Page<Template> findAll(int page, int size, String sort) {
         String sortType = TemplateSortType.getSortBy(sort);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
@@ -52,6 +57,7 @@ public class TemplateService {
         return templateRepository.findAll(pageRequest);
     }
 
+    @Cacheable(value = "templateCacheStore", key = "#query + #page + #size + #sort")
     public Page<Template> search(String query, int page, int size, String sort) {
         String sortType = TemplateSortType.getSortBy(sort);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
@@ -59,6 +65,7 @@ public class TemplateService {
         return templateRepository.findByTemplateTitleContaining(pageRequest, query);
     }
 
+    @Cacheable(value = "templateCacheStore", key = "#id + #size + #sort")
     public Page<Template> findAllBySocialId(String id, int page, int size) {
         Member member = memberService.getBySocialId(id);
 
@@ -69,6 +76,7 @@ public class TemplateService {
     }
 
     @Transactional
+    @CachePut(value = "templateCacheStore", key = "#id")
     public Template update(Member member, Long id, TemplateUpdateRequest templateUpdateRequest) {
         Template template = findById(id);
         validateTemplateIsMine(template, member, "본인이 생성한 템플릿이 아니면 수정할 수 없습니다.");
@@ -83,11 +91,13 @@ public class TemplateService {
     }
 
     @Transactional
+    @CachePut(value = "templateCacheStore", key = "#templateId")
     public void increaseUsedCount(Long templateId) {
         templateRepository.increaseUsedCount(templateId);
     }
 
     @Transactional
+    @CacheEvict(value = "templateCacheStore", key = "#id")
     public void deleteById(Member member, Long id) {
         Template template = findById(id);
         validateTemplateIsMine(template, member, "본인이 생성한 템플릿이 아니면 삭제할 수 없습니다.");

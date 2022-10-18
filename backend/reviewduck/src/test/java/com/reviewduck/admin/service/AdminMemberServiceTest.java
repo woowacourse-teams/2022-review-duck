@@ -55,7 +55,7 @@ public class AdminMemberServiceTest {
     @DisplayName("멤버를 삭제한다.")
     void deleteMember() {
         // when
-        adminMemberService.deleteMemberById(savedMember.getId());
+        adminMemberService.deleteMember(savedMember);
 
         List<Member> members = adminMemberService.findAllMembers();
 
@@ -68,7 +68,7 @@ public class AdminMemberServiceTest {
     @DisplayName("존재하지 않는 멤버를 삭제할 수 없다.")
     void failToDeleteMember() {
         // when, then
-        assertThatThrownBy(() -> adminMemberService.deleteMemberById(9999L))
+        assertThatThrownBy(() -> adminMemberService.deleteMember(new Member("9999", "1231412", "가짜", "falseUrl")))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 사용자입니다.");
     }

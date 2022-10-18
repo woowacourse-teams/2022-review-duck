@@ -3,6 +3,7 @@ package com.reviewduck.review.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -39,7 +40,8 @@ public class ReviewFormService {
 
     @Transactional
     public ReviewForm save(Member member, ReviewFormCreateRequest createRequest) {
-        ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewFormTitle(), ServiceDtoConverter.toReviewFormQuestionCreateDtos(createRequest.getQuestions()));
+        ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewFormTitle(),
+            ServiceDtoConverter.toReviewFormQuestionCreateDtos(createRequest.getQuestions()));
         return reviewFormRepository.save(reviewForm);
     }
 

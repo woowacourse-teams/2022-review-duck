@@ -64,7 +64,8 @@ public class AdminMemberController {
         Logging.info("api/admin/members/" + memberId, "DELETE", "");
 
         validateAdmin(member);
-        adminMemberService.deleteMemberById(memberId);
+
+        adminMemberService.deleteMember(member);
     }
 
     private void validateAdmin(Member member) {

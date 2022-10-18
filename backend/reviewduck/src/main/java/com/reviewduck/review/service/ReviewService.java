@@ -3,6 +3,7 @@ package com.reviewduck.review.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -40,6 +41,7 @@ public class ReviewService {
     private final MemberService memberService;
 
     @Transactional
+    @CacheEvict(value = "memberCacheStore", key = "#code")
     public Review save(Member member, String code, ReviewCreateRequest request) {
         ReviewForm reviewForm = reviewFormService.findByCode(code);
         List<QuestionAnswerCreateDto> questionAnswerCreateDtos = getReviewCreateDtos(request);
