@@ -27,9 +27,11 @@ function MainLayout() {
     <div className={styles.layoutMain}>
       <Header />
 
-      <Text as="h1" className={styles.pageTitle} weight="bold">
-        반가워요! 덕회고님 👋
-      </Text>
+      {isMobile && (
+        <Text as="h1" className={styles.pageTitle} weight="bold">
+          반가워요! 덕회고님 👋
+        </Text>
+      )}
 
       <main className={styles.main}>
         <ErrorBoundary fallback={ErrorPage}>
