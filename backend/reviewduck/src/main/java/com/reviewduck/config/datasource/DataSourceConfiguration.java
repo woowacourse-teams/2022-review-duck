@@ -3,6 +3,7 @@ package com.reviewduck.config.datasource;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.flyway.FlywayDataSource;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
@@ -17,9 +18,10 @@ public class DataSourceConfiguration {
     static final String REPLICA = "REPLICA";
 
     @Bean
+    @FlywayDataSource
     @Qualifier(SOURCE)
-    @ConfigurationProperties("spring.datasource.source.hikari")
-    public DataSource sourceDataSource(){
+    @ConfigurationProperties(prefix = "spring.datasource.source.hikari")
+    public DataSource sourceDataSource() {
         return DataSourceBuilder.create()
             .type(HikariDataSource.class)
             .build();
@@ -27,8 +29,8 @@ public class DataSourceConfiguration {
 
     @Bean
     @Qualifier(REPLICA)
-    @ConfigurationProperties("spring.datasource.replica.hikari")
-    public DataSource replicaDataSource(){
+    @ConfigurationProperties(prefix = "spring.datasource.replica.hikari")
+    public DataSource replicaDataSource() {
         return DataSourceBuilder.create()
             .type(HikariDataSource.class)
             .build();
