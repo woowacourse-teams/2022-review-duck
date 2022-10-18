@@ -15,6 +15,10 @@
   box-shadow: 0 0 2rem $GLOBAL_COLOR_BLACK_50;
 
   .navbar {
+    @include tablet {
+      width: 920px;
+    }
+
     width: 1056px;
     padding: 0 1rem;
     margin: 0 auto;

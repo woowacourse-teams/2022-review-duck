@@ -1,6 +1,13 @@
 @import 'styles/@global.scss';
 
 .component-side-menu {
+  @include mobile {
+    z-index: 1;
+    backdrop-filter: blur(0.6rem);
+    background-color: $THEME-COLOR-THEME-BACKGROUND-BLUR;
+    top: 5.2rem;
+  }
+
   position: sticky;
   top: 7.6rem; /* 레이아웃 헤더 Sass Variable 선언 처리하기 */
   align-self: start;

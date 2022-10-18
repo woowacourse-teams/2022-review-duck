@@ -1,6 +1,10 @@
 @import 'styles/@global.scss';
 
 .container {
+  @include mobile {
+    display: block;
+  }
+
   position: relative;
   display: grid;
   padding: 2rem 0;
