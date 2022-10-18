@@ -1,6 +1,6 @@
 @import 'styles/@global.scss';
 
-.dimmer {
+.component-modal {
   position: fixed;
   width: 100%;
   height: 100%;
@@ -12,6 +12,12 @@
   background-color: $GLOBAL_COLOR_BLACK_700;
   backdrop-filter: blur(0.2rem);
   z-index: 10;
+
+  @include mobile {
+    display: flex;
+    align-items: flex-end;
+    padding: 1rem 1rem 2.5rem;
+  }
 }
 
 .container {
@@ -25,4 +31,8 @@
   background-color: $THEME_COLOR_THEME_BACKGROUND_100;
   box-shadow: 0 0 10rem 0.5rem $GLOBAL_COLOR_BLACK_500;
   border-radius: $GLOBAL_BORDERRADIUS_XLARGE;
+
+  @include mobile {
+    width: 100%;
+  }
 }

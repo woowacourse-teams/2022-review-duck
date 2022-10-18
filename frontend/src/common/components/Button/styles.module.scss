@@ -99,16 +99,28 @@
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
   font-weight: lighter;
+
+  @include mobile {
+    padding: 0.75rem;
+  }
 }
 
 .medium {
   padding: 0.625rem 1rem;
   font-size: 1rem;
+
+  @include mobile {
+    padding: 1rem;
+  }
 }
 
 .large {
   padding: 0.825rem 1.25rem;
   font-size: 1rem;
+
+  @include mobile {
+    padding: 1.25rem;
+  }
 }
 
 .ripple-effect {
