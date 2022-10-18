@@ -2,6 +2,7 @@ package com.reviewduck.template.repository;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,11 +14,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.jdbc.Sql;
+import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.config.JpaAuditingConfig;
@@ -27,9 +33,16 @@ import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.domain.TemplateQuestion;
 import com.reviewduck.template.dto.service.TemplateQuestionCreateDto;
 
+@Testcontainers
 @DataJpaTest
+@AutoConfigureTestDatabase(replace = Replace.NONE)
 @Import(JpaAuditingConfig.class)
+@Sql("classpath:truncate.sql")
 public class TemplateRepositoryTest {
+
+    @Container
+    private static final MySQLContainer<?> MYSQL_CONTAINER = new MySQLContainer("mysql")
+        .withDatabaseName("test_db");
 
     private final List<TemplateQuestionCreateDto> questions1 = List.of(
         new TemplateQuestionCreateDto("question1", "description1"),
@@ -40,6 +53,11 @@ public class TemplateRepositoryTest {
         new TemplateQuestionCreateDto("question3", "description3"),
         new TemplateQuestionCreateDto("question4", "description4")
     );
+
+    static {
+        MYSQL_CONTAINER.start();
+        MYSQL_CONTAINER.withReuse(true);
+    }
 
     @Autowired
     private TemplateRepository templateRepository;
@@ -114,7 +132,7 @@ public class TemplateRepositoryTest {
         // then
         assertAll(
             () -> assertThat(templates).hasSize(1),
-            () -> assertThat(templates.get(0)).isEqualTo(template2)
+            () -> assertThat(templates.get(0).getId()).isEqualTo(template2.getId())
         );
     }
 
@@ -134,7 +152,7 @@ public class TemplateRepositoryTest {
         // then
         assertAll(
             () -> assertThat(templates).hasSize(1),
-            () -> assertThat(templates.get(0)).isEqualTo(template2)
+            () -> assertThat(templates.get(0).getId()).isEqualTo(template2.getId())
         );
     }
 
@@ -193,7 +211,7 @@ public class TemplateRepositoryTest {
         assertThat(template.getUsedCount()).isEqualTo(1);
     }
 
-    private Template saveTemplate(Member member, List<TemplateQuestionCreateDto> questions) throws
+    private synchronized Template saveTemplate(Member member, List<TemplateQuestionCreateDto> questions) throws
         InterruptedException {
         Thread.sleep(1);
         Template template = new Template(member, "title", "description", questions);
