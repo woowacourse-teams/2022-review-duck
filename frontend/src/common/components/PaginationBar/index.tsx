@@ -1,36 +1,42 @@
-import { HTMLAttributes, useEffect, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useEffect, useMemo } from 'react';
 
 import cn from 'classnames';
-import { FILTER } from 'constant';
 
 import styles from './styles.module.scss';
 
 import FlexContainer from '../FlexContainer';
 
-export interface PaginationBarProps extends HTMLAttributes<HTMLDivElement> {
-  visiblePageButtonLength: number;
+export interface PaginationBarProps extends React.HTMLAttributes<HTMLDivElement> {
+  visiblePageButtonLength?: number;
   itemCountInPage: number;
   totalItemCount: number;
-  focusedPage: number;
+  focusedPage?: number;
+  scrollReset?: boolean;
   onClickPageButton: (pageNumber: number) => void;
 }
 
 function PaginationBar({
   className,
-  visiblePageButtonLength,
+  visiblePageButtonLength = 5,
   itemCountInPage,
   totalItemCount,
-  focusedPage,
+  focusedPage = 1,
+  scrollReset = true,
   onClickPageButton,
   ...args
 }: PaginationBarProps) {
   const totalPageLength = Math.ceil(totalItemCount / itemCountInPage);
-  const [searchParams, setSearchParams] = useSearchParams();
 
   const isFirstPage = focusedPage === 1;
   const isLastPage = focusedPage === totalPageLength;
-  const isCurrentPage = (pageNumber: number) => focusedPage === pageNumber;
+
+  useEffect(
+    function resetPreviousScroll() {
+      if (!scrollReset) return;
+      window.scrollTo(0, 0);
+    },
+    [scrollReset, focusedPage],
+  );
 
   const currentPageNumbers: number[] = useMemo(() => {
     const totalPageStack = Math.ceil(totalPageLength / visiblePageButtonLength);
@@ -55,18 +61,13 @@ function PaginationBar({
     );
   }, [totalPageLength, visiblePageButtonLength, focusedPage]);
 
+  if (totalItemCount === 0) return <></>;
+
+  const isFocusedPage = (pageNumber: number) => focusedPage === pageNumber;
+
   const handleClickPageButton = (pageNumber: number) => () => {
     onClickPageButton(pageNumber);
   };
-
-  useEffect(() => {
-    if (focusedPage > totalPageLength) {
-      setSearchParams({});
-      window.scrollTo(0, 0);
-    }
-  }, [focusedPage, totalItemCount]);
-
-  if (totalItemCount === 0) return <></>;
 
   return (
     <FlexContainer
@@ -95,10 +96,10 @@ function PaginationBar({
           <button
             key={pageNumber}
             className={cn(styles.pageButton, {
-              [styles.currentPage]: isCurrentPage(pageNumber),
+              [styles.currentPage]: isFocusedPage(pageNumber),
             })}
             onClick={handleClickPageButton(pageNumber)}
-            disabled={isCurrentPage(pageNumber)}
+            disabled={isFocusedPage(pageNumber)}
           >
             {pageNumber}
           </button>
@@ -122,10 +123,5 @@ function PaginationBar({
     </FlexContainer>
   );
 }
-
-PaginationBar.defaultProps = {
-  visiblePageButtonLength: 5,
-  focusedPage: 1,
-};
 
 export default PaginationBar;
