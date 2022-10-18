@@ -1,6 +1,10 @@
 @import 'styles/@global.scss';
 
 .container {
+  @include mobile {
+    width: 48%;
+  }
+
   cursor: pointer;
   width: 23.5%;
 

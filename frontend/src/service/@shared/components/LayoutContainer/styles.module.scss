@@ -1,4 +1,10 @@
+@import 'styles/responsive.scss';
+
 .container {
+  @include mobile {
+    width: 100%;
+  }
+
   position: relative;
   width: 1056px;
   padding: 0 1rem;
