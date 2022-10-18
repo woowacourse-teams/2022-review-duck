@@ -1,6 +1,11 @@
 @import 'styles/@global.scss';
 
 .container {
+  position: relative;
+  width: 1056px;
+  padding: 0 1rem;
+  margin: 0 auto;
+
   @include tablet {
     width: 100%;
     min-width: 600px;
@@ -8,11 +13,6 @@
 
   @include mobile {
     width: 100%;
-    padding: 0;
+    padding: 0 1.5rem;
   }
-
-  position: relative;
-  width: 1056px;
-  padding: 0 1rem;
-  margin: 0 auto;
 }
