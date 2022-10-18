@@ -11,7 +11,7 @@ import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class MemberResponse {
+public class MemberDto {
 
     private boolean isMine;
     private Long id;
@@ -22,8 +22,8 @@ public class MemberResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static MemberResponse from(Member member) {
-        return new MemberResponse(
+    public static MemberDto from(Member member) {
+        return new MemberDto(
             true,
             member.getId(),
             member.getSocialId(),
@@ -35,8 +35,8 @@ public class MemberResponse {
         );
     }
 
-    public static MemberResponse of(MemberResponse member, MemberResponse loginMember) {
-        return new MemberResponse(
+    public static MemberDto of(MemberDto member, MemberDto loginMember) {
+        return new MemberDto(
             Objects.equals(member.getId(), loginMember.getId()),
             member.getId(),
             member.getSocialId(),

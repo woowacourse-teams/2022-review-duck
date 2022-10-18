@@ -16,16 +16,15 @@ import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
-import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.service.ReviewDto;
+import com.reviewduck.review.dto.service.ReviewFormDto;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
@@ -46,7 +45,7 @@ public class AdminReviewServiceTest {
     @Autowired
     private MemberService memberService;
 
-    private ReviewForm reviewForm;
+    private ReviewFormDto reviewForm;
     private Member member1;
     private Member member2;
 
@@ -64,8 +63,8 @@ public class AdminReviewServiceTest {
             new ReviewFormQuestionCreateRequest("question2", "description2"));
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
 
-        this.reviewForm = reviewFormService.save(new Member(member1.getId(), member1.getSocialId(), member1.getSocialNickname(),
-            member1.getNickname(), member1.getProfileUrl()), createRequest);
+        String reviewFormCode = reviewFormService.save(member1, createRequest).getReviewFormCode();
+        this.reviewForm = reviewFormService.findByCode(reviewFormCode);
     }
 
     @Test

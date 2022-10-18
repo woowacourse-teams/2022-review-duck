@@ -1,9 +1,6 @@
 package com.reviewduck.member.service;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -17,7 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.exception.MemberException;
 
 @SpringBootTest
@@ -64,7 +60,7 @@ public class MemberServiceTest {
     @DisplayName("올바르지 않은 닉네임으로 변경할 수 없다.")
     void updateToInvalidNickname(String nicknameToUpdate) {
         // when, then
-        assertThatThrownBy(() -> memberService.updateNickname(savedMember, nicknameToUpdate))
+        assertThatThrownBy(() -> memberService.updateNickname(savedMember.getId(), nicknameToUpdate))
             .isInstanceOf(MemberException.class)
             .hasMessageContaining("닉네임이 비어있을 수 없습니다.");
     }

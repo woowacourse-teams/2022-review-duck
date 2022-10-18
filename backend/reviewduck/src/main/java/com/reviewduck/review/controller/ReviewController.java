@@ -5,7 +5,6 @@ import static com.reviewduck.common.vo.PageConstant.*;
 
 import javax.validation.Valid;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,20 +18,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reviewduck.auth.support.AuthenticationPrincipal;
-import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.dto.response.MemberResponse;
-import com.reviewduck.review.domain.Review;
-import com.reviewduck.review.domain.ReviewForm;
+import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.review.dto.controller.request.ReviewLikesRequest;
 import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
 import com.reviewduck.review.dto.controller.response.ReviewEditResponse;
-import com.reviewduck.review.dto.controller.response.ReviewEditResponseBuilder;
 import com.reviewduck.review.dto.controller.response.ReviewLikesResponse;
-import com.reviewduck.review.dto.controller.response.ReviewNonSynchronizedResponse;
-import com.reviewduck.review.dto.controller.response.ReviewSynchronizedResponse;
 import com.reviewduck.review.dto.controller.response.ReviewsResponse;
 import com.reviewduck.review.dto.controller.response.TimelineReviewsResponse;
-import com.reviewduck.review.dto.service.ReviewDto;
 import com.reviewduck.review.service.ReviewService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,7 +40,7 @@ public class ReviewController {
     @Operation(summary = "회고 답변 수정을 위해 특정한 회고 답변을 조회한다.")
     @GetMapping("/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewEditResponse findById(@AuthenticationPrincipal MemberResponse member, @PathVariable Long reviewId) {
+    public ReviewEditResponse findById(@AuthenticationPrincipal MemberDto member, @PathVariable Long reviewId) {
 
         info("/api/reviews/" + reviewId, "GET", "");
 
@@ -58,7 +50,7 @@ public class ReviewController {
     @Operation(summary = "사용자가 작성한 회고 답변을 모두 조회한다.")
     @GetMapping(params = "member")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewsResponse findBySocialId(@AuthenticationPrincipal MemberResponse member,
+    public ReviewsResponse findBySocialId(@AuthenticationPrincipal MemberDto member,
         @RequestParam(value = "member") String socialId,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
         @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size
@@ -66,13 +58,13 @@ public class ReviewController {
 
         info("/api/reviews?member=" + socialId + "&page=" + page + "&size=" + size, "GET", "");
 
-        return reviewService.findBySocialId(socialId, member.toEntity(), - 1, size);
+        return reviewService.findAllBySocialId(socialId, member.toEntity(), - 1, size);
     }
 
     @Operation(summary = "비밀글이 아닌 회고 답변을 모두 조회한다.")
     @GetMapping("/public")
     @ResponseStatus(HttpStatus.OK)
-    public TimelineReviewsResponse findAllPublic(@AuthenticationPrincipal MemberResponse member,
+    public TimelineReviewsResponse findAllPublic(@AuthenticationPrincipal MemberDto member,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
         @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
         @RequestParam(required = false, defaultValue = "latest") String sort) {
@@ -85,7 +77,7 @@ public class ReviewController {
     @Operation(summary = "회고 답변을 수정한다.")
     @PutMapping("/{reviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@AuthenticationPrincipal MemberResponse member, @PathVariable Long reviewId,
+    public void update(@AuthenticationPrincipal MemberDto member, @PathVariable Long reviewId,
         @RequestBody @Valid ReviewUpdateRequest request) {
 
         info("/api/reviews/" + reviewId, "PUT", request.toString());
@@ -96,7 +88,7 @@ public class ReviewController {
     @Operation(summary = "회고 답변을 삭제한다.")
     @DeleteMapping("/{reviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@AuthenticationPrincipal MemberResponse member, @PathVariable Long reviewId) {
+    public void delete(@AuthenticationPrincipal MemberDto member, @PathVariable Long reviewId) {
 
         info("/api/reviews/" + reviewId, "DELETE", "");
 

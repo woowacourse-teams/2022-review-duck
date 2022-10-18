@@ -27,13 +27,13 @@ import com.reviewduck.review.dto.controller.request.AnswerUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
-import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
-import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
 import com.reviewduck.review.dto.controller.response.ReviewResponse;
 import com.reviewduck.review.dto.controller.response.ReviewSummaryResponse;
 import com.reviewduck.review.dto.controller.response.ReviewsResponse;
 import com.reviewduck.review.dto.service.ReviewDto;
+import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
+import com.reviewduck.review.repository.ReviewFormRepository;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")
@@ -43,7 +43,7 @@ public class ReviewServiceTest {
     private static final String invalidCode = "aaaaaaaa";
 
     @Autowired
-    private ReviewFormService reviewFormService;
+    private ReviewFormRepository reviewFormRepository;
     @Autowired
     private ReviewService reviewService;
     @Autowired
@@ -63,13 +63,14 @@ public class ReviewServiceTest {
         member2 = memberService.save(tempMember2).toEntity();
 
         String reviewTitle = "title";
-        List<ReviewFormQuestionCreateRequest> questions = List.of(
-            new ReviewFormQuestionCreateRequest("question1", "description1"),
-            new ReviewFormQuestionCreateRequest("question2", "description2"));
-        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
+        List<ReviewFormQuestionCreateDto> questions = List.of(
+            new ReviewFormQuestionCreateDto("question1", "description1"),
+            new ReviewFormQuestionCreateDto("question2", "description2"));
 
-        this.reviewForm1 = reviewFormService.save(member1, createRequest);
-        this.reviewForm2 = reviewFormService.save(member2, createRequest);
+        ReviewForm reviewForm1 = new ReviewForm(member1, reviewTitle, questions);
+        ReviewForm reviewForm2 = new ReviewForm(member1, reviewTitle, questions);
+        this.reviewForm1 = reviewFormRepository.save(reviewForm1);
+        this.reviewForm2 = reviewFormRepository.save(reviewForm2);
     }
 
     @Nested
@@ -180,7 +181,7 @@ public class ReviewServiceTest {
             // when
             int page = 0;
             int size = 3;
-            ReviewsResponse reviewsResponse = reviewService.findBySocialId(member1.getSocialId(), member2, page,
+            ReviewsResponse reviewsResponse = reviewService.findAllBySocialId(member1.getSocialId(), member2, page,
                 size);
             List<ReviewSummaryResponse> myReviews = reviewsResponse.getReviews();
             // then
@@ -203,7 +204,7 @@ public class ReviewServiceTest {
             // when
             int page = 0;
             int size = 3;
-            ReviewsResponse reviewsResponse = reviewService.findBySocialId(member1.getSocialId(), member2, page,
+            ReviewsResponse reviewsResponse = reviewService.findAllBySocialId(member1.getSocialId(), member2, page,
                 size);
             List<ReviewSummaryResponse> myReviews = reviewsResponse.getReviews();
 
@@ -223,10 +224,10 @@ public class ReviewServiceTest {
             ReviewDto savedReview = saveReview(reviewForm1, member1, false);
 
             // when
-            reviewFormService.deleteByCode(member1, reviewForm1.getCode());
+            reviewFormRepository.delete(reviewForm1);
             int page = 0;
             int size = 3;
-            ReviewsResponse reviewsResponse = reviewService.findBySocialId(member1.getSocialId(), member2, page,
+            ReviewsResponse reviewsResponse = reviewService.findAllBySocialId(member1.getSocialId(), member2, page,
                 size);
             List<ReviewSummaryResponse> reviews = reviewsResponse.getReviews();
 

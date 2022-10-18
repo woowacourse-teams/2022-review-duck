@@ -15,7 +15,6 @@ import org.springframework.http.HttpStatus;
 
 import com.reviewduck.acceptance.AcceptanceTest;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;

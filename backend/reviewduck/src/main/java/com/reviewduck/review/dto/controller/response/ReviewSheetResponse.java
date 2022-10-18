@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.Objects;
 
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.dto.response.MemberResponse;
+import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.review.domain.Review;
-import com.reviewduck.review.dto.service.ReviewDto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -35,7 +34,7 @@ public class ReviewSheetResponse extends ReviewAbstractResponse {
             review.getLikes(),
             Objects.equals(review.getMember().getId(), member.getId()),
             // todo
-            CreatorResponse.from(MemberResponse.from(review.getMember())),
+            CreatorResponse.from(MemberDto.from(review.getMember())),
             contents
         );
     }

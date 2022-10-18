@@ -14,9 +14,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reviewduck.auth.support.AuthenticationPrincipal;
-import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.request.MemberUpdateNicknameRequest;
-import com.reviewduck.member.dto.response.MemberResponse;
+import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.member.service.MemberService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,20 +31,20 @@ public class MemberController {
     @Operation(summary = "사용자 정보를 조회한다.")
     @GetMapping("/{socialId}")
     @ResponseStatus(HttpStatus.OK)
-    public MemberResponse findMemberInfo(@AuthenticationPrincipal MemberResponse member,
+    public MemberDto findMemberInfo(@AuthenticationPrincipal MemberDto member,
         @PathVariable String socialId) {
 
         info("/api/members/" + socialId, "GET", "");
 
-        MemberResponse foundMember = memberService.getBySocialId(socialId);
+        MemberDto foundMember = memberService.getBySocialId(socialId);
 
-        return MemberResponse.of(foundMember, member);
+        return MemberDto.of(foundMember, member);
     }
 
     @Operation(summary = "본인의 사용자 정보를 조회한다.")
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
-    public MemberResponse findMyInfo(@AuthenticationPrincipal MemberResponse member) {
+    public MemberDto findMyInfo(@AuthenticationPrincipal MemberDto member) {
 
         info("/api/members/me", "GET", "");
 
@@ -55,11 +54,11 @@ public class MemberController {
     @Operation(summary = "본인의 닉네임을 변경한다.")
     @PutMapping("/me")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateMyNickname(@AuthenticationPrincipal MemberResponse member, @Valid @RequestBody
+    public void updateMyNickname(@AuthenticationPrincipal MemberDto member, @Valid @RequestBody
         MemberUpdateNicknameRequest request) {
 
         info("/api/members/me", "PUT", request.toString());
 
-        memberService.updateNickname(member.toEntity(), request.getNickname());
+        memberService.updateNickname(member.getId(), request.getNickname());
     }
 }
