@@ -13,6 +13,7 @@ export interface PaginationBarProps extends React.HTMLAttributes<HTMLDivElement>
   focusedPage?: number;
   scrollReset?: boolean;
   onClickPageButton: (pageNumber: number) => void;
+  onPageError?: () => void;
 }
 
 function PaginationBar({
@@ -23,6 +24,7 @@ function PaginationBar({
   focusedPage = 1,
   scrollReset = true,
   onClickPageButton,
+  onPageError,
   ...args
 }: PaginationBarProps) {
   const totalPageLength = Math.ceil(totalItemCount / itemCountInPage);
@@ -36,6 +38,17 @@ function PaginationBar({
       window.scrollTo(0, 0);
     },
     [scrollReset, focusedPage],
+  );
+
+  useEffect(
+    function handleError() {
+      return () => {
+        if (onPageError) {
+          onPageError();
+        }
+      };
+    },
+    [focusedPage, onPageError],
   );
 
   const currentPageNumbers: number[] = useMemo(() => {

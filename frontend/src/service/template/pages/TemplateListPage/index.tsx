@@ -26,7 +26,8 @@ function TemplateListPage() {
   const navigate = useNavigate();
 
   const pageNumberParams = searchParam.get(FILTER.PAGE);
-  const pageNumber = isNumberString(pageNumberParams) ? Number(pageNumberParams) : 1;
+  const pageNumber =
+    isNumberString(pageNumberParams) && Number(pageNumberParams) > 0 ? Number(pageNumberParams) : 1;
 
   const filterQueryString = searchParam.get(FILTER.SORT);
   const searchQueryString = searchParam.get(FILTER.SEARCH) || '';
@@ -53,13 +54,21 @@ function TemplateListPage() {
     navigate(PAGE_LIST.TEMPLATE_FORM);
   };
 
-  const handleClickPagination = (pageNumber: number) => {
+  const handleClickPagination = (pageNumber: number, replace = false) => {
     if (searchQueryString) {
-      setSearchParam({ search: searchQueryString, page: String(pageNumber) });
+      setSearchParam({ search: searchQueryString, page: String(pageNumber) }, { replace });
     } else {
-      setSearchParam({ sort: currentTab, page: String(pageNumber) });
+      setSearchParam({ sort: currentTab, page: String(pageNumber) }, { replace });
     }
-    window.scrollTo(0, 0);
+  };
+
+  const handlePageError = () => {
+    const totalPageLength = Math.ceil(numberOfTemplates / PAGE_OPTION.TEMPLATE_ITEM_SIZE);
+    const redirectReplace = true;
+
+    if (pageNumber > totalPageLength || pageNumber <= 0) {
+      handleClickPagination(totalPageLength, redirectReplace);
+    }
   };
 
   return PageSuspense(
@@ -111,6 +120,7 @@ function TemplateListPage() {
             totalItemCount={numberOfTemplates}
             focusedPage={Number(pageNumber)}
             onClickPageButton={handleClickPagination}
+            onPageError={handlePageError}
           />
         </div>
       )}
