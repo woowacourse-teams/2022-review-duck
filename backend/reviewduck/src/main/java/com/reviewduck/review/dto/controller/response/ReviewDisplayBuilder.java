@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
+import com.reviewduck.review.dto.service.ReviewDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

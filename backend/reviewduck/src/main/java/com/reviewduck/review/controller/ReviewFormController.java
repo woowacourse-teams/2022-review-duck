@@ -24,7 +24,6 @@ import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.service.MemberService;
-import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
@@ -111,9 +110,7 @@ public class ReviewFormController {
 
         info("/api/review-forms/" + reviewFormCode + "/reviews?displayType=" + displayType, "GET", "");
 
-        Page<Review> reviews = reviewService.findAllByCode(reviewFormCode, page - 1, size);
-
-        return ReviewsOfReviewFormResponse.of(member, reviews, displayType);
+        return reviewService.findAllByCode(reviewFormCode, page - 1, size, displayType, member);
     }
 
     @Operation(summary = "회고 폼을 수정한다.")

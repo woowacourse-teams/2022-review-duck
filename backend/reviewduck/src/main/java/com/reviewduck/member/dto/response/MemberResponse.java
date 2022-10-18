@@ -1,5 +1,6 @@
 package com.reviewduck.member.dto.response;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import com.reviewduck.member.domain.Member;
@@ -18,6 +19,8 @@ public class MemberResponse {
     private String socialNickname;
     private String nickname;
     private String profileUrl;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public static MemberResponse from(Member member) {
         return new MemberResponse(
@@ -26,7 +29,9 @@ public class MemberResponse {
             member.getSocialId(),
             member.getSocialNickname(),
             member.getNickname(),
-            member.getProfileUrl()
+            member.getProfileUrl(),
+            member.getCreatedAt(),
+            member.getUpdatedAt()
         );
     }
 
@@ -37,7 +42,9 @@ public class MemberResponse {
             member.getSocialId(),
             member.getSocialNickname(),
             member.getNickname(),
-            member.getProfileUrl()
+            member.getProfileUrl(),
+            member.getCreatedAt(),
+            member.getUpdatedAt()
         );
     }
 

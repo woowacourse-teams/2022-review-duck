@@ -49,7 +49,9 @@ public class AdminMemberServiceTest {
 
         // then
         assertThat(members).hasSize(2);
-        assertThat(members.get(0)).usingRecursiveComparison().isEqualTo(savedMember);
+        assertThat(members.get(0)).usingRecursiveComparison()
+            .ignoringFields("createdAt", "updatedAt")
+            .isEqualTo(savedMember);
     }
 
     @Test

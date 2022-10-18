@@ -25,6 +25,7 @@ import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.dto.service.ReviewDto;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
@@ -89,7 +90,7 @@ public class AdminReviewServiceTest {
     @DisplayName("회고 폼을 삭제한다.")
     void deleteReviewForm() {
         // given
-        Review review = saveReview(member1);
+        ReviewDto review = saveReview(member1);
 
         // when
         adminReviewService.deleteReviewById(review.getId());
@@ -109,7 +110,7 @@ public class AdminReviewServiceTest {
             .hasMessageContaining("존재하지 않는 회고입니다.");
     }
 
-    private Review saveReview(Member member) {
+    private ReviewDto saveReview(Member member) {
         ReviewCreateRequest createRequest = new ReviewCreateRequest(false, "title", List.of(
             new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
             new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
+import com.reviewduck.review.dto.service.ReviewDto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
