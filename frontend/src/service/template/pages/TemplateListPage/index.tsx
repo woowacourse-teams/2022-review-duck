@@ -1,9 +1,11 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 import { faArrowTrendUp, faBarsStaggered } from '@fortawesome/free-solid-svg-icons';
 
 import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
 import { TemplateFilterType } from 'types';
+
+import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
 
 import { isNumberString } from 'common/utils/validator';
 import { getElapsedTimeText, isInclude } from 'service/@shared/utils';
@@ -23,7 +25,7 @@ import Filter from './view/Filter';
 
 function TemplateListPage() {
   const [searchParam, setSearchParam] = useSearchParams();
-  const navigate = useNavigate();
+  const { navigate, handleLinkPage } = useNavigateHandler();
 
   const pageNumberParams = searchParam.get(FILTER.PAGE);
   const pageNumber =
@@ -42,16 +44,8 @@ function TemplateListPage() {
     searchQueryString,
   );
 
-  const handleTemplateView = (id: number) => () => {
-    navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${id}?${FILTER.SORT}=${currentTab}`);
-  };
-
   const handleChangeSortList = (query: TemplateFilterType) => () => {
     navigate(`${PAGE_LIST.TEMPLATE_LIST}?${FILTER.SORT}=${query}`);
-  };
-
-  const handleMoveCreateTemplate = () => {
-    navigate(PAGE_LIST.TEMPLATE_FORM);
   };
 
   const handleClickPagination = (pageNumber: number, replace = false) => {
@@ -87,7 +81,7 @@ function TemplateListPage() {
           />
         )}
 
-        <Filter.MoreButtons onClickCreate={handleMoveCreateTemplate} />
+        <Filter.MoreButtons onClickCreate={handleLinkPage(PAGE_LIST.TEMPLATE_FORM)} />
       </Filter>
 
       {numberOfTemplates === 0 ? (
@@ -98,7 +92,9 @@ function TemplateListPage() {
             <TemplateCard
               key={info.id}
               className={styles.card}
-              onClick={handleTemplateView(info.id)}
+              onClick={handleLinkPage(
+                `${PAGE_LIST.TEMPLATE_DETAIL}/${info.id}?${FILTER.SORT}=${currentTab}`,
+              )}
             >
               <TemplateCard.Tag usedCount={info.usedCount} />
               <TemplateCard.Title>{info.title}</TemplateCard.Title>
