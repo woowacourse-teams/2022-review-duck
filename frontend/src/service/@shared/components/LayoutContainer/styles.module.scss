@@ -1,4 +1,4 @@
-@import 'styles/responsive.scss';
+@import 'styles/@global.scss';
 
 .container {
   @include tablet {
@@ -14,4 +14,8 @@
   width: 1056px;
   padding: 0 1rem;
   margin: 0 auto;
+
+  @include mobile {
+    padding: 0;
+  }
 }

@@ -42,7 +42,7 @@ function MainPage() {
   return PageSuspense(
     <FlexContainer className={styles.mainPageContainer}>
       <Intro>
-        <div className={styles.leftContainer}>
+        <div className={styles.introText}>
           <Intro.Title>
             <span className={styles.bold}>회고덕</span>으로 함께 회고를 시작해보세요
           </Intro.Title>

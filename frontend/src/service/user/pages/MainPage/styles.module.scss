@@ -1,9 +1,10 @@
 @import 'styles/@global.scss';
 
 .main-page-container {
+  overflow: hidden;
   padding-bottom: 5rem;
 
-  .left-container {
+  .intro-text {
     word-break: keep-all;
     line-height: 350%;
 
