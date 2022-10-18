@@ -22,26 +22,29 @@
 .intro-container {
   position: relative;
   padding: 2rem 1rem;
+  min-width: 50rem;
+  overflow: hidden;
 
   @include mobile {
     padding: 1rem;
+    min-width: unset;
   }
 
   .intro-text {
-    &::before {
-      content: '🚀';
-      font-size: 6rem;
-      margin-bottom: 1rem;
-      padding: 2rem 0;
-    }
-
     max-width: 35%;
-    text-align: center;
 
     @include mobile {
       display: flex;
       flex-direction: column;
       max-width: unset;
+      text-align: center;
+
+      &::before {
+        content: '🚀';
+        font-size: 6rem;
+        margin-bottom: 1rem;
+        padding: 2rem 0;
+      }
     }
 
     .title {
