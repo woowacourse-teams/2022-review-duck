@@ -1,6 +1,12 @@
+@import 'styles/@global.scss';
+
 .container {
   position: relative;
   width: 1056px;
   padding: 0 1rem;
   margin: 0 auto;
+
+  @include mobile {
+    padding: 0;
+  }
 }

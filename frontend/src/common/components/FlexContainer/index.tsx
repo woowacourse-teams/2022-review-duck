@@ -5,7 +5,7 @@ import cn from 'classnames';
 import styles from './styles.module.scss';
 
 export interface FlexContainerProps extends React.HTMLAttributes<HTMLDivElement | HTMLFormElement> {
-  as?: 'div' | 'ul' | 'section' | 'header' | 'main' | 'footer' | 'aside';
+  as?: 'div' | 'ul' | 'section' | 'header' | 'main' | 'footer' | 'aside' | 'form';
   direction?: 'row' | 'column' | 'rows-reverse' | 'column-reverse';
   justify?: 'left' | 'center' | 'right' | 'space-between';
   align?: 'start' | 'center' | 'end';

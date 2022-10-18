@@ -1,0 +1,32 @@
+@import 'styles/@global.scss';
+
+.layout-component-mobile-menubar {
+  position: fixed;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(25%, auto));
+  left: 0;
+  bottom: 0;
+
+  width: 100%;
+  padding: 1.5rem 0rem;
+
+  background-color: $THEME_COLOR_THEME_BACKGROUND_BLUR;
+  backdrop-filter: blur(1rem);
+  box-shadow: 0 0 1rem 1rem $GLOBAL_COLOR_BLACK_50;
+  border-radius: 2rem 2rem 0 0;
+
+  .menu {
+    cursor: pointer;
+    position: relative;
+    gap: 0.85rem;
+    color: $THEME_COLOR_THEME_TEXT_400;
+    font-size: 1.25rem;
+    user-select: none;
+
+    transition: all 0.3s ease;
+  }
+
+  .menu.focused {
+    color: $THEME_COLOR_STATUS_PRIMARY_500;
+  }
+}
