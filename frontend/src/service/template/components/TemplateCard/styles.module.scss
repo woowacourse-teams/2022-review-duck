@@ -1,6 +1,10 @@
 @import 'styles/@global.scss';
 
 .container {
+  @include tablet {
+    width: 48%;
+  }
+
   @include mobile {
     width: 48%;
   }

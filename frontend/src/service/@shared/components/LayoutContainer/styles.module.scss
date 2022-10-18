@@ -1,6 +1,11 @@
 @import 'styles/responsive.scss';
 
 .container {
+  @include tablet {
+    width: 100%;
+    min-width: 600px;
+  }
+
   @include mobile {
     width: 100%;
   }
