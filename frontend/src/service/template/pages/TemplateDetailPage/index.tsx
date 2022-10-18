@@ -30,7 +30,7 @@ function TemplateDetailPage() {
   const [searchParam] = useSearchParams();
   const templateMutation = useTemplateMutations();
 
-  const filterQueryString = searchParam.get('sort');
+  const filterQueryString = searchParam.get(FILTER.SORT);
   const currentTab = isInclude(Object.values(FILTER.TEMPLATE_TAB), filterQueryString)
     ? filterQueryString
     : FILTER.TEMPLATE_TAB.LATEST;
@@ -45,7 +45,7 @@ function TemplateDetailPage() {
   const { info: templateInfo, creator: templateCreator, ...template } = queries.template;
 
   const handleTemplateView = (id: number) => () => {
-    navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${id}?sort=${currentTab}`);
+    navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${id}?${FILTER.SORT}=${currentTab}`);
   };
 
   const handleStartReview = () => {
@@ -134,7 +134,7 @@ function TemplateDetailPage() {
 
           <Content.MoreButtons
             onClickCreateTemplate={handleLinkPage(PAGE_LIST.TEMPLATE_FORM)}
-            onClickList={handleLinkPage(`${PAGE_LIST.TEMPLATE_LIST}?sort=${currentTab}`)}
+            onClickList={handleLinkPage(`${PAGE_LIST.TEMPLATE_LIST}?${FILTER.SORT}=${currentTab}`)}
           />
         </Content>
       </LayoutContainer>

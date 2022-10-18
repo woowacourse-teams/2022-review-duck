@@ -18,7 +18,7 @@ export const getTemplates = async (
   itemCount = PAGE_OPTION.TEMPLATE_ITEM_SIZE,
 ) => {
   const { data } = await axiosInstance.get<GetTemplatesResponse>(
-    `${API_URI.TEMPLATE.GET_TEMPLATES}?page=${pageNumber}&size=${itemCount}&sort=${filter}`,
+    `${API_URI.TEMPLATE.GET_TEMPLATES}?${FILTER.PAGE}=${pageNumber}&${FILTER.SIZE}=${itemCount}&${FILTER.SORT}=${filter}`,
   );
 
   return data;
@@ -30,7 +30,7 @@ export const getSearchTemplates = async (
   itemCount = PAGE_OPTION.TEMPLATE_ITEM_SIZE,
 ) => {
   const { data } = await axiosInstance.get<GetTemplatesResponse>(
-    `${API_URI.TEMPLATE.GET_SEARCH_TEMPLATES}?query=${search}&page=${pageNumber}&size=${itemCount}`,
+    `${API_URI.TEMPLATE.GET_SEARCH_TEMPLATES}?query=${search}&${FILTER.PAGE}=${pageNumber}&${FILTER.SIZE}=${itemCount}`,
   );
 
   return data;

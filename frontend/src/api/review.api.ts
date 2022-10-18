@@ -1,6 +1,6 @@
 import * as ReviewType from '../types/review';
 
-import { API_URI, PAGE_OPTION } from '../constant';
+import { API_URI, FILTER, PAGE_OPTION } from '../constant';
 import * as transformer from './review.transformer';
 import axiosInstance from 'api/config/axiosInstance';
 
@@ -48,7 +48,7 @@ export const getPublicAnswer = async ({
   filter = 'trend',
 }: GetReviewPublicAnswerRequest): Promise<ReviewType.ReviewPublicAnswerList> => {
   const { data } = await axiosInstance.get(
-    `${API_URI.REVIEW.GET_PUBLIC_ANSWER}?page=${pageNumber}&size=${size}&sort=${filter}`,
+    `${API_URI.REVIEW.GET_PUBLIC_ANSWER}?${FILTER.PAGE}=${pageNumber}&${FILTER.SIZE}=${size}&${FILTER.SORT}=${filter}`,
   );
 
   return transformer.transformPublicAnswer(data);

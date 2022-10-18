@@ -25,11 +25,11 @@ function TemplateListPage() {
   const [searchParam, setSearchParam] = useSearchParams();
   const navigate = useNavigate();
 
-  const pageNumberParams = searchParam.get('page');
+  const pageNumberParams = searchParam.get(FILTER.PAGE);
   const pageNumber = isNumberString(pageNumberParams) ? Number(pageNumberParams) : 1;
 
-  const filterQueryString = searchParam.get('sort');
-  const searchQueryString = searchParam.get('search') || '';
+  const filterQueryString = searchParam.get(FILTER.SORT);
+  const searchQueryString = searchParam.get(FILTER.SEARCH) || '';
 
   const currentTab = isInclude(Object.values(FILTER.TEMPLATE_TAB), filterQueryString)
     ? filterQueryString
@@ -42,11 +42,11 @@ function TemplateListPage() {
   );
 
   const handleTemplateView = (id: number) => () => {
-    navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${id}?sort=${currentTab}`);
+    navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${id}?${FILTER.SORT}=${currentTab}`);
   };
 
   const handleChangeSortList = (query: TemplateFilterType) => () => {
-    navigate(`${PAGE_LIST.TEMPLATE_LIST}?sort=${query}`);
+    navigate(`${PAGE_LIST.TEMPLATE_LIST}?${FILTER.SORT}=${query}`);
   };
 
   const handleMoveCreateTemplate = () => {
@@ -81,32 +81,39 @@ function TemplateListPage() {
         <Filter.MoreButtons onClickCreate={handleMoveCreateTemplate} />
       </Filter>
 
-      <div className={styles.templateContainer}>
-        {templates.map(({ info, creator }) => (
-          <TemplateCard key={info.id} className={styles.card} onClick={handleTemplateView(info.id)}>
-            <TemplateCard.Tag usedCount={info.usedCount} />
-            <TemplateCard.Title>{info.title}</TemplateCard.Title>
-            <TemplateCard.UpdatedAt>{getElapsedTimeText(info.updatedAt)}</TemplateCard.UpdatedAt>
-            <TemplateCard.Description>{info.description}</TemplateCard.Description>
+      {numberOfTemplates === 0 ? (
+        <NoResult>템플릿이 없습니다.</NoResult>
+      ) : (
+        <div className={styles.templateContainer}>
+          {templates.map(({ info, creator }) => (
+            <TemplateCard
+              key={info.id}
+              className={styles.card}
+              onClick={handleTemplateView(info.id)}
+            >
+              <TemplateCard.Tag usedCount={info.usedCount} />
+              <TemplateCard.Title>{info.title}</TemplateCard.Title>
+              <TemplateCard.UpdatedAt>{getElapsedTimeText(info.updatedAt)}</TemplateCard.UpdatedAt>
+              <TemplateCard.Description>{info.description}</TemplateCard.Description>
 
-            <TemplateCard.Profile
-              profileUrl={creator.profileUrl}
-              nickname={creator.nickname}
-              socialNickname={creator.socialNickname}
-            />
-          </TemplateCard>
-        ))}
+              <TemplateCard.Profile
+                profileUrl={creator.profileUrl}
+                nickname={creator.nickname}
+                socialNickname={creator.socialNickname}
+              />
+            </TemplateCard>
+          ))}
 
-        <PaginationBar
-          className={styles.pagination}
-          visiblePageButtonLength={PAGE_OPTION.TEMPLATE_BUTTON_LENGTH}
-          itemCountInPage={PAGE_OPTION.TEMPLATE_ITEM_SIZE}
-          totalItemCount={numberOfTemplates}
-          focusedPage={Number(pageNumber)}
-          onClickPageButton={handleClickPagination}
-        />
-      </div>
-      {numberOfTemplates === 0 && <NoResult>템플릿이 없습니다.</NoResult>}
+          <PaginationBar
+            className={styles.pagination}
+            visiblePageButtonLength={PAGE_OPTION.TEMPLATE_BUTTON_LENGTH}
+            itemCountInPage={PAGE_OPTION.TEMPLATE_ITEM_SIZE}
+            totalItemCount={numberOfTemplates}
+            focusedPage={Number(pageNumber)}
+            onClickPageButton={handleClickPagination}
+          />
+        </div>
+      )}
     </LayoutContainer>,
   );
 }
