@@ -1,0 +1,69 @@
+@import 'styles/@global.scss';
+
+.component-select-popup {
+  position: relative;
+  overflow: visible;
+  display: inline-block;
+  z-index: 5;
+
+  .opener {
+    position: relative;
+    z-index: 2;
+  }
+
+  .dimmer {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+
+    left: 0;
+    top: 0;
+
+    background-color: $GLOBAL_COLOR_BLACK_500;
+    backdrop-filter: blur(0.25rem);
+    z-index: 1;
+
+    @include animation(0.3s ease) {
+      0% {
+        opacity: 0;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
+  }
+
+  .select-popup {
+    position: absolute;
+
+    top: 100%;
+    min-width: 12rem;
+
+    margin-top: 0.5rem;
+
+    background-color: $GLOBAL_COLOR_WHITE_800;
+    backdrop-filter: blur(0.25rem);
+    border-radius: 0.5rem;
+
+    z-index: 2;
+    transition: all 0.2s ease;
+    transform: scale(0);
+    opacity: 0;
+
+    &.enabled {
+      transform: scale(1);
+      opacity: 1;
+    }
+
+    &.justify-left {
+      left: 0;
+      transform-origin: left top;
+    }
+
+    &.justify-right {
+      right: 0;
+      transform-origin: right top;
+    }
+  }
+}
