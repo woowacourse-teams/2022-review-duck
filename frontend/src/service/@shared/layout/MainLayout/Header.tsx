@@ -1,12 +1,8 @@
-import React, { useContext, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 
-import {
-  faPenToSquare,
-  faRightFromBracket,
-  faSearch,
-  faUser,
-} from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-regular-svg-icons';
+import { faPenToSquare, faRightFromBracket, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST } from 'constant';
@@ -15,7 +11,7 @@ import useSnackbar from 'common/hooks/useSnackbar';
 import useAuth from 'service/@shared/hooks/useAuth';
 import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
 
-import { Button, Logo, Text, TextBox, PopupBox, FlexContainer } from 'common/components';
+import { Button, Logo, Text, TextBox, FlexContainer, SelectPopup } from 'common/components';
 
 import useModal from 'service/@shared/components/ModalProvider/useModal';
 
@@ -78,7 +74,7 @@ function Header() {
           align="center"
           onSubmit={handleSubmitSearchTemplate}
         >
-          <TextBox name="search" placeholder="빠른 회고를 위한 템플릿 검색" />
+          <TextBox name="search" placeholder="회고를 위한 템플릿 검색" />
 
           <button type="submit" className={styles.searchButton}>
             <FontAwesomeIcon icon={faSearch} />
@@ -110,26 +106,37 @@ function Header() {
           </Button>
 
           {isLogin ? (
-            <PopupBox
-              className={styles.userMenu}
+            <SelectPopup
+              justify="right"
               fallback={
                 <div
                   className={styles.profile}
                   style={{ backgroundImage: `url(${profileImage})` }}
-                  onClick={
-                    isMobile ? handleLinkPage(`${PAGE_LIST.USER_PROFILE}/${socialId}`) : undefined
-                  }
                 />
               }
             >
-              <Link className={styles.item} to={`${PAGE_LIST.USER_PROFILE}/${socialId}`}>
-                <FontAwesomeIcon icon={faUser} /> <span>마이 페이지</span>
-              </Link>
+              <FlexContainer
+                className={styles.popupMenu}
+                direction="row"
+                align="center"
+                justify="space-between"
+                onClick={handleLinkPage(`${PAGE_LIST.USER_PROFILE}/${socialId}`)}
+              >
+                <FontAwesomeIcon icon={faUser} />
+                <span>마이 페이지</span>
+              </FlexContainer>
 
-              <Link className={styles.item} to={PAGE_LIST.LOGOUT}>
-                <FontAwesomeIcon icon={faRightFromBracket} /> <span>로그아웃</span>
-              </Link>
-            </PopupBox>
+              <FlexContainer
+                className={styles.popupMenu}
+                direction="row"
+                align="center"
+                justify="space-between"
+                onClick={handleLinkPage(`${PAGE_LIST.LOGOUT}`)}
+              >
+                <FontAwesomeIcon icon={faRightFromBracket} />
+                <span>로그아웃</span>
+              </FlexContainer>
+            </SelectPopup>
           ) : (
             <a href={GITHUB_OAUTH_LOGIN_URL}>
               <Text className={styles.loginText} weight="lighter">
