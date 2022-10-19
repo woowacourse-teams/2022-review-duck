@@ -1,3 +1,13 @@
+@import 'styles/@global.scss';
+
 .editor-container {
   gap: 2.5rem;
+
+  @include mobile {
+    margin: 0 1.5rem;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: $GLOBAL_BORDERRADIUS_XLARGE;
+    box-shadow: 0 0.5rem 0.5rem 0.5rem $GLOBAL_COLOR_BLACK_50;
+  }
 }

@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { PAGE_LIST, PERMISSION } from 'constant';
@@ -7,6 +8,7 @@ import useAuth from 'service/@shared/hooks/useAuth';
 
 import Page from 'service/@shared/components/Page';
 
+import { UserAgentContext } from 'common/contexts/UserAgent';
 import MainLayout from 'service/@shared/layout/MainLayout';
 import ErrorPage from 'service/@shared/pages/ErrorPage';
 import ReviewLayout from 'service/review/layout/ReviewLayout';
@@ -15,6 +17,8 @@ import MainPage from 'service/user/pages/MainPage';
 // ✅ 코드 가독성을 위해 Prettier 무시 처리
 // prettier-ignore
 function PageRoutes() {
+  const { isPC } = useContext(UserAgentContext);
+  
   useAuth();
 
   return (
@@ -53,7 +57,7 @@ function PageRoutes() {
       </Route>
 
       {/* 회고 도메인 전용 레이아웃 */}
-      <Route element={<ReviewLayout />}>
+      <Route element={isPC ? <ReviewLayout /> : <MainLayout />}>
         <Route path={PAGE_LIST.REVIEW_FORM}>
           <Route
             index
