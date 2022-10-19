@@ -12,7 +12,7 @@ import { ReviewFormAnswer } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
-import { Text, FlexContainer, Button, TextBox, Skeleton, ScrollPanel } from 'common/components';
+import { Text, FlexContainer, Button, TextBox, Skeleton, Carousel } from 'common/components';
 
 import styles from './styles.module.scss';
 
@@ -52,7 +52,7 @@ const ParticipantList = ({ children }: ParticipantListProps) => {
         </Text>
       </div>
 
-      <ScrollPanel centerDisabled={true}>{children}</ScrollPanel>
+      <Carousel centerDisabled={true}>{children}</Carousel>
     </FlexContainer>
   );
 };

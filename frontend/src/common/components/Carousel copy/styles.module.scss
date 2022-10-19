@@ -1,11 +1,11 @@
 @import 'styles/@global.scss';
 
-.component-scroll-panel {
+.component-carousel {
   position: relative;
   width: 100%;
 }
 
-.component-scroll-panel .scroll-container {
+.component-carousel .scroll-container {
   @include hide-scroll-bar;
 
   position: relative;
@@ -43,7 +43,7 @@
   }
 }
 
-.component-scroll-panel .control-wrapper {
+.component-carousel .control-wrapper {
   position: absolute;
   top: 0;
 
@@ -92,7 +92,7 @@
   }
 }
 
-.component-scroll-panel:hover .control-wrapper {
+.component-carousel:hover .control-wrapper {
   .control-button {
     opacity: 1;
     transform: translateY(0px);

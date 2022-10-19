@@ -5,7 +5,7 @@ import cn from 'classnames';
 
 import { FlexContainer, Text } from 'common/components';
 
-import ScrollPanel from 'common/components/ScrollPanel';
+import Carousel from 'common/components/Carousel';
 
 import Profile from 'service/@shared/components/Profile';
 
@@ -16,7 +16,7 @@ interface ContainerProps {
 }
 
 function Container({ children }: ContainerProps) {
-  return <ScrollPanel className={styles.componentPageTrending}>{children}</ScrollPanel>;
+  return <Carousel className={styles.componentPageTrending}>{children}</Carousel>;
 }
 
 interface ProfileCardProps {
