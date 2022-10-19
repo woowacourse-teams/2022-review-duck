@@ -91,7 +91,7 @@ function ProfilePage() {
         break;
 
       case FILTER.USER_PROFILE_TAB.TEMPLATES:
-        navigate(`${PAGE_LIST.TEMPLATE_FORM}?templateId=${id}&templateEditMode=true`);
+        navigate(`${PAGE_LIST.TEMPLATE_FORM}/${id}`);
         break;
     }
   };
