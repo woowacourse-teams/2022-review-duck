@@ -1,9 +1,9 @@
 package com.reviewduck.template.service;
 
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.reviewduck.common.annotation.Aggregator;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.ReviewForm;
@@ -20,8 +20,7 @@ import com.reviewduck.template.dto.controller.response.TemplatesResponse;
 
 import lombok.AllArgsConstructor;
 
-@Component
-@Transactional(readOnly = true)
+@Aggregator
 @AllArgsConstructor
 public class TemplateAggregator {
 
