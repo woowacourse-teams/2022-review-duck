@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { faArrowRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
@@ -28,11 +29,13 @@ import QuestionsEditor from 'service/@shared/components/QuestionsEditor';
 import styles from './styles.module.scss';
 
 import useTemplateEditor from './useTemplateEditor';
+import { UserAgentContext } from 'common/contexts/UserAgent';
 
 function TemplateFormPage() {
   const { templateId: templateIdParams = '' } = useParams();
   const snackbar = useSnackbar();
   const { navigate } = useNavigateHandler();
+  const { isMobile } = useContext(UserAgentContext);
 
   const templateId = isNumberString(templateIdParams) ? Number(templateIdParams) : null;
 
@@ -103,7 +106,7 @@ function TemplateFormPage() {
 
   return PageSuspense(
     <LayoutContainer className={styles.container}>
-      <FlexContainer className={styles.informationEditor} gap="large">
+      <FlexContainer className={styles.informationEditor} gap={isMobile ? 'small' : 'large'}>
         <FlexContainer gap="medium">
           <Text size={14}>템플릿 제목</Text>
           <TextBox
@@ -116,12 +119,14 @@ function TemplateFormPage() {
         <FlexContainer gap="medium">
           <Text size={14}>템플릿 설명</Text>
           <Textarea
+            className={styles.textarea}
+            autoResize={!isMobile}
             placeholder="생성할 템플릿의 설명을 입력해주세요."
             maxLength={200}
             value={templateInfo.description}
             onChange={handleChangeInformation('description')}
           />
-          <FieldSet.Description>템플릿을 활용처, 소개에 대해 입력해주세요.</FieldSet.Description>
+          <FieldSet.Description>템플릿의 활용처, 소개에 대해 입력해주세요.</FieldSet.Description>
         </FlexContainer>
 
         <div className={styles.submitButtons}>
