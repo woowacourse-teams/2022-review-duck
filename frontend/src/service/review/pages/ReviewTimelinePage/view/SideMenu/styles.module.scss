@@ -1,16 +1,14 @@
 @import 'styles/@global.scss';
 
 .component-side-menu {
-  @include mobile {
-    z-index: 1;
-    backdrop-filter: blur(0.6rem);
-    background-color: $THEME-COLOR-THEME-BACKGROUND-BLUR;
-    top: 5.2rem;
-  }
-
   position: sticky;
   top: 7.6rem; /* 레이아웃 헤더 Sass Variable 선언 처리하기 */
   align-self: start;
+
+  @include mobile {
+    position: relative;
+    top: unset;
+  }
 
   .title {
     color: $THEME_COLOR_STATUS_PRIMARY_600;
@@ -20,6 +18,10 @@
   .list {
     gap: 0.75rem;
     margin-bottom: 2rem;
+
+    @include mobile {
+      flex-direction: row;
+    }
 
     .menu {
       cursor: pointer;
@@ -62,6 +64,10 @@
         color: $THEME_COLOR_STATUS_PRIMARY_500;
         transform: scale(1.5);
         margin-right: 0.25rem;
+      }
+
+      @include mobile {
+        transform: unset;
       }
     }
   }
