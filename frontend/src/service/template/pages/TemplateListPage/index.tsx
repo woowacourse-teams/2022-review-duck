@@ -1,9 +1,12 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useContext } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { faArrowTrendUp, faBarsStaggered } from '@fortawesome/free-solid-svg-icons';
 
 import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
 import { TemplateFilterType } from 'types';
+
+import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
 
 import { isNumberString } from 'common/utils/validator';
 import { getElapsedTimeText, isInclude } from 'service/@shared/utils';
@@ -20,13 +23,16 @@ import styles from './styles.module.scss';
 
 import useTemplateList from './useTemplateListPage';
 import Filter from './view/Filter';
+import { UserAgentContext } from 'common/contexts/UserAgent';
 
 function TemplateListPage() {
   const [searchParam, setSearchParam] = useSearchParams();
-  const navigate = useNavigate();
+  const { navigate, handleLinkPage } = useNavigateHandler();
+  const { isMobile } = useContext(UserAgentContext);
 
   const pageNumberParams = searchParam.get(FILTER.PAGE);
-  const pageNumber = isNumberString(pageNumberParams) ? Number(pageNumberParams) : 1;
+  const pageNumber =
+    isNumberString(pageNumberParams) && Number(pageNumberParams) > 0 ? Number(pageNumberParams) : 1;
 
   const filterQueryString = searchParam.get(FILTER.SORT);
   const searchQueryString = searchParam.get(FILTER.SEARCH) || '';
@@ -36,30 +42,31 @@ function TemplateListPage() {
     : FILTER.TEMPLATE_TAB.LATEST;
 
   const { numberOfTemplates, templates } = useTemplateList(
+    isMobile,
     currentTab,
     pageNumber,
     searchQueryString,
   );
 
-  const handleTemplateView = (id: number) => () => {
-    navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${id}?${FILTER.SORT}=${currentTab}`);
-  };
-
   const handleChangeSortList = (query: TemplateFilterType) => () => {
     navigate(`${PAGE_LIST.TEMPLATE_LIST}?${FILTER.SORT}=${query}`);
   };
 
-  const handleMoveCreateTemplate = () => {
-    navigate(PAGE_LIST.TEMPLATE_FORM);
+  const handleClickPagination = (pageNumber: number, replace = false) => {
+    if (searchQueryString) {
+      setSearchParam({ search: searchQueryString, page: String(pageNumber) }, { replace });
+    } else {
+      setSearchParam({ sort: currentTab, page: String(pageNumber) }, { replace });
+    }
   };
 
-  const handleClickPagination = (pageNumber: number) => {
-    if (searchQueryString) {
-      setSearchParam({ search: searchQueryString, page: String(pageNumber) });
-    } else {
-      setSearchParam({ sort: currentTab, page: String(pageNumber) });
+  const handlePageError = () => {
+    const totalPageLength = Math.ceil(numberOfTemplates / PAGE_OPTION.TEMPLATE_ITEM_SIZE);
+    const redirectReplace = true;
+
+    if (pageNumber > totalPageLength || pageNumber <= 0) {
+      handleClickPagination(totalPageLength, redirectReplace);
     }
-    window.scrollTo(0, 0);
   };
 
   return PageSuspense(
@@ -78,7 +85,7 @@ function TemplateListPage() {
           />
         )}
 
-        <Filter.MoreButtons onClickCreate={handleMoveCreateTemplate} />
+        <Filter.MoreButtons onClickCreate={handleLinkPage(PAGE_LIST.TEMPLATE_FORM)} />
       </Filter>
 
       {numberOfTemplates === 0 ? (
@@ -89,7 +96,9 @@ function TemplateListPage() {
             <TemplateCard
               key={info.id}
               className={styles.card}
-              onClick={handleTemplateView(info.id)}
+              onClick={handleLinkPage(
+                `${PAGE_LIST.TEMPLATE_DETAIL}/${info.id}?${FILTER.SORT}=${currentTab}`,
+              )}
             >
               <TemplateCard.Tag usedCount={info.usedCount} />
               <TemplateCard.Title>{info.title}</TemplateCard.Title>
@@ -106,11 +115,18 @@ function TemplateListPage() {
 
           <PaginationBar
             className={styles.pagination}
-            visiblePageButtonLength={PAGE_OPTION.TEMPLATE_BUTTON_LENGTH}
-            itemCountInPage={PAGE_OPTION.TEMPLATE_ITEM_SIZE}
+            visiblePageButtonLength={
+              isMobile
+                ? PAGE_OPTION.MOBILE_TEMPLATE_BUTTON_LENGTH
+                : PAGE_OPTION.TEMPLATE_BUTTON_LENGTH
+            }
+            itemCountInPage={
+              isMobile ? PAGE_OPTION.MOBILE_TEMPLATE_ITEM_SIZE : PAGE_OPTION.TEMPLATE_ITEM_SIZE
+            }
             totalItemCount={numberOfTemplates}
             focusedPage={Number(pageNumber)}
             onClickPageButton={handleClickPagination}
+            onPageError={handlePageError}
           />
         </div>
       )}

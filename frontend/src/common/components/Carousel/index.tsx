@@ -11,7 +11,7 @@ import styles from './styles.module.scss';
 
 import FlexContainer from '../FlexContainer';
 
-interface ScrollPanelProps {
+interface CarouselProps {
   className?: string;
   centerDisabled?: boolean;
   children: React.ReactNode;
@@ -23,7 +23,7 @@ interface controlVisible {
   next: boolean;
 }
 
-function ScrollPanel({ className, centerDisabled, children }: ScrollPanelProps) {
+function Carousel({ className, centerDisabled, children }: CarouselProps) {
   const [buttonVisible, setButtonVisible] = useState<controlVisible>({
     previous: true,
     next: false,
@@ -60,7 +60,7 @@ function ScrollPanel({ className, centerDisabled, children }: ScrollPanelProps) 
   );
 
   useEffect(function getChildItemWidth() {
-    const $firstChildElement = listRef.current?.querySelector('*:first-child');
+    const $firstChildElement = listRef.current?.firstElementChild;
 
     if (!$firstChildElement) return;
     childElementWidth.current = $firstChildElement.clientWidth;
@@ -84,18 +84,15 @@ function ScrollPanel({ className, centerDisabled, children }: ScrollPanelProps) 
   };
 
   return (
-    <div className={styles.componentScrollPanel}>
-      <FlexContainer
-        className={cn(styles.controlWrapper, styles.previous, {
+    <div className={styles.componentCarousel}>
+      <button
+        className={cn(styles.button, styles.previous, {
           [styles.hidden]: buttonVisible.previous,
         })}
-        justify="center"
-        align="center"
+        onClick={handleChangeScroll('previous')}
       >
-        <div className={styles.controlButton} onClick={handleChangeScroll('previous')}>
-          <FontAwesomeIcon icon={faChevronLeft} />
-        </div>
-      </FlexContainer>
+        <FontAwesomeIcon icon={faChevronLeft} />
+      </button>
 
       <div
         className={cn(styles.scrollContainer, className)}
@@ -110,19 +107,16 @@ function ScrollPanel({ className, centerDisabled, children }: ScrollPanelProps) 
         </div>
       </div>
 
-      <FlexContainer
-        className={cn(styles.controlWrapper, styles.next, {
+      <button
+        className={cn(styles.button, styles.next, {
           [styles.hidden]: buttonVisible.next,
         })}
-        justify="center"
-        align="center"
+        onClick={handleChangeScroll('next')}
       >
-        <div className={styles.controlButton} onClick={handleChangeScroll('next')}>
-          <FontAwesomeIcon icon={faChevronRight} />
-        </div>
-      </FlexContainer>
+        <FontAwesomeIcon icon={faChevronRight} />
+      </button>
     </div>
   );
 }
 
-export default ScrollPanel;
+export default Carousel;

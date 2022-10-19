@@ -27,6 +27,12 @@
   grid-template-columns: 47.25% 47.25%;
   gap: 5%;
 
+  @include mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
   .action-button {
     cursor: pointer;
 
@@ -43,6 +49,10 @@
 
     &:hover {
       border: 4px solid $THEME_COLOR_STATUS_PRIMARY_100;
+    }
+
+    @include mobile {
+      padding: 1rem;
     }
 
     .icon {

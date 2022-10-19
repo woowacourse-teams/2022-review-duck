@@ -1,8 +1,11 @@
 @import 'styles/@global.scss';
 
-.logo {
-  height: 100%;
+.component-logo {
   fill: $THEME_COLOR_STATUS_PRIMARY_500;
+
+  .svg {
+    height: 100%;
+  }
 }
 
 .small {

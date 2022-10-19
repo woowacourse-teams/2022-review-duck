@@ -3,8 +3,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
 
-import { getElapsedTimeText } from 'service/@shared/utils';
-
 import { FlexContainer, Text, TagLabel } from 'common/components';
 
 import SmallProfileCard from 'service/@shared/components/SmallProfileCard';

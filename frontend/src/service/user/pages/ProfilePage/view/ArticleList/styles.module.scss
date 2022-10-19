@@ -5,6 +5,11 @@
   flex-direction: column;
   gap: 2.5rem;
   padding: 2.5rem 0;
+
+  @include mobile {
+    gap: 3rem;
+    padding: 0 0 8rem;
+  }
 }
 
 // .reviewContainer {

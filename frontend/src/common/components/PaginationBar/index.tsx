@@ -13,6 +13,7 @@ export interface PaginationBarProps extends React.HTMLAttributes<HTMLDivElement>
   focusedPage?: number;
   scrollReset?: boolean;
   onClickPageButton: (pageNumber: number) => void;
+  onPageError?: () => void;
 }
 
 function PaginationBar({
@@ -23,6 +24,7 @@ function PaginationBar({
   focusedPage = 1,
   scrollReset = true,
   onClickPageButton,
+  onPageError,
   ...args
 }: PaginationBarProps) {
   const totalPageLength = Math.ceil(totalItemCount / itemCountInPage);
@@ -36,6 +38,17 @@ function PaginationBar({
       window.scrollTo(0, 0);
     },
     [scrollReset, focusedPage],
+  );
+
+  useEffect(
+    function handleError() {
+      return () => {
+        if (onPageError) {
+          onPageError();
+        }
+      };
+    },
+    [focusedPage, onPageError],
   );
 
   const currentPageNumbers: number[] = useMemo(() => {
@@ -78,19 +91,15 @@ function PaginationBar({
     >
       <div className={styles.pageButtonContainer}>
         <button
-          className={cn(styles.pageButton, { [styles.disabled]: isFirstPage })}
+          className={cn(styles.toFirst, styles.pageButton, { [styles.disabled]: isFirstPage })}
           onClick={handleClickPageButton(1)}
           disabled={isFirstPage}
-        >
-          처음으로
-        </button>
+        />
         <button
-          className={cn(styles.pageButton, { [styles.disabled]: isFirstPage })}
+          className={cn(styles.previous, styles.pageButton, { [styles.disabled]: isFirstPage })}
           onClick={handleClickPageButton(focusedPage - 1)}
           disabled={isFirstPage}
-        >
-          이전
-        </button>
+        />
 
         {currentPageNumbers.map((pageNumber) => (
           <button
@@ -106,19 +115,15 @@ function PaginationBar({
         ))}
 
         <button
-          className={cn(styles.pageButton, { [styles.disabled]: isLastPage })}
+          className={cn(styles.next, styles.pageButton, { [styles.disabled]: isLastPage })}
           onClick={handleClickPageButton(focusedPage + 1)}
           disabled={isLastPage}
-        >
-          다음
-        </button>
+        />
         <button
-          className={cn(styles.pageButton, { [styles.disabled]: isLastPage })}
+          className={cn(styles.toLast, styles.pageButton, { [styles.disabled]: isLastPage })}
           onClick={handleClickPageButton(totalPageLength)}
           disabled={isLastPage}
-        >
-          마지막으로
-        </button>
+        />
       </div>
     </FlexContainer>
   );

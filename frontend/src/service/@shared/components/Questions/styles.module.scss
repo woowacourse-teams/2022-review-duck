@@ -12,6 +12,10 @@
     gap: 0.5rem;
     padding: 0.25rem;
 
+    .title {
+      white-space: nowrap;
+    }
+
     &:hover {
       color: $THEME_COLOR_THEME_TEXT_800;
     }
@@ -43,7 +47,7 @@
   }
 }
 
-.answerContainer {
+.answer-container {
   &:nth-child(2) {
     margin-top: 0.5rem;
   }

@@ -1,20 +1,17 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 
-import {
-  faPenToSquare,
-  faRightFromBracket,
-  faSearch,
-  faUser,
-} from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-regular-svg-icons';
+import { faPenToSquare, faRightFromBracket, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import cn from 'classnames';
-import { FILTER, GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST } from 'constant';
+import { GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST } from 'constant';
 
+import useSnackbar from 'common/hooks/useSnackbar';
 import useAuth from 'service/@shared/hooks/useAuth';
+import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
 
-import { Button, Logo, Text, TextBox, PopupBox } from 'common/components';
+import { Button, Logo, Text, TextBox, FlexContainer, SelectPopup } from 'common/components';
 
 import useModal from 'service/@shared/components/ModalProvider/useModal';
 
@@ -22,74 +19,95 @@ import imageDefaultProfile from 'assets/images/profile.png';
 
 import styles from './styles.module.scss';
 
-function Header() {
-  const [search, setSearch] = useState('');
+import { UserAgentContext } from 'common/contexts/UserAgent';
 
+function Header() {
+  const { isPC, isMobile } = useContext(UserAgentContext);
   const { isLogin, getUserProfileQuery } = useAuth();
-  const navigate = useNavigate();
+  const { navigate, handleLinkPage } = useNavigateHandler();
+
+  const snackbar = useSnackbar();
   const modal = useModal();
 
   const { profileUrl: profileImage = imageDefaultProfile, socialId } =
     getUserProfileQuery.data || {};
 
-  const onClickReviewStart = () => {
+  const handleReviewModalOpen = () => {
     modal.show({ key: MODAL_LIST.REVIEW_START });
   };
 
-  const handleSearchChange = ({ target: { value } }: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(value);
-  };
-
-  const handleSubmitSearhTemplate = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitSearchTemplate = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (search.length > 0) {
-      navigate(`${PAGE_LIST.TEMPLATE_LIST}?${FILTER.SEARCH}=${search}`);
+
+    const formData = new FormData(event.currentTarget);
+    const searchKeyword = formData.get('search')?.toString() || '';
+
+    if (!searchKeyword) {
+      snackbar.show({
+        theme: 'warning',
+        title: '검색어를 입력해주세요.',
+        description: '템플릿 검색은 최소 1자 이상 입력하여야 합니다.',
+      });
+      return;
     }
-    setSearch('');
+
+    navigate(`${PAGE_LIST.TEMPLATE_LIST}?search=${searchKeyword}`);
   };
 
   return (
-    <header className={styles.header}>
-      <nav className={cn(styles.navbar, styles.container)}>
-        <div className={styles.navItemContainer}>
+    <header className={styles.layoutComponentHeader}>
+      <nav className={styles.navbar}>
+        <FlexContainer direction="row" align="center">
           <Link to={PAGE_LIST.HOME}>
-            <Logo theme="border" weight="bold" size="small" />
+            <Logo
+              className={styles.logo}
+              theme={isPC ? 'border' : 'filled'}
+              weight="bold"
+              size="small"
+            />
           </Link>
-        </div>
+        </FlexContainer>
 
-        <form onSubmit={handleSubmitSearhTemplate} className={styles.navItemContainer}>
-          <TextBox
-            placeholder="템플릿 검색어를 입력하세요."
-            value={search}
-            onChange={handleSearchChange}
-          />
-          <Link to={`${PAGE_LIST.TEMPLATE_LIST}?${FILTER.SEARCH}=${search}`}>
-            <FontAwesomeIcon className={styles.searchIcon} icon={faSearch} />
-          </Link>
-        </form>
+        <FlexContainer
+          as="form"
+          direction="row"
+          align="center"
+          onSubmit={handleSubmitSearchTemplate}
+        >
+          <TextBox name="search" placeholder="회고를 위한 템플릿 검색" />
+
+          <button type="submit" className={styles.searchButton}>
+            <FontAwesomeIcon icon={faSearch} />
+          </button>
+        </FlexContainer>
 
         <ul className={styles.menuList}>
           <Link to="/pending">
-            <li className={styles.menuItem}>회고덕 소개</li>
+            <li className={styles.item}>회고덕 소개</li>
           </Link>
           <Link to={PAGE_LIST.TEMPLATE_LIST}>
-            <li className={styles.menuItem}>템플릿 탐색</li>
+            <li className={styles.item}>템플릿 탐색</li>
           </Link>
 
           <Link to={PAGE_LIST.TIMELINE}>
-            <li className={styles.menuItem}>타임라인</li>
+            <li className={styles.item}>타임라인</li>
           </Link>
         </ul>
 
-        <div className={cn(styles.navItemContainer, styles.quickMenuContainer)}>
-          <Button theme="outlined" size="small" onClick={onClickReviewStart}>
+        <FlexContainer className={styles.quickMenuContainer} direction="row" align="center">
+          <Button
+            className={styles.quickReviewStartButton}
+            theme="outlined"
+            size="small"
+            onClick={handleReviewModalOpen}
+          >
             <FontAwesomeIcon icon={faPenToSquare} />
             <span>회고 시작하기</span>
           </Button>
 
           {isLogin ? (
-            <PopupBox
-              className={styles.userMenu}
+            <SelectPopup
+              justify="right"
               fallback={
                 <div
                   className={styles.profile}
@@ -97,14 +115,28 @@ function Header() {
                 />
               }
             >
-              <Link className={styles.item} to={`${PAGE_LIST.USER_PROFILE}/${socialId}`}>
-                <FontAwesomeIcon icon={faUser} /> <span>마이 페이지</span>
-              </Link>
+              <FlexContainer
+                className={styles.popupMenu}
+                direction="row"
+                align="center"
+                justify="space-between"
+                onClick={handleLinkPage(`${PAGE_LIST.USER_PROFILE}/${socialId}`)}
+              >
+                <FontAwesomeIcon icon={faUser} />
+                <span>마이 페이지</span>
+              </FlexContainer>
 
-              <Link className={styles.item} to={PAGE_LIST.LOGOUT}>
-                <FontAwesomeIcon icon={faRightFromBracket} /> <span>로그아웃</span>
-              </Link>
-            </PopupBox>
+              <FlexContainer
+                className={styles.popupMenu}
+                direction="row"
+                align="center"
+                justify="space-between"
+                onClick={handleLinkPage(`${PAGE_LIST.LOGOUT}`)}
+              >
+                <FontAwesomeIcon icon={faRightFromBracket} />
+                <span>로그아웃</span>
+              </FlexContainer>
+            </SelectPopup>
           ) : (
             <a href={GITHUB_OAUTH_LOGIN_URL}>
               <Text className={styles.loginText} weight="lighter">
@@ -112,7 +144,7 @@ function Header() {
               </Text>
             </a>
           )}
-        </div>
+        </FlexContainer>
       </nav>
     </header>
   );
