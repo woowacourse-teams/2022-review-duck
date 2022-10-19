@@ -11,6 +11,42 @@
     border: 1px solid $LIGHT_COLOR_STATUS_PRIMARY_100;
   }
 
+  .to-first::after {
+    @include mobile {
+      content: '\f04a';
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+    }
+    content: '처음으로';
+  }
+
+  .previous::after {
+    @include mobile {
+      content: '\f048';
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+    }
+    content: '이전';
+  }
+
+  .next::after {
+    @include mobile {
+      content: '\f051';
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+    }
+    content: '다음';
+  }
+
+  .to-last::after {
+    @include mobile {
+      content: '\f04e';
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
+    }
+    content: '마지막으로';
+  }
+
   .page-button {
     background-color: transparent;
     border: none;

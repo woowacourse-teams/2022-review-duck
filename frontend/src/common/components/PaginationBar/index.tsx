@@ -1,13 +1,5 @@
 import { useEffect, useMemo } from 'react';
 
-import {
-  faBackwardFast,
-  faBackwardStep,
-  faForwardFast,
-  faForwardStep,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import cn from 'classnames';
 
 import styles from './styles.module.scss';
@@ -15,7 +7,6 @@ import styles from './styles.module.scss';
 import FlexContainer from '../FlexContainer';
 
 export interface PaginationBarProps extends React.HTMLAttributes<HTMLDivElement> {
-  isMobileView?: boolean;
   visiblePageButtonLength?: number;
   itemCountInPage: number;
   totalItemCount: number;
@@ -25,7 +16,6 @@ export interface PaginationBarProps extends React.HTMLAttributes<HTMLDivElement>
 }
 
 function PaginationBar({
-  isMobileView = false,
   className,
   visiblePageButtonLength = 5,
   itemCountInPage,
@@ -88,19 +78,15 @@ function PaginationBar({
     >
       <div className={styles.pageButtonContainer}>
         <button
-          className={cn(styles.pageButton, { [styles.disabled]: isFirstPage })}
+          className={cn(styles.toFirst, styles.pageButton, { [styles.disabled]: isFirstPage })}
           onClick={handleClickPageButton(1)}
           disabled={isFirstPage}
-        >
-          {isMobileView ? <FontAwesomeIcon icon={faBackwardFast} /> : <span>처음으로</span>}
-        </button>
+        />
         <button
-          className={cn(styles.pageButton, { [styles.disabled]: isFirstPage })}
+          className={cn(styles.previous, styles.pageButton, { [styles.disabled]: isFirstPage })}
           onClick={handleClickPageButton(focusedPage - 1)}
           disabled={isFirstPage}
-        >
-          {isMobileView ? <FontAwesomeIcon icon={faBackwardStep} /> : <span>이전</span>}
-        </button>
+        />
 
         {currentPageNumbers.map((pageNumber) => (
           <button
@@ -116,19 +102,15 @@ function PaginationBar({
         ))}
 
         <button
-          className={cn(styles.pageButton, { [styles.disabled]: isLastPage })}
+          className={cn(styles.next, styles.pageButton, { [styles.disabled]: isLastPage })}
           onClick={handleClickPageButton(focusedPage + 1)}
           disabled={isLastPage}
-        >
-          {isMobileView ? <FontAwesomeIcon icon={faForwardStep} /> : <span>다음</span>}
-        </button>
+        />
         <button
-          className={cn(styles.pageButton, { [styles.disabled]: isLastPage })}
+          className={cn(styles.toLast, styles.pageButton, { [styles.disabled]: isLastPage })}
           onClick={handleClickPageButton(totalPageLength)}
           disabled={isLastPage}
-        >
-          {isMobileView ? <FontAwesomeIcon icon={faForwardFast} /> : <span>마지막으로</span>}
-        </button>
+        />
       </div>
     </FlexContainer>
   );
