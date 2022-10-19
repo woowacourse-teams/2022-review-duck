@@ -53,8 +53,7 @@ public class TemplateService {
     }
 
     public Page<Template> search(String query, int page, int size, String sort) {
-        String sortType = TemplateSortType.getSortBy(sort);
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "updated_at"));
 
         return templateRepository.findByTemplateTitleContaining(pageRequest, query);
     }

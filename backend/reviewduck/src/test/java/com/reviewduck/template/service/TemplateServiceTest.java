@@ -13,8 +13,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
@@ -29,6 +31,7 @@ import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Transactional
 public class TemplateServiceTest {
 
@@ -207,13 +210,11 @@ public class TemplateServiceTest {
             Template template1 = saveTemplate(member1, "title1", "description1", questions1);
             Template template2 = saveTemplate(member1, "title2", "description2", questions2);
 
-            templateService.increaseUsedCount(template1.getId());
-
             // when
             String query = "tle1";
             int page = 0;
             int size = 1;
-            String sort = "trend";
+            String sort = "";
 
             List<Template> templates = templateService.search(query, page, size, sort).getContent();
 
