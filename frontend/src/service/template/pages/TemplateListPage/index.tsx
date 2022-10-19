@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { faArrowTrendUp, faBarsStaggered } from '@fortawesome/free-solid-svg-icons';
@@ -22,10 +23,12 @@ import styles from './styles.module.scss';
 
 import useTemplateList from './useTemplateListPage';
 import Filter from './view/Filter';
+import { UserAgentContext } from 'common/contexts/UserAgent';
 
 function TemplateListPage() {
   const [searchParam, setSearchParam] = useSearchParams();
   const { navigate, handleLinkPage } = useNavigateHandler();
+  const { isMobile } = useContext(UserAgentContext);
 
   const pageNumberParams = searchParam.get(FILTER.PAGE);
   const pageNumber =
@@ -39,6 +42,7 @@ function TemplateListPage() {
     : FILTER.TEMPLATE_TAB.LATEST;
 
   const { numberOfTemplates, templates } = useTemplateList(
+    isMobile,
     currentTab,
     pageNumber,
     searchQueryString,
@@ -111,8 +115,14 @@ function TemplateListPage() {
 
           <PaginationBar
             className={styles.pagination}
-            visiblePageButtonLength={PAGE_OPTION.TEMPLATE_BUTTON_LENGTH}
-            itemCountInPage={PAGE_OPTION.TEMPLATE_ITEM_SIZE}
+            visiblePageButtonLength={
+              isMobile
+                ? PAGE_OPTION.MOBILE_TEMPLATE_BUTTON_LENGTH
+                : PAGE_OPTION.TEMPLATE_BUTTON_LENGTH
+            }
+            itemCountInPage={
+              isMobile ? PAGE_OPTION.MOBILE_TEMPLATE_ITEM_SIZE : PAGE_OPTION.TEMPLATE_ITEM_SIZE
+            }
             totalItemCount={numberOfTemplates}
             focusedPage={Number(pageNumber)}
             onClickPageButton={handleClickPagination}

@@ -1,6 +1,14 @@
 @import 'styles/@global.scss';
 
 .template-container {
+  @include mobile {
+    gap: 4%;
+  }
+
+  @include tablet {
+    gap: 4%;
+  }
+
   display: flex;
   flex-flow: wrap;
   gap: 2%;

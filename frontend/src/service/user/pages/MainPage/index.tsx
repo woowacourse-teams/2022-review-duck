@@ -42,15 +42,15 @@ function MainPage() {
   return PageSuspense(
     <FlexContainer className={styles.mainPageContainer}>
       <Intro>
-        <div className={styles.leftContainer}>
-          <Intro.Title>
-            <span className={styles.bold}>회고덕</span>으로 함께 회고를 시작해보세요
-          </Intro.Title>
-          <Intro.SubTitle>함께 성장하는 회고 플랫폼</Intro.SubTitle>
-          <Intro.ReviewButton onClick={handleClickReviewStart}>회고 시작하기</Intro.ReviewButton>
-        </div>
-
-        <Intro.HeroCards />
+        <Intro.Title>
+          <span>
+            <b>회고덕</b>으로
+          </span>
+          <span>함께 회고를</span>
+          <span>시작해보세요</span>
+        </Intro.Title>
+        <Intro.SubTitle>함께 성장하는 회고 플랫폼</Intro.SubTitle>
+        <Intro.ReviewButton onClick={handleClickReviewStart}>회고 시작하기</Intro.ReviewButton>
       </Intro>
 
       <TrendTemplate>

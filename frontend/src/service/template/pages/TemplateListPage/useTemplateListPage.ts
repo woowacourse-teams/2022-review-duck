@@ -1,3 +1,4 @@
+import { PAGE_OPTION } from 'constant';
 import { GetTemplatesResponse, TemplateFilterType } from 'types';
 
 import { useGetSearchTemplates, useGetTemplates } from 'service/@shared/hooks/queries/template';
@@ -24,11 +25,17 @@ const initialTemplates: GetTemplatesResponse = {
   ],
 };
 
-function useTemplateList(filter: TemplateFilterType, pageNumber: number, search: string) {
+function useTemplateList(
+  isMobile: boolean,
+  filter: TemplateFilterType,
+  pageNumber: number,
+  search: string,
+) {
   const getTemplates = useGetTemplates(
     {
       filter,
       pageNumber,
+      itemCount: isMobile ? PAGE_OPTION.MOBILE_TEMPLATE_ITEM_SIZE : undefined,
     },
     {
       enabled: !search,
@@ -39,6 +46,7 @@ function useTemplateList(filter: TemplateFilterType, pageNumber: number, search:
     {
       search,
       pageNumber,
+      itemCount: isMobile ? PAGE_OPTION.MOBILE_TEMPLATE_ITEM_SIZE : undefined,
     },
     {
       enabled: !!search,

@@ -167,7 +167,7 @@ function ProfilePage() {
     };
 
   return PageSuspense(
-    <>
+    <div className={styles.pageProfile}>
       <div
         className={styles.profileBackground}
         style={{ backgroundImage: `url(${userProfile.profileUrl})` }}
@@ -175,19 +175,22 @@ function ProfilePage() {
 
       <LayoutContainer className={styles.container}>
         <Controller>
-          <Controller.Profile profileUrl={userProfile.profileUrl} />
-          <Controller.NameCard
+          <Controller.Profile
+            profileUrl={userProfile.profileUrl}
             nickname={userProfile.nickname}
             socialNickname={userProfile.socialNickname}
           />
+
           <Controller.ProfileManager
             isMyProfile={userProfile.isMine}
             socialNickname={userProfile.socialNickname}
             onEditButtonClick={handleEditProfile}
           />
+
           <hr className={styles.line} />
 
-          <Controller.TabNavigator currentTab={currentTab as Tabs} onTabClick={handleChangeTab} />
+          <Controller.TabNavigator currentTab={currentTab} onTabClick={handleChangeTab} />
+
           <hr className={styles.line} />
 
           <Controller.Record
@@ -268,7 +271,7 @@ function ProfilePage() {
           )}
         </ArticleList>
       </LayoutContainer>
-    </>,
+    </div>,
   );
 }
 
