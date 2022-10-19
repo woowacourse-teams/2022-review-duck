@@ -24,7 +24,7 @@ public class ReviewSheetResponse extends ReviewAbstractResponse {
     private CreatorResponse creator;
     private List<ReviewContentResponse> contents;
 
-    public static ReviewSheetResponse of(MemberDto member, Review review) {
+    public static ReviewSheetResponse of(long memberId, Review review) {
         List<ReviewContentResponse> contents = getSynchronizedReviewContents(review);
 
         return new ReviewSheetResponse(
@@ -32,7 +32,7 @@ public class ReviewSheetResponse extends ReviewAbstractResponse {
             review.getTitle(),
             Timestamp.valueOf(review.getUpdatedAt()).getTime(),
             review.getLikes(),
-            Objects.equals(review.getMember().getId(), member.getId()),
+            Objects.equals(review.getMember().getId(), memberId),
             // todo
             CreatorResponse.from(MemberDto.from(review.getMember())),
             contents

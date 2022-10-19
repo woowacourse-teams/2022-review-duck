@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reviewduck.auth.support.AuthenticationPrincipal;
+import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.request.MemberUpdateNicknameRequest;
 import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.member.service.MemberService;
@@ -36,7 +37,7 @@ public class MemberController {
 
         info("/api/members/" + socialId, "GET", "");
 
-        MemberDto foundMember = memberService.getBySocialId(socialId);
+        Member foundMember = memberService.findBySocialId(socialId);
 
         return MemberDto.of(foundMember, member);
     }

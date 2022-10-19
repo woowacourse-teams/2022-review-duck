@@ -17,21 +17,12 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.http.MediaType;
 
 import com.reviewduck.controller.ControllerTest;
-import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.review.dto.controller.request.AnswerUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewLikesRequest;
 import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
 
 public class ReviewControllerTest extends ControllerTest {
-
-    @BeforeEach
-    void createMemberAndGetAccessToken() {
-        MemberDto member = MemberDto.from(new Member("1", "jason", "제이슨", "profileUrl"));
-        given(jwtTokenProvider.getAccessTokenPayload(any())).willReturn("1");
-        given(memberService.findById(any())).willReturn(member);
-    }
 
     @Nested
     @DisplayName("회고 수정 시")

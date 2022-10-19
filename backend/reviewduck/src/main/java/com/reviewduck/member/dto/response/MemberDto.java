@@ -35,7 +35,7 @@ public class MemberDto {
         );
     }
 
-    public static MemberDto of(MemberDto member, MemberDto loginMember) {
+    public static MemberDto of(Member member, MemberDto loginMember) {
         return new MemberDto(
             Objects.equals(member.getId(), loginMember.getId()),
             member.getId(),

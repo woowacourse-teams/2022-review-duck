@@ -16,8 +16,6 @@ import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
 import com.reviewduck.template.dto.controller.response.MemberTemplatesResponse;
-import com.reviewduck.template.dto.controller.response.TemplateResponse;
-import com.reviewduck.template.dto.controller.response.TemplatesResponse;
 import com.reviewduck.template.repository.TemplateRepository;
 import com.reviewduck.template.vo.TemplateSortType;
 
@@ -29,11 +27,9 @@ import lombok.AllArgsConstructor;
 public class TemplateService {
 
     private final TemplateRepository templateRepository;
-    private final MemberRepository memberRepository;
 
     @Transactional
-    public TemplateDto save(long memberId, TemplateCreateRequest createRequest) {
-        Member member = findMemberById(memberId);
+    public Template save(Member member, TemplateCreateRequest createRequest) {
         Template template = new Template(
             member,
             createRequest.getTemplateTitle(),
@@ -41,55 +37,33 @@ public class TemplateService {
             toTemplateQuestionCreateDtos(createRequest.getQuestions())
         );
 
-        Template savedTemplate = templateRepository.save(template);
-        return TemplateDto.from(savedTemplate);
+        return templateRepository.save(template);
     }
 
-    private Member findMemberById(long memberId) {
-        return memberRepository.findById(memberId)
-            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
-    }
-
-    public TemplatesResponse search(String query, int page, int size, String sort, long memberId) {
+    public Page<Template> search(String query, int page, int size, String sort) {
         String sortType = TemplateSortType.getSortBy(sort);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
 
-        Page<Template> templates = templateRepository.findByTemplateTitleContaining(pageRequest, query);
-        return TemplatesResponse.of(templates, memberId);
+        return templateRepository.findByTemplateTitleContaining(pageRequest, query);
     }
 
-    public TemplateResponse findById(long id, long memberId) {
-        Template template = templateRepository.findById(id)
+    public Template findById(long id) {
+        return templateRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
-
-        return TemplateResponse.of(template, memberId);
     }
 
-    public TemplateDto findById(long id) {
-        Template template = templateRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
-
-        return TemplateDto.from(template);
-    }
-
-    public TemplatesResponse findAllByMember(int page, int size, String sort, long memberId) {
+    public Page<Template> findAll(int page, int size, String sort) {
         String sortType = TemplateSortType.getSortBy(sort);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
 
-        Page<Template> templates = templateRepository.findAll(pageRequest);
-        return TemplatesResponse.of(templates, memberId);
+        return templateRepository.findAll(pageRequest);
     }
 
-    public MemberTemplatesResponse findAllBySocialId(String socialId, int page, int size, long memberId) {
-        Member member = memberRepository.findBySocialId(socialId)
-            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
-        boolean isMine = member.isSameId(memberId);
-
+    public Page<Template> findAllByMember(int page, int size, Member member) {
         Sort sort = Sort.by(Sort.Direction.DESC, TemplateSortType.LATEST.getSortBy());
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-        Page<Template> templates = templateRepository.findByMember(pageRequest, member);
-        return MemberTemplatesResponse.of(templates, isMine);
+        return templateRepository.findByMember(pageRequest, member);
     }
 
     @Transactional

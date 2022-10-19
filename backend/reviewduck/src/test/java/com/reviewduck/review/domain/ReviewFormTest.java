@@ -10,18 +10,19 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.review.exception.ReviewFormException;
 import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
 import com.reviewduck.review.dto.service.ReviewFormQuestionUpdateDto;
+import com.reviewduck.review.exception.ReviewFormException;
 
 class ReviewFormTest {
 
-    private final Member member = new Member("1", "socialId", "nickname", "profileUrl");
+    private final Member member = new Member(1L, "1", "socialId", "nickname", "profileUrl");
 
     @Nested
     @DisplayName("회고 폼 생성")
@@ -88,6 +89,17 @@ class ReviewFormTest {
 
             //when, then
             assertThat(actual).isEqualTo(expected);
+        }
+
+        @ParameterizedTest
+        @DisplayName("회고 질문지를 생성한 회원인지 검증한다.")
+        @CsvSource(value = {"1:true", "2:false"}, delimiter = ':')
+        void isSameId(long memberId, boolean expected) {
+            // given
+            ReviewForm reviewForm = new ReviewForm(member, "리뷰폼 제목", questions);
+
+            // when, then
+            assertThat(reviewForm.isMine(memberId)).isEqualTo(expected);
         }
 
         private List<ReviewFormQuestion> toEntity(final List<ReviewFormQuestionCreateDto> dtos, ReviewForm reviewForm) {

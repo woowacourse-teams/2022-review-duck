@@ -25,8 +25,7 @@ import com.reviewduck.review.dto.controller.response.ReviewEditResponse;
 import com.reviewduck.review.dto.controller.response.ReviewLikesResponse;
 import com.reviewduck.review.dto.controller.response.ReviewsResponse;
 import com.reviewduck.review.dto.controller.response.TimelineReviewsResponse;
-import com.reviewduck.review.service.ReviewResponseMapper;
-import com.reviewduck.review.service.ReviewService;
+import com.reviewduck.review.service.ReviewAggregator;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -36,8 +35,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ReviewController {
 
-    private final ReviewService reviewService;
-    private final ReviewResponseMapper responseMapper;
+    private final ReviewAggregator aggregator;
 
     @Operation(summary = "회고 답변 수정을 위해 특정한 회고 답변을 조회한다.")
     @GetMapping("/{reviewId}")
@@ -46,7 +44,7 @@ public class ReviewController {
 
         info("/api/reviews/" + reviewId, "GET", "");
 
-        return responseMapper.findEditedById(reviewId);
+        return aggregator.findEditedById(reviewId);
     }
 
     @Operation(summary = "사용자가 작성한 회고 답변을 모두 조회한다.")
@@ -60,7 +58,7 @@ public class ReviewController {
 
         info("/api/reviews?member=" + socialId + "&page=" + page + "&size=" + size, "GET", "");
 
-        return responseMapper.findAllBySocialId(socialId, member.getId(), page - 1, size);
+        return aggregator.findAllBySocialId(socialId, member.getId(), page - 1, size);
     }
 
     @Operation(summary = "비밀글이 아닌 회고 답변을 모두 조회한다.")
@@ -73,7 +71,7 @@ public class ReviewController {
 
         info("/api/reviews/public?page=" + page + "&size=" + size + "&sort=" + sort, "GET", "");
 
-        return responseMapper.findAllPublic(page - 1, size, sort, member);
+        return aggregator.findAllPublic(page - 1, size, sort, member.getId());
     }
 
     @Operation(summary = "회고 답변을 수정한다.")
@@ -84,7 +82,7 @@ public class ReviewController {
 
         info("/api/reviews/" + reviewId, "PUT", request.toString());
 
-        reviewService.update(member.getId(), reviewId, request);
+        aggregator.update(member.getId(), reviewId, request);
     }
 
     @Operation(summary = "회고 답변을 삭제한다.")
@@ -94,7 +92,7 @@ public class ReviewController {
 
         info("/api/reviews/" + reviewId, "DELETE", "");
 
-        reviewService.delete(member.getId(), reviewId);
+        aggregator.delete(member.getId(), reviewId);
     }
 
     @Operation(summary = "좋아요 개수를 더한다.")
@@ -104,7 +102,6 @@ public class ReviewController {
 
         info("/api/reviews/" + reviewId + "/likes", "POST", request.toString());
 
-        int likes = reviewService.increaseLikes(reviewId, request.getLikes());
-        return new ReviewLikesResponse(likes);
+        return aggregator.likes(reviewId, request.getLikes());
     }
 }

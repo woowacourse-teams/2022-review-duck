@@ -10,17 +10,18 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.review.exception.ReviewException;
 import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
 import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
+import com.reviewduck.review.exception.ReviewException;
 
 public class ReviewTest {
 
-    private final Member member = new Member("1", "socialId", "nickname", "profileUrl");
+    private final Member member = new Member(1L, "1", "socialId", "nickname", "profileUrl");
     private final ReviewForm reviewForm = new ReviewForm(member, "title", List.of(
         new ReviewFormQuestionCreateDto("question1", "description1"),
         new ReviewFormQuestionCreateDto("question2", "description2"),
@@ -132,5 +133,25 @@ public class ReviewTest {
 
         // then
         assertThat(actual).isEqualTo(100);
+    }
+
+    @ParameterizedTest
+    @DisplayName("회고를 생성한 회원인지 검증한다.")
+    @CsvSource(value = {"1:true", "2:false"}, delimiter = ':')
+    void isSameId(long memberId, boolean expected) {
+        // given
+        Iterator<ReviewFormQuestion> questionIterator = reviewForm.getQuestions().iterator();
+        Review review = new Review(
+            "title",
+            member,
+            reviewForm,
+            List.of(
+                new QuestionAnswerCreateDto(questionIterator.next(), new Answer("answer1")),
+                new QuestionAnswerCreateDto(questionIterator.next(), new Answer("answer2")),
+                new QuestionAnswerCreateDto(questionIterator.next(), new Answer("answer3"))
+            ), false);
+
+        // when, then
+        assertThat(review.isMine(memberId)).isEqualTo(expected);
     }
 }

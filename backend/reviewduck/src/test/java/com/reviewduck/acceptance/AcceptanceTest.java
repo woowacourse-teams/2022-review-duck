@@ -33,7 +33,7 @@ public class AcceptanceTest {
 
     protected String accessToken1;
     protected String accessToken2;
-    protected MemberDto savedMember;
+    protected Member savedMember;
 
     @BeforeEach
     public void setUp() {

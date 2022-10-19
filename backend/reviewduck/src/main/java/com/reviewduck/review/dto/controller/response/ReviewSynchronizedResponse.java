@@ -3,7 +3,6 @@ package com.reviewduck.review.dto.controller.response;
 import java.util.List;
 
 import com.reviewduck.review.domain.Review;
-import com.reviewduck.review.dto.service.ReviewDto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

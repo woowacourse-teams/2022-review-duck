@@ -23,9 +23,9 @@ public class TimelineReviewsResponse {
     private boolean isLastPage;
     private List<ReviewResponse> reviews;
 
-    public static TimelineReviewsResponse of(Page<Review> reviews, MemberDto member) {
+    public static TimelineReviewsResponse of(Page<Review> reviews, long memberId) {
         List<ReviewResponse> reviewResponses = reviews.getContent().stream()
-            .map(review -> ReviewResponse.of(member, review))
+            .map(review -> ReviewResponse.of(memberId, review))
             .collect(Collectors.toUnmodifiableList());
 
         return new TimelineReviewsResponse(reviews.getTotalElements(), reviews.isLast(), reviewResponses);

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.reviewduck.review.domain.Review;
-import com.reviewduck.review.dto.service.ReviewDto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

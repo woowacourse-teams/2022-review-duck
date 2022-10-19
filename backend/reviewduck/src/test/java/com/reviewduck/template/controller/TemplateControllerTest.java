@@ -18,21 +18,12 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.http.MediaType;
 
 import com.reviewduck.controller.ControllerTest;
-import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
 
 public class TemplateControllerTest extends ControllerTest {
-
-    @BeforeEach
-    void createMemberAndGetAccessToken() {
-        Member member = new Member("1", "panda", "제이슨", "profileUrl");
-        given(jwtTokenProvider.getAccessTokenPayload(any())).willReturn("1");
-        given(memberService.findById(any())).willReturn(MemberDto.from(member));
-    }
 
     @Nested
     @DisplayName("템플릿 생성")

@@ -26,7 +26,7 @@ public class ReviewResponse extends ReviewAbstractResponse {
     private List<ReviewContentResponse> contents;
     private String reviewFormCode;
 
-    public static ReviewResponse of(MemberDto member, Review review) {
+    public static ReviewResponse of(long memberId, Review review) {
         List<ReviewContentResponse> contents = review.getQuestionAnswers().stream()
             .map(ReviewContentResponse::from)
             .collect(Collectors.toUnmodifiableList());
@@ -39,7 +39,7 @@ public class ReviewResponse extends ReviewAbstractResponse {
             Timestamp.valueOf(review.getUpdatedAt()).getTime(),
             review.getLikes(),
             CreatorResponse.from(MemberDto.from(review.getMember())),
-            review.isMine(member),
+            review.isMine(memberId),
             contents,
             reviewForm.getCode()
         );

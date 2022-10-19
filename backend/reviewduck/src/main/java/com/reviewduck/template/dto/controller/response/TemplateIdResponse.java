@@ -1,7 +1,6 @@
 package com.reviewduck.template.dto.controller.response;
 
 import com.reviewduck.template.domain.Template;
-import com.reviewduck.template.service.TemplateDto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,7 +14,7 @@ public class TemplateIdResponse {
 
     private Long templateId;
 
-    public static TemplateIdResponse from(TemplateDto template) {
+    public static TemplateIdResponse from(Template template) {
         return new TemplateIdResponse(template.getId());
     }
 }

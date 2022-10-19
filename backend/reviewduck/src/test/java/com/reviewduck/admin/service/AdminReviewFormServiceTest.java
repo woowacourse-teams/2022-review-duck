@@ -20,7 +20,6 @@ import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
-import com.reviewduck.review.dto.service.ReviewFormDto;
 import com.reviewduck.review.service.ReviewFormService;
 
 @SpringBootTest
@@ -43,10 +42,10 @@ public class AdminReviewFormServiceTest {
     @BeforeEach
     void setUp() {
         Member tempMember1 = new Member("1", "jason", "제이슨", "testUrl1");
-        member1 = memberService.save(tempMember1).toEntity();
+        member1 = memberService.save(tempMember1);
 
         Member tempMember2 = new Member("2", "woni", "워니", "testUrl2");
-        member2 = memberService.save(tempMember2).toEntity();
+        member2 = memberService.save(tempMember2);
     }
 
     @Test
@@ -71,7 +70,7 @@ public class AdminReviewFormServiceTest {
     @DisplayName("회고 폼을 삭제한다.")
     void deleteReviewForm() {
         // given
-        ReviewFormDto reviewForm = saveReviewForm(member1);
+        ReviewForm reviewForm = saveReviewForm(member1);
 
         // when
         adminReviewFormService.deleteReviewFormById(reviewForm.getId());
@@ -91,14 +90,13 @@ public class AdminReviewFormServiceTest {
             .hasMessageContaining("존재하지 않는 회고 폼입니다.");
     }
 
-    private ReviewFormDto saveReviewForm(Member member) {
+    private ReviewForm saveReviewForm(Member member) {
         List<ReviewFormQuestionCreateRequest> createRequests = List.of(
             new ReviewFormQuestionCreateRequest("question1", "description1"),
             new ReviewFormQuestionCreateRequest("question2", "description2"));
 
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest("title", createRequests);
 
-        String reviewFormCode = reviewFormService.save(member, createRequest).getReviewFormCode();
-        return reviewFormService.findByCode(reviewFormCode);
+        return reviewFormService.save(member.getId(), createRequest);
     }
 }

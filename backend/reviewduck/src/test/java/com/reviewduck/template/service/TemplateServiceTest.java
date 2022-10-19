@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import com.reviewduck.ServiceTest;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
@@ -26,13 +27,8 @@ import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
-import com.reviewduck.template.dto.controller.response.MemberTemplateResponse;
-import com.reviewduck.template.dto.controller.response.TemplateSummaryResponse;
 
-@SpringBootTest
-@Sql("classpath:truncate.sql")
-@Transactional
-public class TemplateServiceTest {
+public class TemplateServiceTest extends ServiceTest {
 
     private final List<TemplateQuestionCreateRequest> questions1 = List.of(
         new TemplateQuestionCreateRequest("question1", "description1"),
@@ -41,24 +37,6 @@ public class TemplateServiceTest {
     private final List<TemplateQuestionCreateRequest> questions2 = List.of(
         new TemplateQuestionCreateRequest("question3", "description3"),
         new TemplateQuestionCreateRequest("question4", "description4"));
-
-    @Autowired
-    private TemplateService templateService;
-
-    @Autowired
-    private MemberService memberService;
-
-    private Member member1;
-    private Member member2;
-
-    @BeforeEach
-    void createAndSaveMember() {
-        Member tempMember1 = new Member("1", "panda", "제이슨", "testUrl1");
-        member1 = memberService.save(tempMember1).toEntity();
-
-        Member tempMember2 = new Member("2", "ariari", "브리", "testUrl2");
-        member2 = memberService.save(tempMember2).toEntity();
-    }
 
     @Nested
     @DisplayName("템플릿 생성")
@@ -119,7 +97,7 @@ public class TemplateServiceTest {
             List<TemplateQuestion> expected = convertRequestToQuestions(questions);
 
             // when
-            TemplateDto foundTemplate = templateService.findById(template.getId());
+            Template foundTemplate = templateService.findById(template.getId());
 
             // then
             assertAll(
@@ -165,14 +143,13 @@ public class TemplateServiceTest {
             int size = 1;
             String sort = "trend";
 
-            List<TemplateSummaryResponse> templates = templateService.findAllByMember(page, size, sort, member1)
-                .getTemplates();
+            List<Template> templates = templateService.findAll(page, size, sort).getContent();
 
             // then
             assertAll(
                 () -> assertThat(templates).hasSize(1),
-                () -> assertThat(templates.get(0).getInfo().getId()).isEqualTo(template1.getId()),
-                () -> assertThat(templates.get(0).getInfo().getTitle()).isEqualTo(template1.getTemplateTitle())
+                () -> assertThat(templates.get(0).getId()).isEqualTo(template1.getId()),
+                () -> assertThat(templates.get(0).getTemplateTitle()).isEqualTo(template1.getTemplateTitle())
             );
         }
 
@@ -189,14 +166,13 @@ public class TemplateServiceTest {
             int size = 1;
             String sort = "latest";
 
-            List<TemplateSummaryResponse> templates = templateService.findAllByMember(page, size, sort, member1)
-                .getTemplates();
+            List<Template> templates = templateService.findAll(page, size, sort).getContent();
 
             // then
             assertAll(
                 () -> assertThat(templates).hasSize(1),
-                () -> assertThat(templates.get(0).getInfo().getId()).isEqualTo(template2.getId()),
-                () -> assertThat(templates.get(0).getInfo().getTitle()).isEqualTo(template2.getTemplateTitle())
+                () -> assertThat(templates.get(0).getId()).isEqualTo(template2.getId()),
+                () -> assertThat(templates.get(0).getTemplateTitle()).isEqualTo(template2.getTemplateTitle())
             );
         }
     }
@@ -221,14 +197,13 @@ public class TemplateServiceTest {
             int size = 1;
             String sort = "trend";
 
-            List<TemplateSummaryResponse> templates = templateService.search(query, page, size, sort, member1)
-                .getTemplates();
+            List<Template> templates = templateService.search(query, page, size, sort).getContent();
 
             // then
             assertAll(
                 () -> assertThat(templates).hasSize(1),
-                () -> assertThat(templates.get(0).getInfo().getId()).isEqualTo(template1.getId()),
-                () -> assertThat(templates.get(0).getInfo().getTitle()).isEqualTo(template1.getTemplateTitle())
+                () -> assertThat(templates.get(0).getId()).isEqualTo(template1.getId()),
+                () -> assertThat(templates.get(0).getTemplateTitle()).isEqualTo(template1.getTemplateTitle())
             );
         }
     }
@@ -252,26 +227,15 @@ public class TemplateServiceTest {
             int page = 0;
             int size = 1;
 
-            List<MemberTemplateResponse> templates = templateService.findAllBySocialId("1", page, size, true)
-                .getTemplates();
+            List<Template> templates = templateService.findAllByMember(page, size, member1).getContent();
 
             // then
             assertAll(
                 () -> assertThat(templates).hasSize(1),
-                () -> assertThat(templates.get(0).getInfo().getId()).isEqualTo(template2.getId()),
-                () -> assertThat(templates.get(0).getInfo().getTitle()).isEqualTo(template2.getTemplateTitle())
+                () -> assertThat(templates.get(0).getId()).isEqualTo(template2.getId()),
+                () -> assertThat(templates.get(0).getTemplateTitle()).isEqualTo(template2.getTemplateTitle())
             );
         }
-
-        @Test
-        @DisplayName("존재하지 않는 사용자에 대해 조회할 수 없다.")
-        void invalidSocialId() {
-            // when, then
-            assertThatThrownBy(() -> templateService.findAllBySocialId("999999", 0, 1, false))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessageContaining("존재하지 않는 사용자입니다.");
-        }
-
 
     }
 
@@ -295,7 +259,7 @@ public class TemplateServiceTest {
                 new TemplateQuestionUpdateRequest(2L, "question2", "description2"),
                 new TemplateQuestionUpdateRequest(null, "question3", "description3"));
 
-            templateService.update(member1, template.getId(),
+            templateService.update(memberId1, template.getId(),
                 new TemplateUpdateRequest("new title", "new description", newQuestions));
 
             List<TemplateQuestion> expectedTemplateQuestions = newQuestions.stream()
@@ -309,7 +273,7 @@ public class TemplateServiceTest {
                 reviewFormQuestion.setPosition(index++);
             }
 
-            TemplateDto updatedTemplate = templateService.findById(template.getId());
+            Template updatedTemplate = templateService.findById(template.getId());
 
             // then
             assertAll(
@@ -343,7 +307,7 @@ public class TemplateServiceTest {
                 newQuestions);
 
             // then
-            assertThatThrownBy(() -> templateService.update(member2, template.getId(), updateRequest))
+            assertThatThrownBy(() -> templateService.update(memberId2, template.getId(), updateRequest))
                 .isInstanceOf(AuthorizationException.class)
                 .hasMessageContaining("본인이 생성한 템플릿이 아니면 수정할 수 없습니다.");
         }
@@ -354,7 +318,7 @@ public class TemplateServiceTest {
             // given
             TemplateUpdateRequest request = new TemplateUpdateRequest("title", "description", List.of());
             // when, then
-            assertThatThrownBy(() -> templateService.update(member1, 9999L, request))
+            assertThatThrownBy(() -> templateService.update(memberId1, 9999L, request))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 템플릿입니다.");
         }
@@ -377,7 +341,7 @@ public class TemplateServiceTest {
             Template template = saveTemplate(member1, templateTitle, templateDescription, questions1);
 
             // when
-            templateService.deleteById(member1, template.getId());
+            templateService.deleteById(memberId1, template.getId());
 
             // then
             assertThatThrownBy(() -> templateService.findById(template.getId()))
@@ -395,7 +359,7 @@ public class TemplateServiceTest {
 
             Template template = saveTemplate(member1, templateTitle, templateDescription, questions1);
 
-            assertThatThrownBy(() -> templateService.deleteById(member2, template.getId()))
+            assertThatThrownBy(() -> templateService.deleteById(memberId2, template.getId()))
                 .isInstanceOf(AuthorizationException.class)
                 .hasMessageContaining("본인이 생성한 템플릿이 아니면 삭제할 수 없습니다.");
         }
@@ -404,7 +368,7 @@ public class TemplateServiceTest {
         @DisplayName("존재하지 않는 템플릿을 삭제할 수 없다.")
         void invalidId() {
             // when, then
-            assertThatThrownBy(() -> templateService.deleteById(member1, 9999L))
+            assertThatThrownBy(() -> templateService.deleteById(memberId1, 9999L))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 템플릿입니다.");
         }
@@ -429,6 +393,6 @@ public class TemplateServiceTest {
         List<TemplateQuestionCreateRequest> questions) throws InterruptedException {
         Thread.sleep(1);
         TemplateCreateRequest createRequest = new TemplateCreateRequest(templateTitle, templateDescription, questions);
-        return templateService.save(member, createRequest).toEntity();
+        return templateService.save(member, createRequest);
     }
 }

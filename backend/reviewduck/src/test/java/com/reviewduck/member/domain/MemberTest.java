@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import com.reviewduck.member.exception.MemberException;
@@ -73,5 +74,16 @@ public class MemberTest {
             () -> assertThat(member.getSocialNickname()).isEqualTo(expectedSocialNickname),
             () -> assertThat(member.getProfileUrl()).isEqualTo(expectedProfileUrl)
         );
+    }
+
+    @ParameterizedTest
+    @DisplayName("id가 같은지 검증한다.")
+    @CsvSource(value = {"1:true", "2:false"}, delimiter = ':')
+    void isSameId(long id, boolean expected) {
+        // given
+        Member member = new Member(1L,"1", "socialId", "original nickname", "profileUrl");
+
+        // when, then
+        assertThat(member.isSameId(id)).isEqualTo(expected);
     }
 }

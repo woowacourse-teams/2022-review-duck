@@ -29,13 +29,6 @@ import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
 
 public class ReviewFormControllerTest extends ControllerTest {
 
-    @BeforeEach
-    void createMemberAndGetAccessToken() {
-        MemberDto member = MemberDto.from(new Member("1", "jason", "제이슨", "profileUrl"));
-        given(jwtTokenProvider.getAccessTokenPayload(any())).willReturn("1");
-        given(memberService.findById(any())).willReturn(member);
-    }
-
     @Nested
     @DisplayName("회고 폼 생성시")
     class createReviewForm {

@@ -8,20 +8,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.reviewduck.ServiceTest;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
-import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
@@ -31,46 +27,15 @@ import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
+import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
-import com.reviewduck.template.service.TemplateDto;
 import com.reviewduck.template.service.TemplateService;
 
-@SpringBootTest
-@Sql("classpath:truncate.sql")
-@Transactional
-public class ReviewFormServiceTest {
+public class ReviewFormServiceTest extends ServiceTest {
 
     private final String invalidCode = "aaaaaaaa";
     private final ReviewForm mockReviewForm = mock(ReviewForm.class);
-
-    @Autowired
-    private ReviewFormService reviewFormService;
-
-    @Autowired
-    private ReviewService reviewService;
-
-    @Autowired
-    private TemplateService templateService;
-
-    @Autowired
-    private MemberService memberService;
-
-    private Member member1;
-    private Member member2;
-    private long memberId1;
-    private long memberId2;
-
-    @BeforeEach
-    void setUp() {
-        Member tempMember1 = new Member("1", "jason", "제이슨", "testUrl1");
-        member1 = memberService.save(tempMember1);
-        memberId1 = member1.getId();
-
-        Member tempMember2 = new Member("2", "woni", "워니", "testUrl2");
-        member2 = memberService.save(tempMember2);
-        memberId2 = member2.getId();
-    }
 
     @Nested
     @DisplayName("회고 폼 생성")
@@ -136,7 +101,7 @@ public class ReviewFormServiceTest {
 
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 questions);
-            Long templateId = templateService.save(memberId1, templateRequest).getId();
+            Long templateId = templateService.save(member1, templateRequest).getId();
 
             // when
             // 템플릿 기반 회고 폼 생성
@@ -183,7 +148,7 @@ public class ReviewFormServiceTest {
 
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 questions);
-            TemplateDto savedTemplate = templateService.save(memberId1, templateRequest);
+            Template savedTemplate = templateService.save(member1, templateRequest);
             Long templateId = savedTemplate.getId();
 
             // 초기 수정 시간
@@ -214,7 +179,7 @@ public class ReviewFormServiceTest {
 
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 templateQuestions);
-            Long templateId = templateService.save(memberId1, templateRequest).getId();
+            Long templateId = templateService.save(member1, templateRequest).getId();
 
             String reviewFormTitle = "title";
             List<ReviewFormQuestionCreateRequest> reviewFromQuestions = List.of(
@@ -269,7 +234,7 @@ public class ReviewFormServiceTest {
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 templateQuestions);
 
-            Long templateId = templateService.save(memberId1, templateRequest).getId();
+            Long templateId = templateService.save(member1, templateRequest).getId();
 
             String reviewFormTitle = "title";
             List<ReviewFormQuestionCreateRequest> reviewFromQuestions = List.of(

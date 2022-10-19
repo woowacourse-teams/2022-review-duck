@@ -18,13 +18,12 @@ import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
+import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
-import com.reviewduck.review.dto.service.ReviewDto;
-import com.reviewduck.review.dto.service.ReviewFormDto;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
@@ -45,17 +44,17 @@ public class AdminReviewServiceTest {
     @Autowired
     private MemberService memberService;
 
-    private ReviewFormDto reviewForm;
+    private ReviewForm reviewForm;
     private Member member1;
     private Member member2;
 
     @BeforeEach
     void setUp() {
         Member tempMember1 = new Member("1", "jason", "제이슨", "testUrl1");
-        member1 = memberService.save(tempMember1).toEntity();
+        member1 = memberService.save(tempMember1);
 
         Member tempMember2 = new Member("2", "woni", "워니", "testUrl2");
-        member2 = memberService.save(tempMember2).toEntity();
+        member2 = memberService.save(tempMember2);
 
         String reviewTitle = "title";
         List<ReviewFormQuestionCreateRequest> questions = List.of(
@@ -63,8 +62,7 @@ public class AdminReviewServiceTest {
             new ReviewFormQuestionCreateRequest("question2", "description2"));
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
 
-        String reviewFormCode = reviewFormService.save(member1, createRequest).getReviewFormCode();
-        this.reviewForm = reviewFormService.findByCode(reviewFormCode);
+        this.reviewForm = reviewFormService.save(member1.getId(), createRequest);
     }
 
     @Test
@@ -89,7 +87,7 @@ public class AdminReviewServiceTest {
     @DisplayName("회고 폼을 삭제한다.")
     void deleteReviewForm() {
         // given
-        ReviewDto review = saveReview(member1);
+        Review review = saveReview(member1);
 
         // when
         adminReviewService.deleteReviewById(review.getId());
@@ -109,12 +107,12 @@ public class AdminReviewServiceTest {
             .hasMessageContaining("존재하지 않는 회고입니다.");
     }
 
-    private ReviewDto saveReview(Member member) {
+    private Review saveReview(Member member) {
         ReviewCreateRequest createRequest = new ReviewCreateRequest(false, "title", List.of(
             new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
             new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
         ));
 
-        return reviewService.save(member, reviewForm.getCode(), createRequest);
+        return reviewService.save(member.getId(), reviewForm.getCode(), createRequest);
     }
 }

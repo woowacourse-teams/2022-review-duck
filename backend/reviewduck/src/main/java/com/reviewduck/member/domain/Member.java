@@ -26,7 +26,7 @@ import lombok.NoArgsConstructor;
 public class Member extends BaseDate {
 
     @Transient
-    private static final Member MEMBER_NOT_LOGIN = new Member("-1", "socialNickname", "nickname", "url");
+    private static final Member MEMBER_NOT_LOGIN = new Member(-1L, "-1", "socialNickname", "nickname", "url");
     private static final String deletedInfo = "-";
     private static final String deletedNickname = "탈퇴한 회원입니다.";
 

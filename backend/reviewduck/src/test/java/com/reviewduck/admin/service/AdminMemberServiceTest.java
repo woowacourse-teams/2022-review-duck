@@ -33,7 +33,7 @@ public class AdminMemberServiceTest {
     @BeforeEach
     void createAndSaveMember() {
         Member member = new Member("1", "panda", "제이슨", "testUrl");
-        savedMember = memberService.save(member).toEntity();
+        savedMember = memberService.save(member);
     }
 
     @Test

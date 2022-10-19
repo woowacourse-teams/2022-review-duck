@@ -43,11 +43,6 @@ public class ReviewFormService {
         return reviewFormRepository.save(reviewForm);
     }
 
-    private Member findMemberById(long memberId) {
-        return memberRepository.findById(memberId)
-            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
-    }
-
     @Transactional
     public ReviewForm saveFromTemplate(long memberId, Long templateId) {
         Template template = templateRepository.findById(templateId)
@@ -58,13 +53,19 @@ public class ReviewFormService {
             .map(question -> new ReviewFormQuestionCreateDto(question.getValue(), question.getDescription()))
             .collect(Collectors.toUnmodifiableList());
         Member member = findMemberById(memberId);
-        return new ReviewForm(member, template.getTemplateTitle(), questions);
+        ReviewForm reviewForm = new ReviewForm(member, template.getTemplateTitle(), questions);
+        return reviewFormRepository.save(reviewForm);
     }
 
     @Transactional
     public ReviewForm saveFromTemplate(long memberId, Long templateId, ReviewFormCreateRequest request) {
         templateRepository.increaseUsedCount(templateId);
         return save(memberId, request);
+    }
+
+    private Member findMemberById(long memberId) {
+        return memberRepository.findById(memberId)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
     }
 
     public ReviewForm findByCode(String code) {

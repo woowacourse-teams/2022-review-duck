@@ -8,9 +8,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.member.dto.response.MemberDto;
-import com.reviewduck.member.repository.MemberRepository;
+import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
+import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.dto.controller.response.MemberReviewFormsResponse;
@@ -23,12 +24,11 @@ import lombok.AllArgsConstructor;
 @Component
 @Transactional(readOnly = true)
 @AllArgsConstructor
-public class ReviewFormResponseMapper {
+public class ReviewFormAggregator {
 
     private final ReviewFormService reviewFormService;
     private final ReviewService reviewService;
-
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
     @Transactional
     public ReviewFormCodeResponse save(long memberId, ReviewFormCreateRequest request) {
@@ -42,7 +42,7 @@ public class ReviewFormResponseMapper {
     }
 
     private List<MemberDto> findAllParticipantsByCode(ReviewForm reviewForm) {
-        return memberRepository.findAllParticipantsByReviewFormCode(reviewForm)
+        return memberService.findAllParticipantsByCode(reviewForm)
             .stream()
             .map(MemberDto::from)
             .collect(Collectors.toUnmodifiableList());
@@ -54,14 +54,24 @@ public class ReviewFormResponseMapper {
     }
 
     public ReviewsOfReviewFormResponse findAllByCode(String reviewFormCode, int page, int size,
-        String displayType, MemberDto member) {
+        String displayType, long memberId) {
         Page<Review> reviews = reviewService.findAllByCode(reviewFormCode, page, size);
-        return ReviewsOfReviewFormResponse.of(member, reviews, displayType);
+        return ReviewsOfReviewFormResponse.of(memberId, reviews, displayType);
     }
 
     @Transactional
     public ReviewFormCodeResponse update(long memberId, String reviewFormCode, ReviewFormUpdateRequest request) {
         ReviewForm reviewForm = reviewFormService.update(memberId, reviewFormCode, request);
         return ReviewFormCodeResponse.from(reviewForm);
+    }
+
+    @Transactional
+    public void createReview(long memberId, String reviewFormCode, ReviewCreateRequest request) {
+        reviewService.save(memberId, reviewFormCode, request);
+    }
+
+    @Transactional
+    public void deleteReviewForm(long memberId, String reviewFormCode) {
+        reviewFormService.deleteByCode(memberId, reviewFormCode);
     }
 }

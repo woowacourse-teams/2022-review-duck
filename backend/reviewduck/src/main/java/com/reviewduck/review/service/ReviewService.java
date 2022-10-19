@@ -23,7 +23,6 @@ import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
 import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
 import com.reviewduck.review.dto.service.QuestionAnswerUpdateDto;
-import com.reviewduck.review.dto.service.ReviewDto;
 import com.reviewduck.review.repository.ReviewFormQuestionRepository;
 import com.reviewduck.review.repository.ReviewFormRepository;
 import com.reviewduck.review.repository.ReviewRepository;
@@ -42,13 +41,13 @@ public class ReviewService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public ReviewDto save(long memberId, String code, ReviewCreateRequest request) {
+    public Review save(long memberId, String code, ReviewCreateRequest request) {
         ReviewForm reviewForm = findReviewFormByCode(code);
         List<QuestionAnswerCreateDto> questionAnswerCreateDtos = getReviewCreateDtos(request);
         Member member = findMemberById(memberId);
         Review review = new Review(request.getTitle(), member, reviewForm, questionAnswerCreateDtos,
             request.getIsPrivate());
-        return ReviewDto.from(reviewRepository.save(review));
+        return reviewRepository.save(review);
     }
 
     public Review findById(long id) {
@@ -80,8 +79,7 @@ public class ReviewService {
     @Transactional
     public void update(long memberId, Long id, ReviewUpdateRequest request) {
         Review review = findById(id);
-        Member member = findMemberById(memberId);
-        validateMyReview(member, review, "본인이 생성한 회고가 아니면 수정할 수 없습니다.");
+        validateMyReview(memberId, review, "본인이 생성한 회고가 아니면 수정할 수 없습니다.");
 
         List<QuestionAnswerUpdateDto> questionAnswerUpdateDtos = getQuestionAnswerUpdateDtos(request);
 
@@ -97,8 +95,7 @@ public class ReviewService {
     @Transactional
     public void delete(long memberId, Long id) {
         Review review = findById(id);
-        Member member = findMemberById(memberId);
-        validateMyReview(member, review, "본인이 생성한 회고가 아니면 삭제할 수 없습니다.");
+        validateMyReview(memberId, review, "본인이 생성한 회고가 아니면 삭제할 수 없습니다.");
 
         reviewRepository.deleteById(id);
     }
@@ -159,8 +156,8 @@ public class ReviewService {
             .orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
     }
 
-    private void validateMyReview(Member member, Review review, String message) {
-        if (!review.isMine(member)) {
+    private void validateMyReview(long memberId, Review review, String message) {
+        if (!review.isMine(memberId)) {
             throw new AuthorizationException(message);
         }
     }

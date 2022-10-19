@@ -9,7 +9,6 @@ import com.reviewduck.review.domain.QuestionAnswer;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
-import com.reviewduck.review.dto.service.ReviewDto;
 
 /*
     DisplayType 선택을 위한 abstract class
