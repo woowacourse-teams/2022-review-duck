@@ -1,14 +1,11 @@
 import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import cn from 'classnames';
 
 import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
 
-import { FlexContainer, Text } from 'common/components';
+import { FlexContainer } from 'common/components';
 
 import styles from './styles.module.scss';
 
