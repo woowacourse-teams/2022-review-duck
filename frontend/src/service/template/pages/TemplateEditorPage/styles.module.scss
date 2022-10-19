@@ -1,15 +1,25 @@
 @import 'styles/@global.scss';
 
 .container {
+  @include mobile {
+    flex-direction: column-reverse;
+    align-items: center;
+    margin: 0;
+    padding: 0 1rem;
+    gap: 1rem;
+  }
+
   margin: 3rem auto;
   display: flex;
   flex-direction: row;
   gap: 5%;
 
-  .template-info-container {
-  }
-
   .questions-editor {
+    @include mobile {
+      width: 100%;
+      padding: 1rem;
+    }
+
     width: 50%;
     padding: 2rem;
     border-radius: $GLOBAL_BORDERRADIUS_LARGE;
@@ -18,11 +28,24 @@
   }
 
   .information-editor {
+    @include mobile {
+      align-self: center;
+      width: 100%;
+      padding: 1rem 0;
+      margin-bottom: 2.5rem;
+    }
+
     width: 45%;
     position: sticky;
     padding: 2rem 0;
     top: 8.6rem;
     align-self: start;
+
+    .textarea {
+      @include mobile {
+        min-height: 2rem;
+      }
+    }
   }
 
   .submit-buttons {
