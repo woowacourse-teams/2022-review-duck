@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.dto.service.ReviewDto;
 
@@ -22,7 +23,7 @@ public class ReviewsOfReviewFormResponse {
     private boolean isLastPage;
     private List<ReviewAbstractResponse> reviews;
 
-    public static ReviewsOfReviewFormResponse of(Member member, Page<Review> reviews, String displayType) {
+    public static ReviewsOfReviewFormResponse of(MemberDto member, Page<Review> reviews, String displayType) {
         List<ReviewAbstractResponse> reviewResponses = ReviewDisplayBuilder.of(displayType)
             .createResponseFrom(member, reviews.getContent());
 

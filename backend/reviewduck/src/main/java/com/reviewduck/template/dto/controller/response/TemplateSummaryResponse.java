@@ -15,9 +15,9 @@ public class TemplateSummaryResponse {
     private TemplateInfoResponse info;
     private CreatorResponse creator;
 
-    public static TemplateSummaryResponse of(Template template, Member member) {
+    public static TemplateSummaryResponse of(Template template, long memberId) {
         return new TemplateSummaryResponse(
-            template.isMine(member),
+            template.isMine(memberId),
             TemplateInfoResponse.from(template),
             CreatorResponse.from(template.getMember())
         );

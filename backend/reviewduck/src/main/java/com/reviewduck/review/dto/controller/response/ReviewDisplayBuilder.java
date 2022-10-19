@@ -6,6 +6,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.dto.service.ReviewDto;
 
@@ -20,7 +21,7 @@ public enum ReviewDisplayBuilder {
     SHEET_DISPLAY("sheet", ReviewSheetResponse::of);
 
     private final String value;
-    private final BiFunction<Member, Review, ReviewAbstractResponse> responseBuilder;
+    private final BiFunction<MemberDto, Review, ReviewAbstractResponse> responseBuilder;
 
     public static ReviewDisplayBuilder of(String displayType) {
         return Arrays.stream(values())
@@ -29,7 +30,7 @@ public enum ReviewDisplayBuilder {
             .orElse(LIST_DISPLAY);
     }
 
-    public List<ReviewAbstractResponse> createResponseFrom(Member member, List<Review> reviews) {
+    public List<ReviewAbstractResponse> createResponseFrom(MemberDto member, List<Review> reviews) {
         return reviews.stream()
             .map(review -> responseBuilder.apply(member, review))
             .collect(Collectors.toUnmodifiableList());

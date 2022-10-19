@@ -35,13 +35,13 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     void createMemberAndGetAccessToken() {
         Member member1 = new Member("1", "jason", "제이슨", "profileUrl1");
-        Member savedMember1 = memberService.save(member1).toEntity();
+        long memberId1 = memberService.save(member1).getId();
 
         Member member2 = new Member("2", "woni", "워니", "profileUrl2");
-        Member savedMember2 = memberService.save(member2).toEntity();
+        long memberId2 = memberService.save(member2).getId();
 
-        accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember1.getId()));
-        accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember2.getId()));
+        accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(memberId1));
+        accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(memberId2));
     }
 
     @Nested

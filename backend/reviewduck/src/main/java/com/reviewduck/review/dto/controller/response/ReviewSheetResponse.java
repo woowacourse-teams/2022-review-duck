@@ -24,7 +24,7 @@ public class ReviewSheetResponse extends ReviewAbstractResponse {
     private CreatorResponse creator;
     private List<ReviewContentResponse> contents;
 
-    public static ReviewSheetResponse of(Member member, Review review) {
+    public static ReviewSheetResponse of(MemberDto member, Review review) {
         List<ReviewContentResponse> contents = getSynchronizedReviewContents(review);
 
         return new ReviewSheetResponse(

@@ -19,8 +19,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public MemberDto save(Member member) {
-        return MemberDto.from(memberRepository.save(member));
+    public Member save(Member member) {
+        return memberRepository.save(member);
     }
 
     public MemberDto findById(long id) {

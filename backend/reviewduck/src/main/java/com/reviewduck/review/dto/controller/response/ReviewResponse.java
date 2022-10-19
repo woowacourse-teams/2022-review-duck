@@ -26,7 +26,7 @@ public class ReviewResponse extends ReviewAbstractResponse {
     private List<ReviewContentResponse> contents;
     private String reviewFormCode;
 
-    public static ReviewResponse of(Member member, Review review) {
+    public static ReviewResponse of(MemberDto member, Review review) {
         List<ReviewContentResponse> contents = review.getQuestionAnswers().stream()
             .map(ReviewContentResponse::from)
             .collect(Collectors.toUnmodifiableList());

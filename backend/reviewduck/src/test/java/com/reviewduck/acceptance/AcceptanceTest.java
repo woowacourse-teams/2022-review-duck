@@ -9,6 +9,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.member.service.MemberService;
 
 import io.restassured.RestAssured;
@@ -32,7 +33,7 @@ public class AcceptanceTest {
 
     protected String accessToken1;
     protected String accessToken2;
-    protected Member savedMember;
+    protected MemberDto savedMember;
 
     @BeforeEach
     public void setUp() {

@@ -14,7 +14,7 @@ import lombok.Getter;
 public class MemberDto {
 
     private boolean isMine;
-    private Long id;
+    private long id;
     private String socialId;
     private String socialNickname;
     private String nickname;
@@ -50,9 +50,5 @@ public class MemberDto {
 
     public boolean getIsMine() {
         return isMine;
-    }
-
-    public Member toEntity() {
-        return new Member(id, socialId, socialNickname, nickname, profileUrl);
     }
 }

@@ -55,7 +55,7 @@ public class TemplateController {
 
         info("/api/templates", "POST", request.toString());
 
-        TemplateDto template = templateService.save(member.toEntity(), request);
+        TemplateDto template = templateService.save(member.getId(), request);
         return TemplateIdResponse.from(template);
     }
 
@@ -68,7 +68,7 @@ public class TemplateController {
 
         info("/api/templates/" + templateId + "/review-forms/edited", "POST", request.toString());
 
-        return reviewFormService.saveFromTemplate(member.toEntity(), templateId, request);
+        return reviewFormService.saveFromTemplate(member.getId(), templateId, request);
     }
 
     @Operation(summary = "템플릿을 기반으로 회고 폼을 생성한다.")
@@ -79,7 +79,7 @@ public class TemplateController {
 
         info("/api/templates/" + templateId + "/review-forms", "POST", "");
 
-        return reviewFormService.saveFromTemplate(member.toEntity(), templateId);
+        return reviewFormService.saveFromTemplate(member.getId(), templateId);
     }
 
     @Operation(summary = "전체 템플릿을 조회한다.")
@@ -92,7 +92,7 @@ public class TemplateController {
 
         info("/api/templates?page=" + page + " size=" + size, "GET", "");
 
-        return templateService.findAllByMember(page - 1, size, sort, member.toEntity());
+        return templateService.findAllByMember(page - 1, size, sort, member.getId());
     }
 
     @Operation(summary = "사용자가 생성한 템플릿을 모두 조회한다.")
@@ -105,8 +105,7 @@ public class TemplateController {
 
         info("/api/templates?member=" + socialId + " page=" + page + " size=" + size, "GET", "");
 
-        boolean isMine = Objects.equals(member.getSocialId(), socialId);
-        return templateService.findAllBySocialId(socialId, page - 1, size, isMine);
+        return templateService.findAllBySocialId(socialId, page - 1, size, member.getId());
     }
 
     @Operation(summary = "템플릿 검색 결과를 조회한다.")
@@ -120,7 +119,7 @@ public class TemplateController {
 
         info("/api/templates/search?query=" + query + " page=" + page + " size=" + size, "GET", "");
 
-        return templateService.search(query, page - 1, size, sort, member.toEntity());
+        return templateService.search(query, page - 1, size, sort, member.getId());
     }
 
     @Operation(summary = "특정 템플릿을 조회한다.")
@@ -130,7 +129,7 @@ public class TemplateController {
 
         info("/api/templates/" + templateId, "GET", "");
 
-        return templateService.findById(templateId, member.toEntity());
+        return templateService.findById(templateId, member.getId());
     }
 
     @Operation(summary = "템플릿을 수정한다.")
@@ -141,7 +140,7 @@ public class TemplateController {
 
         info("/api/templates/" + templateId, "PUT", "");
 
-        templateService.update(member.toEntity(), templateId, request);
+        templateService.update(member.getId(), templateId, request);
     }
 
     @Operation(summary = "템플릿을 삭제한다.")
@@ -151,7 +150,7 @@ public class TemplateController {
 
         info("/api/templates/" + templateId, "DELETE", "");
 
-        templateService.deleteById(member.toEntity(), templateId);
+        templateService.deleteById(member.getId(), templateId);
     }
 
 }

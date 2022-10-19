@@ -20,12 +20,12 @@ public class TemplatesResponse {
     private boolean isLastPage;
     private List<TemplateSummaryResponse> templates;
 
-    public static TemplatesResponse of(Page<Template> templates, Member member) {
+    public static TemplatesResponse of(Page<Template> templates, long memberId) {
         return new TemplatesResponse(
             templates.getTotalElements(),
             templates.isLast(),
             templates.stream()
-                .map(template -> TemplateSummaryResponse.of(template, member))
+                .map(template -> TemplateSummaryResponse.of(template, memberId))
                 .collect(Collectors.toUnmodifiableList())
         );
     }

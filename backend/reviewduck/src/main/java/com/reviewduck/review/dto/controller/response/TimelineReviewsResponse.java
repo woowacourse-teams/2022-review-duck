@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.review.domain.Review;
 
 import lombok.AccessLevel;
@@ -22,7 +23,7 @@ public class TimelineReviewsResponse {
     private boolean isLastPage;
     private List<ReviewResponse> reviews;
 
-    public static TimelineReviewsResponse of(Page<Review> reviews, Member member) {
+    public static TimelineReviewsResponse of(Page<Review> reviews, MemberDto member) {
         List<ReviewResponse> reviewResponses = reviews.getContent().stream()
             .map(review -> ReviewResponse.of(member, review))
             .collect(Collectors.toUnmodifiableList());

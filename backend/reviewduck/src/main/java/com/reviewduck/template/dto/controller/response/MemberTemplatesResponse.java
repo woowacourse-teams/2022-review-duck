@@ -21,7 +21,7 @@ public class MemberTemplatesResponse {
     private boolean isMine;
     private List<MemberTemplateResponse> templates;
 
-    public static MemberTemplatesResponse of(Page<Template> templates, String socialId, boolean isMine) {
+    public static MemberTemplatesResponse of(Page<Template> templates, boolean isMine) {
         List<MemberTemplateResponse> memberTemplateResponses = templates.stream()
             .map(MemberTemplateResponse::from)
             .collect(Collectors.toUnmodifiableList());

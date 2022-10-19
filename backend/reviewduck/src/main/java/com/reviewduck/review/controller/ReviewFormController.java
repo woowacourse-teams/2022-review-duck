@@ -26,6 +26,7 @@ import com.reviewduck.review.dto.controller.response.MemberReviewFormsResponse;
 import com.reviewduck.review.dto.controller.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.controller.response.ReviewFormResponse;
 import com.reviewduck.review.dto.controller.response.ReviewsOfReviewFormResponse;
+import com.reviewduck.review.service.ReviewFormResponseMapper;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
@@ -38,6 +39,7 @@ import lombok.AllArgsConstructor;
 public class ReviewFormController {
 
     private final ReviewFormService reviewFormService;
+    private final ReviewFormResponseMapper responseMapper;
     private final ReviewService reviewService;
 
     @Operation(summary = "회고 폼을 생성한다.")
@@ -48,7 +50,7 @@ public class ReviewFormController {
 
         info("/api/review-forms", "POST", request.toString());
 
-        return reviewFormService.save(member.toEntity(), request);
+        return responseMapper.save(member.getId(), request);
     }
 
     @Operation(summary = "회고 답변을 생성한다.")
@@ -59,7 +61,7 @@ public class ReviewFormController {
 
         info("/api/review-forms/" + reviewFormCode, "POST", request.toString());
 
-        reviewService.save(member.toEntity(), reviewFormCode, request);
+        reviewService.save(member.getId(), reviewFormCode, request);
     }
 
     @Operation(summary = "특정 회고 폼의 정보를 조회한다.")
@@ -70,7 +72,7 @@ public class ReviewFormController {
 
         info("/api/review-forms/" + reviewFormCode, "GET", "");
 
-        return reviewFormService.findByCode(reviewFormCode, member.toEntity());
+        return responseMapper.findByCode(reviewFormCode, member.getId());
     }
 
     @Operation(summary = "사용자가 작성한 회고 질문지 중 특정 페이지를 조회한다.")
@@ -83,7 +85,7 @@ public class ReviewFormController {
 
         info("/api/review-forms?member=" + socialId + "page=" + page + " size=" + size, "GET", "");
 
-        return reviewFormService.findBySocialId(socialId, page - 1, size);
+        return responseMapper.findBySocialId(socialId, page - 1, size, member);
     }
 
     @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 모두 조회한다.")
@@ -97,7 +99,7 @@ public class ReviewFormController {
 
         info("/api/review-forms/" + reviewFormCode + "/reviews?displayType=" + displayType, "GET", "");
 
-        return reviewService.findAllByCode(reviewFormCode, page - 1, size, displayType, member.toEntity());
+        return responseMapper.findAllByCode(reviewFormCode, page - 1, size, displayType, member);
     }
 
     @Operation(summary = "회고 폼을 수정한다.")
@@ -109,7 +111,7 @@ public class ReviewFormController {
 
         info("/api/review-forms/" + reviewFormCode, "PUT", request.toString());
 
-        return reviewFormService.update(member.toEntity(), reviewFormCode, request);
+        return responseMapper.update(member.getId(), reviewFormCode, request);
     }
 
     @Operation(summary = "회고 폼을 삭제한다.")
@@ -119,6 +121,6 @@ public class ReviewFormController {
 
         info("/api/review-forms/" + reviewFormCode, "DELETE", "");
 
-        reviewFormService.deleteByCode(member.toEntity(), reviewFormCode);
+        reviewFormService.deleteByCode(member.getId(), reviewFormCode);
     }
 }

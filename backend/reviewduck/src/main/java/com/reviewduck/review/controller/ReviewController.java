@@ -25,6 +25,7 @@ import com.reviewduck.review.dto.controller.response.ReviewEditResponse;
 import com.reviewduck.review.dto.controller.response.ReviewLikesResponse;
 import com.reviewduck.review.dto.controller.response.ReviewsResponse;
 import com.reviewduck.review.dto.controller.response.TimelineReviewsResponse;
+import com.reviewduck.review.service.ReviewResponseMapper;
 import com.reviewduck.review.service.ReviewService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,6 +37,7 @@ import lombok.AllArgsConstructor;
 public class ReviewController {
 
     private final ReviewService reviewService;
+    private final ReviewResponseMapper responseMapper;
 
     @Operation(summary = "회고 답변 수정을 위해 특정한 회고 답변을 조회한다.")
     @GetMapping("/{reviewId}")
@@ -44,7 +46,7 @@ public class ReviewController {
 
         info("/api/reviews/" + reviewId, "GET", "");
 
-        return reviewService.findEditedById(reviewId);
+        return responseMapper.findEditedById(reviewId);
     }
 
     @Operation(summary = "사용자가 작성한 회고 답변을 모두 조회한다.")
@@ -58,7 +60,7 @@ public class ReviewController {
 
         info("/api/reviews?member=" + socialId + "&page=" + page + "&size=" + size, "GET", "");
 
-        return reviewService.findAllBySocialId(socialId, member.toEntity(), - 1, size);
+        return responseMapper.findAllBySocialId(socialId, member.getId(), page - 1, size);
     }
 
     @Operation(summary = "비밀글이 아닌 회고 답변을 모두 조회한다.")
@@ -71,7 +73,7 @@ public class ReviewController {
 
         info("/api/reviews/public?page=" + page + "&size=" + size + "&sort=" + sort, "GET", "");
 
-        return reviewService.findAllPublic(page - 1, size, sort, member.toEntity());
+        return responseMapper.findAllPublic(page - 1, size, sort, member);
     }
 
     @Operation(summary = "회고 답변을 수정한다.")
@@ -82,7 +84,7 @@ public class ReviewController {
 
         info("/api/reviews/" + reviewId, "PUT", request.toString());
 
-        reviewService.update(member.toEntity(), reviewId, request);
+        reviewService.update(member.getId(), reviewId, request);
     }
 
     @Operation(summary = "회고 답변을 삭제한다.")
@@ -92,7 +94,7 @@ public class ReviewController {
 
         info("/api/reviews/" + reviewId, "DELETE", "");
 
-        reviewService.delete(member.toEntity(), reviewId);
+        reviewService.delete(member.getId(), reviewId);
     }
 
     @Operation(summary = "좋아요 개수를 더한다.")

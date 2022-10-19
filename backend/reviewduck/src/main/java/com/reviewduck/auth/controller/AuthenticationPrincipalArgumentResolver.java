@@ -43,7 +43,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
         jwtTokenProvider.validateAccessToken(token);
 
-        Long memberId = Long.parseLong(jwtTokenProvider.getAccessTokenPayload(token));
+        long memberId = Long.parseLong(jwtTokenProvider.getAccessTokenPayload(token));
 
         return memberService.findById(memberId);
     }

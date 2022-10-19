@@ -23,7 +23,7 @@ public class ReviewFormResponse {
     private List<ReviewFormQuestionResponse> questions;
     private List<CreatorResponse> participants;
 
-    public static ReviewFormResponse of(ReviewForm reviewForm, Member member, List<MemberDto> participants) {
+    public static ReviewFormResponse of(ReviewForm reviewForm, boolean isMine, List<MemberDto> participants) {
         List<ReviewFormQuestionResponse> reviewFormQuestionResponse = reviewForm.getQuestions().stream()
             .map(ReviewFormQuestionResponse::from)
             .collect(Collectors.toUnmodifiableList());
@@ -36,7 +36,7 @@ public class ReviewFormResponse {
             reviewForm.getTitle(),
             Timestamp.valueOf(reviewForm.getUpdatedAt()).getTime(),
             CreatorResponse.from(MemberDto.from(reviewForm.getMember())),
-            reviewForm.isMine(member),
+            isMine,
             reviewFormQuestionResponse,
             participantsResponse
             );

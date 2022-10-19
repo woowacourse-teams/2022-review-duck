@@ -19,7 +19,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     void createMemberAndGetAccessToken() {
         Member member = new Member("1", "jason", "제이슨", "profileUrl");
-        savedMember = memberService.save(member).toEntity();
+        savedMember = memberService.save(member);
 
         accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
     }
