@@ -15,7 +15,6 @@ function useGetAccessToken(queryOptions?: UseQueryOptions<CreateRefreshResponse,
       refetchInterval: ACCESS_TOKEN_REFRESH_TIME,
       refetchIntervalInBackground: true,
       refetchOnReconnect: true,
-      retry: 3,
       ...queryOptions,
     },
   );
