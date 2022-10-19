@@ -109,7 +109,6 @@ function TemplateListPage() {
           ))}
 
           <PaginationBar
-            isMobileView={isMobile}
             className={styles.pagination}
             visiblePageButtonLength={
               isMobile
