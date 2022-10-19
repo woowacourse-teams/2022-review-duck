@@ -1,3 +1,5 @@
+const SERVICE_NAME = '회고덕';
+
 const PAGE_LIST = {
   HOME: '/',
   REVIEW_FORM: '/review/form',
@@ -61,10 +63,11 @@ const GITHUB_OAUTH_ERROR = {
   REDIRECT_URI_MISMATCH: 'redirect_uri_mismatch',
 };
 
-const ACCESS_PERMISSION = {
-  LOGOUT_USER: false,
-  LOGIN_USER: true,
-};
+const PERMISSION = {
+  ALL: 0,
+  LOGOUT_USER: 1,
+  LOGIN_USER: 2,
+} as const;
 
 const ACCESS_TOKEN_EXPIRE_TIME = 60 * 10 * 1000;
 
@@ -161,6 +164,7 @@ const API_URI = {
 };
 
 export {
+  SERVICE_NAME,
   API_URI,
   API_REQUEST_TIMEOUT,
   PAGE_LIST,
@@ -169,7 +173,7 @@ export {
   GITHUB_OAUTH_LOGIN_URL,
   GITHUB_PROFILE_URL,
   GITHUB_OAUTH_ERROR,
-  ACCESS_PERMISSION,
+  PERMISSION,
   ACCESS_TOKEN_EXPIRE_TIME,
   ACCESS_TOKEN_REFRESH_TIME,
   FILTER,

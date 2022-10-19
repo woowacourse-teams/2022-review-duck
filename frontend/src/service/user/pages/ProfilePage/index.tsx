@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import { FILTER, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
-import { Tabs } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
