@@ -20,7 +20,7 @@
     position: absolute;
     top: 0;
     width: 90%;
-    height: 8.5rem;
+    height: 13.5rem;
     margin: 0 5%;
     border-radius: $GLOBAL_BORDERRADIUS_LARGE;
     overflow: hidden;
@@ -38,7 +38,7 @@
     backdrop-filter: blur(5rem) brightness(0.95);
 
     @include mobile {
-      backdrop-filter: blur(5rem) brightness(0.75);
+      backdrop-filter: blur(10rem) brightness(0.75);
       background-color: unset;
     }
   }
