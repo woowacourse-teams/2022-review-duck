@@ -37,9 +37,10 @@ function ProfilePage() {
     ? currentTabParam
     : FILTER.USER_PROFILE_TAB.REVIEWS;
 
-  const pageNumber = isNumberString(searchParams.get(FILTER.PAGE))
-    ? Number(searchParams.get(FILTER.PAGE))
-    : 1;
+  const pageNumber =
+    isNumberString(searchParams.get(FILTER.PAGE)) && Number(searchParams.get(FILTER.PAGE)) > 0
+      ? Number(searchParams.get(FILTER.PAGE))
+      : 1;
 
   const pageQueries = useProfilePage(currentTab, socialId, pageNumber);
 
@@ -70,9 +71,18 @@ function ProfilePage() {
     modal.show({ key: MODAL_LIST.PROFILE_EDIT });
   };
 
-  const handlePagination = (pageNumber: number) => {
-    setSearchParams({ tab: currentTab, page: String(pageNumber) });
-    window.scrollTo(0, 0);
+  const handlePagination = (pageNumber: number, replace = false) => {
+    setSearchParams({ tab: currentTab, page: String(pageNumber) }, { replace });
+  };
+
+  const handlePageError = () => {
+    const totalPageLength = Math.ceil(articlesPages.totalNumber / PAGE_OPTION.REVIEW_ITEM_SIZE);
+
+    const redirectReplace = true;
+
+    if (pageNumber > totalPageLength) {
+      handlePagination(totalPageLength, redirectReplace);
+    }
   };
 
   const handleClickEdit = (id?: number, code?: string, socialId?: string) => () => {
@@ -246,15 +256,18 @@ function ProfilePage() {
             {`${subjectTitle[currentTab]}가(이) 없습니다.`}
           </ArticleList.NoArticleResult>
 
-          <PaginationBar
-            visiblePageButtonLength={
-              PAGE_OPTION.REVIEW_BUTTON_LENGTH as PaginationBarProps['visiblePageButtonLength']
-            }
-            itemCountInPage={PAGE_OPTION.REVIEW_ITEM_SIZE}
-            totalItemCount={articlesPages.totalNumber}
-            focusedPage={Number(pageNumber)}
-            onClickPageButton={handlePagination}
-          />
+          {articlesPages.totalNumber !== 0 && (
+            <PaginationBar
+              visiblePageButtonLength={
+                PAGE_OPTION.REVIEW_BUTTON_LENGTH as PaginationBarProps['visiblePageButtonLength']
+              }
+              itemCountInPage={PAGE_OPTION.REVIEW_ITEM_SIZE}
+              totalItemCount={articlesPages.totalNumber}
+              focusedPage={Number(pageNumber)}
+              onClickPageButton={handlePagination}
+              onPageError={handlePageError}
+            />
+          )}
         </ArticleList>
       </LayoutContainer>
     </div>,
