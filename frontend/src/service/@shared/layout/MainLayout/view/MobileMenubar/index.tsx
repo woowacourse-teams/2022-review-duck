@@ -21,12 +21,11 @@ function Container({ children }: MenuContainerProps) {
 }
 
 interface MenuItemProps {
-  icon: IconDefinition;
   route: string;
-  children: string;
+  children: JSX.Element;
 }
 
-function Item({ icon, route, children }: MenuItemProps) {
+function Item({ route, children }: MenuItemProps) {
   const { pathname } = useLocation();
   const { handleLinkPage } = useNavigateHandler();
 
@@ -44,10 +43,7 @@ function Item({ icon, route, children }: MenuItemProps) {
       align="center"
       onClick={handleLinkPage(route)}
     >
-      <FontAwesomeIcon icon={icon} />
-      <Text className={styles.name} size={12} weight="lighter">
-        {children}
-      </Text>
+      {children}
     </FlexContainer>
   );
 }

@@ -8,7 +8,7 @@
   bottom: 0;
 
   width: 100%;
-  padding: 1.5rem 0rem;
+  padding: 0.5rem 0rem;
 
   background-color: $THEME_COLOR_THEME_BACKGROUND_BLUR;
   backdrop-filter: blur(1rem);
@@ -20,13 +20,44 @@
     position: relative;
     gap: 0.85rem;
     color: $THEME_COLOR_THEME_TEXT_400;
-    font-size: 1.25rem;
+    font-size: 1.45rem;
     user-select: none;
+    padding: 1.75rem;
 
     transition: all 0.3s ease;
+
+    &::before {
+      content: '';
+
+      position: absolute;
+      display: block;
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 50%;
+      background: linear-gradient(
+        to bottom,
+        $THEME_COLOR_STATUS_PRIMARY_500,
+        $THEME_COLOR_STATUS_PRIMARY_400
+      );
+      z-index: 0;
+
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: scale(1.5);
+    }
   }
 
   .menu.focused {
-    color: $THEME_COLOR_STATUS_PRIMARY_500;
+    position: relative;
+    color: $THEME_COLOR_STATUS_INNER_PRIMARY_500;
+
+    &::before {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    & > * {
+      z-index: 1;
+    }
   }
 }

@@ -1,7 +1,18 @@
 import { Suspense, useContext } from 'react';
 import { Outlet } from 'react-router-dom';
 
-import { faCopy, faHome, faComments, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faRectangleList } from '@fortawesome/free-regular-svg-icons';
+import {
+  faCopy,
+  faHome,
+  faComments,
+  faUser,
+  faBookBookmark,
+  faPenToSquare,
+  faClone,
+  faPaste,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { PAGE_LIST } from 'constant';
 
@@ -45,20 +56,20 @@ function MainLayout() {
 
       {isMobile && (
         <MobileMenu>
-          <MobileMenu.Item icon={faHome} route={PAGE_LIST.HOME}>
-            홈
+          <MobileMenu.Item route={PAGE_LIST.HOME}>
+            <FontAwesomeIcon icon={faHome} />
           </MobileMenu.Item>
 
-          <MobileMenu.Item icon={faCopy} route={PAGE_LIST.TEMPLATE_LIST}>
-            템플릿
+          <MobileMenu.Item route={PAGE_LIST.TEMPLATE_LIST}>
+            <FontAwesomeIcon icon={faCopy} />
           </MobileMenu.Item>
 
-          <MobileMenu.Item icon={faComments} route={PAGE_LIST.TIMELINE}>
-            타임라인
+          <MobileMenu.Item route={PAGE_LIST.TIMELINE}>
+            <FontAwesomeIcon icon={faComments} />
           </MobileMenu.Item>
 
-          <MobileMenu.Item icon={faUser} route={`${PAGE_LIST.USER_PROFILE}/${socialId}`}>
-            프로필
+          <MobileMenu.Item route={`${PAGE_LIST.USER_PROFILE}/${socialId}`}>
+            <FontAwesomeIcon icon={faUser} />
           </MobileMenu.Item>
         </MobileMenu>
       )}

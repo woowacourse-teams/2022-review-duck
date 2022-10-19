@@ -3,6 +3,7 @@
 .container {
   @include mobile {
     display: block;
+    padding: 0 1.5rem;
   }
 
   position: relative;
