@@ -32,18 +32,6 @@ import com.reviewduck.review.dto.controller.response.ReviewSynchronizedResponse;
 
 public class ReviewAcceptanceTest extends AcceptanceTest {
 
-    @BeforeEach
-    void createMemberAndGetAccessToken() {
-        Member member1 = new Member("1", "jason", "제이슨", "profileUrl1");
-        long memberId1 = memberService.save(member1).getId();
-
-        Member member2 = new Member("2", "woni", "워니", "profileUrl2");
-        long memberId2 = memberService.save(member2).getId();
-
-        accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(memberId1));
-        accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(memberId2));
-    }
-
     @Nested
     @DisplayName("최신화된 회고 폼과 동기화하여 특정 회고 조회")
     class findReview {

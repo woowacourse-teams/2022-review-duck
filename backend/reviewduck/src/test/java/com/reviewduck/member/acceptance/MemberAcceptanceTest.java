@@ -10,19 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import com.reviewduck.acceptance.AcceptanceTest;
-import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.request.MemberUpdateNicknameRequest;
 import com.reviewduck.member.dto.response.MemberDto;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
-
-    @BeforeEach
-    void createMemberAndGetAccessToken() {
-        Member member = new Member("1", "jason", "제이슨", "profileUrl");
-        savedMember = memberService.save(member);
-
-        accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
-    }
 
     @Nested
     @DisplayName("자신의 정보 조회")
@@ -31,12 +22,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         @Test
         @DisplayName("본인의 사용자 정보를 조회한다.")
         void findMyMemberInfo() {
-            // given
-            Member member = new Member("2", "jason", "제이슨", "profileUrl");
-            Member savedMember = memberService.save(member);
-
-            String accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
-
             // when
             MemberDto memberDto = get("/api/members/me", accessToken1)
                 .statusCode(HttpStatus.OK.value())
@@ -45,9 +30,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
             // then
             assertAll(
-                () -> assertThat(memberDto.getSocialNickname()).isEqualTo("jason"),
+                () -> assertThat(memberDto.getSocialNickname()).isEqualTo("panda"),
                 () -> assertThat(memberDto.getNickname()).isEqualTo("제이슨"),
-                () -> assertThat(memberDto.getProfileUrl()).isEqualTo("profileUrl")
+                () -> assertThat(memberDto.getProfileUrl()).isEqualTo("profileUrl1")
             );
         }
 
@@ -76,21 +61,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             // then
             assertAll(
                 () -> assertThat(memberDto.getIsMine()).isTrue(),
-                () -> assertThat(memberDto.getSocialNickname()).isEqualTo("jason"),
+                () -> assertThat(memberDto.getSocialNickname()).isEqualTo("panda"),
                 () -> assertThat(memberDto.getNickname()).isEqualTo("제이슨"),
-                () -> assertThat(memberDto.getProfileUrl()).isEqualTo("profileUrl")
+                () -> assertThat(memberDto.getProfileUrl()).isEqualTo("profileUrl1")
             );
         }
 
         @Test
         @DisplayName("타인의 사용자 정보를 조회한다.")
         void findOtherMemberInfo() {
-            // given
-            Member member2 = new Member("2", "panda", "판다", "profileUrl");
-            memberService.save(member2);
-
             // when
-            MemberDto memberDto = get("/api/members/" + member2.getSocialId(), accessToken1)
+            MemberDto memberDto = get("/api/members/" + savedMember2.getSocialId(), accessToken1)
                 .statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(MemberDto.class);
@@ -98,9 +79,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             // then
             assertAll(
                 () -> assertThat(memberDto.getIsMine()).isFalse(),
-                () -> assertThat(memberDto.getSocialNickname()).isEqualTo("panda"),
-                () -> assertThat(memberDto.getNickname()).isEqualTo("판다"),
-                () -> assertThat(memberDto.getProfileUrl()).isEqualTo("profileUrl")
+                () -> assertThat(memberDto.getSocialNickname()).isEqualTo("ariari"),
+                () -> assertThat(memberDto.getNickname()).isEqualTo("브리"),
+                () -> assertThat(memberDto.getProfileUrl()).isEqualTo("profileUrl2")
             );
         }
 

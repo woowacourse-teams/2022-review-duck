@@ -34,10 +34,23 @@ public class AcceptanceTest {
     protected String accessToken1;
     protected String accessToken2;
     protected Member savedMember;
+    protected Member savedMember2;
 
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
+        createMemberAndGetAccessToken();
+    }
+
+    private void createMemberAndGetAccessToken() {
+        Member member1 = new Member("1", "panda", "제이슨", "profileUrl1");
+        savedMember = memberService.save(member1);
+
+        Member member2 = new Member("2", "ariari", "브리", "profileUrl2");
+        savedMember2 = memberService.save(member2);
+
+        accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
+        accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember2.getId()));
     }
 
     public ValidatableResponse post(String url, Object request) {
