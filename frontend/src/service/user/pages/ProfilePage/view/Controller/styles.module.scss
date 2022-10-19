@@ -13,11 +13,10 @@
 
   .profile {
     @include mobile {
-      flex-direction: row;
       align-items: center;
       width: 100%;
-      gap: 2rem;
-      padding: 1rem;
+      gap: 1.5rem;
+      padding: 1.5rem 0;
     }
 
     .image {
@@ -47,7 +46,9 @@
       color: $THEME_COLOR_STATUS_PRIMARY_600;
 
       @include mobile {
+        align-items: center;
         color: $GLOBAL_COLOR_WHITE_800;
+        padding: 0;
       }
     }
   }
@@ -62,7 +63,7 @@
       display: grid;
       grid-template-columns: repeat(2, minmax(47.5%, auto));
       gap: 2.5%;
-      margin: 1rem 0;
+      margin: 1.5rem 0;
 
       & > a:only-child button {
         grid-column: 2 span;

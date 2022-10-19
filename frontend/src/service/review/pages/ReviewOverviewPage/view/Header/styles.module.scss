@@ -1,12 +1,6 @@
 @import 'styles/@global.scss';
 
 .header {
-  height: 6.5rem;
-
-  @include mobile {
-    height: 4rem;
-  }
-
   .fixed-container {
     position: fixed;
     top: 0;
@@ -23,7 +17,6 @@
       padding: 0 1rem;
       height: 100%;
       margin: 0 auto;
-
       .button-container {
         @include mobile {
           display: none;
@@ -39,7 +32,7 @@
       padding: 1.5rem 1rem;
 
       @include mobile {
-        padding: 0.5rem 1rem;
+        padding: 1rem 1.5rem;
       }
     }
   }

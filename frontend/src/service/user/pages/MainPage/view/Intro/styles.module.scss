@@ -73,6 +73,23 @@
       letter-spacing: 0.4rem;
       margin-bottom: 2rem;
     }
+
+    @include mobile {
+      .review-button {
+        color: $GLOBAL_COLOR_WHITE_900;
+        background-color: $GLOBAL_COLOR_BLACK_300;
+        border: none;
+
+        &::before {
+          display: none;
+        }
+      }
+
+      .review-button:hover {
+        background-color: $THEME_COLOR_STATUS_PRIMARY_500;
+        border: none;
+      }
+    }
   }
 
   .hero-card {

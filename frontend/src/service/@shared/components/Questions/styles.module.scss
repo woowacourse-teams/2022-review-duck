@@ -22,12 +22,6 @@
   }
 }
 
-.cover-profile {
-  @include mobile {
-    flex-direction: row;
-  }
-}
-
 .title-container {
   border-bottom: 1px solid $THEME_COLOR_STATUS_PRIMARY_100;
 
