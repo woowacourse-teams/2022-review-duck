@@ -42,13 +42,7 @@ function CoverProfile({
   textAlign = 'center',
 }: CoverProfileProps) {
   return (
-    <Profile
-      className={styles.coverProfile}
-      socialId={socialId}
-      align="center"
-      textAlign={textAlign}
-      textGap="medium"
-    >
+    <Profile socialId={socialId} align="center" textAlign={textAlign} textGap="medium">
       <Profile.Image src={image} size={size} />
       <Profile.Nickname size={20}>{title}</Profile.Nickname>
       {description && <Profile.Description>{description}</Profile.Description>}
