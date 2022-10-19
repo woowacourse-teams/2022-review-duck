@@ -48,7 +48,7 @@ function PageRoutes() {
         {/* 사용자 커뮤니티 영역 */}
         <Route
           path={PAGE_LIST.TIMELINE}
-          element={<Page title="타임라인" component={lazy.ReviewTimelinePage} />}
+          element={<Page title="타임라인" component={lazy.ReviewTimelinePage} />}
         />
         <Route
           path={`${PAGE_LIST.USER_PROFILE}/:socialId`}
