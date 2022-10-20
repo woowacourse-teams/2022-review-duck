@@ -129,6 +129,7 @@ export interface GetReviewPublicAnswerResponse {
     id: number;
     reviewFormCode: string;
     updatedAt: number;
+    reviewTitle: string;
     likes: number;
     creator: UserProfile;
     isCreator: boolean;

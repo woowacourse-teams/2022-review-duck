@@ -1,6 +1,10 @@
 @import 'styles/@global.scss';
 
 .component-page-content {
+  @include mobile {
+    padding: 2.5rem 0;
+  }
+
   .detail {
     min-height: 30vh;
     gap: 3.5rem;

@@ -57,7 +57,7 @@ public class TemplateController {
     @PostMapping("/{templateId}/review-forms/edited")
     @ResponseStatus(HttpStatus.CREATED)
     public ReviewFormCodeResponse createReviewFormByTemplate(@AuthenticationPrincipal MemberDto member,
-        @PathVariable Long templateId,
+        @PathVariable long templateId,
         @RequestBody @Valid ReviewFormCreateRequest request) {
 
         info("/api/templates/" + templateId + "/review-forms/edited", "POST", request.toString());
@@ -69,7 +69,7 @@ public class TemplateController {
     @PostMapping("/{templateId}/review-forms")
     @ResponseStatus(HttpStatus.CREATED)
     public ReviewFormCodeResponse createReviewFormByTemplate(@AuthenticationPrincipal MemberDto member,
-        @PathVariable Long templateId) {
+        @PathVariable long templateId) {
 
         info("/api/templates/" + templateId + "/review-forms", "POST", "");
 
@@ -119,7 +119,7 @@ public class TemplateController {
     @Operation(summary = "특정 템플릿을 조회한다.")
     @GetMapping("/{templateId}")
     @ResponseStatus(HttpStatus.OK)
-    public TemplateResponse find(@AuthenticationPrincipal MemberDto member, @PathVariable Long templateId) {
+    public TemplateResponse find(@AuthenticationPrincipal MemberDto member, @PathVariable long templateId) {
 
         info("/api/templates/" + templateId, "GET", "");
 
@@ -129,7 +129,7 @@ public class TemplateController {
     @Operation(summary = "템플릿을 수정한다.")
     @PutMapping("/{templateId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@AuthenticationPrincipal MemberDto member, @PathVariable Long templateId,
+    public void update(@AuthenticationPrincipal MemberDto member, @PathVariable long templateId,
         @RequestBody @Valid TemplateUpdateRequest request) {
 
         info("/api/templates/" + templateId, "PUT", "");
@@ -140,7 +140,7 @@ public class TemplateController {
     @Operation(summary = "템플릿을 삭제한다.")
     @DeleteMapping("/{templateId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@AuthenticationPrincipal MemberDto member, @PathVariable Long templateId) {
+    public void delete(@AuthenticationPrincipal MemberDto member, @PathVariable long templateId) {
 
         info("/api/templates/" + templateId, "DELETE", "");
 

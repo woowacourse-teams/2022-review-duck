@@ -29,13 +29,13 @@ public class AdminReviewFormService {
         return reviewFormRepository.findByCode(reviewFormCode);
     }
 
-    public List<ReviewForm> findByMemberId(Long memberId) {
+    public List<ReviewForm> findByMemberId(long memberId) {
         Member member = adminMemberService.findMemberById(memberId);
         return reviewFormRepository.findAllByMember(member);
     }
 
     @Transactional
-    public void deleteReviewFormById(Long reviewFormId) {
+    public void deleteReviewFormById(long reviewFormId) {
         ReviewForm reviewForm = reviewFormRepository.findById(reviewFormId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고 폼입니다."));
 

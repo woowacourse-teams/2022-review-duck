@@ -3,6 +3,7 @@ const autoprefixer = require('autoprefixer');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
@@ -95,10 +96,17 @@ module.exports = (env = {}, options = {}) => {
       new HtmlWebpackPlugin({
         template: './public/index.html',
         favicon: './public/favicon.ico',
+        inject: 'head',
       }),
       new MiniCssExtractPlugin({
         linkType: false,
         filename: `css/[name].${app.version}.[contenthash].css`,
+      }),
+      new CopyPlugin({
+        patterns: [
+          { from: './public/manifest.json', to: '.' },
+          { from: './public/static/app-icon.png', to: './static/' },
+        ],
       }),
     ],
     optimization: {

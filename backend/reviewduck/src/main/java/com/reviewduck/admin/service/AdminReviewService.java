@@ -26,12 +26,12 @@ public class AdminReviewService {
         return reviewRepository.findAll();
     }
 
-    public Review findById(Long reviewId) {
+    public Review findById(long reviewId) {
         return reviewRepository.findById(reviewId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
     }
 
-    public List<Review> findByMemberId(Long memberId) {
+    public List<Review> findByMemberId(long memberId) {
         Member member = adminMemberService.findMemberById(memberId);
         return reviewRepository.findAllByMember(member);
     }
@@ -41,7 +41,7 @@ public class AdminReviewService {
     }
 
     @Transactional
-    public void deleteReviewById(Long reviewId) {
+    public void deleteReviewById(long reviewId) {
         Review review = findById(reviewId);
 
         reviewRepository.delete(review);

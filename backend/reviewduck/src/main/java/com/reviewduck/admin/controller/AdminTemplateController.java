@@ -44,7 +44,7 @@ public class AdminTemplateController {
     @Operation(summary = "템플릿을 삭제한다")
     @DeleteMapping("/{templateId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteTemplate(@AdminAuthenticationPrincipal AdminMemberDto member, @PathVariable Long templateId) {
+    public void deleteTemplate(@AdminAuthenticationPrincipal AdminMemberDto member, @PathVariable long templateId) {
 
         info("api/admin/templates/" + templateId, "DELETE", "");
 
@@ -56,7 +56,7 @@ public class AdminTemplateController {
     @GetMapping("/{templateId}")
     @ResponseStatus(HttpStatus.OK)
     public AdminTemplateResponse findTemplate(@AdminAuthenticationPrincipal AdminMemberDto member,
-        @PathVariable Long templateId) {
+        @PathVariable long templateId) {
 
         info("api/admin/templates/" + templateId, "GET", "");
 
@@ -68,7 +68,7 @@ public class AdminTemplateController {
     @GetMapping(params = "memberId")
     @ResponseStatus(HttpStatus.OK)
     public AdminTemplatesResponse findAllTemplatesByMemberId(@AdminAuthenticationPrincipal AdminMemberDto member,
-        @RequestParam(value = "memberId") Long memberId) {
+        @RequestParam(value = "memberId") long memberId) {
 
         info("/api/templates?memberId=" + memberId, "GET", "");
 

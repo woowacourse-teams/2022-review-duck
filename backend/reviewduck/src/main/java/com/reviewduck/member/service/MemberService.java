@@ -1,6 +1,7 @@
 package com.reviewduck.member.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +26,12 @@ public class MemberService {
     }
 
     public Member findById(long id) {
-        return memberRepository.findById(id)
+        return getById(id)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
+    }
+
+    public Optional<Member> getById(long id) {
+        return memberRepository.findById(id);
     }
 
     public Member findBySocialId(String socialId) {

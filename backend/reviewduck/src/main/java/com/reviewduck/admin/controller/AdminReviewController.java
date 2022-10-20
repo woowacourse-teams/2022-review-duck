@@ -48,7 +48,7 @@ public class AdminReviewController {
     @GetMapping(value = "/review-forms", params = "memberId")
     @ResponseStatus(HttpStatus.OK)
     public AdminReviewFormsResponse findAllReviewFormsByMemberId(@AdminAuthenticationPrincipal AdminMemberDto member,
-        @RequestParam(value = "memberId") Long memberId) {
+        @RequestParam(value = "memberId") long memberId) {
 
         info("/api/review-forms?memberId=" + memberId, "GET", "");
 
@@ -71,7 +71,7 @@ public class AdminReviewController {
     @Operation(summary = "회고 폼을 삭제한다")
     @DeleteMapping("/review-forms/{reviewFormId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteReviewForm(@AdminAuthenticationPrincipal AdminMemberDto member, @PathVariable Long reviewFormId) {
+    public void deleteReviewForm(@AdminAuthenticationPrincipal AdminMemberDto member, @PathVariable long reviewFormId) {
 
         Logging.info("api/admin/review-forms/" + reviewFormId, "DELETE", "");
 

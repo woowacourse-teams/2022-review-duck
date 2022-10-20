@@ -86,6 +86,11 @@
 
     &:not(.disabled) {
       transform: translateX(calc(max(100vw, 1024px) / 2 - 524px));
+
+      @include mobile {
+        transform: unset;
+        padding: 0 1.5rem;
+      }
     }
 
     &::after {

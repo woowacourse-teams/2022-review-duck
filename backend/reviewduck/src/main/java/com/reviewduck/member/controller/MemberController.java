@@ -59,11 +59,11 @@ public class MemberController {
         @CacheEvict(value = "memberCacheStore", key = "#member.id"),
         @CacheEvict(value = "memberCacheStore", key = "#member.socialId")
     })
-    public void updateMyNickname(@AuthenticationPrincipal MemberDto member, @Valid @RequestBody
+    public void updateNickname(@AuthenticationPrincipal MemberDto member, @Valid @RequestBody
         MemberUpdateNicknameRequest request) {
 
         info("/api/members/me", "PUT", request.toString());
 
-        aggregator.updateMyNickname(member.getId(), request.getNickname());
+        aggregator.updateNickname(member.getId(), request.getNickname());
     }
 }

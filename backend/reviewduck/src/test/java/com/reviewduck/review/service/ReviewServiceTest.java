@@ -203,7 +203,7 @@ public class ReviewServiceTest extends ServiceTest {
             assertAll(
                 () -> assertThat(myReviews).hasSize(2),
                 () -> assertThat(myReviews.get(0)).isNotNull(),
-                () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo("제이슨"),
+                () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo(member1.getNickname()),
                 () -> assertThat(myReviews.get(0).getUpdatedAt()).isEqualTo(review.getUpdatedAt())
             );
         }
@@ -224,7 +224,7 @@ public class ReviewServiceTest extends ServiceTest {
             // then
             assertAll(
                 () -> assertThat(myReviews).hasSize(1),
-                () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo("제이슨")
+                () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo(member1.getNickname())
             );
         }
 
@@ -346,7 +346,7 @@ public class ReviewServiceTest extends ServiceTest {
             // then
             assertAll(
                 () -> assertThat(updatedReview.getId()).isNotNull(),
-                () -> assertThat(updatedReview.getMember().getNickname()).isEqualTo("제이슨"),
+                () -> assertThat(updatedReview.getMember().getNickname()).isEqualTo(member1.getNickname()),
                 () -> assertThat(updatedReview.getQuestionAnswers().get(0).getAnswer().getValue())
                     .isEqualTo("editedAnswer1"),
                 () -> assertThat(updatedReview.isPrivate()).isFalse()
@@ -457,7 +457,7 @@ public class ReviewServiceTest extends ServiceTest {
         void increase() throws InterruptedException {
             // given
             Review savedReview = saveReview(reviewForm1, member1, false);
-            Long id = savedReview.getId();
+            long id = savedReview.getId();
 
             // when
             int likeCount = 50;
@@ -495,7 +495,7 @@ public class ReviewServiceTest extends ServiceTest {
         void withNotUpdatedAt() throws InterruptedException {
             // given
             Review savedReview = saveReview(reviewForm1, member1, false);
-            Long id = savedReview.getId();
+            long id = savedReview.getId();
 
             // 초기 수정 시간
             // DB에 들어가서 뒷 자리수가 반올림 된 결과로 비교해야 하기 때문에 조회한다.

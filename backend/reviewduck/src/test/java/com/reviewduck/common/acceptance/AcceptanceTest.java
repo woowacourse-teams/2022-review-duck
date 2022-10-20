@@ -35,7 +35,7 @@ public class AcceptanceTest {
     @Autowired
     protected CacheManager cacheManager;
 
-    protected final Long INVALID_REVIEW_ID = 99L;
+    protected final long INVALID_REVIEW_ID = 99L;
     protected final String INVALID_CODE = "aaaaaaaa";
     protected final String INVALID_TOKEN = "tokentokentoken.invalidinvalidinvalid.tokentokentoken";
 

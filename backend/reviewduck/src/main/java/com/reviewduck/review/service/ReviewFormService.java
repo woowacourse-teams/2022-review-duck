@@ -39,12 +39,14 @@ public class ReviewFormService {
     @Transactional
     public ReviewForm save(long memberId, ReviewFormCreateRequest createRequest) {
         Member member = findMemberById(memberId);
-        ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewFormTitle(), ServiceDtoConverter.toReviewFormQuestionCreateDtos(createRequest.getQuestions()));
+        List<ReviewFormQuestionCreateDto> questions = ServiceDtoConverter.toReviewFormQuestionCreateDtos(
+            createRequest.getQuestions());
+        ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewFormTitle(), questions);
         return reviewFormRepository.save(reviewForm);
     }
 
     @Transactional
-    public ReviewForm saveFromTemplate(long memberId, Long templateId) {
+    public ReviewForm saveFromTemplate(long memberId, long templateId) {
         Template template = templateRepository.findById(templateId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
         templateRepository.increaseUsedCount(templateId);
@@ -58,7 +60,7 @@ public class ReviewFormService {
     }
 
     @Transactional
-    public ReviewForm saveFromTemplate(long memberId, Long templateId, ReviewFormCreateRequest request) {
+    public ReviewForm saveFromTemplate(long memberId, long templateId, ReviewFormCreateRequest request) {
         templateRepository.increaseUsedCount(templateId);
         return save(memberId, request);
     }

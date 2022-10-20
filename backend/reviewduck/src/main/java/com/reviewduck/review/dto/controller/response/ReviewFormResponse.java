@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.reviewduck.member.dto.response.MemberResponse;
+import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.ReviewForm;
 
 import lombok.AccessLevel;
@@ -22,7 +22,7 @@ public class ReviewFormResponse {
     private List<ReviewFormQuestionResponse> questions;
     private List<CreatorResponse> participants;
 
-    public static ReviewFormResponse of(ReviewForm reviewForm, boolean isMine, List<MemberResponse> participants) {
+    public static ReviewFormResponse of(ReviewForm reviewForm, boolean isMine, List<Member> participants) {
         List<ReviewFormQuestionResponse> reviewFormQuestionResponse = reviewForm.getQuestions().stream()
             .map(ReviewFormQuestionResponse::from)
             .collect(Collectors.toUnmodifiableList());
@@ -34,7 +34,7 @@ public class ReviewFormResponse {
         return new ReviewFormResponse(
             reviewForm.getTitle(),
             Timestamp.valueOf(reviewForm.getUpdatedAt()).getTime(),
-            CreatorResponse.from(MemberResponse.from(reviewForm.getMember())),
+            CreatorResponse.from(reviewForm.getMember()),
             isMine,
             reviewFormQuestionResponse,
             participantsResponse

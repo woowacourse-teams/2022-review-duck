@@ -1,3 +1,4 @@
+
 package com.reviewduck.review.controller;
 
 import static com.reviewduck.common.util.Logging.*;

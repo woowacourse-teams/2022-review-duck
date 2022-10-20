@@ -2,6 +2,7 @@ package com.reviewduck.template.repository;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,11 +14,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.config.JpaAuditingConfig;
@@ -29,6 +32,8 @@ import com.reviewduck.template.dto.service.TemplateQuestionCreateDto;
 
 @DataJpaTest
 @Import(JpaAuditingConfig.class)
+@AutoConfigureTestDatabase(replace = NONE)
+@Sql("classpath:truncate.sql")
 public class TemplateRepositoryTest {
 
     private final List<TemplateQuestionCreateDto> questions1 = List.of(
@@ -179,7 +184,7 @@ public class TemplateRepositoryTest {
     @DisplayName("사용 횟수를 증가시킨다.")
     void increaseUsedCount() throws InterruptedException {
         //given
-        Long templateId = saveTemplate(member1, questions1).getId();
+        long templateId = saveTemplate(member1, questions1).getId();
 
         // when
         templateRepository.increaseUsedCount(templateId);

@@ -1,4 +1,3 @@
-import { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { FILTER, PAGE_LIST, PAGE_OPTION } from 'constant';
@@ -9,6 +8,7 @@ import { isInclude } from 'service/@shared/utils';
 
 import { FlexContainer, Skeleton } from 'common/components';
 
+import LayoutContainer from 'service/@shared/components/LayoutContainer';
 import Profile from 'service/@shared/components/Profile';
 import Questions from 'service/@shared/components/Questions';
 
@@ -19,7 +19,6 @@ import { Header } from './view/Header';
 import { ListView } from './view/ListView';
 import { SheetView } from './view/SheetView';
 import { updateReviewLike } from 'api/review.api';
-import { UserAgentContext } from 'common/contexts/UserAgent';
 
 /*
   TODO:
@@ -31,7 +30,6 @@ import { UserAgentContext } from 'common/contexts/UserAgent';
 function ReviewOverViewPage() {
   const navigate = useNavigate();
   const snackbar = useSnackbar();
-  const { isMobile } = useContext(UserAgentContext);
 
   const { reviewFormCode = '', displayMode: displayModeParams = '' } = useParams();
   const displayMode = isInclude(
@@ -110,123 +108,118 @@ function ReviewOverViewPage() {
         <Header.ViewChangeButtons displayMode={displayMode} reviewFormCode={reviewFormCode} />
       </Header>
 
-      {displayMode === FILTER.DISPLAY_MODE.LIST ? (
-        <ListView>
-          <ListView.Content
-            ref={infiniteScrollContainerRef}
-            isLoading={isFormLoading}
-            fallback={<Skeleton line={4} />}
-          >
-            <ListView.ParticipantList>
-              {reviewForm?.participants?.map((user) => (
-                <Profile
-                  key={user.id}
-                  className={styles.profile}
-                  socialId={user.id}
-                  textAlign="center"
-                  align="center"
-                >
-                  <Profile.Image
-                    size={isMobile ? 'small' : 'large'}
-                    edge="pointed"
-                    src={user.profileUrl}
-                  />
-                  <Profile.Nickname size={14}>{user.nickname}</Profile.Nickname>
-                  <Profile.Description size={12}></Profile.Description>
-                </Profile>
-              ))}
-            </ListView.ParticipantList>
-
-            {reviews.map(({ id, info, questions, likes }) => (
-              <ListView.Review key={id}>
-                <Questions>
-                  <Questions.CoverProfile
-                    socialId={info.creator.id}
-                    image={info.creator.profileUrl}
-                    title={info.reviewTitle as string}
-                    description={info.updateDate}
-                    size={isMobile ? 'small' : undefined}
-                    textAlign={isMobile ? 'left' : undefined}
-                  />
-
-                  <Questions.EditButtons
-                    isVisible={info.isSelf}
-                    onClickEdit={handleEditAnswer(id)}
-                    onClickDelete={handleDeleteAnswer(id)}
-                  ></Questions.EditButtons>
-
-                  {questions.map(({ description, answer, ...question }, index) => (
-                    <Questions.Answer
-                      key={question.id}
-                      question={`${index + 1}. ${question.value}`}
-                      description={description}
-                    >
-                      {answer.value}
-                    </Questions.Answer>
-                  ))}
-
-                  <Questions.Reaction
-                    likeCount={likes}
-                    onClickLike={handleClickLikeButton(id, likes)}
-                    onClickBookmark={() => null}
-                  />
-                </Questions>
-              </ListView.Review>
-            ))}
-            {isReviewsFetching && <ListView.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
-          </ListView.Content>
-
-          <ListView.SideMenu isLoading={isFormLoading} fallback={<Skeleton line={3} />}>
-            <ListView.FormDetail>
-              <FlexContainer className={styles.formInfo} gap="small">
-                <ListView.InfoText name="크리에이터">
-                  {reviewForm?.info.creator.nickname}
-                </ListView.InfoText>
-                <ListView.InfoText name="회고 참여자">
-                  총 {reviewForm?.participants?.length}명이 참여함
-                </ListView.InfoText>
-                <ListView.InfoText name="업데이트">{reviewForm?.info.updateDate}</ListView.InfoText>
-              </FlexContainer>
-
-              <ListView.JoinButton reviewFormCode={reviewFormCode} />
-
-              <ListView.FormCopyLink reviewFormCode={reviewFormCode} />
-
-              <ListView.FormManageButtons
-                reviewFormCode={reviewFormCode}
-                isMine={reviewForm?.info.isSelf}
-              />
-            </ListView.FormDetail>
-          </ListView.SideMenu>
-        </ListView>
-      ) : (
-        <SheetView>
-          <SheetView.Questions>
-            {reviewForm?.questions.map((question) => (
-              <SheetView.Item key={question.id} isTitle>
-                {question.value}
-              </SheetView.Item>
-            ))}
-          </SheetView.Questions>
-
-          <SheetView.ReviewList ref={infiniteScrollContainerRef}>
-            {reviews.map(({ id, info: { creator, reviewTitle }, questions }) => (
-              <SheetView.Answers key={id}>
-                <SheetView.Creator
-                  socialId={creator.id}
-                  title={reviewTitle as string}
-                  profileImage={creator.profileUrl}
-                />
-
-                {questions.map(({ answer, ...review }) => (
-                  <SheetView.Item key={review.id}>{answer && answer.value}</SheetView.Item>
+      <LayoutContainer>
+        {displayMode === FILTER.DISPLAY_MODE.LIST ? (
+          <ListView>
+            <ListView.Content
+              ref={infiniteScrollContainerRef}
+              isLoading={isFormLoading}
+              fallback={<Skeleton line={4} />}
+            >
+              <ListView.ParticipantList>
+                {reviewForm?.participants?.map((user) => (
+                  <Profile
+                    key={user.id}
+                    className={styles.profile}
+                    socialId={user.id}
+                    textAlign="center"
+                    align="center"
+                  >
+                    <Profile.Image size="large" edge="pointed" src={user.profileUrl} />
+                    <Profile.Nickname size={14}>{user.nickname}</Profile.Nickname>
+                    <Profile.Description size={12}></Profile.Description>
+                  </Profile>
                 ))}
-              </SheetView.Answers>
-            ))}
-            {isReviewsFetching && <SheetView.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
-          </SheetView.ReviewList>
-        </SheetView>
-      )}
+              </ListView.ParticipantList>
+
+              {reviews.map(({ id, info, questions, likes }) => (
+                <ListView.Review key={id}>
+                  <Questions>
+                    <Questions.CoverProfile
+                      socialId={info.creator.id}
+                      image={info.creator.profileUrl}
+                      title={info.reviewTitle as string}
+                      description={info.updateDate}
+                    />
+
+                    <Questions.EditButtons
+                      isVisible={info.isSelf}
+                      onClickEdit={handleEditAnswer(id)}
+                      onClickDelete={handleDeleteAnswer(id)}
+                    ></Questions.EditButtons>
+
+                    {questions.map(({ description, answer, ...question }, index) => (
+                      <Questions.Answer
+                        key={question.id}
+                        question={`${index + 1}. ${question.value}`}
+                        description={description}
+                      >
+                        {answer.value}
+                      </Questions.Answer>
+                    ))}
+
+                    <Questions.Reaction
+                      likeCount={likes}
+                      onClickLike={handleClickLikeButton(id, likes)}
+                      onClickBookmark={() => null}
+                    />
+                  </Questions>
+                </ListView.Review>
+              ))}
+              {isReviewsFetching && <ListView.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
+            </ListView.Content>
+            <ListView.SideMenu isLoading={isFormLoading} fallback={<Skeleton line={3} />}>
+              <ListView.FormDetail
+                reviewFormCode={reviewFormCode}
+                editable={reviewForm?.info.isSelf}
+              >
+                <FlexContainer className={styles.formInfo} gap="small">
+                  <ListView.InfoText name="크리에이터">
+                    {reviewForm?.info.creator.nickname}
+                  </ListView.InfoText>
+                  <ListView.InfoText name="회고 참여자">
+                    총 {reviewForm?.participants?.length}명이 참여함
+                  </ListView.InfoText>
+                  <ListView.InfoText name="업데이트">
+                    {reviewForm?.info.updateDate}
+                  </ListView.InfoText>
+                </FlexContainer>
+
+                <ListView.JoinButton reviewFormCode={reviewFormCode} />
+
+                <ListView.FormCopyLink reviewFormCode={reviewFormCode} />
+              </ListView.FormDetail>
+            </ListView.SideMenu>
+          </ListView>
+        ) : (
+          <SheetView>
+            <SheetView.Questions>
+              {reviewForm?.questions.map((question) => (
+                <SheetView.Item key={question.id} isTitle>
+                  {question.value}
+                </SheetView.Item>
+              ))}
+            </SheetView.Questions>
+
+            <SheetView.ReviewList ref={infiniteScrollContainerRef}>
+              {reviews.map(({ id, info: { creator, reviewTitle }, questions }) => (
+                <SheetView.Answers key={id}>
+                  <SheetView.Creator
+                    socialId={creator.id}
+                    title={reviewTitle as string}
+                    profileImage={creator.profileUrl}
+                  />
+
+                  {questions.map(({ answer, ...review }) => (
+                    <SheetView.Item key={review.id}>{answer && answer.value}</SheetView.Item>
+                  ))}
+                </SheetView.Answers>
+              ))}
+              {isReviewsFetching && <SheetView.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
+            </SheetView.ReviewList>
+          </SheetView>
+        )}
+      </LayoutContainer>
     </div>
   );
 }

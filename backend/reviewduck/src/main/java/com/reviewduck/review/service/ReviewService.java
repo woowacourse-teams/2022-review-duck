@@ -58,7 +58,7 @@ public class ReviewService {
     public Page<Review> findAllBySocialId(Member owner, long memberId, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, ReviewSortType.LATEST.getSortBy());
         PageRequest pageRequest = PageRequest.of(page, size, sort);
-        return getPagedReviews(memberId, owner, pageRequest);
+        return getReviewsByOwner(memberId, owner, pageRequest);
     }
 
     public Page<Review> findAllByCode(String code, int page, int size) {
@@ -73,11 +73,11 @@ public class ReviewService {
     public Page<Review> findAllPublic(int page, int size, String sort) {
         String sortType = ReviewSortType.getSortBy(sort);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
-        return getPagedTimelineReviews(sort, pageRequest);
+        return getTimelineReviews(sort, pageRequest);
     }
 
     @Transactional
-    public void update(long memberId, Long id, ReviewUpdateRequest request) {
+    public void update(long memberId, long id, ReviewUpdateRequest request) {
         Review review = findById(id);
         validateMyReview(memberId, review, "본인이 생성한 회고가 아니면 수정할 수 없습니다.");
 
@@ -85,15 +85,16 @@ public class ReviewService {
 
         review.update(request.getIsPrivate(), request.getTitle(), questionAnswerUpdateDtos);
     }
+
     @Transactional
-    public int increaseLikes(Long id, int likeCount) {
+    public int increaseLikes(long id, int likeCount) {
         Review review = findById(id);
         reviewRepository.increaseLikes(review, likeCount);
         return findById(id).getLikes();
     }
 
     @Transactional
-    public void delete(long memberId, Long id) {
+    public void delete(long memberId, long id) {
         Review review = findById(id);
         validateMyReview(memberId, review, "본인이 생성한 회고가 아니면 삭제할 수 없습니다.");
 
@@ -106,14 +107,14 @@ public class ReviewService {
         }
     }
 
-    private Page<Review> getPagedReviews(long memberId, Member owner, PageRequest pageRequest) {
+    private Page<Review> getReviewsByOwner(long memberId, Member owner, PageRequest pageRequest) {
         if (owner.isSameId(memberId)) {
             return reviewRepository.findByMember(owner, pageRequest);
         }
         return reviewRepository.findByMemberAndIsPrivateFalse(owner, pageRequest);
     }
 
-    private Page<Review> getPagedTimelineReviews(String sort, PageRequest pageRequest) {
+    private Page<Review> getTimelineReviews(String sort, PageRequest pageRequest) {
         if (ReviewSortType.isTrend(sort)) {
             return reviewRepository.findByIsPrivateFalseAndLikesGreaterThan(
                 pageRequest, 50);

@@ -10,6 +10,8 @@ import lombok.Getter;
 @Getter
 public class MemberDto {
 
+    private static final MemberDto MEMBER_NOT_LOGIN = new MemberDto(-1, "not-login");
+
     private long id;
     private String socialId;
 
@@ -21,9 +23,6 @@ public class MemberDto {
     }
 
     public static MemberDto getMemberNotLogin() {
-        return new MemberDto(
-            -1,
-            "not-login"
-        );
+        return MEMBER_NOT_LOGIN;
     }
 }
