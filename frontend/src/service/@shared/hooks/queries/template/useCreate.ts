@@ -1,12 +1,12 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { templateAPI } from 'api';
 import { QUERY_KEY } from 'constant';
 import { CreateFormResponse, UseCustomMutationOptions, CreateTemplateResponse } from 'types';
 
-function useCreateForm(mutationOptions?: UseCustomMutationOptions<CreateFormResponse>) {
-  const queryClient = useQueryClient();
+import queryClient from 'api/config/queryClient';
 
+function useCreateForm(mutationOptions?: UseCustomMutationOptions<CreateFormResponse>) {
   return useMutation(templateAPI.createForm, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.TEMPLATE]);
@@ -16,8 +16,6 @@ function useCreateForm(mutationOptions?: UseCustomMutationOptions<CreateFormResp
 }
 
 function useCreateTemplate(mutationOptions?: UseCustomMutationOptions<CreateTemplateResponse>) {
-  const queryClient = useQueryClient();
-
   return useMutation(templateAPI.createTemplate, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_USER_TEMPLATES]);
