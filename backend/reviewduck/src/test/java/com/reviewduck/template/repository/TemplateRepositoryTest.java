@@ -184,7 +184,7 @@ public class TemplateRepositoryTest {
     @DisplayName("사용 횟수를 증가시킨다.")
     void increaseUsedCount() throws InterruptedException {
         //given
-        Long templateId = saveTemplate(member1, questions1).getId();
+        long templateId = saveTemplate(member1, questions1).getId();
 
         // when
         templateRepository.increaseUsedCount(templateId);

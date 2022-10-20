@@ -21,7 +21,7 @@ public class AdminTemplateService {
     private AdminMemberService adminMemberService;
     private AdminTemplateRepository templateRepository;
 
-    public Template findById(Long templateId) {
+    public Template findById(long templateId) {
         return templateRepository.findById(templateId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
     }
@@ -30,13 +30,13 @@ public class AdminTemplateService {
         return templateRepository.findAll();
     }
 
-    public List<Template> findTemplatesByMemberId(Long memberId) {
+    public List<Template> findTemplatesByMemberId(long memberId) {
         Member member = adminMemberService.findMemberById(memberId);
         return templateRepository.findAllByMember(member);
     }
 
     @Transactional
-    public void deleteTemplateById(Long templateId) {
+    public void deleteTemplateById(long templateId) {
         templateRepository.findById(templateId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
 

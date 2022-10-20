@@ -40,7 +40,7 @@ public class ReviewController {
     @Operation(summary = "회고 답변 수정을 위해 특정한 회고 답변을 조회한다.")
     @GetMapping("/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewEditResponse findById(@AuthenticationPrincipal MemberDto member, @PathVariable Long reviewId) {
+    public ReviewEditResponse findById(@AuthenticationPrincipal MemberDto member, @PathVariable long reviewId) {
 
         info("/api/reviews/" + reviewId, "GET", "");
 
@@ -77,7 +77,7 @@ public class ReviewController {
     @Operation(summary = "회고 답변을 수정한다.")
     @PutMapping("/{reviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@AuthenticationPrincipal MemberDto member, @PathVariable Long reviewId,
+    public void update(@AuthenticationPrincipal MemberDto member, @PathVariable long reviewId,
         @RequestBody @Valid ReviewUpdateRequest request) {
 
         info("/api/reviews/" + reviewId, "PUT", request.toString());
@@ -88,7 +88,7 @@ public class ReviewController {
     @Operation(summary = "좋아요 개수를 더한다.")
     @PostMapping("/{reviewId}/likes")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewLikesResponse likes(@PathVariable Long reviewId, @RequestBody @Valid ReviewLikesRequest request) {
+    public ReviewLikesResponse likes(@PathVariable long reviewId, @RequestBody @Valid ReviewLikesRequest request) {
 
         info("/api/reviews/" + reviewId + "/likes", "POST", request.toString());
 
@@ -98,7 +98,7 @@ public class ReviewController {
     @Operation(summary = "회고 답변을 삭제한다.")
     @DeleteMapping("/{reviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@AuthenticationPrincipal MemberDto member, @PathVariable Long reviewId) {
+    public void delete(@AuthenticationPrincipal MemberDto member, @PathVariable long reviewId) {
 
         info("/api/reviews/" + reviewId, "DELETE", "");
 

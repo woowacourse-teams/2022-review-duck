@@ -99,7 +99,7 @@ public class ReviewFormServiceTest extends ServiceTest {
 
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 questions);
-            Long templateId = templateService.save(member1, templateRequest).getId();
+            long templateId = templateService.save(member1, templateRequest).getId();
 
             // when
             // 템플릿 기반 회고 폼 생성
@@ -147,7 +147,7 @@ public class ReviewFormServiceTest extends ServiceTest {
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 questions);
             Template savedTemplate = templateService.save(member1, templateRequest);
-            Long templateId = savedTemplate.getId();
+            long templateId = savedTemplate.getId();
 
             // 초기 수정 시간
             LocalDateTime updatedAt = templateService.findById(templateId).getUpdatedAt();
@@ -177,7 +177,7 @@ public class ReviewFormServiceTest extends ServiceTest {
 
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 templateQuestions);
-            Long templateId = templateService.save(member1, templateRequest).getId();
+            long templateId = templateService.save(member1, templateRequest).getId();
 
             String reviewFormTitle = "title";
             List<ReviewFormQuestionCreateRequest> reviewFromQuestions = List.of(
@@ -232,7 +232,7 @@ public class ReviewFormServiceTest extends ServiceTest {
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 templateQuestions);
 
-            Long templateId = templateService.save(member1, templateRequest).getId();
+            long templateId = templateService.save(member1, templateRequest).getId();
 
             String reviewFormTitle = "title";
             List<ReviewFormQuestionCreateRequest> reviewFromQuestions = List.of(
@@ -369,7 +369,7 @@ public class ReviewFormServiceTest extends ServiceTest {
             // given
             ReviewForm savedReviewForm = saveReviewForm(memberId1);
             String code = savedReviewForm.getCode();
-            Long questionId = savedReviewForm.getQuestions().get(0).getId();
+            long questionId = savedReviewForm.getQuestions().get(0).getId();
 
             // when
             String reviewFormTitle = "new title";
@@ -411,7 +411,7 @@ public class ReviewFormServiceTest extends ServiceTest {
             // given
             ReviewForm savedReviewForm = saveReviewForm(memberId1);
             String code = savedReviewForm.getCode();
-            Long questionId = savedReviewForm.getQuestions().get(0).getId();
+            long questionId = savedReviewForm.getQuestions().get(0).getId();
 
             // when
             String reviewFormTitle = "new title";

@@ -50,7 +50,7 @@ public class AdminTemplateController {
     @Operation(summary = "템플릿을 삭제한다")
     @DeleteMapping("/{templateId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteTemplate(@AuthenticationPrincipal Member member, @PathVariable Long templateId) {
+    public void deleteTemplate(@AuthenticationPrincipal Member member, @PathVariable long templateId) {
 
         info("api/admin/templates/" + templateId, "DELETE", "");
 
@@ -61,7 +61,7 @@ public class AdminTemplateController {
     @Operation(summary = "단일 템플릿을 조회한다")
     @GetMapping("/{templateId}")
     @ResponseStatus(HttpStatus.OK)
-    public AdminTemplateResponse findTemplate(@AuthenticationPrincipal Member member, @PathVariable Long templateId) {
+    public AdminTemplateResponse findTemplate(@AuthenticationPrincipal Member member, @PathVariable long templateId) {
 
         info("api/admin/templates/" + templateId, "GET", "");
 

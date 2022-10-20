@@ -4,6 +4,8 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.*;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -63,8 +65,8 @@ public class ControllerTest {
 
     @BeforeEach
     void createMemberAndGetAccessToken() {
-        Member member = new Member(1L, "1", "panda", "제이슨", "profileUrl");
+        Optional<Member> member = Optional.of(new Member(1L, "1", "panda", "제이슨", "profileUrl"));
         given(jwtTokenProvider.getAccessTokenPayload(anyString())).willReturn("1");
-        given(memberService.findById(anyLong())).willReturn(member);
+        given(memberService.getById(anyLong())).willReturn(member);
     }
 }

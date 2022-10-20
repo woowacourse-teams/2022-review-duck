@@ -13,7 +13,6 @@ import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.auth.support.AuthorizationExtractor;
 import com.reviewduck.auth.support.JwtTokenProvider;
-import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.member.service.MemberService;
@@ -47,14 +46,11 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
         long memberId = Long.parseLong(jwtTokenProvider.getAccessTokenPayload(token));
 
-        return MemberDto.from(getMember(memberId));
+        return MemberDto.from(findMemberById(memberId));
     }
 
-    private Member getMember(long memberId) {
-        try {
-            return memberService.findById(memberId);
-        } catch (NotFoundException e) {
-            throw new AuthorizationException("존재하지 않는 사용자입니다.");
-        }
+    private Member findMemberById(long memberId) {
+        return memberService.getById(memberId)
+            .orElseThrow(() -> new AuthorizationException("존재하지 않는 사용자입니다."));
     }
 }

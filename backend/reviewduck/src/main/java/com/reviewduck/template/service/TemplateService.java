@@ -65,7 +65,7 @@ public class TemplateService {
     }
 
     @Transactional
-    public void update(long memberId, Long id, TemplateUpdateRequest templateUpdateRequest) {
+    public void update(long memberId, long id, TemplateUpdateRequest templateUpdateRequest) {
         Template template = findById(id);
         validateTemplateIsMine(template, memberId, "본인이 생성한 템플릿이 아니면 수정할 수 없습니다.");
 
@@ -77,12 +77,12 @@ public class TemplateService {
     }
 
     @Transactional
-    public void increaseUsedCount(Long templateId) {
+    public void increaseUsedCount(long templateId) {
         templateRepository.increaseUsedCount(templateId);
     }
 
     @Transactional
-    public void deleteById(long memberId, Long id) {
+    public void deleteById(long memberId, long id) {
         Template template = findById(id);
         validateTemplateIsMine(template, memberId, "본인이 생성한 템플릿이 아니면 삭제할 수 없습니다.");
 

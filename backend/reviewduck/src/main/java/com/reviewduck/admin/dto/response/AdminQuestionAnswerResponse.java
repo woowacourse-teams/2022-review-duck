@@ -14,10 +14,10 @@ import lombok.Getter;
 public class AdminQuestionAnswerResponse {
 
     @JsonProperty("id")
-    private Long questionAnswerId;
-    private Long questionId;
+    private long questionAnswerId;
+    private long questionId;
     private String questionValue;
-    private Long answerId;
+    private long answerId;
     private String answerValue;
 
     public static AdminQuestionAnswerResponse from(QuestionAnswer questionAnswer) {

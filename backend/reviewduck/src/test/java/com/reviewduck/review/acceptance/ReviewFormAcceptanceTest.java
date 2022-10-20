@@ -76,7 +76,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 templateQuestions);
 
-            Long templateId = post("/api/templates", templateCreateRequest, accessToken1)
+            long templateId = post("/api/templates", templateCreateRequest, accessToken1)
                 .extract()
                 .as(TemplateIdResponse.class)
                 .getTemplateId();

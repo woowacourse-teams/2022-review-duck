@@ -457,7 +457,7 @@ public class ReviewServiceTest extends ServiceTest {
         void increase() throws InterruptedException {
             // given
             Review savedReview = saveReview(reviewForm1, member1, false);
-            Long id = savedReview.getId();
+            long id = savedReview.getId();
 
             // when
             int likeCount = 50;
@@ -495,7 +495,7 @@ public class ReviewServiceTest extends ServiceTest {
         void withNotUpdatedAt() throws InterruptedException {
             // given
             Review savedReview = saveReview(reviewForm1, member1, false);
-            Long id = savedReview.getId();
+            long id = savedReview.getId();
 
             // 초기 수정 시간
             // DB에 들어가서 뒷 자리수가 반올림 된 결과로 비교해야 하기 때문에 조회한다.

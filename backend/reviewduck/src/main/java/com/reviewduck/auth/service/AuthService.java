@@ -59,13 +59,13 @@ public class AuthService {
     @Transactional
     public TokensDto regenerateTokens(String refreshToken) {
         jwtTokenProvider.validateRefreshToken(refreshToken);
-        Long memberId = Long.parseLong(jwtTokenProvider.getRefreshTokenPayload(refreshToken));
+        long memberId = Long.parseLong(jwtTokenProvider.getRefreshTokenPayload(refreshToken));
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new AuthorizationException("존재하지 않는 사용자입니다."));
         return generateTokens(member.getId());
     }
 
-    private TokensDto generateTokens(Long memberId) {
+    private TokensDto generateTokens(long memberId) {
         String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(memberId));
         String refreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(memberId));
 

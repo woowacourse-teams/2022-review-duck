@@ -77,7 +77,7 @@ public class ReviewService {
     }
 
     @Transactional
-    public void update(long memberId, Long id, ReviewUpdateRequest request) {
+    public void update(long memberId, long id, ReviewUpdateRequest request) {
         Review review = findById(id);
         validateMyReview(memberId, review, "본인이 생성한 회고가 아니면 수정할 수 없습니다.");
 
@@ -87,14 +87,14 @@ public class ReviewService {
     }
 
     @Transactional
-    public int increaseLikes(Long id, int likeCount) {
+    public int increaseLikes(long id, int likeCount) {
         Review review = findById(id);
         reviewRepository.increaseLikes(review, likeCount);
         return findById(id).getLikes();
     }
 
     @Transactional
-    public void delete(long memberId, Long id) {
+    public void delete(long memberId, long id) {
         Review review = findById(id);
         validateMyReview(memberId, review, "본인이 생성한 회고가 아니면 삭제할 수 없습니다.");
 

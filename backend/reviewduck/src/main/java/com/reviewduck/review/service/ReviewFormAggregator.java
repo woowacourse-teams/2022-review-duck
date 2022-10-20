@@ -1,14 +1,13 @@
 package com.reviewduck.review.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.common.annotation.Aggregator;
+import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.response.MemberDto;
-import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
@@ -37,7 +36,7 @@ public class ReviewFormAggregator {
 
     public ReviewFormResponse findByCode(String reviewFormCode, long memberId) {
         ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
-        List<MemberResponse> members = findAllParticipantsByCode(reviewForm);
+        List<Member> members = memberService.findAllParticipantsByCode(reviewForm);
         return ReviewFormResponse.of(reviewForm, reviewForm.isMine(memberId), members);
     }
 
@@ -67,12 +66,5 @@ public class ReviewFormAggregator {
     @Transactional
     public void createReview(long memberId, String reviewFormCode, ReviewCreateRequest request) {
         reviewService.save(memberId, reviewFormCode, request);
-    }
-
-    private List<MemberResponse> findAllParticipantsByCode(ReviewForm reviewForm) {
-        return memberService.findAllParticipantsByCode(reviewForm)
-            .stream()
-            .map(MemberResponse::from)
-            .collect(Collectors.toUnmodifiableList());
     }
 }

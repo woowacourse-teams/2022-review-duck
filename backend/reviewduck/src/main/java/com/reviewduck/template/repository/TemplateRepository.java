@@ -19,7 +19,7 @@ public interface TemplateRepository extends Repository<Template, Long> {
 
     Page<Template> findAll(Pageable pageable);
 
-    Optional<Template> findById(Long id);
+    Optional<Template> findById(long id);
 
     Page<Template> findByMember(Pageable pageable, Member member);
 
@@ -31,5 +31,5 @@ public interface TemplateRepository extends Repository<Template, Long> {
 
     @Modifying
     @Query("update Template t set t.usedCount = t.usedCount + 1 where t.id = ?1")
-    void increaseUsedCount(Long id);
+    void increaseUsedCount(long id);
 }

@@ -84,7 +84,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         @Test
         @DisplayName("로그인하지 않은 상태로 특정 회고를 조회할 수 없다")
         void withoutLogin() {
-            Long reviewId = saveReviewAndGetId(accessToken1, false);
+            long reviewId = saveReviewAndGetId(accessToken1, false);
 
             //when, then
             get("/api/reviews/" + reviewId)
@@ -206,7 +206,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 saveReviewAndGetId(accessToken1, false);
             }
 
-            int reviewId = saveReviewAndGetId(accessToken1, false).intValue();
+            long reviewId = saveReviewAndGetId(accessToken1, false);
 
             ReviewLikesRequest request = new ReviewLikesRequest(50);
             post("api/reviews/" + reviewId + "/likes", request);
@@ -218,14 +218,14 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 .assertThat()
                 .body("numberOfReviews", equalTo(DEFAULT_SIZE + 6))
                 .body("reviews", hasSize(DEFAULT_SIZE))
-                .body("reviews[0].id", equalTo(reviewId));
+                .body("reviews[0].id", equalTo((int)reviewId));
         }
 
         @Test
         @DisplayName("최신순으로 특정 페이지를 조회한다.")
         void findPageOrderByLatest() {
             saveReviewAndGetId(accessToken1, false);
-            int reviewId = saveReviewAndGetId(accessToken2, false).intValue();
+            long reviewId = saveReviewAndGetId(accessToken2, false);
             saveReviewAndGetId(accessToken2, true);
 
             ReviewLikesRequest request = new ReviewLikesRequest(50);
@@ -236,7 +236,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 .assertThat()
                 .body("numberOfReviews", equalTo(2))
                 .body("reviews", hasSize(1))
-                .body("reviews[0].id", equalTo(reviewId))
+                .body("reviews[0].id", equalTo((int)reviewId))
                 .body("isLastPage", equalTo(false));
         }
 
@@ -244,7 +244,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         @DisplayName("인기순으로 특정 페이지를 조회한다.")
         void findPageOrderByTrend() {
             saveReviewAndGetId(accessToken1, false);
-            int reviewId = saveReviewAndGetId(accessToken2, false).intValue();
+            long reviewId = saveReviewAndGetId(accessToken2, false);
             saveReviewAndGetId(accessToken2, true);
 
             get("/api/reviews/public?page=1&size=1&sort=latest")
@@ -252,7 +252,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
                 .assertThat()
                 .body("numberOfReviews", equalTo(2))
                 .body("reviews", hasSize(1))
-                .body("reviews[0].id", equalTo(reviewId))
+                .body("reviews[0].id", equalTo((int)reviewId))
                 .body("isLastPage", equalTo(false));
         }
 
@@ -271,7 +271,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         @Test
         @DisplayName("회고를 수정한다.")
         void updateReview() {
-            Long reviewId = saveReviewAndGetId(accessToken1, false);
+            long reviewId = saveReviewAndGetId(accessToken1, false);
 
             //when, then
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title", List.of(
@@ -286,7 +286,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         @Test
         @DisplayName("로그인하지 않은 상태로 회고를 수정할 수 없다")
         void withoutLogin() {
-            Long reviewId = saveReviewAndGetId(accessToken1, false);
+            long reviewId = saveReviewAndGetId(accessToken1, false);
 
             //when, then
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title", List.of(
@@ -314,7 +314,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         @Test
         @DisplayName("본인이 생성한 회고가 아니면 수정할 수 없다.")
         void notMine() {
-            Long reviewId = saveReviewAndGetId(accessToken1, false);
+            long reviewId = saveReviewAndGetId(accessToken1, false);
 
             //when, then
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title", List.of(
@@ -335,7 +335,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         @Test
         @DisplayName("회고를 삭제한다.")
         void deleteReview() {
-            Long reviewId = saveReviewAndGetId(accessToken1, false);
+            long reviewId = saveReviewAndGetId(accessToken1, false);
 
             //when, then
             delete("/api/reviews/" + reviewId, accessToken1)
@@ -346,7 +346,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         @DisplayName("로그인하지 않은 상태로 회고를 삭제할 수 없다")
         void withoutLogin() {
             // given
-            Long reviewId = saveReviewAndGetId(accessToken1, false);
+            long reviewId = saveReviewAndGetId(accessToken1, false);
 
             //when, then
             delete("/api/reviews/" + reviewId)
@@ -365,7 +365,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         @DisplayName("본인이 생성한 회고가 아니면 삭제할 수 없다.")
         void notMine() {
             // given
-            Long reviewId = saveReviewAndGetId(accessToken1, false);
+            long reviewId = saveReviewAndGetId(accessToken1, false);
 
             //when, then
             delete("/api/reviews/" + reviewId, accessToken2)
@@ -382,7 +382,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
         @DisplayName("좋아요를 더한다.")
         void increase() {
             // given
-            Long reviewId = saveReviewAndGetId(accessToken1, false);
+            long reviewId = saveReviewAndGetId(accessToken1, false);
             ReviewLikesRequest request = new ReviewLikesRequest(50);
 
             // when, then
@@ -411,7 +411,7 @@ public class ReviewAcceptanceTest extends AcceptanceTest {
             .getReviewFormCode();
     }
 
-    private Long saveReviewAndGetId(String accessToken, boolean isPrivate) {
+    private long saveReviewAndGetId(String accessToken, boolean isPrivate) {
         // save ReviewForm
         String reviewTitle = "title";
         List<ReviewFormQuestionCreateRequest> questions = List.of(

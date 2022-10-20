@@ -84,7 +84,7 @@ public class AdminReviewController {
     @Operation(summary = "회고 폼을 삭제한다")
     @DeleteMapping("/review-forms/{reviewFormId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteReviewForm(@AuthenticationPrincipal Member member, @PathVariable Long reviewFormId) {
+    public void deleteReviewForm(@AuthenticationPrincipal Member member, @PathVariable long reviewFormId) {
 
         Logging.info("api/admin/review-forms/" + reviewFormId, "DELETE", "");
 
@@ -108,7 +108,7 @@ public class AdminReviewController {
     @Operation(summary = "단일 회고 답변을 조회한다")
     @GetMapping("/reviews/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
-    public AdminReviewResponse findReview(@AuthenticationPrincipal Member member, @PathVariable Long reviewId) {
+    public AdminReviewResponse findReview(@AuthenticationPrincipal Member member, @PathVariable long reviewId) {
 
         Logging.info("api/admin/reviews/" + reviewId, "GET", "");
 
@@ -135,7 +135,7 @@ public class AdminReviewController {
     @Operation(summary = "회고 답변을 삭제한다")
     @DeleteMapping("/reviews/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteReview(@AuthenticationPrincipal Member member, @PathVariable Long reviewId) {
+    public void deleteReview(@AuthenticationPrincipal Member member, @PathVariable long reviewId) {
 
         Logging.info("api/admin/reviews/" + reviewId, "DELETE", "");
 
