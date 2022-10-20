@@ -6,6 +6,7 @@ import { faArrowTrendUp, faBarsStaggered } from '@fortawesome/free-solid-svg-ico
 import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
 import { TemplateFilterType } from 'types';
 
+import { useGetTemplates } from 'service/@shared/hooks/queries/template';
 import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
 
 import { isNumberString } from 'common/utils/validator';
@@ -21,7 +22,6 @@ import TemplateCard from 'service/template/components/TemplateCard';
 
 import styles from './styles.module.scss';
 
-import useTemplateList from './useTemplateListPage';
 import Filter from './view/Filter';
 import { UserAgentContext } from 'common/contexts/UserAgent';
 
@@ -41,12 +41,16 @@ function TemplateListPage() {
     ? filterQueryString
     : FILTER.TEMPLATE_TAB.LATEST;
 
-  const { numberOfTemplates, templates } = useTemplateList(
-    isMobile,
-    currentTab,
+  const { data, isLoading, isError } = useGetTemplates({
+    filter: currentTab,
+    search: searchQueryString,
     pageNumber,
-    searchQueryString,
-  );
+    itemCount: isMobile ? PAGE_OPTION.MOBILE_TEMPLATE_ITEM_SIZE : undefined,
+  });
+
+  if (isLoading || isError) return <>{/* Error Boundary, Suspense Used */}</>;
+
+  const { numberOfTemplates, templates } = data;
 
   const handleChangeSortList = (query: TemplateFilterType) => () => {
     navigate(`${PAGE_LIST.TEMPLATE_LIST}?${FILTER.SORT}=${query}`);
