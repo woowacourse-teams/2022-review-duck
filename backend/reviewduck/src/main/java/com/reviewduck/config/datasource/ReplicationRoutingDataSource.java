@@ -7,7 +7,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
 
-    private final DataSourceSelector dataSourceSelector = new DataSourceSelector(REPLICA, SOURCE);
+    private final DataSourceSelector dataSourceSelector = new DataSourceSelector(REPLICA, REPLICA, SOURCE);
 
     @Override
     protected Object determineCurrentLookupKey() {
