@@ -1,6 +1,5 @@
 package com.reviewduck.review.dto.controller.response;
 
-import java.util.Arrays;
 import java.util.function.Function;
 
 import com.reviewduck.review.domain.Review;
@@ -26,12 +25,5 @@ public enum ReviewEditResponseBuilder {
             return SYNC.responseBuilder.apply(review);
         }
         return NON_SYNC.responseBuilder.apply(review);
-
-        // return Arrays.stream(values())
-        //     .filter(it -> it.isActive() == reviewForm.isActive())
-        //     .findFirst()
-        //     .orElse(NON_SYNC)
-        //     .getResponseBuilder()
-        //     .apply(review);
     }
 }
