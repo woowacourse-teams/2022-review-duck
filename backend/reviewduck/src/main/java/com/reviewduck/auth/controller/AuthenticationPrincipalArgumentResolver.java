@@ -12,7 +12,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.auth.support.AuthorizationExtractor;
 import com.reviewduck.auth.support.JwtTokenProvider;
-import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.member.service.MemberService;
 
@@ -36,7 +35,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
 
         if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
-            return MemberDto.from(Member.getMemberNotLogin());
+            return MemberDto.getMemberNotLogin();
         }
 
         String token = AuthorizationExtractor.extract(request);

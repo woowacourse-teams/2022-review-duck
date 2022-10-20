@@ -19,4 +19,11 @@ public class MemberDto {
             member.getSocialId()
         );
     }
+
+    public static MemberDto getMemberNotLogin() {
+        return new MemberDto(
+            -1,
+            "not-login"
+        );
+    }
 }
