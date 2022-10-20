@@ -59,9 +59,7 @@ function TemplateDetailPage() {
           description: '답변을 바로 작성하고 팀원과 공유할 수 있습니다.',
         });
 
-        navigate(`${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`, {
-          replace: true,
-        });
+        navigate(`${PAGE_LIST.REVIEW}/${reviewFormCode}`);
       },
       onError: ({ message }) => {
         snackbar.show({
