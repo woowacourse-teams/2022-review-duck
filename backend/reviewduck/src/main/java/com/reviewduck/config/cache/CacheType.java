@@ -14,7 +14,7 @@ import lombok.Getter;
 @Getter
 public enum CacheType {
 
-    MemberCache("memberCacheStore", 10 * 60, 100),
+    MemberCache("memberCacheStore", 10 * 60, 150),
     TemplateCache("templateCacheStore", 10 * 60, 300),
     TemplatesCache("templatesCacheStore", 60, 100);
 
