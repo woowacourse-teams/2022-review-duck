@@ -1,19 +1,36 @@
-import { Suspense } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Suspense, useContext, useEffect, useMemo, useState } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
 
-import { ErrorBoundary } from 'common/components';
+import { faHome, faUser, faCompass, faRocket } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import { PAGE_LIST } from 'constant';
+
+import useAuth from 'service/@shared/hooks/useAuth';
+
+import { ErrorBoundary, Text } from 'common/components';
 
 import PageSuspense from 'common/components/PageSuspense';
 
 import styles from './styles.module.scss';
 
 import Header from './Header';
+import MobileHeader from './view/MobileHeader';
+import MobileMenu from './view/MobileMenubar';
+import { UserAgentContext } from 'common/contexts/UserAgent';
 import ErrorPage from 'service/@shared/pages/ErrorPage';
 
 function MainLayout() {
+  const { getUserProfileQuery } = useAuth();
+  const { isMobile } = useContext(UserAgentContext);
+
+  const { socialId } = getUserProfileQuery.data || {};
+
   return (
-    <div className={styles.layout}>
+    <div className={styles.layoutMain}>
       <Header />
+
+      {isMobile && <MobileHeader />}
 
       <main className={styles.main}>
         <ErrorBoundary fallback={ErrorPage}>
@@ -25,7 +42,25 @@ function MainLayout() {
         </ErrorBoundary>
       </main>
 
-      <footer></footer>
+      {isMobile && (
+        <MobileMenu>
+          <MobileMenu.Item route={PAGE_LIST.HOME}>
+            <FontAwesomeIcon icon={faHome} />
+          </MobileMenu.Item>
+
+          <MobileMenu.Item route={PAGE_LIST.TEMPLATE_LIST}>
+            <FontAwesomeIcon icon={faRocket} />
+          </MobileMenu.Item>
+
+          <MobileMenu.Item route={PAGE_LIST.TIMELINE}>
+            <FontAwesomeIcon icon={faCompass} />
+          </MobileMenu.Item>
+
+          <MobileMenu.Item route={`${PAGE_LIST.USER_PROFILE}/${socialId}`}>
+            <FontAwesomeIcon icon={faUser} />
+          </MobileMenu.Item>
+        </MobileMenu>
+      )}
     </div>
   );
 }

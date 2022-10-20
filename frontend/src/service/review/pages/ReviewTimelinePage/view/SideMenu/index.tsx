@@ -4,7 +4,7 @@ import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
-import { PAGE_LIST } from 'constant';
+import { FILTER, PAGE_LIST } from 'constant';
 import { TimelineFilterType } from 'types';
 
 import { FlexContainer, Text } from 'common/components';
@@ -56,7 +56,7 @@ interface MenuProps {
 
 function Menu({ isCurrentTab, filter, icon, children }: MenuProps) {
   return (
-    <Link to={`${PAGE_LIST.TIMELINE}?sort=${filter}`}>
+    <Link to={`${PAGE_LIST.TIMELINE}?${FILTER.SORT}=${filter}`}>
       <li className={cn(styles.menu, { [styles.focus]: isCurrentTab })}>
         <FontAwesomeIcon icon={icon} /> {children}
       </li>

@@ -94,8 +94,8 @@ function QuestionsEditorItem({
       <Textarea
         className={styles.textarea}
         placeholder="질문에 대한 설명은 최대 200자까지 입력할 수 있습니다."
-        defaultValue={description}
         onChange={handleChangeDescription}
+        value={description}
       />
     </FlexContainer>
   );

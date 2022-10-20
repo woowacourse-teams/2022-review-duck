@@ -4,6 +4,14 @@
   width: 100%;
   position: sticky;
   top: 0;
+
+  @include mobile {
+    display: none;
+  }
+
+  @include tablet {
+    display: none;
+  }
 }
 
 .form-title {

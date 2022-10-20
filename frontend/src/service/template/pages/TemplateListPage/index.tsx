@@ -1,11 +1,13 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useContext } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 import { faArrowTrendUp, faBarsStaggered } from '@fortawesome/free-solid-svg-icons';
 
 import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
 import { TemplateFilterType } from 'types';
 
-import { useGetTemplates } from 'service/@shared/hooks/queries/template/useGet';
+import { useGetTemplates } from 'service/@shared/hooks/queries/template';
+import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
 
 import { isNumberString } from 'common/utils/validator';
 import { getElapsedTimeText, isInclude } from 'service/@shared/utils';
@@ -15,91 +17,123 @@ import { PaginationBar } from 'common/components';
 import PageSuspense from 'common/components/PageSuspense';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
+import NoResult from 'service/@shared/components/NoResult';
 import TemplateCard from 'service/template/components/TemplateCard';
 
 import styles from './styles.module.scss';
 
 import Filter from './view/Filter';
+import { UserAgentContext } from 'common/contexts/UserAgent';
 
 function TemplateListPage() {
   const [searchParam, setSearchParam] = useSearchParams();
-  const navigate = useNavigate();
+  const { navigate, handleLinkPage } = useNavigateHandler();
+  const { isMobile } = useContext(UserAgentContext);
 
-  const pageNumberParams = searchParam.get('page');
-  const pageNumber = isNumberString(pageNumberParams) ? Number(pageNumberParams) : 1;
+  const pageNumberParams = searchParam.get(FILTER.PAGE);
+  const pageNumber =
+    isNumberString(pageNumberParams) && Number(pageNumberParams) > 0 ? Number(pageNumberParams) : 1;
 
-  const filterQueryString = searchParam.get('sort');
+  const filterQueryString = searchParam.get(FILTER.SORT);
+  const searchQueryString = searchParam.get(FILTER.SEARCH) || '';
+
   const currentTab = isInclude(Object.values(FILTER.TEMPLATE_TAB), filterQueryString)
     ? filterQueryString
     : FILTER.TEMPLATE_TAB.LATEST;
 
-  const getTemplates = useGetTemplates({
+  const { data, isLoading, isError } = useGetTemplates({
     filter: currentTab,
+    search: searchQueryString,
     pageNumber,
+    itemCount: isMobile ? PAGE_OPTION.MOBILE_TEMPLATE_ITEM_SIZE : undefined,
   });
 
-  if (getTemplates.isError || getTemplates.isLoading)
-    return <>{/* Suspense, ErrorBoundary Used */}</>;
+  if (isLoading || isError) return <>{/* Error Boundary, Suspense Used */}</>;
 
-  const { numberOfTemplates, templates } = getTemplates.data;
-
-  const handleTemplateView = (id: number) => () => {
-    navigate(`${PAGE_LIST.TEMPLATE_DETAIL}/${id}?sort=${currentTab}`);
-  };
+  const { numberOfTemplates, templates } = data;
 
   const handleChangeSortList = (query: TemplateFilterType) => () => {
-    navigate(`${PAGE_LIST.TEMPLATE_LIST}?sort=${query}`);
+    navigate(`${PAGE_LIST.TEMPLATE_LIST}?${FILTER.SORT}=${query}`);
   };
 
-  const handleMoveCreateTemplate = () => {
-    navigate(PAGE_LIST.TEMPLATE_FORM);
+  const handleClickPagination = (pageNumber: number, replace = false) => {
+    if (searchQueryString) {
+      setSearchParam({ search: searchQueryString, page: String(pageNumber) }, { replace });
+    } else {
+      setSearchParam({ sort: currentTab, page: String(pageNumber) }, { replace });
+    }
   };
 
-  const handleClickPagination = (pageNumber: number) => {
-    setSearchParam({ sort: currentTab, page: String(pageNumber) });
-    window.scrollTo(0, 0);
+  const handlePageError = () => {
+    const totalPageLength = Math.ceil(numberOfTemplates / PAGE_OPTION.TEMPLATE_ITEM_SIZE);
+    const redirectReplace = true;
+
+    if (pageNumber > totalPageLength || pageNumber <= 0) {
+      handleClickPagination(totalPageLength, redirectReplace);
+    }
   };
 
   return PageSuspense(
     <LayoutContainer>
       <Filter>
-        <Filter.SortList
-          focusedOption={currentTab}
-          sortOptions={[
-            { icon: faArrowTrendUp, query: FILTER.TEMPLATE_TAB.TREND, name: '트랜딩' },
-            { icon: faBarsStaggered, query: FILTER.TEMPLATE_TAB.LATEST, name: '최신' },
-          ]}
-          onClickSortButton={handleChangeSortList}
-        />
+        {searchQueryString ? (
+          <Filter.SearchResult search={searchQueryString} />
+        ) : (
+          <Filter.SortList
+            focusedOption={currentTab}
+            sortOptions={[
+              { icon: faArrowTrendUp, query: FILTER.TEMPLATE_TAB.TREND, name: '트랜딩' },
+              { icon: faBarsStaggered, query: FILTER.TEMPLATE_TAB.LATEST, name: '최신' },
+            ]}
+            onClickSortButton={handleChangeSortList}
+          />
+        )}
 
-        <Filter.MoreButtons onClickCreate={handleMoveCreateTemplate} />
+        <Filter.MoreButtons onClickCreate={handleLinkPage(PAGE_LIST.TEMPLATE_FORM)} />
       </Filter>
 
-      <div className={styles.templateContainer}>
-        {templates.map(({ info, creator }) => (
-          <TemplateCard key={info.id} className={styles.card} onClick={handleTemplateView(info.id)}>
-            <TemplateCard.Tag usedCount={info.usedCount} />
-            <TemplateCard.Title>{info.title}</TemplateCard.Title>
-            <TemplateCard.UpdatedAt>{getElapsedTimeText(info.updatedAt)}</TemplateCard.UpdatedAt>
-            <TemplateCard.Description>{info.description}</TemplateCard.Description>
+      {numberOfTemplates === 0 ? (
+        <NoResult>템플릿이 없습니다.</NoResult>
+      ) : (
+        <div className={styles.templateContainer}>
+          {templates.map(({ info, creator }) => (
+            <TemplateCard
+              key={info.id}
+              className={styles.card}
+              onClick={handleLinkPage(
+                `${PAGE_LIST.TEMPLATE_DETAIL}/${info.id}?${FILTER.SORT}=${currentTab}`,
+              )}
+            >
+              <TemplateCard.Tag usedCount={info.usedCount} />
+              <TemplateCard.Title>{info.title}</TemplateCard.Title>
+              <TemplateCard.UpdatedAt>{getElapsedTimeText(info.updatedAt)}</TemplateCard.UpdatedAt>
+              <TemplateCard.Description>{info.description}</TemplateCard.Description>
 
-            <TemplateCard.Profile
-              profileUrl={creator.profileUrl}
-              nickname={creator.nickname}
-              socialNickname={creator.socialNickname}
-            />
-          </TemplateCard>
-        ))}
+              <TemplateCard.Profile
+                profileUrl={creator.profileUrl}
+                nickname={creator.nickname}
+                socialNickname={creator.socialNickname}
+              />
+            </TemplateCard>
+          ))}
 
-        <PaginationBar
-          className={styles.pagination}
-          visiblePageButtonLength={PAGE_OPTION.TEMPLATE_BUTTON_LENGTH}
-          itemCountInPage={PAGE_OPTION.TEMPLATE_ITEM_SIZE}
-          totalItemCount={numberOfTemplates}
-          focusedPage={Number(pageNumber)}
-          onClickPageButton={handleClickPagination}
-        />
-      </div>
+          <PaginationBar
+            className={styles.pagination}
+            visiblePageButtonLength={
+              isMobile
+                ? PAGE_OPTION.MOBILE_TEMPLATE_BUTTON_LENGTH
+                : PAGE_OPTION.TEMPLATE_BUTTON_LENGTH
+            }
+            itemCountInPage={
+              isMobile ? PAGE_OPTION.MOBILE_TEMPLATE_ITEM_SIZE : PAGE_OPTION.TEMPLATE_ITEM_SIZE
+            }
+            totalItemCount={numberOfTemplates}
+            focusedPage={Number(pageNumber)}
+            onClickPageButton={handleClickPagination}
+            onPageError={handlePageError}
+          />
+        </div>
+      )}
     </LayoutContainer>,
   );
 }

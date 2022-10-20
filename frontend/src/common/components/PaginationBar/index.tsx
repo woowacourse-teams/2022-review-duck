@@ -1,4 +1,4 @@
-import { HTMLAttributes, useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import cn from 'classnames';
 
@@ -6,35 +6,57 @@ import styles from './styles.module.scss';
 
 import FlexContainer from '../FlexContainer';
 
-export interface PaginationBarProps extends HTMLAttributes<HTMLDivElement> {
-  visiblePageButtonLength: number;
+export interface PaginationBarProps extends React.HTMLAttributes<HTMLDivElement> {
+  visiblePageButtonLength?: number;
   itemCountInPage: number;
   totalItemCount: number;
-  focusedPage: number;
+  focusedPage?: number;
+  scrollReset?: boolean;
   onClickPageButton: (pageNumber: number) => void;
+  onPageError?: () => void;
 }
 
 function PaginationBar({
   className,
-  visiblePageButtonLength,
+  visiblePageButtonLength = 5,
   itemCountInPage,
   totalItemCount,
-  focusedPage,
+  focusedPage = 1,
+  scrollReset = true,
   onClickPageButton,
+  onPageError,
   ...args
 }: PaginationBarProps) {
   const totalPageLength = Math.ceil(totalItemCount / itemCountInPage);
 
   const isFirstPage = focusedPage === 1;
   const isLastPage = focusedPage === totalPageLength;
-  const isCurrentPage = (pageNumber: number) => focusedPage === pageNumber;
+
+  useEffect(
+    function resetPreviousScroll() {
+      if (!scrollReset) return;
+      window.scrollTo(0, 0);
+    },
+    [scrollReset, focusedPage],
+  );
+
+  useEffect(
+    function handleError() {
+      return () => {
+        if (onPageError) {
+          onPageError();
+        }
+      };
+    },
+    [focusedPage, onPageError],
+  );
 
   const currentPageNumbers: number[] = useMemo(() => {
     const totalPageStack = Math.ceil(totalPageLength / visiblePageButtonLength);
     const currentPageStack = Math.ceil(focusedPage / visiblePageButtonLength);
 
     const pageButtonLength =
-      totalPageStack === currentPageStack && totalPageLength !== visiblePageButtonLength
+      totalPageStack === currentPageStack && totalPageLength % visiblePageButtonLength !== 0
         ? totalPageLength % visiblePageButtonLength
         : visiblePageButtonLength;
 
@@ -52,11 +74,13 @@ function PaginationBar({
     );
   }, [totalPageLength, visiblePageButtonLength, focusedPage]);
 
+  if (totalItemCount === 0) return <></>;
+
+  const isFocusedPage = (pageNumber: number) => focusedPage === pageNumber;
+
   const handleClickPageButton = (pageNumber: number) => () => {
     onClickPageButton(pageNumber);
   };
-
-  if (totalItemCount === 0) return <></>;
 
   return (
     <FlexContainer
@@ -67,55 +91,42 @@ function PaginationBar({
     >
       <div className={styles.pageButtonContainer}>
         <button
-          className={cn(styles.pageButton, { [styles.disabled]: isFirstPage })}
+          className={cn(styles.toFirst, styles.pageButton, { [styles.disabled]: isFirstPage })}
           onClick={handleClickPageButton(1)}
           disabled={isFirstPage}
-        >
-          처음으로
-        </button>
+        />
         <button
-          className={cn(styles.pageButton, { [styles.disabled]: isFirstPage })}
+          className={cn(styles.previous, styles.pageButton, { [styles.disabled]: isFirstPage })}
           onClick={handleClickPageButton(focusedPage - 1)}
           disabled={isFirstPage}
-        >
-          이전
-        </button>
+        />
 
         {currentPageNumbers.map((pageNumber) => (
           <button
             key={pageNumber}
             className={cn(styles.pageButton, {
-              [styles.currentPage]: isCurrentPage(pageNumber),
+              [styles.currentPage]: isFocusedPage(pageNumber),
             })}
             onClick={handleClickPageButton(pageNumber)}
-            disabled={isCurrentPage(pageNumber)}
+            disabled={isFocusedPage(pageNumber)}
           >
             {pageNumber}
           </button>
         ))}
 
         <button
-          className={cn(styles.pageButton, { [styles.disabled]: isLastPage })}
+          className={cn(styles.next, styles.pageButton, { [styles.disabled]: isLastPage })}
           onClick={handleClickPageButton(focusedPage + 1)}
           disabled={isLastPage}
-        >
-          다음
-        </button>
+        />
         <button
-          className={cn(styles.pageButton, { [styles.disabled]: isLastPage })}
+          className={cn(styles.toLast, styles.pageButton, { [styles.disabled]: isLastPage })}
           onClick={handleClickPageButton(totalPageLength)}
           disabled={isLastPage}
-        >
-          마지막으로
-        </button>
+        />
       </div>
     </FlexContainer>
   );
 }
-
-PaginationBar.defaultProps = {
-  visiblePageButtonLength: 5,
-  focusedPage: 1,
-};
 
 export default PaginationBar;

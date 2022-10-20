@@ -1,6 +1,11 @@
 @import 'styles/@global.scss';
 
 .container {
+  @include mobile {
+    padding: 7rem 1rem;
+    gap: 3rem;
+  }
+
   position: relative;
   padding: 7.5rem 0;
   gap: 5rem;
@@ -98,6 +103,10 @@
   }
 
   .description {
+    @include mobile {
+      font-size: 1.5rem;
+    }
+
     color: $THEME_COLOR_THEME_TEXT_100;
     text-align: center;
   }
@@ -108,6 +117,18 @@
   text-align: center;
 
   .title {
+    @include mobile {
+      font-size: 1.5rem;
+    }
     color: $THEME_COLOR_STATUS_PRIMARY_600;
+  }
+}
+
+.button-container {
+  @include mobile {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, 47.5%);
+    gap: 5%;
   }
 }

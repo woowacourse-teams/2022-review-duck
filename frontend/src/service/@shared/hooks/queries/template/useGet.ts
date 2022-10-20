@@ -9,24 +9,28 @@ import {
   TemplateFilterType,
 } from 'types';
 
-interface UseGetTemplateParameters {
+interface UseGetTemplatesProps {
   filter?: TemplateFilterType;
+  search?: string;
   pageNumber?: number;
   itemCount?: number;
 }
 
 function useGetTemplates(
-  { filter, pageNumber, itemCount }: UseGetTemplateParameters,
+  { filter, search, pageNumber, itemCount }: UseGetTemplatesProps,
   queryOptions?: UseQueryOptions<GetTemplatesResponse, ErrorResponse>,
 ) {
-  return useQuery<GetTemplatesResponse, ErrorResponse>(
-    [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_TEMPLATES, { filter, pageNumber, itemCount }],
-    () => templateAPI.getTemplates(filter, pageNumber, itemCount),
-    {
-      ...queryOptions,
-      keepPreviousData: true,
-    },
-  );
+  const apiFunc = search
+    ? () => templateAPI.getSearchTemplates(search, pageNumber, itemCount)
+    : () => templateAPI.getTemplates(filter, pageNumber, itemCount);
+  const queryKey = search
+    ? [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_SEARCH_TEMPLATES, { search, pageNumber }]
+    : [QUERY_KEY.DATA.TEMPLATE, QUERY_KEY.API.GET_TEMPLATES, { filter, pageNumber }];
+
+  return useQuery<GetTemplatesResponse, ErrorResponse>(queryKey, apiFunc, {
+    ...queryOptions,
+    keepPreviousData: !!search,
+  });
 }
 
 function useGetTemplate(
@@ -42,4 +46,4 @@ function useGetTemplate(
   );
 }
 
-export { useGetTemplates, useGetTemplate };
+export { useGetTemplate, useGetTemplates };

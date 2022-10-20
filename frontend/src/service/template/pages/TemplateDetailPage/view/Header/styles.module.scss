@@ -4,6 +4,27 @@
   width: 100%;
   padding: 2.5rem 0;
 
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem;
+    gap: 1rem;
+    background-color: $THEME_COLOR_THEME_BACKGROUND_100;
+
+    border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+    box-shadow: 0 0.5rem 0.5rem 0.5rem rgba(0, 0, 0, 0.05);
+  }
+
+  .title {
+    word-break: keep-all;
+    line-height: 140%;
+    word-break: break-word;
+
+    @include mobile {
+      font-size: 1.5rem;
+    }
+  }
+
   .article-info {
     color: $THEME_COLOR_THEME_TEXT_600;
 
@@ -16,9 +37,26 @@
     .text > b {
       color: $THEME_COLOR_THEME_TEXT_400;
     }
+
+    .used-count {
+      @include mobile {
+        display: none;
+      }
+    }
   }
 
   .buttons {
+    @include mobile {
+      width: 100%;
+      flex-direction: column;
+
+      .start-review {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(47.5%, auto));
+        gap: 5%;
+      }
+    }
+
     .editable-text {
       cursor: pointer;
 

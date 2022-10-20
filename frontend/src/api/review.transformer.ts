@@ -76,7 +76,8 @@ export const transformPublicAnswer = (
   const { isLastPage, numberOfReviews, reviews } = data;
 
   const transformReviews = reviews.map((review) => {
-    const { id, reviewFormCode, contents, creator, isCreator, updatedAt, likes } = review;
+    const { id, reviewFormCode, contents, creator, isCreator, updatedAt, likes, reviewTitle } =
+      review;
 
     return {
       id,
@@ -90,6 +91,7 @@ export const transformPublicAnswer = (
       likes,
       info: {
         creator,
+        reviewTitle: reviewTitle,
         isSelf: isCreator,
         updateDate: getElapsedTimeText(updatedAt),
       },
