@@ -103,10 +103,7 @@ function ReviewAnswerEditorPage() {
 
   const handleCancel = () => {
     if (!confirm('회고 작성을 정말 취소하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
-
-    navigate(redirectUri, {
-      replace: true,
-    });
+    navigate(-1);
   };
 
   const handleReviewTitleChange = ({ target }: React.ChangeEvent<HTMLInputElement>) => {
