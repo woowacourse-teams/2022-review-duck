@@ -12,10 +12,9 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public enum ReviewEditResponseBuilder {
-    SYNC(true, ReviewSynchronizedResponse::from),
-    NON_SYNC(false, ReviewNonSynchronizedResponse::from);
+    SYNC(ReviewSynchronizedResponse::from),
+    NON_SYNC(ReviewNonSynchronizedResponse::from);
 
-    private final boolean isActive;
     private final Function<Review, ReviewEditResponse> responseBuilder;
 
     public static ReviewEditResponse createResponseFrom(Review review) {
