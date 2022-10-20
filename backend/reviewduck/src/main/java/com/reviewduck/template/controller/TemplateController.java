@@ -108,12 +108,11 @@ public class TemplateController {
     public TemplatesResponse search(@AuthenticationPrincipal MemberDto member,
         @RequestParam String query,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
-        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
-        @RequestParam(required = false, defaultValue = "trend") String sort) {
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size) {
 
         info("/api/templates/search?query=" + query + " page=" + page + " size=" + size, "GET", "");
 
-        return aggregator.search(query, page, size, sort, member.getId());
+        return aggregator.search(query, page, size, member.getId());
     }
 
     @Operation(summary = "특정 템플릿을 조회한다.")

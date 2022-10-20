@@ -38,9 +38,8 @@ public class TemplateService {
         return templateRepository.save(template);
     }
 
-    public Page<Template> search(String query, int page, int size, String sort) {
-        String sortType = TemplateSortType.getSortBy(sort);
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
+    public Page<Template> search(String query, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
 
         return templateRepository.findByTemplateTitleContaining(pageRequest, query);
     }
