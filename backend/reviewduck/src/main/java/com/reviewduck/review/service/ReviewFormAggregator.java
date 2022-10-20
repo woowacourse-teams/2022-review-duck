@@ -66,12 +66,12 @@ public class ReviewFormAggregator {
     }
 
     @Transactional
-    public void createReview(long memberId, String reviewFormCode, ReviewCreateRequest request) {
-        reviewService.save(memberId, reviewFormCode, request);
+    public void delete(long memberId, String reviewFormCode) {
+        reviewFormService.deleteByCode(memberId, reviewFormCode);
     }
 
     @Transactional
-    public void deleteReviewForm(long memberId, String reviewFormCode) {
-        reviewFormService.deleteByCode(memberId, reviewFormCode);
+    public void createReview(long memberId, String reviewFormCode, ReviewCreateRequest request) {
+        reviewService.save(memberId, reviewFormCode, request);
     }
 }

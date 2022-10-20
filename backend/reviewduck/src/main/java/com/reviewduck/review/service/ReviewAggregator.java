@@ -23,7 +23,7 @@ public class ReviewAggregator {
     private final ReviewService reviewService;
     private final MemberService memberService;
 
-    public ReviewEditResponse findEditedById(long reviewId) {
+    public ReviewEditResponse findById(long reviewId) {
         Review review = reviewService.findById(reviewId);
         return ReviewEditResponseBuilder.createResponseFrom(review);
     }

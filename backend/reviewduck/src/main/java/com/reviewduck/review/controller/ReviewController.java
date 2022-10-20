@@ -44,7 +44,7 @@ public class ReviewController {
 
         info("/api/reviews/" + reviewId, "GET", "");
 
-        return aggregator.findEditedById(reviewId);
+        return aggregator.findById(reviewId);
     }
 
     @Operation(summary = "사용자가 작성한 회고 답변을 모두 조회한다.")
