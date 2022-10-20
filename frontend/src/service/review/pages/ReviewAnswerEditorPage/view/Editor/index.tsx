@@ -81,7 +81,7 @@ interface ConfirmButtonsProps {
 const ConfirmButtons = ({ submitDisabled, onSubmit, onCancel }: ConfirmButtonsProps) => {
   return (
     <div className={styles.confirmButtons}>
-      <Button theme="outlined" onClick={onCancel}>
+      <Button type="button" theme="outlined" onClick={onCancel}>
         <FontAwesomeIcon icon={faArrowRightFromBracket} />
         <span>취소하기</span>
       </Button>
