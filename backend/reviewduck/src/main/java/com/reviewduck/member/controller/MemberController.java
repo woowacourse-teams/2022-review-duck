@@ -14,11 +14,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reviewduck.auth.support.AuthenticationPrincipal;
-import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.request.MemberUpdateNicknameRequest;
 import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.member.dto.response.MemberResponse;
-import com.reviewduck.member.service.MemberService;
+import com.reviewduck.member.service.MemberAggregator;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -28,7 +27,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class MemberController {
 
-    private final MemberService memberService;
+    private final MemberAggregator aggregator;
 
     @Operation(summary = "사용자 정보를 조회한다.")
     @GetMapping("/{socialId}")
@@ -38,9 +37,7 @@ public class MemberController {
 
         info("/api/members/" + socialId, "GET", "");
 
-        Member foundMember = memberService.findBySocialId(socialId);
-
-        return MemberResponse.of(foundMember, member);
+        return aggregator.findMemberInfo(socialId, member.getId());
     }
 
     @Operation(summary = "본인의 사용자 정보를 조회한다.")
@@ -49,8 +46,8 @@ public class MemberController {
     public MemberResponse findMyInfo(@AuthenticationPrincipal MemberDto member) {
 
         info("/api/members/me", "GET", "");
-        Member foundMember = memberService.findById(member.getId());
-        return MemberResponse.from(foundMember);
+
+        return aggregator.findMyInfo(member.getId());
     }
 
     @Operation(summary = "본인의 닉네임을 변경한다.")
@@ -61,6 +58,6 @@ public class MemberController {
 
         info("/api/members/me", "PUT", request.toString());
 
-        memberService.updateNickname(member.getId(), request.getNickname());
+        aggregator.updateMyNickname(member.getId(), request.getNickname());
     }
 }

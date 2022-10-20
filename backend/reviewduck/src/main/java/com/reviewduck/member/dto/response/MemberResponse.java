@@ -35,9 +35,9 @@ public class MemberResponse {
         );
     }
 
-    public static MemberResponse of(Member member, MemberDto loginMember) {
+    public static MemberResponse of(Member member, long myMemberId) {
         return new MemberResponse(
-            Objects.equals(member.getId(), loginMember.getId()),
+            Objects.equals(member.getId(), myMemberId),
             member.getId(),
             member.getSocialId(),
             member.getSocialNickname(),
