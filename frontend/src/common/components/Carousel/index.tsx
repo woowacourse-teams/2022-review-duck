@@ -5,11 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
 
-import useDebounceCallback from 'common/hooks/useDebounceCallback';
+import setDebounceCallback from 'common/utils/setDebounceCallback';
 
 import styles from './styles.module.scss';
-
-import FlexContainer from '../FlexContainer';
 
 interface CarouselProps {
   className?: string;
@@ -66,7 +64,7 @@ function Carousel({ className, centerDisabled, children }: CarouselProps) {
     childElementWidth.current = $firstChildElement.clientWidth;
   }, []);
 
-  const handleUpdateScrollPosition = useDebounceCallback(() => updateButtonVisible(), 50);
+  const handleUpdateScrollPosition = setDebounceCallback(updateButtonVisible, 50);
 
   const handleChangeScroll = (direction: controlDirection) => () => {
     if (!scrollPanelRef.current) return;

@@ -55,7 +55,7 @@ function QuestionsEditorItem({
   return (
     <FlexContainer className={styles.container} gap="medium">
       <div className={styles.gridContainer}>
-        <Text className={styles.numbering} size={18} weight="bold">
+        <Text as="span" className={styles.numbering} size={18} weight="bold">
           {`Q${numbering}`}
         </Text>
 
