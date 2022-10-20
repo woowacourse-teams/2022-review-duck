@@ -1,12 +1,12 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { templateAPI } from 'api';
 import { QUERY_KEY } from 'constant';
 import { UseCustomMutationOptions } from 'types';
 
-function useTemplateMutation(mutationOptions: UseCustomMutationOptions<unknown> = {}) {
-  const queryClient = useQueryClient();
+import queryClient from 'api/config/queryClient';
 
+function useTemplateMutation(mutationOptions: UseCustomMutationOptions<unknown> = {}) {
   const invalidateQueries = () => {
     queryClient.invalidateQueries([QUERY_KEY.DATA.TEMPLATE]);
   };

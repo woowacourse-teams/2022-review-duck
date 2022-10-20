@@ -1,18 +1,16 @@
 package com.reviewduck.template.acceptance;
 
-import static com.reviewduck.acceptance.TestPageConstant.*;
+import static com.reviewduck.common.acceptance.TestPageConstant.*;
 import static org.hamcrest.Matchers.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import com.reviewduck.acceptance.AcceptanceTest;
-import com.reviewduck.member.domain.Member;
+import com.reviewduck.common.acceptance.AcceptanceTest;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionUpdateRequest;
@@ -20,18 +18,6 @@ import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
 import com.reviewduck.template.dto.controller.response.TemplateIdResponse;
 
 public class TemplateAcceptanceTest extends AcceptanceTest {
-
-    @BeforeEach
-    void createMemberAndGetAccessToken() {
-        Member member1 = new Member("1", "panda", "제이슨", "profileUrl1");
-        Member savedMember1 = memberService.save(member1);
-
-        Member member2 = new Member("2", "ariari", "브리", "profileUrl2");
-        Member savedMember2 = memberService.save(member2);
-
-        accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember1.getId()));
-        accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember2.getId()));
-    }
 
     @Nested
     @DisplayName("템플릿 생성")
@@ -134,6 +120,7 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
             saveTemplateAndGetId(accessToken2, "title2");
 
             // when, then
+            // 마지막 페이지인 page=2를 조회한다.
             get("/api/templates/all?page=2&size=1&sort=latest", accessToken1).statusCode(HttpStatus.OK.value())
                 .assertThat().body("numberOfTemplates", equalTo(2))
                 .assertThat().body("templates", hasSize(1))

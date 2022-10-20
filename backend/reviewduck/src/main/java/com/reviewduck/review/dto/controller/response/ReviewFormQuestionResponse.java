@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 public class ReviewFormQuestionResponse {
 
-    private Long id;
+    private long id;
     private String value;
     private String description;
 

@@ -1,9 +1,14 @@
 @import 'styles/@global.scss';
 
 .container {
+  @include mobile {
+    display: block;
+    padding: 0 1.5rem;
+  }
+
   position: relative;
   display: grid;
-  padding: 2rem 0;
+  padding: 1.5rem 0;
 
   grid-template-columns: 25% 70%;
   gap: 5%;

@@ -19,13 +19,13 @@ public class TemplateResponse {
     private CreatorResponse creator;
     private List<TemplateQuestionResponse> questions;
 
-    public static TemplateResponse of(Template template, Member member) {
+    public static TemplateResponse of(Template template, long memberId) {
         List<TemplateQuestionResponse> questions = template.getQuestions().stream()
             .map(TemplateQuestionResponse::from)
             .collect(Collectors.toUnmodifiableList());
 
         return new TemplateResponse(
-            template.isMine(member),
+            template.isMine(memberId),
             TemplateInfoResponse.from(template),
             CreatorResponse.from(template.getMember()),
             questions

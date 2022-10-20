@@ -1,4 +1,4 @@
-import { ScrollPanel, Text } from 'common/components';
+import { Carousel, Text } from 'common/components';
 
 import LayoutContainer from 'service/@shared/components/LayoutContainer';
 
@@ -19,7 +19,7 @@ interface TitleProps {
 const Title = ({ children }: TitleProps) => {
   return (
     <LayoutContainer className={styles.contentHeader}>
-      <Text as="h1" size={24}>
+      <Text className={styles.title} as="h1" size={24}>
         {children}
       </Text>
     </LayoutContainer>
@@ -31,7 +31,7 @@ interface ContentProps {
 }
 
 const Content = ({ children }: ContentProps) => {
-  return <ScrollPanel className={styles.cardList}>{children}</ScrollPanel>;
+  return <Carousel className={styles.cardList}>{children}</Carousel>;
 };
 
 const TrendTemplate = Object.assign(Container, {

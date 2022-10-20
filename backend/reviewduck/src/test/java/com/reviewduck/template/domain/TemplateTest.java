@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 
@@ -19,7 +20,7 @@ import com.reviewduck.template.exception.TemplateException;
 
 class TemplateTest {
 
-    private final Member member = new Member("1", "socialId", "nickname", "profileUrl");
+    private final Member member = new Member(1L, "1", "socialId", "nickname", "profileUrl");
 
     @Nested
     @DisplayName("템플릿 생성")
@@ -94,6 +95,17 @@ class TemplateTest {
             }
 
             return questions;
+        }
+
+        @ParameterizedTest
+        @DisplayName("템플릿을 생성한 회원인지 검증한다.")
+        @CsvSource(value = {"1:true", "2:false"}, delimiter = ':')
+        void isSameId(long memberId, boolean expected) {
+            // given
+            Template template = new Template(member, "템플릿 제목", "템플릿 설명", questions);
+
+            // when, then
+            assertThat(template.isMine(memberId)).isEqualTo(expected);
         }
     }
 

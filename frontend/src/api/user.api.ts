@@ -1,6 +1,6 @@
 import * as UserType from '../types';
 
-import { API_URI, PAGE_OPTION } from '../constant';
+import { API_URI, FILTER, PAGE_OPTION } from '../constant';
 import * as transformer from './user.transformer';
 import axiosInstance from 'api/config/axiosInstance';
 
@@ -9,7 +9,7 @@ export const getUserReviewAnswers = async (
   pageNumber: number,
 ): Promise<UserType.UserArticleList> => {
   const { data } = await axiosInstance.get(
-    `${API_URI.USER.GET_REVIEW_ANSWERS}?member=${socialId}&page=${pageNumber}&size=${PAGE_OPTION.REVIEW_ITEM_SIZE}`,
+    `${API_URI.USER.GET_REVIEW_ANSWERS}?member=${socialId}&${FILTER.PAGE}=${pageNumber}&${FILTER.SIZE}=${PAGE_OPTION.REVIEW_ITEM_SIZE}`,
   );
 
   return transformer.transformUserReviews(data);
@@ -20,7 +20,7 @@ export const getUserReviewForms = async (
   pageNumber: number,
 ): Promise<UserType.UserArticleList> => {
   const { data } = await axiosInstance.get(
-    `${API_URI.USER.GET_REVIEW_FORMS}?member=${socialId}&page=${pageNumber}&size=${PAGE_OPTION.REVIEW_ITEM_SIZE}`,
+    `${API_URI.USER.GET_REVIEW_FORMS}?member=${socialId}&${FILTER.PAGE}=${pageNumber}&${FILTER.SIZE}=${PAGE_OPTION.REVIEW_ITEM_SIZE}`,
   );
 
   return transformer.transformUserReviewForms(data);
@@ -31,7 +31,7 @@ export const getUserTemplates = async (
   pageNumber: number,
 ): Promise<UserType.UserArticleList> => {
   const { data } = await axiosInstance.get(
-    `${API_URI.USER.GET_TEMPLATES(socialId)}&page=${pageNumber}&size=${
+    `${API_URI.USER.GET_TEMPLATES(socialId)}&${FILTER.PAGE}=${pageNumber}&${FILTER.SIZE}=${
       PAGE_OPTION.USER_TEMPLATE_SIZE
     }`,
   );

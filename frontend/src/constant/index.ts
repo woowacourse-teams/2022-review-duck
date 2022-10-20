@@ -1,3 +1,5 @@
+const SERVICE_NAME = '회고덕';
+
 const PAGE_LIST = {
   HOME: '/',
   REVIEW_FORM: '/review/form',
@@ -10,7 +12,7 @@ const PAGE_LIST = {
   TEMPLATE_FORM: '/template/editor',
   USER_PROFILE: '/profile',
   TIMELINE: '/timeline',
-};
+} as const;
 
 const MODAL_LIST = {
   REVIEW_START: 'ModalReviewStart',
@@ -61,14 +63,15 @@ const GITHUB_OAUTH_ERROR = {
   REDIRECT_URI_MISMATCH: 'redirect_uri_mismatch',
 };
 
-const ACCESS_PERMISSION = {
-  LOGOUT_USER: false,
-  LOGIN_USER: true,
-};
+const PERMISSION = {
+  ALL: 0,
+  LOGOUT_USER: 1,
+  LOGIN_USER: 2,
+} as const;
 
-const ACCESS_TOKEN_EXPIRE_TIME = 60 * 10 * 1000;
+const ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 10;
 
-const ACCESS_TOKEN_REFRESH_TIME = ACCESS_TOKEN_EXPIRE_TIME - 60 * 2 * 1000;
+const ACCESS_TOKEN_REFRESH_TIME = ACCESS_TOKEN_EXPIRE_TIME - 1000 * 60 * 3;
 
 const PERMISSION_VALID_TIME = 60 * 1000;
 
@@ -90,23 +93,33 @@ const FILTER = {
     LIST: 'list',
     SHEET: 'sheet',
   },
+  PAGE: 'page',
+  SORT: 'sort',
+  SEARCH: 'search',
+  SIZE: 'size',
 } as const;
 
-const REVIEW_FORM_TITLE_LENGTH = 100;
-
-const REVIEW_FORM_CODE_LENGTH = 8;
+const RULE = {
+  REVIEW_FORM_TITLE_LENGTH: 100,
+  REVIEW_FORM_CODE_LENGTH: 8,
+  SEARCH_MIN_LENGTH: 2,
+  SEARCH_MAX_LENGTH: 20,
+};
 
 const REGEX = {
-  REVIEW_FORM_CODE: `^[a-zA-Z0-9]{${REVIEW_FORM_CODE_LENGTH}}$`,
+  REVIEW_FORM_CODE: `^[a-zA-Z0-9]{${RULE.REVIEW_FORM_CODE_LENGTH}}$`,
   NICKNAME: '^[a-zA-Z가-힣ㄱ-ㅎ0-9]{2,10}$',
+  SEARCH: `^.{${RULE.SEARCH_MIN_LENGTH},${RULE.SEARCH_MAX_LENGTH}}$`,
 };
 
 const PAGE_OPTION = {
   REVIEW_BUTTON_LENGTH: 5,
   REVIEW_ITEM_SIZE: 5,
   TEMPLATE_ITEM_SIZE: 16,
+  MOBILE_TEMPLATE_ITEM_SIZE: 8,
   TEMPLATE_TREND_ITEM_SIZE: 10,
   TEMPLATE_BUTTON_LENGTH: 10,
+  MOBILE_TEMPLATE_BUTTON_LENGTH: 3,
   USER_TEMPLATE_SIZE: 5,
 };
 
@@ -119,7 +132,7 @@ const API_URI = {
     GET_FORM: (reviewFormCode: string) => `/api/review-forms/${reviewFormCode}`,
     GET_ANSWER: (reviewId: numberString) => `/api/reviews/${reviewId}`,
     GET_FORM_ANSWER: (reviewFormCode: string, display: string, page?: number, size?: number) =>
-      `/api/review-forms/${reviewFormCode}/reviews?displayType=${display}&page=${page}&size=${size}`,
+      `/api/review-forms/${reviewFormCode}/reviews?displayType=${display}&${FILTER.PAGE}=${page}&${FILTER.SIZE}=${size}`,
     GET_PUBLIC_ANSWER: '/api/reviews/public',
 
     CREATE_FORM: '/api/review-forms',
@@ -142,7 +155,7 @@ const API_URI = {
   },
   TEMPLATE: {
     GET_TEMPLATES: '/api/templates/all',
-    GET_SEARCH_TEMPLATES: '/api/templates/search',
+    GET_SEARCH_TEMPLATES: `/api/templates/${FILTER.SEARCH}`,
     GET_TEMPLATE: (templateId: numberString) => `/api/templates/${templateId}`,
 
     CREATE_FORM: (templateId: numberString) => `/api/templates/${templateId}/review-forms`,
@@ -155,6 +168,7 @@ const API_URI = {
 };
 
 export {
+  SERVICE_NAME,
   API_URI,
   API_REQUEST_TIMEOUT,
   PAGE_LIST,
@@ -163,13 +177,12 @@ export {
   GITHUB_OAUTH_LOGIN_URL,
   GITHUB_PROFILE_URL,
   GITHUB_OAUTH_ERROR,
-  ACCESS_PERMISSION,
+  PERMISSION,
   ACCESS_TOKEN_EXPIRE_TIME,
   ACCESS_TOKEN_REFRESH_TIME,
   FILTER,
   PERMISSION_VALID_TIME,
-  REVIEW_FORM_TITLE_LENGTH,
-  REVIEW_FORM_CODE_LENGTH,
+  RULE,
   REGEX,
   PAGE_OPTION,
 };

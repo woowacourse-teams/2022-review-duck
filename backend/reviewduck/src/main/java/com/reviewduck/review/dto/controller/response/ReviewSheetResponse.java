@@ -3,7 +3,6 @@ package com.reviewduck.review.dto.controller.response;
 import java.sql.Timestamp;
 import java.util.List;
 
-import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
 
 import lombok.AccessLevel;
@@ -22,7 +21,7 @@ public class ReviewSheetResponse extends ReviewAbstractResponse {
     private CreatorResponse creator;
     private List<ReviewContentResponse> contents;
 
-    public static ReviewSheetResponse of(Member member, Review review) {
+    public static ReviewSheetResponse of(long memberId, Review review) {
         List<ReviewContentResponse> contents = getSynchronizedReviewContents(review);
 
         return new ReviewSheetResponse(
@@ -30,7 +29,7 @@ public class ReviewSheetResponse extends ReviewAbstractResponse {
             review.getTitle(),
             Timestamp.valueOf(review.getUpdatedAt()).getTime(),
             review.getLikes(),
-            review.isMine(member),
+            review.isMine(memberId),
             CreatorResponse.from(review.getMember()),
             contents
         );

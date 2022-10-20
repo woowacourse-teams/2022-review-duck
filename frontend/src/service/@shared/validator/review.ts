@@ -1,4 +1,4 @@
-import { REGEX, REVIEW_FORM_TITLE_LENGTH } from 'constant';
+import { REGEX, RULE } from 'constant';
 
 import { Question } from '../../../types';
 
@@ -15,8 +15,10 @@ function validateReviewForm(title: string, questions: Question[]) {
     throw new Error(`회고의 제목은 최소 1자 이상 입력해야 합니다.`);
   }
 
-  if (title.length >= REVIEW_FORM_TITLE_LENGTH) {
-    throw new Error(`회고의 제목은 최대 ${REVIEW_FORM_TITLE_LENGTH}자 이내로 입력해야 합니다.`);
+  if (title.length >= RULE.REVIEW_FORM_TITLE_LENGTH) {
+    throw new Error(
+      `회고의 제목은 최대 ${RULE.REVIEW_FORM_TITLE_LENGTH}자 이내로 입력해야 합니다.`,
+    );
   }
 
   if (QuestionsModel.inputCount(questions) <= 0) {

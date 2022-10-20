@@ -12,8 +12,6 @@ import FlexContainer from 'common/components/FlexContainer';
 
 import styles from './styles.module.scss';
 
-import pageStyles from 'service/review/pages/ReviewOverviewPage/styles.module.scss';
-
 interface ContainerProps {
   children: React.ReactNode;
 }
@@ -22,7 +20,7 @@ const Container = ({ children }: ContainerProps) => {
   return (
     <header className={styles.header}>
       <div className={styles.fixedContainer}>
-        <nav className={cn(pageStyles.container, styles.menuBar)}>{children}</nav>
+        <nav className={cn(styles.container, styles.menuBar)}>{children}</nav>
       </div>
     </header>
   );
@@ -84,7 +82,13 @@ const ViewChangeButtons = ({
   const isListMode = displayMode === 'list';
 
   return (
-    <FlexContainer direction="row" gap="small" justify="center" align="center">
+    <FlexContainer
+      className={styles.buttonContainer}
+      direction="row"
+      gap="small"
+      justify="center"
+      align="center"
+    >
       <Link to={`${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`}>
         <Button theme={isListMode ? 'default' : 'outlined'} onClick={onClickListView}>
           <FontAwesomeIcon icon={faListCheck} />

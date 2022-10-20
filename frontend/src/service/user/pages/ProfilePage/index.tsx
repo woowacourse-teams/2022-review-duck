@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import { FILTER, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
-import { Tabs } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
@@ -38,9 +37,10 @@ function ProfilePage() {
     ? currentTabParam
     : FILTER.USER_PROFILE_TAB.REVIEWS;
 
-  const pageNumber = isNumberString(searchParams.get('page'))
-    ? Number(searchParams.get('page'))
-    : 1;
+  const pageNumber =
+    isNumberString(searchParams.get(FILTER.PAGE)) && Number(searchParams.get(FILTER.PAGE)) > 0
+      ? Number(searchParams.get(FILTER.PAGE))
+      : 1;
 
   const pageQueries = useProfilePage(currentTab, socialId, pageNumber);
 
@@ -71,9 +71,18 @@ function ProfilePage() {
     modal.show({ key: MODAL_LIST.PROFILE_EDIT });
   };
 
-  const handlePagination = (pageNumber: number) => {
-    setSearchParams({ tab: currentTab, page: String(pageNumber) });
-    window.scrollTo(0, 0);
+  const handlePagination = (pageNumber: number, replace = false) => {
+    setSearchParams({ tab: currentTab, page: String(pageNumber) }, { replace });
+  };
+
+  const handlePageError = () => {
+    const totalPageLength = Math.ceil(articlesPages.totalNumber / PAGE_OPTION.REVIEW_ITEM_SIZE);
+
+    const redirectReplace = true;
+
+    if (pageNumber > totalPageLength) {
+      handlePagination(totalPageLength, redirectReplace);
+    }
   };
 
   const handleClickEdit = (id?: number, code?: string, socialId?: string) => () => {
@@ -91,7 +100,7 @@ function ProfilePage() {
         break;
 
       case FILTER.USER_PROFILE_TAB.TEMPLATES:
-        navigate(`${PAGE_LIST.TEMPLATE_FORM}?templateId=${id}&templateEditMode=true`);
+        navigate(`${PAGE_LIST.TEMPLATE_FORM}/${id}`);
         break;
     }
   };
@@ -157,7 +166,7 @@ function ProfilePage() {
     };
 
   return PageSuspense(
-    <>
+    <div className={styles.pageProfile}>
       <div
         className={styles.profileBackground}
         style={{ backgroundImage: `url(${userProfile.profileUrl})` }}
@@ -165,19 +174,22 @@ function ProfilePage() {
 
       <LayoutContainer className={styles.container}>
         <Controller>
-          <Controller.Profile profileUrl={userProfile.profileUrl} />
-          <Controller.NameCard
+          <Controller.Profile
+            profileUrl={userProfile.profileUrl}
             nickname={userProfile.nickname}
             socialNickname={userProfile.socialNickname}
           />
+
           <Controller.ProfileManager
             isMyProfile={userProfile.isMine}
             socialNickname={userProfile.socialNickname}
             onEditButtonClick={handleEditProfile}
           />
+
           <hr className={styles.line} />
 
-          <Controller.TabNavigator currentTab={currentTab as Tabs} onTabClick={handleChangeTab} />
+          <Controller.TabNavigator currentTab={currentTab} onTabClick={handleChangeTab} />
+
           <hr className={styles.line} />
 
           <Controller.Record
@@ -197,7 +209,7 @@ function ProfilePage() {
                       : `${PAGE_LIST.REVIEW_OVERVIEW}/${article.reviewFormCode}`
                   }
                 >
-                  <Questions.Title isPrivate={article.isPrivate} subtitle={article.reviewTitle}>
+                  <Questions.Title lockIcon={article.isPrivate} subtitle={article.reviewTitle}>
                     {article.title}
                   </Questions.Title>
                 </Link>
@@ -244,18 +256,21 @@ function ProfilePage() {
             {`${subjectTitle[currentTab]}가(이) 없습니다.`}
           </ArticleList.NoArticleResult>
 
-          <PaginationBar
-            visiblePageButtonLength={
-              PAGE_OPTION.REVIEW_BUTTON_LENGTH as PaginationBarProps['visiblePageButtonLength']
-            }
-            itemCountInPage={PAGE_OPTION.REVIEW_ITEM_SIZE}
-            totalItemCount={articlesPages.totalNumber}
-            focusedPage={Number(pageNumber)}
-            onClickPageButton={handlePagination}
-          />
+          {articlesPages.totalNumber !== 0 && (
+            <PaginationBar
+              visiblePageButtonLength={
+                PAGE_OPTION.REVIEW_BUTTON_LENGTH as PaginationBarProps['visiblePageButtonLength']
+              }
+              itemCountInPage={PAGE_OPTION.REVIEW_ITEM_SIZE}
+              totalItemCount={articlesPages.totalNumber}
+              focusedPage={Number(pageNumber)}
+              onClickPageButton={handlePagination}
+              onPageError={handlePageError}
+            />
+          )}
         </ArticleList>
       </LayoutContainer>
-    </>,
+    </div>,
   );
 }
 

@@ -1,20 +1,18 @@
 package com.reviewduck.review.acceptance;
 
-import static com.reviewduck.acceptance.TestPageConstant.*;
+import static com.reviewduck.common.acceptance.TestPageConstant.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import com.reviewduck.acceptance.AcceptanceTest;
-import com.reviewduck.member.domain.Member;
+import com.reviewduck.common.acceptance.AcceptanceTest;
 import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
@@ -29,18 +27,6 @@ import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequ
 import com.reviewduck.template.dto.controller.response.TemplateIdResponse;
 
 public class ReviewFormAcceptanceTest extends AcceptanceTest {
-
-    @BeforeEach
-    void createMemberAndGetAccessToken() {
-        Member member1 = new Member("1", "panda", "제이슨", "profileUrl1");
-        Member savedMember1 = memberService.save(member1);
-
-        Member member2 = new Member("2", "ariari", "브리", "profileUrl2");
-        Member savedMember2 = memberService.save(member2);
-
-        accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember1.getId()));
-        accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember2.getId()));
-    }
 
     @Nested
     @DisplayName("회고 질문지 생성")
@@ -90,7 +76,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 templateQuestions);
 
-            Long templateId = post("/api/templates", templateCreateRequest, accessToken1)
+            long templateId = post("/api/templates", templateCreateRequest, accessToken1)
                 .extract()
                 .as(TemplateIdResponse.class)
                 .getTemplateId();

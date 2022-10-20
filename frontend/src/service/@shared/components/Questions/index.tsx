@@ -29,12 +29,21 @@ interface CoverProfileProps {
   image: string;
   title: string;
   description?: string;
+  size?: 'small' | 'medium' | 'large';
+  textAlign?: 'left' | 'center' | 'right';
 }
 
-function CoverProfile({ socialId, image, title, description }: CoverProfileProps) {
+function CoverProfile({
+  socialId,
+  image,
+  title,
+  description,
+  size,
+  textAlign = 'center',
+}: CoverProfileProps) {
   return (
-    <Profile socialId={socialId} align="center" textAlign="center" textGap="medium">
-      <Profile.Image src={image} />
+    <Profile socialId={socialId} align="center" textAlign={textAlign} textGap="medium">
+      <Profile.Image src={image} size={size} />
       <Profile.Nickname size={20}>{title}</Profile.Nickname>
       {description && <Profile.Description>{description}</Profile.Description>}
     </Profile>
@@ -42,22 +51,21 @@ function CoverProfile({ socialId, image, title, description }: CoverProfileProps
 }
 
 interface TitleProps {
-  children: string;
-  isPrivate?: boolean;
+  children?: string;
+  lockIcon?: boolean;
   subtitle?: string;
 }
 
-function Title({ children, isPrivate, subtitle }: TitleProps) {
+function Title({ subtitle, lockIcon, children }: TitleProps) {
   return (
-    <FlexContainer className={styles.titleContainer}>
-      <FlexContainer direction="row" align="center" gap="medium">
-        <Text as="h1" className={styles.title} size={24} weight="bold">
-          {children}
-        </Text>
-        {isPrivate && <FontAwesomeIcon className={styles.lock} icon={faLock} />}
-      </FlexContainer>
+    <FlexContainer className={styles.titleContainer} gap="small">
+      <Text as="h1" className={styles.title} size={24} weight="bold">
+        {children}
+        {lockIcon && <FontAwesomeIcon className={styles.lock} icon={faLock} />}
+      </Text>
+
       {subtitle && (
-        <Text className={styles.subTitle} as="h3" size={16}>
+        <Text as="h3" className={styles.subTitle} size={16} weight="bold">
           {subtitle}
         </Text>
       )}
@@ -108,7 +116,7 @@ function EditButtons({ className, isVisible, onClickEdit, onClickDelete }: EditB
 interface AnswerProps {
   question: string;
   description?: string;
-  children?: React.ReactNode;
+  children?: string;
 }
 
 function Answer({ question, description, children }: AnswerProps) {

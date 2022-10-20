@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { reviewAPI } from 'api';
 import { QUERY_KEY } from 'constant';
@@ -8,9 +8,9 @@ import {
   UseCustomMutationOptions,
 } from 'types';
 
-function useDeleteReviewForm(mutationOptions?: UseCustomMutationOptions<DeleteReviewFormResponse>) {
-  const queryClient = useQueryClient();
+import queryClient from 'api/config/queryClient';
 
+function useDeleteReviewForm(mutationOptions?: UseCustomMutationOptions<DeleteReviewFormResponse>) {
   return useMutation(reviewAPI.deleteForm, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
@@ -23,8 +23,6 @@ function useDeleteReviewForm(mutationOptions?: UseCustomMutationOptions<DeleteRe
 function useDeleteReviewAnswer(
   mutationOptions?: UseCustomMutationOptions<DeleteReviewAnswerResponse>,
 ) {
-  const queryClient = useQueryClient();
-
   return useMutation(reviewAPI.deleteAnswer, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);

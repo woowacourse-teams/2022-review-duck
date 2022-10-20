@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { faArrowTrendUp, faPenNib } from '@fortawesome/free-solid-svg-icons';
@@ -19,11 +20,13 @@ import useReviewTimeline from './useReviewTimeline';
 import Feed from './view/Feed';
 import SideMenu from './view/SideMenu';
 import { updateReviewLike } from 'api/review.api';
+import { UserAgentContext } from 'common/contexts/UserAgent';
 
 function ReviewTimelinePage() {
   const [searchParam] = useSearchParams();
+  const { isMobile } = useContext(UserAgentContext);
 
-  const filterQueryString = searchParam.get('sort');
+  const filterQueryString = searchParam.get(FILTER.SORT);
   const currentTab = isInclude(Object.values(FILTER.TEMPLATE_TAB), filterQueryString)
     ? filterQueryString
     : FILTER.TEMPLATE_TAB.LATEST;
@@ -102,7 +105,7 @@ function ReviewTimelinePage() {
   return PageSuspense(
     <LayoutContainer className={styles.container}>
       <SideMenu>
-        <SideMenu.Title>탐색하기</SideMenu.Title>
+        {!isMobile && <SideMenu.Title>탐색하기</SideMenu.Title>}
 
         <SideMenu.List>
           <SideMenu.Menu
@@ -123,7 +126,7 @@ function ReviewTimelinePage() {
       </SideMenu>
 
       <Feed>
-        <Feed.Title>타임라인</Feed.Title>
+        <Feed.Title>{isMobile ? '피드' : '타임라인'}</Feed.Title>
 
         <Feed.List ref={infiniteScrollContainerRef}>
           {reviews.map(({ id, info: { creator, ...info }, reviewFormCode, questions, likes }) => (
@@ -136,6 +139,7 @@ function ReviewTimelinePage() {
               />
 
               <Questions>
+                <Questions.Title subtitle={info.reviewTitle || ''} />
                 <Questions.EditButtons
                   className={styles.questionEdit}
                   isVisible={info.isSelf}

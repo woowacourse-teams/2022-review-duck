@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { faPenToSquare, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,45 +7,43 @@ import cn from 'classnames';
 import { GITHUB_PROFILE_URL, FILTER } from 'constant';
 import { Tabs } from 'types';
 
-import { Text, Button } from 'common/components';
+import { Text, Button, FlexContainer } from 'common/components';
 
 import styles from './styles.module.scss';
+
+import { UserAgentContext } from 'common/contexts/UserAgent';
 
 interface ContainerProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;
 }
 
 const Container = ({ children }: ContainerProps) => {
-  return <aside className={styles.sideContent}>{children}</aside>;
+  return <aside className={styles.pageComponentSideMenu}>{children}</aside>;
 };
 
-const Profile = ({ profileUrl }: Record<string, string>) => {
-  return (
-    <div className={styles.profileImage} style={{ backgroundImage: `url(${profileUrl})` }}>
-      <Text className={styles.activeIcon}>😀</Text>
-    </div>
-  );
-};
-
-interface NameCardProps {
+interface ProfileProps {
+  profileUrl: string;
   nickname: string;
   socialNickname: string;
 }
 
-const NameCard = ({ nickname, socialNickname }: NameCardProps) => {
+const Profile = ({ profileUrl, nickname, socialNickname }: ProfileProps) => {
   return (
-    <div className={styles.nameCard}>
-      <Text size={24} weight="bold">
-        {nickname}
-      </Text>
+    <FlexContainer className={styles.profile}>
+      <div className={styles.image} style={{ backgroundImage: `url(${profileUrl})` }} />
 
-      <Text size={14} weight="lighter">
-        {socialNickname}
-      </Text>
-    </div>
+      <div className={styles.nameCard}>
+        <Text size={24} weight="bold">
+          {nickname}
+        </Text>
+
+        <Text size={14} weight="lighter">
+          {socialNickname}
+        </Text>
+      </div>
+    </FlexContainer>
   );
 };
-
 interface ProfileManagerProps {
   isMyProfile: boolean;
   socialNickname: string;
@@ -60,14 +58,14 @@ const ProfileManager = ({
   return (
     <div className={styles.profileManage}>
       {isMyProfile && (
-        <Button size="small" onClick={onEditButtonClick}>
+        <Button className={styles.button} size="small" onClick={onEditButtonClick}>
           <FontAwesomeIcon icon={faPenToSquare} />
           <span>Edit</span>
         </Button>
       )}
 
       <a href={`${GITHUB_PROFILE_URL}${socialNickname}`} target="_blank" rel=" noopener noreferrer">
-        <Button size="small" theme="outlined">
+        <Button className={styles.button} size="small" theme="outlined">
           <FontAwesomeIcon icon={faUser} />
           <span>Github Profile</span>
         </Button>
@@ -122,6 +120,10 @@ interface RecordProps {
 }
 
 const Record = ({ numberOfItems, title }: RecordProps) => {
+  const { isMobile } = useContext(UserAgentContext);
+
+  if (isMobile) return <>{/* Not used on mobile */}</>;
+
   return (
     <div className={styles.counterContainer}>
       <div className={styles.counter}>
@@ -136,7 +138,6 @@ const Record = ({ numberOfItems, title }: RecordProps) => {
 
 const Controller = Object.assign(Container, {
   Profile,
-  NameCard,
   ProfileManager,
   TabNavigator,
   Record,

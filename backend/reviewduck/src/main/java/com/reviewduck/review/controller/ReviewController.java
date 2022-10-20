@@ -5,7 +5,6 @@ import static com.reviewduck.common.vo.PageConstant.*;
 
 import javax.validation.Valid;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,19 +18,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reviewduck.auth.support.AuthenticationPrincipal;
-import com.reviewduck.member.domain.Member;
-import com.reviewduck.review.domain.Review;
-import com.reviewduck.review.domain.ReviewForm;
+import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.review.dto.controller.request.ReviewLikesRequest;
 import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
 import com.reviewduck.review.dto.controller.response.ReviewEditResponse;
-import com.reviewduck.review.dto.controller.response.ReviewEditResponseBuilder;
 import com.reviewduck.review.dto.controller.response.ReviewLikesResponse;
-import com.reviewduck.review.dto.controller.response.ReviewNonSynchronizedResponse;
-import com.reviewduck.review.dto.controller.response.ReviewSynchronizedResponse;
 import com.reviewduck.review.dto.controller.response.ReviewsResponse;
 import com.reviewduck.review.dto.controller.response.TimelineReviewsResponse;
-import com.reviewduck.review.service.ReviewService;
+import com.reviewduck.review.service.ReviewAggregator;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -41,24 +35,22 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ReviewController {
 
-    private final ReviewService reviewService;
+    private final ReviewAggregator aggregator;
 
     @Operation(summary = "회고 답변 수정을 위해 특정한 회고 답변을 조회한다.")
     @GetMapping("/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewEditResponse findById(@AuthenticationPrincipal Member member, @PathVariable Long reviewId) {
+    public ReviewEditResponse findById(@AuthenticationPrincipal MemberDto member, @PathVariable long reviewId) {
 
         info("/api/reviews/" + reviewId, "GET", "");
 
-        Review review = reviewService.findById(reviewId);
-
-        return ReviewEditResponseBuilder.createResponseFrom(review);
+        return aggregator.findById(reviewId);
     }
 
     @Operation(summary = "사용자가 작성한 회고 답변을 모두 조회한다.")
     @GetMapping(params = "member")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewsResponse findBySocialId(@AuthenticationPrincipal Member member,
+    public ReviewsResponse findBySocialId(@AuthenticationPrincipal MemberDto member,
         @RequestParam(value = "member") String socialId,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
         @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size
@@ -66,55 +58,50 @@ public class ReviewController {
 
         info("/api/reviews?member=" + socialId + "&page=" + page + "&size=" + size, "GET", "");
 
-        Page<Review> reviews = reviewService.findBySocialId(socialId, member, page - 1, size);
-
-        return ReviewsResponse.of(reviews, socialId, member);
+        return aggregator.findAllBySocialId(socialId, member.getId(), page - 1, size);
     }
 
     @Operation(summary = "비밀글이 아닌 회고 답변을 모두 조회한다.")
     @GetMapping("/public")
     @ResponseStatus(HttpStatus.OK)
-    public TimelineReviewsResponse findAllPublic(@AuthenticationPrincipal Member member,
+    public TimelineReviewsResponse findAllPublic(@AuthenticationPrincipal MemberDto member,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
         @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
         @RequestParam(required = false, defaultValue = "latest") String sort) {
 
         info("/api/reviews/public?page=" + page + "&size=" + size + "&sort=" + sort, "GET", "");
 
-        Page<Review> reviews = reviewService.findAllPublic(page - 1, size, sort);
-
-        return TimelineReviewsResponse.of(reviews, member);
+        return aggregator.findAllPublic(page - 1, size, sort, member.getId());
     }
 
     @Operation(summary = "회고 답변을 수정한다.")
     @PutMapping("/{reviewId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@AuthenticationPrincipal Member member, @PathVariable Long reviewId,
+    public void update(@AuthenticationPrincipal MemberDto member, @PathVariable long reviewId,
         @RequestBody @Valid ReviewUpdateRequest request) {
 
         info("/api/reviews/" + reviewId, "PUT", request.toString());
 
-        reviewService.update(member, reviewId, request);
-    }
-
-    @Operation(summary = "회고 답변을 삭제한다.")
-    @DeleteMapping("/{reviewId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@AuthenticationPrincipal Member member, @PathVariable Long reviewId) {
-
-        info("/api/reviews/" + reviewId, "DELETE", "");
-
-        reviewService.delete(member, reviewId);
+        aggregator.update(member.getId(), reviewId, request);
     }
 
     @Operation(summary = "좋아요 개수를 더한다.")
     @PostMapping("/{reviewId}/likes")
     @ResponseStatus(HttpStatus.OK)
-    public ReviewLikesResponse likes(@PathVariable Long reviewId, @RequestBody @Valid ReviewLikesRequest request) {
+    public ReviewLikesResponse likes(@PathVariable long reviewId, @RequestBody @Valid ReviewLikesRequest request) {
 
         info("/api/reviews/" + reviewId + "/likes", "POST", request.toString());
 
-        int likes = reviewService.increaseLikes(reviewId, request.getLikes());
-        return new ReviewLikesResponse(likes);
+        return aggregator.likes(reviewId, request.getLikes());
+    }
+
+    @Operation(summary = "회고 답변을 삭제한다.")
+    @DeleteMapping("/{reviewId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@AuthenticationPrincipal MemberDto member, @PathVariable long reviewId) {
+
+        info("/api/reviews/" + reviewId, "DELETE", "");
+
+        aggregator.delete(member.getId(), reviewId);
     }
 }

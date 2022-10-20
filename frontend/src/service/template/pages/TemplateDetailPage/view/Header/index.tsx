@@ -39,12 +39,12 @@ interface TitleProps {
 function Title({ usedCount, nickname, elapsedTime, children }: TitleProps) {
   return (
     <FlexContainer gap="medium">
-      <Text as="h1" size={28} weight="bold">
+      <Text className={styles.title} as="h1" size={28} weight="bold">
         {children}
       </Text>
 
       <FlexContainer className={styles.articleInfo} direction="row" align="center" gap="medium">
-        <TagLabel>
+        <TagLabel className={styles.usedCount}>
           <FontAwesomeIcon icon={faArrowDown} />
           <span>{usedCount}회</span>
         </TagLabel>
@@ -78,7 +78,7 @@ function Buttons({
 }: ActionButtonsProps) {
   return (
     <FlexContainer className={styles.buttons} gap="medium">
-      <FlexContainer direction="row" gap="medium">
+      <FlexContainer className={styles.startReview} direction="row" gap="medium">
         <ToolTip
           text="이 템플릿으로 다른 사람들과 회고를 할 수 있는 페이지를 생성할 수 있습니다."
           align="bottom"

@@ -1,6 +1,10 @@
 @import 'styles/@global.scss';
 
 .component-page-trending {
+  @include mobile {
+    margin-bottom: 2rem;
+  }
+
   padding: 2rem 0 5rem;
 
   .card {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faBell } from '@fortawesome/free-regular-svg-icons';
@@ -10,6 +10,8 @@ import cn from 'classnames';
 import { TransitionDiv, Text } from 'common/components';
 
 import styles from './styles.module.scss';
+
+import { UserAgentContext } from 'common/contexts/UserAgent';
 
 export interface SnackbarProps {
   icon?: IconProp;
@@ -28,6 +30,7 @@ function Snackbar({
   duration = 3000,
   onDisappear,
 }: SnackbarProps) {
+  const { isPC } = useContext(UserAgentContext);
   const [isVisible, setVisible] = useState(true);
 
   const progressDuration = `${(duration / 1000).toFixed(2)}s`;
@@ -50,7 +53,7 @@ function Snackbar({
     <TransitionDiv
       className={cn(styles.componentSnackbar, styles[theme])}
       all="drop"
-      direction="right"
+      direction={isPC ? 'right' : 'up'}
       duration={500}
       onClick={onProgressEnd}
       onDisappear={onDisappearContainer}

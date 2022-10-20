@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
-import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
 
 import lombok.AllArgsConstructor;
@@ -19,7 +18,7 @@ public enum ReviewDisplayBuilder {
     SHEET_DISPLAY("sheet", ReviewSheetResponse::of);
 
     private final String value;
-    private final BiFunction<Member, Review, ReviewAbstractResponse> responseBuilder;
+    private final BiFunction<Long, Review, ReviewAbstractResponse> responseBuilder;
 
     public static ReviewDisplayBuilder of(String displayType) {
         return Arrays.stream(values())
@@ -28,9 +27,9 @@ public enum ReviewDisplayBuilder {
             .orElse(LIST_DISPLAY);
     }
 
-    public List<ReviewAbstractResponse> createResponseFrom(Member member, List<Review> reviews) {
+    public List<ReviewAbstractResponse> createResponseFrom(long memberId, List<Review> reviews) {
         return reviews.stream()
-            .map(review -> responseBuilder.apply(member, review))
+            .map(review -> responseBuilder.apply(memberId, review))
             .collect(Collectors.toUnmodifiableList());
     }
 }

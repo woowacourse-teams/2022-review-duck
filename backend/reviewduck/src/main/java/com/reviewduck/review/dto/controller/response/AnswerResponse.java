@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 public class AnswerResponse {
 
-    private Long id;
+    private long id;
     private String value;
 
     public static AnswerResponse from(Answer answer) {

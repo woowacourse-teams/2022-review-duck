@@ -2,13 +2,11 @@ package com.reviewduck.template.controller;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -17,21 +15,13 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.http.MediaType;
 
-import com.reviewduck.controller.ControllerTest;
-import com.reviewduck.member.domain.Member;
+import com.reviewduck.common.controller.ControllerTest;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
 
 public class TemplateControllerTest extends ControllerTest {
-
-    @BeforeEach
-    void createMemberAndGetAccessToken() {
-        Member member = new Member("1", "panda", "제이슨", "profileUrl");
-        given(jwtTokenProvider.getAccessTokenPayload(any())).willReturn("1");
-        given(memberService.findById(any())).willReturn(member);
-    }
 
     @Nested
     @DisplayName("템플릿 생성")

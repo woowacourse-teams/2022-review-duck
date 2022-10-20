@@ -103,7 +103,7 @@ function ReviewFormEditorPage() {
   const handleCancel = () => {
     if (!confirm('회고 생성을 정말 취소하시겠습니까?\n취소 후 복구를 할 수 없습니다.')) return;
 
-    navigate(redirectUri || PAGE_LIST.HOME);
+    navigate(-1);
   };
 
   return (
