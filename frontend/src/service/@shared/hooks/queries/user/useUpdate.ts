@@ -1,14 +1,15 @@
+import { useMutation } from '@tanstack/react-query';
+
 import { userAPI } from 'api';
+import { QUERY_KEY } from 'constant';
 import { UseCustomMutationOptions, UpdateProfileResponse } from 'types';
 
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import queryClient from 'api/config/queryClient';
 
 function useUpdateProfile(mutationOptions?: UseCustomMutationOptions<UpdateProfileResponse>) {
-  const queryClient = useQueryClient();
-
   return useMutation(userAPI.updateProfile, {
     onSuccess: () => {
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries([QUERY_KEY.DATA.USER, QUERY_KEY.API.GET_USER_PROFILE]);
     },
     ...mutationOptions,
   });

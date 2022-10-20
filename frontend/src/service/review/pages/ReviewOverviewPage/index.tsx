@@ -1,4 +1,3 @@
-import { useContext } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { FILTER, PAGE_LIST, PAGE_OPTION } from 'constant';
@@ -20,7 +19,6 @@ import { Header } from './view/Header';
 import { ListView } from './view/ListView';
 import { SheetView } from './view/SheetView';
 import { updateReviewLike } from 'api/review.api';
-import { UserAgentContext } from 'common/contexts/UserAgent';
 
 /*
   TODO:

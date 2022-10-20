@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { reviewAPI } from 'api';
 import { QUERY_KEY } from 'constant';
@@ -9,9 +9,9 @@ import {
   CreateFormByTemplateResponse,
 } from 'types';
 
-function useCreateReviewForm(mutationOptions?: UseCustomMutationOptions<UpdateReviewFormResponse>) {
-  const queryClient = useQueryClient();
+import queryClient from 'api/config/queryClient';
 
+function useCreateReviewForm(mutationOptions?: UseCustomMutationOptions<UpdateReviewFormResponse>) {
   return useMutation(reviewAPI.createForm, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW_FORM]);
@@ -23,8 +23,6 @@ function useCreateReviewForm(mutationOptions?: UseCustomMutationOptions<UpdateRe
 function useCreateReviewAnswer(
   mutationOptions?: UseCustomMutationOptions<UpdateReviewAnswerResponse>,
 ) {
-  const queryClient = useQueryClient();
-
   return useMutation(reviewAPI.createAnswer, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
@@ -37,8 +35,6 @@ function useCreateReviewAnswer(
 function useCreateFormByTemplate(
   mutationOptions?: UseCustomMutationOptions<CreateFormByTemplateResponse>,
 ) {
-  const queryClient = useQueryClient();
-
   return useMutation(reviewAPI.createFormByTemplate, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);

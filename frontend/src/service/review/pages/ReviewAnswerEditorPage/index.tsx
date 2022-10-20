@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
-import { useQueryClient } from '@tanstack/react-query';
 
-import { PAGE_LIST, QUERY_KEY } from 'constant';
-import { ErrorResponse, Question, UserProfileResponse } from 'types';
+import { PAGE_LIST } from 'constant';
+import { ErrorResponse, Question } from 'types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/@shared/hooks/useQuestions';
@@ -22,7 +21,6 @@ const EDITOR_MODE = {
 function ReviewAnswerEditorPage() {
   const { reviewFormCode = '', reviewId = '' } = useParams();
   const [searchParams] = useSearchParams();
-  const queryClient = useQueryClient();
 
   const navigate = useNavigate();
   const snackbar = useSnackbar();
@@ -43,15 +41,10 @@ function ReviewAnswerEditorPage() {
     updateAnswer,
   } = useQuestions(questions, setQuestions);
 
-  const { nickname } = queryClient.getQueryData([
-    QUERY_KEY.DATA.AUTH,
-    QUERY_KEY.API.GET_AUTH_MY_PROFILE,
-  ]) as UserProfileResponse;
-
   const [isPrivate, setPrivate] = useState(!!reviewAnswer.info.isPrivate);
   const [focusQuestionIndex, setFocusQuestionIndex] = useState(0);
   const [reviewTitle, setReviewTitle] = useState(
-    reviewId ? reviewAnswer.info.reviewTitle : `${nickname}의 회고`,
+    reviewId ? reviewAnswer.info.reviewTitle : `${authorProfile?.nickname}의 회고`,
   );
 
   const handleFocusAnswer = (index: number) => () => {
@@ -138,7 +131,9 @@ function ReviewAnswerEditorPage() {
 
       <Editor onSubmit={handleSubmit}>
         <Editor.TitleInput
-          placeholder={reviewId ? reviewAnswer.info.reviewTitle : `${nickname}의 회고`}
+          placeholder={
+            reviewId ? reviewAnswer.info.reviewTitle : `${authorProfile?.nickname}의 회고`
+          }
           title={reviewTitle}
           onChange={handleReviewTitleChange}
         />
