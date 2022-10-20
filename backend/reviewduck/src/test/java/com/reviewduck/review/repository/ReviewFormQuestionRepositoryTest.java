@@ -14,10 +14,12 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.config.JpaAuditingConfig;
+import com.reviewduck.config.datasource.CustomDatasourceConfig;
+import com.reviewduck.config.datasource.DataSourceConfiguration;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 
 @DataJpaTest
-@Import(JpaAuditingConfig.class)
+@Import({JpaAuditingConfig.class, DataSourceConfiguration.class, CustomDatasourceConfig.class})
 @AutoConfigureTestDatabase(replace = NONE)
 @Sql("classpath:truncate.sql")
 public class ReviewFormQuestionRepositoryTest {
