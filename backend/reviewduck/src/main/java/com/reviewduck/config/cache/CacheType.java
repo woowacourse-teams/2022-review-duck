@@ -16,7 +16,7 @@ public enum CacheType {
 
     MemberCache("memberCacheStore", 10 * 60, 100),
     TemplateCache("templateCacheStore", 10 * 60, 300),
-    TemplatesCache("templatesCacheStore", 30, 100);
+    TemplatesCache("templatesCacheStore", 60, 100);
 
     private final String cacheName;
     private final long duration;
