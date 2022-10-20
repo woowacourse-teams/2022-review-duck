@@ -58,7 +58,7 @@ public class ReviewService {
     public Page<Review> findAllBySocialId(Member owner, long memberId, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, ReviewSortType.LATEST.getSortBy());
         PageRequest pageRequest = PageRequest.of(page, size, sort);
-        return getPagedReviews(memberId, owner, pageRequest);
+        return getReviewsByOwner(memberId, owner, pageRequest);
     }
 
     public Page<Review> findAllByCode(String code, int page, int size) {
@@ -73,7 +73,7 @@ public class ReviewService {
     public Page<Review> findAllPublic(int page, int size, String sort) {
         String sortType = ReviewSortType.getSortBy(sort);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
-        return getPagedTimelineReviews(sort, pageRequest);
+        return getTimelineReviews(sort, pageRequest);
     }
 
     @Transactional
@@ -85,6 +85,7 @@ public class ReviewService {
 
         review.update(request.getIsPrivate(), request.getTitle(), questionAnswerUpdateDtos);
     }
+
     @Transactional
     public int increaseLikes(Long id, int likeCount) {
         Review review = findById(id);
@@ -106,14 +107,14 @@ public class ReviewService {
         }
     }
 
-    private Page<Review> getPagedReviews(long memberId, Member owner, PageRequest pageRequest) {
+    private Page<Review> getReviewsByOwner(long memberId, Member owner, PageRequest pageRequest) {
         if (owner.isSameId(memberId)) {
             return reviewRepository.findByMember(owner, pageRequest);
         }
         return reviewRepository.findByMemberAndIsPrivateFalse(owner, pageRequest);
     }
 
-    private Page<Review> getPagedTimelineReviews(String sort, PageRequest pageRequest) {
+    private Page<Review> getTimelineReviews(String sort, PageRequest pageRequest) {
         if (ReviewSortType.isTrend(sort)) {
             return reviewRepository.findByIsPrivateFalseAndLikesGreaterThan(
                 pageRequest, 50);

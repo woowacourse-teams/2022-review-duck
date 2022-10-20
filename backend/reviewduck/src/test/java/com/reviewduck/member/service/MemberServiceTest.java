@@ -2,22 +2,15 @@ package com.reviewduck.member.service;
 
 import static org.assertj.core.api.Assertions.*;
 
-import javax.transaction.Transactional;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.common.service.ServiceTest;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.exception.MemberException;
 
-@SpringBootTest
-@Sql("classpath:truncate.sql")
-@Transactional
 public class MemberServiceTest extends ServiceTest {
 
     @Test
