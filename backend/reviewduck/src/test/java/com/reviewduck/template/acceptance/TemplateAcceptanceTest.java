@@ -1,18 +1,16 @@
 package com.reviewduck.template.acceptance;
 
-import static com.reviewduck.acceptance.TestPageConstant.*;
+import static com.reviewduck.common.acceptance.TestPageConstant.*;
 import static org.hamcrest.Matchers.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import com.reviewduck.acceptance.AcceptanceTest;
-import com.reviewduck.member.domain.Member;
+import com.reviewduck.common.acceptance.AcceptanceTest;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionUpdateRequest;

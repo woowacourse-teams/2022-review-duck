@@ -1,4 +1,4 @@
-package com.reviewduck;
+package com.reviewduck.common.service;
 
 import javax.transaction.Transactional;
 
