@@ -44,7 +44,7 @@ function Title({ usedCount, nickname, elapsedTime, children }: TitleProps) {
       </Text>
 
       <FlexContainer className={styles.articleInfo} direction="row" align="center" gap="medium">
-        <TagLabel>
+        <TagLabel className={styles.usedCount}>
           <FontAwesomeIcon icon={faArrowDown} />
           <span>{usedCount}회</span>
         </TagLabel>

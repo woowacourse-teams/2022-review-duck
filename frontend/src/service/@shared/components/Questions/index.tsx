@@ -116,7 +116,7 @@ function EditButtons({ className, isVisible, onClickEdit, onClickDelete }: EditB
 interface AnswerProps {
   question: string;
   description?: string;
-  children?: React.ReactNode;
+  children?: string;
 }
 
 function Answer({ question, description, children }: AnswerProps) {
