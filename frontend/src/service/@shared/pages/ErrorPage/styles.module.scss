@@ -123,3 +123,12 @@
     color: $THEME_COLOR_STATUS_PRIMARY_600;
   }
 }
+
+.button-container {
+  @include mobile {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, 47.5%);
+    gap: 5%;
+  }
+}

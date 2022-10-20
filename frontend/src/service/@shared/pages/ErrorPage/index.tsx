@@ -62,7 +62,7 @@ function ErrorPage({ status, title, description, onResetError }: ErrorBoundaryFa
         </Text>
       </FlexContainer>
 
-      <FlexContainer direction="row" gap="medium">
+      <FlexContainer className={styles.buttonContainer} direction="row" gap="medium">
         {status === 403 ? (
           <a href={GITHUB_OAUTH_LOGIN_URL}>
             <Button>
