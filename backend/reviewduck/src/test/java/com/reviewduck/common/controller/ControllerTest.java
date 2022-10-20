@@ -1,4 +1,4 @@
-package com.reviewduck.controller;
+package com.reviewduck.common.controller;
 
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;

@@ -11,7 +11,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.reviewduck.ServiceTest;
+import com.reviewduck.common.service.ServiceTest;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.exception.MemberException;
 

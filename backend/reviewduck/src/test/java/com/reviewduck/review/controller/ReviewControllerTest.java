@@ -2,13 +2,11 @@ package com.reviewduck.review.controller;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.any;
-import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -16,7 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.http.MediaType;
 
-import com.reviewduck.controller.ControllerTest;
+import com.reviewduck.common.controller.ControllerTest;
 import com.reviewduck.review.dto.controller.request.AnswerUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewLikesRequest;

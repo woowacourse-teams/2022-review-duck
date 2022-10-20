@@ -4,7 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
-import com.reviewduck.acceptance.AcceptanceTest;
+import com.reviewduck.common.acceptance.AcceptanceTest;
 import com.reviewduck.auth.dto.request.LoginRequest;
 
 public class AuthAcceptanceTest extends AcceptanceTest {

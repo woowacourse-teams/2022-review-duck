@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.http.MediaType;
 
 import com.reviewduck.auth.dto.request.LoginRequest;
-import com.reviewduck.controller.ControllerTest;
+import com.reviewduck.common.controller.ControllerTest;
 
 public class AuthControllerTest extends ControllerTest {
 

@@ -10,15 +10,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.reviewduck.ServiceTest;
+import com.reviewduck.common.service.ServiceTest;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
@@ -28,7 +26,6 @@ import com.reviewduck.review.dto.controller.request.ReviewContentUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
 import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
-import com.reviewduck.review.repository.ReviewFormRepository;
 
 public class ReviewServiceTest extends ServiceTest {
 
@@ -91,7 +88,7 @@ public class ReviewServiceTest extends ServiceTest {
             // then
             assertAll(
                 () -> assertThat(savedReview.getId()).isNotNull(),
-                () -> assertThat(savedReview.getMember().getNickname()).isEqualTo("제이슨"),
+                () -> assertThat(savedReview.getMember().getNickname()).isEqualTo(member1.getNickname()),
                 () -> assertThat(savedReview.getQuestionAnswers().get(0).getAnswer().getValue())
                     .isEqualTo("answer1"),
                 () -> assertThat(savedReview.getQuestionAnswers().get(0).getPosition())

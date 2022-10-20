@@ -1,4 +1,4 @@
-package com.reviewduck.acceptance;
+package com.reviewduck.common.acceptance;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;

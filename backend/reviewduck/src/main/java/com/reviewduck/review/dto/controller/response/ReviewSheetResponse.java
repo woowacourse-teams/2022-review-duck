@@ -31,7 +31,7 @@ public class ReviewSheetResponse extends ReviewAbstractResponse {
             review.getTitle(),
             Timestamp.valueOf(review.getUpdatedAt()).getTime(),
             review.getLikes(),
-            Objects.equals(review.getMember().getId(), memberId),
+            review.isMine(memberId),
             CreatorResponse.from(MemberResponse.from(review.getMember())),
             contents
         );

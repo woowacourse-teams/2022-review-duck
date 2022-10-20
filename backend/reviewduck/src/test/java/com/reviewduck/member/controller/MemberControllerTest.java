@@ -9,7 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.http.MediaType;
 
-import com.reviewduck.controller.ControllerTest;
+import com.reviewduck.common.controller.ControllerTest;
 import com.reviewduck.member.dto.request.MemberUpdateNicknameRequest;
 
 public class MemberControllerTest extends ControllerTest {

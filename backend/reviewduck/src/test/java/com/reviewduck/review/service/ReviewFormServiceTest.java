@@ -11,11 +11,10 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.reviewduck.ServiceTest;
+import com.reviewduck.common.service.ServiceTest;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.review.domain.ReviewForm;
@@ -30,7 +29,6 @@ import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
-import com.reviewduck.template.service.TemplateService;
 
 public class ReviewFormServiceTest extends ServiceTest {
 
