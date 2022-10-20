@@ -75,7 +75,7 @@ function PageRoutes() {
             element={<Page title="회고 작성" component={lazy.ReviewAnswerEditorPage} permission={PERMISSION.LOGIN_USER} />}
           />
           <Route
-            path=":reviewFormCode"
+            path=":reviewFormCode/:reviewId"
             element={<Page title="나의 회고 편집" component={lazy.ReviewAnswerEditorPage} permission={PERMISSION.LOGIN_USER} />}
           />
         </Route>
