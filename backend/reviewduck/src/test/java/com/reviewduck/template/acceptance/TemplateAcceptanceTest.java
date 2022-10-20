@@ -153,33 +153,6 @@ public class TemplateAcceptanceTest extends AcceptanceTest {
     }
 
     @Nested
-    @DisplayName("템플릿 검색 결과 조회")
-    class searchTemplates {
-
-        @Test
-        @DisplayName("검색 쿼리를 포함하는 템플릿을 조회한다.")
-        void search() {
-            // given
-            saveTemplateAndGetId(accessToken1, "TemplateTitle1");
-            long templateId = saveTemplateAndGetId(accessToken2, "TemplateTitle2");
-            post("/api/templates/" + templateId + "/review-forms", accessToken1);
-
-            // when, then
-            get("/api/templates/search?query=Title2&page=1&size=10&sort=trend", accessToken1).statusCode(HttpStatus.OK.value())
-                .assertThat().body("numberOfTemplates", equalTo(1))
-                .assertThat().body("templates", hasSize(1))
-                .assertThat().body("templates[0].info.title", equalTo("TemplateTitle2"))
-                .assertThat().body("templates[0].isCreator", equalTo(false));
-        }
-
-        @Test
-        @DisplayName("로그인하지 않은 상태로 조회할 수 있다.")
-        void withoutLogin() {
-            get("/api/templates/search?query=test").statusCode(HttpStatus.OK.value());
-        }
-    }
-
-    @Nested
     @DisplayName("사용자별 템플릿 전체 조회")
     class findAllTemplatesBySocialId {
         @Test
