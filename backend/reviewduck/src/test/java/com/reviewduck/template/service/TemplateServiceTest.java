@@ -6,21 +6,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.ServiceTest;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.service.MemberService;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.domain.TemplateQuestion;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;

@@ -4,10 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.reviewduck.common.annotation.Aggregator;
 import com.reviewduck.member.dto.response.MemberDto;
+import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
@@ -21,8 +22,7 @@ import com.reviewduck.review.dto.controller.response.ReviewsOfReviewFormResponse
 
 import lombok.AllArgsConstructor;
 
-@Component
-@Transactional(readOnly = true)
+@Aggregator
 @AllArgsConstructor
 public class ReviewFormAggregator {
 
@@ -37,14 +37,14 @@ public class ReviewFormAggregator {
 
     public ReviewFormResponse findByCode(String reviewFormCode, long memberId) {
         ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
-        List<MemberDto> members = findAllParticipantsByCode(reviewForm);
+        List<MemberResponse> members = findAllParticipantsByCode(reviewForm);
         return ReviewFormResponse.of(reviewForm, reviewForm.isMine(memberId), members);
     }
 
-    private List<MemberDto> findAllParticipantsByCode(ReviewForm reviewForm) {
+    private List<MemberResponse> findAllParticipantsByCode(ReviewForm reviewForm) {
         return memberService.findAllParticipantsByCode(reviewForm)
             .stream()
-            .map(MemberDto::from)
+            .map(MemberResponse::from)
             .collect(Collectors.toUnmodifiableList());
     }
 
@@ -66,12 +66,12 @@ public class ReviewFormAggregator {
     }
 
     @Transactional
-    public void createReview(long memberId, String reviewFormCode, ReviewCreateRequest request) {
-        reviewService.save(memberId, reviewFormCode, request);
+    public void delete(long memberId, String reviewFormCode) {
+        reviewFormService.deleteByCode(memberId, reviewFormCode);
     }
 
     @Transactional
-    public void deleteReviewForm(long memberId, String reviewFormCode) {
-        reviewFormService.deleteByCode(memberId, reviewFormCode);
+    public void createReview(long memberId, String reviewFormCode, ReviewCreateRequest request) {
+        reviewService.save(memberId, reviewFormCode, request);
     }
 }

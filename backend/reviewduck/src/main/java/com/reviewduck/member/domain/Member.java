@@ -22,7 +22,6 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-@AllArgsConstructor
 public class Member extends BaseDate {
 
     @Transient
@@ -44,9 +43,19 @@ public class Member extends BaseDate {
 
     private boolean isAdmin;
 
+    public Member(final Long id, final String socialId, final String socialNickname, final String nickname,
+        final String profileUrl, final boolean isAdmin) {
+        validate(nickname);
+        this.id = id;
+        this.socialId = socialId;
+        this.socialNickname = socialNickname;
+        this.nickname = nickname;
+        this.profileUrl = profileUrl;
+        this.isAdmin = isAdmin;
+    }
+
     public Member(Long id, String socialId, String socialNickname, String nickname, String profileUrl) {
         this(id, socialId, socialNickname, nickname, profileUrl, false);
-        validate(nickname);
     }
 
     public Member(String socialId, String socialNickname, String nickname, String profileUrl) {
@@ -78,6 +87,10 @@ public class Member extends BaseDate {
         return this.isAdmin;
     }
 
+    public boolean isSameId(long memberId) {
+        return memberId == id;
+    }
+
     private void validate(String nickname) {
         if (nickname == null || nickname.isBlank()) {
             throw new MemberException("닉네임이 비어있을 수 없습니다.");
@@ -97,9 +110,5 @@ public class Member extends BaseDate {
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    public boolean isSameId(long memberId) {
-        return memberId == id;
     }
 }

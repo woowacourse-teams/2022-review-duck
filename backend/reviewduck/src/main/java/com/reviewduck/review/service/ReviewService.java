@@ -100,6 +100,12 @@ public class ReviewService {
         reviewRepository.deleteById(id);
     }
 
+    private void validateMyReview(long memberId, Review review, String message) {
+        if (!review.isMine(memberId)) {
+            throw new AuthorizationException(message);
+        }
+    }
+
     private Page<Review> getPagedReviews(long memberId, Member owner, PageRequest pageRequest) {
         if (owner.isSameId(memberId)) {
             return reviewRepository.findByMember(owner, pageRequest);
@@ -115,6 +121,7 @@ public class ReviewService {
         return reviewRepository.findByIsPrivateFalse(pageRequest);
     }
 
+    /* -- Entity 에서 일괄 연관객체 생성을 위한 메서드 --- */
     private List<QuestionAnswerCreateDto> getReviewCreateDtos(ReviewCreateRequest request) {
         return request.getContents().stream()
             .map(this::getReviewCreateDto)
@@ -141,6 +148,7 @@ public class ReviewService {
         return new QuestionAnswerUpdateDto(reviewFormQuestion, answerValue);
     }
 
+    /* -- 연관 Entity 조회용 메서드 -- */
     private Member findMemberById(long memberId) {
         return memberRepository.findById(memberId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
@@ -154,11 +162,5 @@ public class ReviewService {
     private ReviewFormQuestion findReviewFormQuestionById(long questionId) {
         return reviewFormQuestionRepository.findById(questionId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
-    }
-
-    private void validateMyReview(long memberId, Review review, String message) {
-        if (!review.isMine(memberId)) {
-            throw new AuthorizationException(message);
-        }
     }
 }

@@ -63,11 +63,6 @@ public class ReviewFormService {
         return save(memberId, request);
     }
 
-    private Member findMemberById(long memberId) {
-        return memberRepository.findById(memberId)
-            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
-    }
-
     public ReviewForm findByCode(String code) {
         return reviewFormRepository.findByCodeAndIsActiveTrue(code)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고 폼입니다."));
@@ -105,6 +100,11 @@ public class ReviewFormService {
             return;
         }
         reviewFormRepository.delete(reviewForm);
+    }
+
+    private Member findMemberById(long memberId) {
+        return memberRepository.findById(memberId)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
     }
 
     private void validateReviewFormIsMine(long memberId, ReviewForm reviewForm, String message) {

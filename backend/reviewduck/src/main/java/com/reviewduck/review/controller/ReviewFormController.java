@@ -117,6 +117,6 @@ public class ReviewFormController {
 
         info("/api/review-forms/" + reviewFormCode, "DELETE", "");
 
-        aggregator.deleteReviewForm(member.getId(), reviewFormCode);
+        aggregator.delete(member.getId(), reviewFormCode);
     }
 }
