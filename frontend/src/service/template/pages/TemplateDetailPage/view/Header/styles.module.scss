@@ -37,6 +37,12 @@
     .text > b {
       color: $THEME_COLOR_THEME_TEXT_400;
     }
+
+    .used-count {
+      @include mobile {
+        display: none;
+      }
+    }
   }
 
   .buttons {

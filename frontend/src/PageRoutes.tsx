@@ -71,7 +71,7 @@ function PageRoutes() {
 
         <Route path={PAGE_LIST.REVIEW}>
           <Route
-            index
+            path=":reviewFormCode"
             element={<Page title="회고 작성" component={lazy.ReviewAnswerEditorPage} permission={PERMISSION.LOGIN_USER} />}
           />
           <Route

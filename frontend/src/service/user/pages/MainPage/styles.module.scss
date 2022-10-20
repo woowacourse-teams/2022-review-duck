@@ -3,17 +3,6 @@
 .main-page-container {
   overflow: hidden;
   padding-bottom: 5rem;
-
-  .main-timeline-container {
-    @include mobile {
-      padding: 0 1rem;
-      width: 100%;
-    }
-
-    width: 1056px;
-    margin: 0 auto;
-    margin-top: 2rem;
-  }
 }
 
 .main-card {

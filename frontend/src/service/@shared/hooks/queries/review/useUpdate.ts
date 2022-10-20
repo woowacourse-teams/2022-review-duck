@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { reviewAPI } from 'api';
 import { QUERY_KEY } from 'constant';
@@ -8,9 +8,9 @@ import {
   UseCustomMutationOptions,
 } from 'types';
 
-function useUpdateReviewForm(mutationOptions?: UseCustomMutationOptions<UpdateReviewFormResponse>) {
-  const queryClient = useQueryClient();
+import queryClient from 'api/config/queryClient';
 
+function useUpdateReviewForm(mutationOptions?: UseCustomMutationOptions<UpdateReviewFormResponse>) {
   return useMutation(reviewAPI.updateForm, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW_FORM]);
@@ -23,8 +23,6 @@ function useUpdateReviewForm(mutationOptions?: UseCustomMutationOptions<UpdateRe
 function useUpdateReviewAnswer(
   mutationOptions?: UseCustomMutationOptions<UpdateReviewAnswerResponse>,
 ) {
-  const queryClient = useQueryClient();
-
   return useMutation(reviewAPI.updateAnswer, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.REVIEW]);
