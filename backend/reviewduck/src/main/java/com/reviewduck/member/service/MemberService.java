@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.review.domain.ReviewForm;
 

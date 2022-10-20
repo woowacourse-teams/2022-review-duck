@@ -8,6 +8,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.reviewduck.auth.controller.AdminAuthenticationPrincipalArgumentResolver;
 import com.reviewduck.auth.controller.AuthInterceptor;
 import com.reviewduck.auth.controller.AuthenticationPrincipalArgumentResolver;
 import com.reviewduck.auth.support.JwtTokenProvider;
@@ -35,10 +36,16 @@ public class AuthenticationPrincipalConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(createAuthenticationPrincipalArgumentResolver());
+        argumentResolvers.add(createAdminAuthenticationPrincipalArgumentResolver());
     }
 
     @Bean
     public AuthenticationPrincipalArgumentResolver createAuthenticationPrincipalArgumentResolver() {
         return new AuthenticationPrincipalArgumentResolver(jwtTokenProvider, memberService);
+    }
+
+    @Bean
+    public AdminAuthenticationPrincipalArgumentResolver createAdminAuthenticationPrincipalArgumentResolver() {
+        return new AdminAuthenticationPrincipalArgumentResolver(jwtTokenProvider, memberService);
     }
 }

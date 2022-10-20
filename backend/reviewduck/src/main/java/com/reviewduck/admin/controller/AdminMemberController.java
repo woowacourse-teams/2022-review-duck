@@ -1,7 +1,5 @@
 package com.reviewduck.admin.controller;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.reviewduck.admin.dto.AdminMemberDto;
 import com.reviewduck.admin.dto.response.AdminMemberResponse;
 import com.reviewduck.admin.dto.response.AdminMembersResponse;
-import com.reviewduck.admin.service.AdminMemberService;
+import com.reviewduck.admin.service.AdminMemberAggregator;
 import com.reviewduck.auth.exception.AuthorizationException;
-import com.reviewduck.auth.support.AuthenticationPrincipal;
+import com.reviewduck.auth.support.AdminAuthenticationPrincipal;
 import com.reviewduck.common.util.Logging;
-import com.reviewduck.member.domain.Member;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -28,47 +26,44 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AdminMemberController {
 
-    private final AdminMemberService adminMemberService;
+    private final AdminMemberAggregator adminMemberAggregator;
 
     @Operation(summary = "가입한 사용자를 전원 조회한다")
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public AdminMembersResponse findAllMembers(@AuthenticationPrincipal Member member) {
+    public AdminMembersResponse findAllMembers(@AdminAuthenticationPrincipal AdminMemberDto member) {
 
         Logging.info("api/admin/members", "GET", "");
 
         validateAdmin(member);
-        List<Member> members = adminMemberService.findAllMembers();
-
-        return AdminMembersResponse.from(members);
+        return adminMemberAggregator.findAllMembers();
     }
 
     @Operation(summary = "단일 사용자를 조회한다")
     @GetMapping("/{memberId}")
     @ResponseStatus(HttpStatus.OK)
-    public AdminMemberResponse findMember(@AuthenticationPrincipal Member member, @PathVariable Long memberId) {
+    public AdminMemberResponse findMember(@AdminAuthenticationPrincipal AdminMemberDto member,
+        @PathVariable Long memberId) {
 
         Logging.info("api/admin/members" + memberId, "GET", "");
 
         validateAdmin(member);
-        Member foundMember = adminMemberService.findMemberById(memberId);
-
-        return AdminMemberResponse.from(foundMember);
+        return adminMemberAggregator.findMemberById(memberId);
     }
 
     @Operation(summary = "사용자를 탈퇴시킨다")
     @DeleteMapping("/{memberId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteMember(@AuthenticationPrincipal Member member, @PathVariable Long memberId) {
+    public void deleteMember(@AdminAuthenticationPrincipal AdminMemberDto member, @PathVariable Long memberId) {
 
         Logging.info("api/admin/members/" + memberId, "DELETE", "");
 
         validateAdmin(member);
-        adminMemberService.deleteMemberById(memberId);
+        adminMemberAggregator.deleteMemberById(memberId);
     }
 
-    private void validateAdmin(Member member) {
-        if (!member.isAdmin()) {
+    private void validateAdmin(AdminMemberDto member) {
+        if (!member.getIsAdmin()) {
             throw new AuthorizationException("어드민 권한이 없습니다.");
         }
     }
