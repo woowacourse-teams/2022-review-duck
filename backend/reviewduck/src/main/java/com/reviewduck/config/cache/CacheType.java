@@ -16,7 +16,7 @@ public enum CacheType {
 
     MemberCache("memberCacheStore", 10 * 60, 100),
     TemplateCache("templateCacheStore", 10 * 60, 300),
-    TemplatesCache("templatesCacheStore", 5 * 60, 100);
+    TemplatesCache("templatesCacheStore", 30, 100);
 
     private final String cacheName;
     private final long duration;
@@ -25,7 +25,7 @@ public enum CacheType {
     public CaffeineCache buildCache() {
         return new CaffeineCache(cacheName, Caffeine.newBuilder()
             .recordStats()
-            .expireAfterAccess(duration, TimeUnit.SECONDS)
+            .expireAfterWrite(duration, TimeUnit.SECONDS)
             .maximumSize(maxSize)
             .build());
     }

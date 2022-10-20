@@ -58,7 +58,7 @@ public class TemplateAggregator {
         return TemplateResponse.of(template, memberId);
     }
 
-    @Cacheable(value = "templatesCacheStore", key = "#page + #size + #sort")
+    //@Cacheable(value = "templatesCacheStore", key = "#page + #size + #sort")
     public TemplatesResponse findAll(int page, int size, String sort, long memberId) {
         Page<Template> templates = templateService.findAll(page, size, sort);
         return TemplatesResponse.of(templates, memberId);
