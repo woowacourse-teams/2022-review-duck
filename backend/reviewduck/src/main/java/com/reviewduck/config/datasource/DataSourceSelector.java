@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 public class DataSourceSelector {
 
     private final List<String> dataSources;
-    private Integer counter = 0;
+    private int counter = 0;
 
     public DataSourceSelector(String... dataSources) {
         this.dataSources = Arrays.stream(dataSources)
