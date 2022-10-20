@@ -41,13 +41,6 @@ public class ReviewFormAggregator {
         return ReviewFormResponse.of(reviewForm, reviewForm.isMine(memberId), members);
     }
 
-    private List<MemberResponse> findAllParticipantsByCode(ReviewForm reviewForm) {
-        return memberService.findAllParticipantsByCode(reviewForm)
-            .stream()
-            .map(MemberResponse::from)
-            .collect(Collectors.toUnmodifiableList());
-    }
-
     public MemberReviewFormsResponse findBySocialId(String socialId, int page, int size, MemberDto member) {
         Page<ReviewForm> reviewForms = reviewFormService.findBySocialId(socialId, page, size);
         return MemberReviewFormsResponse.of(reviewForms, socialId, member);
@@ -70,8 +63,16 @@ public class ReviewFormAggregator {
         reviewFormService.deleteByCode(memberId, reviewFormCode);
     }
 
+    /* -- 회고 질문지 관련 메서드 -- */
     @Transactional
     public void createReview(long memberId, String reviewFormCode, ReviewCreateRequest request) {
         reviewService.save(memberId, reviewFormCode, request);
+    }
+
+    private List<MemberResponse> findAllParticipantsByCode(ReviewForm reviewForm) {
+        return memberService.findAllParticipantsByCode(reviewForm)
+            .stream()
+            .map(MemberResponse::from)
+            .collect(Collectors.toUnmodifiableList());
     }
 }

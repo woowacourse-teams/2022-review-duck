@@ -30,7 +30,7 @@ public class MemberResponse {
 
     public static MemberResponse of(Member member, long myMemberId) {
         return new MemberResponse(
-            Objects.equals(member.getId(), myMemberId),
+            member.isSameId(myMemberId),
             member.getSocialId(),
             member.getSocialNickname(),
             member.getNickname(),

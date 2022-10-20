@@ -25,7 +25,7 @@ public class MemberAggregator {
     }
 
     @Transactional
-    public void updateMyNickname(long memberId, String nickname) {
+    public void updateNickname(long memberId, String nickname) {
         memberService.updateNickname(memberId, nickname);
     }
 }

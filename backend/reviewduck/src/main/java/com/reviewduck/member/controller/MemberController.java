@@ -53,11 +53,11 @@ public class MemberController {
     @Operation(summary = "본인의 닉네임을 변경한다.")
     @PutMapping("/me")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateMyNickname(@AuthenticationPrincipal MemberDto member, @Valid @RequestBody
+    public void updateNickname(@AuthenticationPrincipal MemberDto member, @Valid @RequestBody
         MemberUpdateNicknameRequest request) {
 
         info("/api/members/me", "PUT", request.toString());
 
-        aggregator.updateMyNickname(member.getId(), request.getNickname());
+        aggregator.updateNickname(member.getId(), request.getNickname());
     }
 }

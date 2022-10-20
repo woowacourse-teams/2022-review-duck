@@ -66,8 +66,7 @@ public class TemplateService {
 
     @Transactional
     public void update(long memberId, Long id, TemplateUpdateRequest templateUpdateRequest) {
-        Template template = templateRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
+        Template template = findById(id);
         validateTemplateIsMine(template, memberId, "본인이 생성한 템플릿이 아니면 수정할 수 없습니다.");
 
         template.update(
@@ -84,8 +83,7 @@ public class TemplateService {
 
     @Transactional
     public void deleteById(long memberId, Long id) {
-        Template template = templateRepository.findById(id)
-            .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
+        Template template = findById(id);
         validateTemplateIsMine(template, memberId, "본인이 생성한 템플릿이 아니면 삭제할 수 없습니다.");
 
         templateRepository.delete(template);
