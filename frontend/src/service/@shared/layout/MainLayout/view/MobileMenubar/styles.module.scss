@@ -9,11 +9,13 @@
 
   width: 100%;
   padding: 0.5rem 0rem;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
 
   background-color: $THEME_COLOR_THEME_BACKGROUND_BLUR;
   backdrop-filter: blur(1rem);
   box-shadow: 0 0 1rem 1rem $GLOBAL_COLOR_BLACK_50;
   border-radius: 2rem 2rem 0 0;
+  z-index: 5;
 
   .menu {
     cursor: pointer;
@@ -23,7 +25,6 @@
     font-size: 1.45rem;
     user-select: none;
     padding: 1.75rem;
-
     transition: all 0.3s ease;
 
     &::before {

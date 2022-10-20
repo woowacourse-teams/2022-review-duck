@@ -1,12 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { authAPI } from 'api';
-import {
-  ACCESS_TOKEN_EXPIRE_TIME,
-  ACCESS_TOKEN_REFRESH_TIME,
-  PERMISSION_VALID_TIME,
-  QUERY_KEY,
-} from 'constant';
+import { ACCESS_TOKEN_REFRESH_TIME, PERMISSION_VALID_TIME, QUERY_KEY } from 'constant';
 import { UserProfileResponse, CreateRefreshResponse } from 'types';
 import { ErrorResponse } from 'types';
 
@@ -16,15 +11,13 @@ function useGetAccessToken(queryOptions?: UseQueryOptions<CreateRefreshResponse,
     () => authAPI.getRefreshedAccessToken(),
     {
       useErrorBoundary: false,
-      staleTime: ACCESS_TOKEN_EXPIRE_TIME,
+      staleTime: ACCESS_TOKEN_REFRESH_TIME,
       refetchInterval: ACCESS_TOKEN_REFRESH_TIME,
       refetchIntervalInBackground: true,
       refetchOnReconnect: true,
       ...queryOptions,
     },
   );
-
-  // TODO: 402 에러 시, 메시지 변경 처리.
 }
 
 function useGetAuthProfile(queryOptions?: UseQueryOptions<UserProfileResponse, ErrorResponse>) {

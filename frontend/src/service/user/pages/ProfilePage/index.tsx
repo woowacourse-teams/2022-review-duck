@@ -209,7 +209,7 @@ function ProfilePage() {
                       : `${PAGE_LIST.REVIEW_OVERVIEW}/${article.reviewFormCode}`
                   }
                 >
-                  <Questions.Title isPrivate={article.isPrivate} subtitle={article.reviewTitle}>
+                  <Questions.Title lockIcon={article.isPrivate} subtitle={article.reviewTitle}>
                     {article.title}
                   </Questions.Title>
                 </Link>

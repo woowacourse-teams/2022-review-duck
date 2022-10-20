@@ -6,17 +6,12 @@
   min-width: 100%;
   min-height: 100vh;
   background-color: $THEME_COLOR_THEME_BACKGROUND_200;
+  padding-top: 6.5rem;
 }
 
 .profile {
   width: 5.75rem;
   margin-right: 1.25rem;
-
-  @include mobile {
-    width: 3.5rem;
-    margin-right: 0.5rem;
-    gap: 0.5rem;
-  }
 }
 
 .form-info {

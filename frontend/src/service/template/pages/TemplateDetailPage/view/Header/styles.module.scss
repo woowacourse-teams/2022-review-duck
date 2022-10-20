@@ -1,27 +1,28 @@
 @import 'styles/@global.scss';
 
 .component-page-header {
-  @include mobile {
-    flex-direction: column;
-    padding: 1rem 0;
-    gap: 1rem;
-  }
-
-  @include tablet {
-    min-width: 800px;
-  }
-
   width: 100%;
   padding: 2.5rem 0;
 
-  .title {
-    @include mobile {
-      font-size: 1.4rem;
-    }
+  @include mobile {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1.5rem;
+    gap: 1rem;
+    background-color: $THEME_COLOR_THEME_BACKGROUND_100;
 
+    border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+    box-shadow: 0 0.5rem 0.5rem 0.5rem rgba(0, 0, 0, 0.05);
+  }
+
+  .title {
     word-break: keep-all;
-    line-height: 130%;
-    white-space: pre-wrap;
+    line-height: 140%;
+    word-break: break-word;
+
+    @include mobile {
+      font-size: 1.5rem;
+    }
   }
 
   .article-info {
@@ -39,6 +40,17 @@
   }
 
   .buttons {
+    @include mobile {
+      width: 100%;
+      flex-direction: column;
+
+      .start-review {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(47.5%, auto));
+        gap: 5%;
+      }
+    }
+
     .editable-text {
       cursor: pointer;
 

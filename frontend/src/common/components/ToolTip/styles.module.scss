@@ -5,6 +5,10 @@
   display: inline;
   overflow: visible;
 
+  & > *:not(.tooltip-box) {
+    width: 100%;
+  }
+
   &:hover .tooltip-box {
     visibility: visible;
     opacity: 1;

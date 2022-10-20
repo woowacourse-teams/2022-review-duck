@@ -38,10 +38,7 @@ function QuestionsEditor({ className, value, onChange, ...rest }: QuestionsEdito
 
   const handleChangeDescription =
     (index: number) => (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const $textarea = event.target as HTMLTextAreaElement;
-      const currentQuestion = questions[index];
-
-      if (!currentQuestion || $textarea.value === '') return;
+      if (!questions[index]) return;
 
       updateQuestion(index, { description: event.target.value });
     };
