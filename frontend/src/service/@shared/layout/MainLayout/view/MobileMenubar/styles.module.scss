@@ -9,6 +9,7 @@
 
   width: 100%;
   padding: 0.5rem 0rem;
+  padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
 
   background-color: $THEME_COLOR_THEME_BACKGROUND_BLUR;
   backdrop-filter: blur(1rem);
