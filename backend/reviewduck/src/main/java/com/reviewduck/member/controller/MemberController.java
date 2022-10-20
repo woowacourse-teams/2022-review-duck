@@ -17,6 +17,7 @@ import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.request.MemberUpdateNicknameRequest;
 import com.reviewduck.member.dto.response.MemberDto;
+import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.service.MemberService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -32,24 +33,24 @@ public class MemberController {
     @Operation(summary = "사용자 정보를 조회한다.")
     @GetMapping("/{socialId}")
     @ResponseStatus(HttpStatus.OK)
-    public MemberDto findMemberInfo(@AuthenticationPrincipal MemberDto member,
+    public MemberResponse findMemberInfo(@AuthenticationPrincipal MemberDto member,
         @PathVariable String socialId) {
 
         info("/api/members/" + socialId, "GET", "");
 
         Member foundMember = memberService.findBySocialId(socialId);
 
-        return MemberDto.of(foundMember, member);
+        return MemberResponse.of(foundMember, member);
     }
 
     @Operation(summary = "본인의 사용자 정보를 조회한다.")
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
-    public MemberDto findMyInfo(@AuthenticationPrincipal MemberDto member) {
+    public MemberResponse findMyInfo(@AuthenticationPrincipal MemberDto member) {
 
         info("/api/members/me", "GET", "");
-
-        return member;
+        Member foundMember = memberService.findById(member.getId());
+        return MemberResponse.from(foundMember);
     }
 
     @Operation(summary = "본인의 닉네임을 변경한다.")
