@@ -88,7 +88,7 @@ public class ReviewServiceTest extends ServiceTest {
             // then
             assertAll(
                 () -> assertThat(savedReview.getId()).isNotNull(),
-                () -> assertThat(savedReview.getMember().getNickname()).isEqualTo("제이슨"),
+                () -> assertThat(savedReview.getMember().getNickname()).isEqualTo(member1.getNickname()),
                 () -> assertThat(savedReview.getQuestionAnswers().get(0).getAnswer().getValue())
                     .isEqualTo("answer1"),
                 () -> assertThat(savedReview.getQuestionAnswers().get(0).getPosition())
