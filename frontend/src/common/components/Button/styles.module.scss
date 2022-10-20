@@ -13,6 +13,10 @@
   border-radius: 999px;
   overflow: hidden;
 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   &:disabled {
     cursor: default;
     filter: grayscale(1) brightness(1.5);
