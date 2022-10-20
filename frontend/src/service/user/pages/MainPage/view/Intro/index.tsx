@@ -1,5 +1,3 @@
-import { useContext } from 'react';
-
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -11,8 +9,6 @@ import LayoutContainer from 'service/@shared/components/LayoutContainer';
 import QuestionCard from 'service/@shared/components/QuestionCard';
 
 import styles from './styles.module.scss';
-
-import { UserAgentContext } from 'common/contexts/UserAgent';
 
 interface ContainerProps {
   children: React.ReactNode;
@@ -98,7 +94,7 @@ interface ReviewButtonProps {
 
 const ReviewButton = ({ onClick, children }: ReviewButtonProps) => {
   return (
-    <Button theme="outlined" size="medium" onClick={onClick}>
+    <Button className={styles.reviewButton} theme="outlined" size="medium" onClick={onClick}>
       <FontAwesomeIcon icon={faPenToSquare} />
       {children}
     </Button>

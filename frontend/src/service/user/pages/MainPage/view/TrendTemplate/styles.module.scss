@@ -15,8 +15,4 @@
 
 .card-list {
   padding: 0.75rem 0;
-
-  @include mobile {
-    padding: 0 2.5rem;
-  }
 }

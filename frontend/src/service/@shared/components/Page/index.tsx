@@ -3,6 +3,8 @@ import React, { useEffect } from 'react';
 import { PERMISSION, SERVICE_NAME } from 'constant';
 import { useSetRecoilState } from 'recoil';
 
+import usePageTitle from 'common/hooks/usePageTitle';
+
 import RequireAuth, { RequireAuthProps } from '../RequireAuth';
 import { pageTitleAtom } from 'recoil/pageTitle';
 
@@ -13,18 +15,14 @@ export interface PageTitleProps {
 }
 
 function Page({ title = '', permission = PERMISSION.ALL, component: Component }: PageTitleProps) {
+  const pageTitle = usePageTitle(title, SERVICE_NAME);
   const setPageTitleAtom = useSetRecoilState(pageTitleAtom);
 
   useEffect(
-    function updateDocumentTitle() {
-      setPageTitleAtom(title || SERVICE_NAME);
-      document.title = title ? `${title} - ${SERVICE_NAME}` : SERVICE_NAME;
-
-      return () => {
-        document.title = SERVICE_NAME;
-      };
+    function updateGlobalTitle() {
+      setPageTitleAtom(pageTitle);
     },
-    [title],
+    [pageTitle],
   );
 
   const renderComponent = permission ? (

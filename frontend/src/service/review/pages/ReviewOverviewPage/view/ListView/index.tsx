@@ -45,12 +45,14 @@ type ParticipantListProps = ContainerProps;
 
 const ParticipantList = ({ children }: ParticipantListProps) => {
   return (
-    <FlexContainer className={styles.cardBox} direction="column" gap="medium">
-      <div className={styles.title}>
-        <Text className={styles.titleText} as="h5" size={20}>
-          이 회고에 참여한 사람
-        </Text>
-      </div>
+    <FlexContainer
+      className={cn(styles.cardBox, styles.participantList)}
+      direction="column"
+      gap="medium"
+    >
+      <Text className={styles.title} as="h5" size={20}>
+        이 회고에 참여한 사람
+      </Text>
 
       <Carousel centerDisabled={true}>{children}</Carousel>
     </FlexContainer>
@@ -83,14 +85,31 @@ const SideMenu = ({ isLoading, fallback, children }: SideMenuProps) => {
   return <aside className={styles.sideMenu}>{isLoading ? fallback : children}</aside>;
 };
 
-type FormDetailProps = ContainerProps;
+interface FormDetailProps {
+  reviewFormCode: string;
+  editable?: boolean;
+  children: React.ReactNode;
+}
 
-const FormDetail = ({ children }: FormDetailProps) => {
+const FormDetail = ({ reviewFormCode, editable = false, children }: FormDetailProps) => {
   return (
     <FlexContainer className={cn(styles.cardBox, styles.formDetail)}>
-      <Text className={styles.formDetailTitle} size={20} weight="bold">
-        회고 정보
-      </Text>
+      <FlexContainer direction="row" align="center" justify="space-between">
+        <Text size={20} weight="bold">
+          회고 정보
+        </Text>
+
+        {editable && (
+          <Link
+            to={`${PAGE_LIST.REVIEW_FORM}/${reviewFormCode}?redirect=${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`}
+          >
+            <button type="button" className={styles.buttonReviewFormEdit}>
+              <FontAwesomeIcon icon={faPenToSquare} />
+              <span>질문 수정</span>
+            </button>
+          </Link>
+        )}
+      </FlexContainer>
 
       {children}
     </FlexContainer>
@@ -177,39 +196,6 @@ const FormCopyLink = ({ reviewFormCode }: FormCopyLink) => {
   );
 };
 
-interface FormManageButtonsProps {
-  reviewFormCode: string;
-  isMine?: boolean;
-}
-
-const FormManageButtons = ({ reviewFormCode, isMine }: FormManageButtonsProps) => {
-  if (!isMine) return null;
-
-  return (
-    <FlexContainer className={styles.formManageButtons} gap="small">
-      <Text className={styles.title} size={14}>
-        회고 관리
-      </Text>
-
-      <div className={styles.buttonContainer}>
-        <Link
-          to={`${PAGE_LIST.REVIEW_FORM}/${reviewFormCode}?redirect=${PAGE_LIST.REVIEW_OVERVIEW}/${reviewFormCode}`}
-        >
-          <Button size="small">
-            <FontAwesomeIcon icon={faPenToSquare} />
-            <span>질문 수정</span>
-          </Button>
-        </Link>
-
-        <Button theme="outlined" size="small" disabled={false}>
-          <FontAwesomeIcon icon={faShareNodes} />
-          <span>템플릿 공유</span>
-        </Button>
-      </div>
-    </FlexContainer>
-  );
-};
-
 type ReviewShortcutListProps = ContainerProps;
 
 const ReviewShortcutList = ({ children }: ReviewShortcutListProps) => {
@@ -257,7 +243,6 @@ export const ListView = Object.assign(Container, {
   InfoText,
   JoinButton,
   FormCopyLink,
-  FormManageButtons,
   ReviewShortcutList,
   ReviewShortcut,
   Loading,

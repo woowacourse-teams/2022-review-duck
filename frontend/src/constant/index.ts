@@ -12,7 +12,7 @@ const PAGE_LIST = {
   TEMPLATE_FORM: '/template/editor',
   USER_PROFILE: '/profile',
   TIMELINE: '/timeline',
-};
+} as const;
 
 const MODAL_LIST = {
   REVIEW_START: 'ModalReviewStart',
@@ -69,9 +69,9 @@ const PERMISSION = {
   LOGIN_USER: 2,
 } as const;
 
-const ACCESS_TOKEN_EXPIRE_TIME = 60 * 10 * 1000;
+const ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 10;
 
-const ACCESS_TOKEN_REFRESH_TIME = ACCESS_TOKEN_EXPIRE_TIME - 60 * 2 * 1000;
+const ACCESS_TOKEN_REFRESH_TIME = ACCESS_TOKEN_EXPIRE_TIME - 1000 * 60 * 3;
 
 const PERMISSION_VALID_TIME = 60 * 1000;
 

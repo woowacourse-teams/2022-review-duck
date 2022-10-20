@@ -38,7 +38,7 @@ interface QuestionPreviewProps {
 
 function QuestionPreview({ questions }: QuestionPreviewProps) {
   return (
-    <FlexContainer direction="column" gap="small">
+    <FlexContainer direction="column" gap="large">
       {questions.map(
         (question, index) =>
           question.value && (
