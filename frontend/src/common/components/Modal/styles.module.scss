@@ -9,7 +9,14 @@
   top: 0;
   left: 0;
 
-  background-color: $GLOBAL_COLOR_BLACK_700;
+  @supports (backdrop-filter: brightness(0.3)) {
+    backdrop-filter: brightness(0.3) blur(0.3rem);
+  }
+
+  @supports not (backdrop-filter: brightness(0.3)) {
+    background-color: $GLOBAL_COLOR_BLACK_700;
+  }
+
   z-index: 10;
 
   @include mobile {
