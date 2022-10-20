@@ -25,7 +25,7 @@ public enum CacheType {
     public CaffeineCache buildCache() {
         return new CaffeineCache(cacheName, Caffeine.newBuilder()
             .recordStats()
-            .refreshAfterWrite(duration, TimeUnit.SECONDS)
+            .expireAfterAccess(duration, TimeUnit.SECONDS)
             .maximumSize(maxSize)
             .build());
     }
