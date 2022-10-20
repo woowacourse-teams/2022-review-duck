@@ -20,6 +20,7 @@ import com.reviewduck.auth.dto.service.TokensDto;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.member.service.MemberService;
 
 @Service
@@ -29,7 +30,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
     private final ObjectMapper objectMapper;
     private final RestTemplate restTemplate;
-    private final MemberService memberService;
+    private final MemberRepository memberRepository;
 
     @Value("${security.oauth2.client-id}")
     private String clientId;
@@ -38,11 +39,11 @@ public class AuthService {
     private String clientSecret;
 
     public AuthService(JwtTokenProvider jwtTokenProvider, ObjectMapper objectMapper,
-        RestTemplate restTemplate, MemberService memberService) {
+        RestTemplate restTemplate, MemberRepository memberRepository) {
         this.jwtTokenProvider = jwtTokenProvider;
         this.objectMapper = objectMapper;
         this.restTemplate = restTemplate;
-        this.memberService = memberService;
+        this.memberRepository = memberRepository;
     }
 
     @Transactional
@@ -58,12 +59,13 @@ public class AuthService {
     @Transactional
     public TokensDto regenerateTokens(String refreshToken) {
         jwtTokenProvider.validateRefreshToken(refreshToken);
-        Long memberId = Long.parseLong(jwtTokenProvider.getRefreshTokenPayload(refreshToken));
-        Member member = memberService.findById(memberId);
+        long memberId = Long.parseLong(jwtTokenProvider.getRefreshTokenPayload(refreshToken));
+        Member member = memberRepository.findById(memberId)
+            .orElseThrow(() -> new AuthorizationException("존재하지 않는 사용자입니다."));
         return generateTokens(member.getId());
     }
 
-    private TokensDto generateTokens(Long memberId) {
+    private TokensDto generateTokens(long memberId) {
         String accessToken = jwtTokenProvider.createAccessToken(String.valueOf(memberId));
         String refreshToken = jwtTokenProvider.createRefreshToken(String.valueOf(memberId));
 
@@ -121,9 +123,9 @@ public class AuthService {
     }
 
     private Member login(GithubMemberResponse githubMemberResponse) {
-        Optional<Member> member = memberService.findBySocialId(githubMemberResponse.getSocialId());
+        Optional<Member> member = memberRepository.findBySocialId(githubMemberResponse.getSocialId());
         if (member.isEmpty()) {
-            return memberService.save(githubMemberResponse.toMember());
+            return memberRepository.save(githubMemberResponse.toMember());
         }
 
         Member foundMember = member.get();

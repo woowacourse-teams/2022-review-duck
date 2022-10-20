@@ -208,7 +208,7 @@ public class ReviewRepositoryTest {
     void increaseLikes() throws InterruptedException {
         // given
         Review savedReview = saveReview(savedMember, savedReviewForm, false);
-        Long id = savedReview.getId();
+        long id = savedReview.getId();
 
         // when
         int likeCount = 50;
@@ -228,7 +228,7 @@ public class ReviewRepositoryTest {
     void increaseLikesWithNotUpdatedAt() throws InterruptedException {
         // given
         Review savedReview = saveReview(savedMember, savedReviewForm, false);
-        Long id = savedReview.getId();
+        long id = savedReview.getId();
 
         // when
         // 초기 수정 시간

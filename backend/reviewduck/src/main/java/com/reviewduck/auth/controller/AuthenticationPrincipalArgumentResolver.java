@@ -9,10 +9,12 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.auth.support.AuthorizationExtractor;
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.member.service.MemberService;
 
 import lombok.AllArgsConstructor;
@@ -29,21 +31,26 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public Member resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+    public MemberDto resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
         NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
 
         HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
 
         if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
-            return Member.getMemberNotLogin();
+            return MemberDto.getMemberNotLogin();
         }
 
         String token = AuthorizationExtractor.extract(request);
 
         jwtTokenProvider.validateAccessToken(token);
 
-        Long memberId = Long.parseLong(jwtTokenProvider.getAccessTokenPayload(token));
+        long memberId = Long.parseLong(jwtTokenProvider.getAccessTokenPayload(token));
 
-        return memberService.findById(memberId);
+        return MemberDto.from(findMemberById(memberId));
+    }
+
+    private Member findMemberById(long memberId) {
+        return memberService.getById(memberId)
+            .orElseThrow(() -> new AuthorizationException("존재하지 않는 사용자입니다."));
     }
 }

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.review.domain.ReviewForm;
 
 import lombok.AccessLevel;
@@ -21,7 +22,7 @@ public class MemberReviewFormsResponse {
     private boolean isMine;
     private List<MemberReviewFormResponse> reviewForms;
 
-    public static MemberReviewFormsResponse of(Page<ReviewForm> reviewForms, String socialId, Member member) {
+    public static MemberReviewFormsResponse of(Page<ReviewForm> reviewForms, String socialId, MemberDto member) {
         List<MemberReviewFormResponse> reviewFormResponses = reviewForms.getContent().stream()
             .map(MemberReviewFormResponse::from)
             .collect(Collectors.toUnmodifiableList());

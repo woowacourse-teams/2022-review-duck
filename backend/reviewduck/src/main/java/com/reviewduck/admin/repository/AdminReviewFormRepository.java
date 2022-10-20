@@ -16,7 +16,7 @@ public interface AdminReviewFormRepository extends Repository<ReviewForm, Long> 
 
     ReviewForm findByCode(String reviewFormCode);
 
-    Optional<ReviewForm> findById(Long reviewFormId);
+    Optional<ReviewForm> findById(long reviewFormId);
 
     void delete(ReviewForm reviewForm);
 }

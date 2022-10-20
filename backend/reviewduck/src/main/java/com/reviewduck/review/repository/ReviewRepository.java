@@ -34,5 +34,5 @@ public interface ReviewRepository extends Repository<Review, Long> {
     @Query("update Review r set r.likes = r.likes + :likeCount where r.id = :#{#review.id}")
     void increaseLikes(Review review, int likeCount);
 
-    void deleteById(Long id);
+    void deleteById(long id);
 }

@@ -97,6 +97,6 @@ public class AdminReviewFormServiceTest {
 
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest("title", createRequests);
 
-        return reviewFormService.save(member, createRequest);
+        return reviewFormService.save(member.getId(), createRequest);
     }
 }

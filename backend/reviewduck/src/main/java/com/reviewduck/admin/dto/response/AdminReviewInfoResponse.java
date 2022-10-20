@@ -12,8 +12,8 @@ import lombok.Getter;
 @Getter
 public class AdminReviewInfoResponse {
 
-    private Long id;
-    private Long memberId;
+    private long id;
+    private long memberId;
     private String memberProfileUrl;
     private String memberNickname;
     private String reviewFormCode;

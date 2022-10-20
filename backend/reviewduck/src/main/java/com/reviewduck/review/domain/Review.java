@@ -77,8 +77,8 @@ public class Review extends BaseDate {
         sortQuestionAnswers();
     }
 
-    public boolean isMine(Member member) {
-        return this.member.equals(member);
+    public boolean isMine(long memberId) {
+        return member.isSameId(memberId);
     }
 
     public int like(int likeCount) {

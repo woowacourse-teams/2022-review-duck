@@ -46,7 +46,7 @@ public class AdminMemberController {
     @Operation(summary = "단일 사용자를 조회한다")
     @GetMapping("/{memberId}")
     @ResponseStatus(HttpStatus.OK)
-    public AdminMemberResponse findMember(@AuthenticationPrincipal Member member, @PathVariable Long memberId) {
+    public AdminMemberResponse findMember(@AuthenticationPrincipal Member member, @PathVariable long memberId) {
 
         Logging.info("api/admin/members" + memberId, "GET", "");
 
@@ -59,7 +59,7 @@ public class AdminMemberController {
     @Operation(summary = "사용자를 탈퇴시킨다")
     @DeleteMapping("/{memberId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteMember(@AuthenticationPrincipal Member member, @PathVariable Long memberId) {
+    public void deleteMember(@AuthenticationPrincipal Member member, @PathVariable long memberId) {
 
         Logging.info("api/admin/members/" + memberId, "DELETE", "");
 

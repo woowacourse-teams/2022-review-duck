@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.service.MemberService;
+import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
@@ -23,6 +23,8 @@ import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
 import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
 import com.reviewduck.review.dto.service.QuestionAnswerUpdateDto;
+import com.reviewduck.review.repository.ReviewFormQuestionRepository;
+import com.reviewduck.review.repository.ReviewFormRepository;
 import com.reviewduck.review.repository.ReviewRepository;
 import com.reviewduck.review.vo.ReviewSortType;
 
@@ -33,42 +35,34 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ReviewService {
 
+    private final ReviewFormRepository reviewFormRepository;
     private final ReviewRepository reviewRepository;
-
-    private final ReviewFormService reviewFormService;
-    private final ReviewFormQuestionService reviewFormQuestionService;
-    private final MemberService memberService;
+    private final ReviewFormQuestionRepository reviewFormQuestionRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
-    public Review save(Member member, String code, ReviewCreateRequest request) {
-        ReviewForm reviewForm = reviewFormService.findByCode(code);
+    public Review save(long memberId, String code, ReviewCreateRequest request) {
+        ReviewForm reviewForm = findReviewFormByCode(code);
         List<QuestionAnswerCreateDto> questionAnswerCreateDtos = getReviewCreateDtos(request);
-
+        Member member = findMemberById(memberId);
         Review review = new Review(request.getTitle(), member, reviewForm, questionAnswerCreateDtos,
             request.getIsPrivate());
         return reviewRepository.save(review);
     }
 
-    public Review findById(long reviewId) {
-        return reviewRepository.findById(reviewId)
+    public Review findById(long id) {
+        return reviewRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
     }
 
-    public Page<Review> findBySocialId(String socialId, Member member, int page, int size) {
-        Member owner = memberService.getBySocialId(socialId);
-
+    public Page<Review> findAllBySocialId(Member owner, long memberId, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.DESC, ReviewSortType.LATEST.getSortBy());
         PageRequest pageRequest = PageRequest.of(page, size, sort);
-
-        if (member.equals(owner)) {
-            return reviewRepository.findByMember(member, pageRequest);
-        }
-
-        return reviewRepository.findByMemberAndIsPrivateFalse(owner, pageRequest);
+        return getReviewsByOwner(memberId, owner, pageRequest);
     }
 
     public Page<Review> findAllByCode(String code, int page, int size) {
-        ReviewForm reviewForm = reviewFormService.findByCode(code);
+        ReviewForm reviewForm = findReviewFormByCode(code);
 
         Sort sort = Sort.by(Sort.Direction.DESC, ReviewSortType.LATEST.getSortBy());
         PageRequest pageRequest = PageRequest.of(page, size, sort);
@@ -79,18 +73,13 @@ public class ReviewService {
     public Page<Review> findAllPublic(int page, int size, String sort) {
         String sortType = ReviewSortType.getSortBy(sort);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
-
-        if (ReviewSortType.isTrend(sort)) {
-            return reviewRepository.findByIsPrivateFalseAndLikesGreaterThan(pageRequest, 50);
-        }
-
-        return reviewRepository.findByIsPrivateFalse(pageRequest);
+        return getTimelineReviews(sort, pageRequest);
     }
 
     @Transactional
-    public void update(Member member, Long id, ReviewUpdateRequest request) {
+    public void update(long memberId, long id, ReviewUpdateRequest request) {
         Review review = findById(id);
-        validateMyReview(member, review, "본인이 생성한 회고가 아니면 수정할 수 없습니다.");
+        validateMyReview(memberId, review, "본인이 생성한 회고가 아니면 수정할 수 없습니다.");
 
         List<QuestionAnswerUpdateDto> questionAnswerUpdateDtos = getQuestionAnswerUpdateDtos(request);
 
@@ -98,20 +87,42 @@ public class ReviewService {
     }
 
     @Transactional
-    public int increaseLikes(Long id, int likeCount) {
+    public int increaseLikes(long id, int likeCount) {
         Review review = findById(id);
         reviewRepository.increaseLikes(review, likeCount);
         return findById(id).getLikes();
     }
 
     @Transactional
-    public void delete(Member member, Long id) {
+    public void delete(long memberId, long id) {
         Review review = findById(id);
-        validateMyReview(member, review, "본인이 생성한 회고가 아니면 삭제할 수 없습니다.");
+        validateMyReview(memberId, review, "본인이 생성한 회고가 아니면 삭제할 수 없습니다.");
 
         reviewRepository.deleteById(id);
     }
 
+    private void validateMyReview(long memberId, Review review, String message) {
+        if (!review.isMine(memberId)) {
+            throw new AuthorizationException(message);
+        }
+    }
+
+    private Page<Review> getReviewsByOwner(long memberId, Member owner, PageRequest pageRequest) {
+        if (owner.isSameId(memberId)) {
+            return reviewRepository.findByMember(owner, pageRequest);
+        }
+        return reviewRepository.findByMemberAndIsPrivateFalse(owner, pageRequest);
+    }
+
+    private Page<Review> getTimelineReviews(String sort, PageRequest pageRequest) {
+        if (ReviewSortType.isTrend(sort)) {
+            return reviewRepository.findByIsPrivateFalseAndLikesGreaterThan(
+                pageRequest, 50);
+        }
+        return reviewRepository.findByIsPrivateFalse(pageRequest);
+    }
+
+    /* -- Entity 에서 일괄 연관객체 생성을 위한 메서드 --- */
     private List<QuestionAnswerCreateDto> getReviewCreateDtos(ReviewCreateRequest request) {
         return request.getContents().stream()
             .map(this::getReviewCreateDto)
@@ -119,7 +130,7 @@ public class ReviewService {
     }
 
     private QuestionAnswerCreateDto getReviewCreateDto(ReviewContentCreateRequest request) {
-        ReviewFormQuestion reviewFormQuestion = reviewFormQuestionService.findById(request.getQuestionId());
+        ReviewFormQuestion reviewFormQuestion = findReviewFormQuestionById(request.getQuestionId());
         Answer answer = new Answer(request.getAnswer().getValue());
 
         return new QuestionAnswerCreateDto(reviewFormQuestion, answer);
@@ -132,15 +143,25 @@ public class ReviewService {
     }
 
     private QuestionAnswerUpdateDto getReviewUpdateDto(ReviewContentUpdateRequest request) {
-        ReviewFormQuestion reviewFormQuestion = reviewFormQuestionService.findById(request.getQuestionId());
+        ReviewFormQuestion reviewFormQuestion = findReviewFormQuestionById(request.getQuestionId());
         String answerValue = request.getAnswer().getValue();
 
         return new QuestionAnswerUpdateDto(reviewFormQuestion, answerValue);
     }
 
-    private void validateMyReview(Member member, Review review, String message) {
-        if (!review.isMine(member)) {
-            throw new AuthorizationException(message);
-        }
+    /* -- 연관 Entity 조회용 메서드 -- */
+    private Member findMemberById(long memberId) {
+        return memberRepository.findById(memberId)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
+    }
+
+    private ReviewForm findReviewFormByCode(String code) {
+        return reviewFormRepository.findByCodeAndIsActiveTrue(code)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 회고 폼입니다."));
+    }
+
+    private ReviewFormQuestion findReviewFormQuestionById(long questionId) {
+        return reviewFormQuestionRepository.findById(questionId)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 질문입니다."));
     }
 }

@@ -1,4 +1,4 @@
-package com.reviewduck.acceptance;
+package com.reviewduck.common.acceptance;
 
 public class TestPageConstant {
 

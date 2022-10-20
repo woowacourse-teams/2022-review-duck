@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 
@@ -16,7 +15,7 @@ import lombok.Getter;
 @Getter
 public class ReviewResponse extends ReviewAbstractResponse {
 
-    private Long id;
+    private long id;
     private String reviewTitle;
     private long updatedAt;
     private int likes;
@@ -25,7 +24,7 @@ public class ReviewResponse extends ReviewAbstractResponse {
     private List<ReviewContentResponse> contents;
     private String reviewFormCode;
 
-    public static ReviewResponse of(Member member, Review review) {
+    public static ReviewResponse of(long memberId, Review review) {
         List<ReviewContentResponse> contents = review.getQuestionAnswers().stream()
             .map(ReviewContentResponse::from)
             .collect(Collectors.toUnmodifiableList());
@@ -38,7 +37,7 @@ public class ReviewResponse extends ReviewAbstractResponse {
             Timestamp.valueOf(review.getUpdatedAt()).getTime(),
             review.getLikes(),
             CreatorResponse.from(review.getMember()),
-            review.isMine(member),
+            review.isMine(memberId),
             contents,
             reviewForm.getCode()
         );
