@@ -40,6 +40,7 @@ public class AdminReviewAggregator {
         adminReviewFormService.deleteReviewFormById(reviewFormId);
     }
 
+    /* -- 회고 답변 관련 메서드 -- */
     public AdminReviewsResponse findAllReviews() {
         List<Review> reviews = adminReviewService.findAllReviews();
         return AdminReviewsResponse.from(reviews);

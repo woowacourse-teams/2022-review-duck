@@ -62,7 +62,7 @@ public class ReviewFormAggregator {
         reviewFormService.deleteByCode(memberId, reviewFormCode);
     }
 
-    /* -- 회고 질문지 관련 메서드 -- */
+    /* -- 회고 답변 관련 메서드 -- */
     @Transactional
     public void createReview(long memberId, String reviewFormCode, ReviewCreateRequest request) {
         reviewService.save(memberId, reviewFormCode, request);

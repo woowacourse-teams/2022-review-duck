@@ -43,18 +43,6 @@ public class AdminTemplateController {
         return adminTemplateAggregator.findAllTemplates();
     }
 
-    @Transactional
-    @Operation(summary = "템플릿을 삭제한다")
-    @DeleteMapping("/{templateId}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteTemplate(@AdminAuthenticationPrincipal AdminMemberDto member, @PathVariable long templateId) {
-
-        info("api/admin/templates/" + templateId, "DELETE", "");
-
-        validateAdmin(member);
-        adminTemplateAggregator.deleteTemplate(templateId);
-    }
-
     @Operation(summary = "단일 템플릿을 조회한다")
     @GetMapping("/{templateId}")
     @ResponseStatus(HttpStatus.OK)
@@ -77,6 +65,18 @@ public class AdminTemplateController {
 
         validateAdmin(member);
         return adminTemplateAggregator.findMemberTemplates(memberId);
+    }
+
+    @Transactional
+    @Operation(summary = "템플릿을 삭제한다")
+    @DeleteMapping("/{templateId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteTemplate(@AdminAuthenticationPrincipal AdminMemberDto member, @PathVariable long templateId) {
+
+        info("api/admin/templates/" + templateId, "DELETE", "");
+
+        validateAdmin(member);
+        adminTemplateAggregator.deleteTemplate(templateId);
     }
 
     private void validateAdmin(AdminMemberDto member) {
