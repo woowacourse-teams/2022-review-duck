@@ -22,11 +22,6 @@ public class AdminTemplateAggregator {
         return AdminTemplatesResponse.from(templates);
     }
 
-    @CacheEvict(value = "templateCacheStore", key = "#templateId")
-    public void deleteTemplate(long templateId) {
-        adminTemplateService.deleteTemplateById(templateId);
-    }
-
     public AdminTemplateResponse findTemplate(long templateId) {
         Template template = adminTemplateService.findById(templateId);
         return AdminTemplateResponse.from(template);
@@ -35,5 +30,10 @@ public class AdminTemplateAggregator {
     public AdminTemplatesResponse findMemberTemplates(long memberId) {
         List<Template> templates = adminTemplateService.findTemplatesByMemberId(memberId);
         return AdminTemplatesResponse.from(templates);
+    }
+
+    @CacheEvict(value = "templateCacheStore", key = "#templateId")
+    public void deleteTemplate(long templateId) {
+        adminTemplateService.deleteTemplateById(templateId);
     }
 }
