@@ -30,4 +30,11 @@ public class CacheController {
         CacheStats stats = ((CaffeineCache)cacheManager.getCache("templateCacheStore")).getNativeCache().stats();
         return CacheMetricsResponse.from(stats);
     }
+
+    @Operation(summary = "Template list Cache Metric을 조회한다.")
+    @GetMapping("/metrics/cache/templates")
+    public CacheMetricsResponse getTemplatesCacheMetrics() {
+        CacheStats stats = ((CaffeineCache)cacheManager.getCache("templatesCacheStore")).getNativeCache().stats();
+        return CacheMetricsResponse.from(stats);
+    }
 }
