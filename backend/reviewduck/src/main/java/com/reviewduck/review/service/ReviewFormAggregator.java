@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.common.annotation.Aggregator;
 import com.reviewduck.member.dto.response.MemberDto;
+import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
@@ -36,14 +37,14 @@ public class ReviewFormAggregator {
 
     public ReviewFormResponse findByCode(String reviewFormCode, long memberId) {
         ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
-        List<MemberDto> members = findAllParticipantsByCode(reviewForm);
+        List<MemberResponse> members = findAllParticipantsByCode(reviewForm);
         return ReviewFormResponse.of(reviewForm, reviewForm.isMine(memberId), members);
     }
 
-    private List<MemberDto> findAllParticipantsByCode(ReviewForm reviewForm) {
+    private List<MemberResponse> findAllParticipantsByCode(ReviewForm reviewForm) {
         return memberService.findAllParticipantsByCode(reviewForm)
             .stream()
-            .map(MemberDto::from)
+            .map(MemberResponse::from)
             .collect(Collectors.toUnmodifiableList());
     }
 

@@ -1,6 +1,6 @@
 package com.reviewduck.review.dto.controller.response;
 
-import com.reviewduck.member.dto.response.MemberDto;
+import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.review.domain.ReviewForm;
 
 import lombok.AccessLevel;
@@ -19,8 +19,7 @@ public class ReviewFormSummaryResponse {
         return new ReviewFormSummaryResponse(
             reviewForm.getTitle(),
             reviewForm.getCode(),
-            // todo
-            CreatorResponse.from(MemberDto.from(reviewForm.getMember()))
+            CreatorResponse.from(MemberResponse.from(reviewForm.getMember()))
         );
     }
 }
