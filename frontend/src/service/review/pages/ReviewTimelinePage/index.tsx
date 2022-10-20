@@ -139,6 +139,7 @@ function ReviewTimelinePage() {
               />
 
               <Questions>
+                <Questions.Title subtitle={info.reviewTitle || ''} />
                 <Questions.EditButtons
                   className={styles.questionEdit}
                   isVisible={info.isSelf}

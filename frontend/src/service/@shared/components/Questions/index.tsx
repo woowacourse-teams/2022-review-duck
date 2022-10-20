@@ -51,7 +51,7 @@ function CoverProfile({
 }
 
 interface TitleProps {
-  children: string;
+  children?: string;
   isPrivate?: boolean;
   subtitle?: string;
 }
