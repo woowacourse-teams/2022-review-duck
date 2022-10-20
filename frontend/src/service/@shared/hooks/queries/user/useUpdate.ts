@@ -10,6 +10,7 @@ function useUpdateProfile(mutationOptions?: UseCustomMutationOptions<UpdateProfi
   return useMutation(userAPI.updateProfile, {
     onSuccess: () => {
       queryClient.invalidateQueries([QUERY_KEY.DATA.USER, QUERY_KEY.API.GET_USER_PROFILE]);
+      queryClient.invalidateQueries([QUERY_KEY.DATA.AUTH]);
     },
     ...mutationOptions,
   });
