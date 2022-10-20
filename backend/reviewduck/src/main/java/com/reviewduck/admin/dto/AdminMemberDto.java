@@ -1,6 +1,7 @@
 package com.reviewduck.admin.dto;
 
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.response.MemberDto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,5 +25,13 @@ public class AdminMemberDto {
 
     public boolean getIsAdmin() {
         return isAdmin;
+    }
+
+    public static AdminMemberDto getMemberNotLogin() {
+        return new AdminMemberDto(
+            false,
+            -1,
+            "not-login"
+        );
     }
 }

@@ -36,7 +36,7 @@ public class AdminAuthenticationPrincipalArgumentResolver implements HandlerMeth
         HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
 
         if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
-            return AdminMemberDto.from(Member.getMemberNotLogin());
+            return AdminMemberDto.getMemberNotLogin();
         }
 
         String token = AuthorizationExtractor.extract(request);
