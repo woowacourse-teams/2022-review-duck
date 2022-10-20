@@ -29,6 +29,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.rest-assured:rest-assured:4.4.0'
+	testImplementation "org.testcontainers:mysql:1.17.5"
 	implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.0'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
