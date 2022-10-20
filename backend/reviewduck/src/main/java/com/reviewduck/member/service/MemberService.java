@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
@@ -27,7 +26,7 @@ public class MemberService {
 
     public Member findById(long id) {
         return memberRepository.findById(id)
-            .orElseThrow(() -> new AuthorizationException("존재하지 않는 사용자입니다."));
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
     }
 
     public Member findBySocialId(String socialId) {

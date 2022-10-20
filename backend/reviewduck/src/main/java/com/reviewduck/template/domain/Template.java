@@ -86,7 +86,7 @@ public class Template extends BaseDate {
     }
 
     public boolean isMine(long memberId) {
-        return this.member.isSameId(memberId);
+        return member.isSameId(memberId);
     }
 
     private List<TemplateQuestion> createQuestionsFrom(List<TemplateQuestionCreateDto> questions) {

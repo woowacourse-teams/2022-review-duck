@@ -22,11 +22,16 @@ public enum ReviewEditResponseBuilder {
     public static ReviewEditResponse createResponseFrom(Review review) {
         ReviewForm reviewForm = review.getReviewForm();
 
-        return Arrays.stream(values())
-            .filter(it -> it.isActive() == reviewForm.isActive())
-            .findFirst()
-            .orElse(NON_SYNC)
-            .getResponseBuilder()
-            .apply(review);
+        if (reviewForm.isActive()) {
+            return SYNC.responseBuilder.apply(review);
+        }
+        return NON_SYNC.responseBuilder.apply(review);
+
+        // return Arrays.stream(values())
+        //     .filter(it -> it.isActive() == reviewForm.isActive())
+        //     .findFirst()
+        //     .orElse(NON_SYNC)
+        //     .getResponseBuilder()
+        //     .apply(review);
     }
 }

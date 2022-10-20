@@ -85,16 +85,6 @@ public class ReviewController {
         aggregator.update(member.getId(), reviewId, request);
     }
 
-    @Operation(summary = "회고 답변을 삭제한다.")
-    @DeleteMapping("/{reviewId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@AuthenticationPrincipal MemberDto member, @PathVariable Long reviewId) {
-
-        info("/api/reviews/" + reviewId, "DELETE", "");
-
-        aggregator.delete(member.getId(), reviewId);
-    }
-
     @Operation(summary = "좋아요 개수를 더한다.")
     @PostMapping("/{reviewId}/likes")
     @ResponseStatus(HttpStatus.OK)
@@ -103,5 +93,15 @@ public class ReviewController {
         info("/api/reviews/" + reviewId + "/likes", "POST", request.toString());
 
         return aggregator.likes(reviewId, request.getLikes());
+    }
+
+    @Operation(summary = "회고 답변을 삭제한다.")
+    @DeleteMapping("/{reviewId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@AuthenticationPrincipal MemberDto member, @PathVariable Long reviewId) {
+
+        info("/api/reviews/" + reviewId, "DELETE", "");
+
+        aggregator.delete(member.getId(), reviewId);
     }
 }

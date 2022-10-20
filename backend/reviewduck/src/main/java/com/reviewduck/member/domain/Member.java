@@ -8,14 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Transient;
 
 import org.hibernate.Hibernate;
 
 import com.reviewduck.common.domain.BaseDate;
 import com.reviewduck.member.exception.MemberException;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,8 +22,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 public class Member extends BaseDate {
 
-    @Transient
-    private static final Member MEMBER_NOT_LOGIN = new Member(-1L, "-1", "socialNickname", "nickname", "url");
     private static final String deletedInfo = "-";
     private static final String deletedNickname = "탈퇴한 회원입니다.";
 
@@ -60,10 +56,6 @@ public class Member extends BaseDate {
 
     public Member(String socialId, String socialNickname, String nickname, String profileUrl) {
         this(null, socialId, socialNickname, nickname, profileUrl);
-    }
-
-    public static Member getMemberNotLogin() {
-        return MEMBER_NOT_LOGIN;
     }
 
     public void updateNickname(String nickname) {

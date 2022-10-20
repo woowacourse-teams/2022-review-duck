@@ -77,7 +77,7 @@ public class ReviewForm extends BaseDate {
     }
 
     public boolean isMine(long memberId) {
-        return this.member.isSameId(memberId);
+        return member.isSameId(memberId);
     }
 
     private List<ReviewFormQuestion> createQuestionsFrom(List<ReviewFormQuestionCreateDto> questions) {
