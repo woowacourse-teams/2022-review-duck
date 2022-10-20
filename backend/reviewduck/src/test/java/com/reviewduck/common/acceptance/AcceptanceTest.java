@@ -13,7 +13,6 @@ import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.member.service.MemberService;
 
 import io.restassured.RestAssured;

@@ -29,4 +29,4 @@ public enum CacheType {
             .maximumSize(maxSize)
             .build());
     }
-    }
+}

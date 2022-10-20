@@ -3,6 +3,7 @@ package com.reviewduck.admin.controller;
 import static com.reviewduck.common.util.Logging.*;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/admin/templates")
 @AllArgsConstructor
+@Transactional(readOnly = true)
 @Slf4j
 public class AdminTemplateController {
 
@@ -38,9 +40,10 @@ public class AdminTemplateController {
         info("api/admin/templates", "GET", "");
 
         validateAdmin(member);
-        return adminTemplateAggregator.findAll();
+        return adminTemplateAggregator.findAllTemplates();
     }
 
+    @Transactional
     @Operation(summary = "템플릿을 삭제한다")
     @DeleteMapping("/{templateId}")
     @ResponseStatus(HttpStatus.OK)
@@ -49,7 +52,7 @@ public class AdminTemplateController {
         info("api/admin/templates/" + templateId, "DELETE", "");
 
         validateAdmin(member);
-        adminTemplateAggregator.deleteTemplateById(templateId);
+        adminTemplateAggregator.deleteTemplate(templateId);
     }
 
     @Operation(summary = "단일 템플릿을 조회한다")
@@ -61,23 +64,23 @@ public class AdminTemplateController {
         info("api/admin/templates/" + templateId, "GET", "");
 
         validateAdmin(member);
-        return adminTemplateAggregator.findById(templateId);
+        return adminTemplateAggregator.findTemplate(templateId);
     }
 
     @Operation(summary = "사용자가 생성한 템플릿을 모두 조회한다.")
     @GetMapping(params = "memberId")
     @ResponseStatus(HttpStatus.OK)
-    public AdminTemplatesResponse findAllTemplatesByMemberId(@AdminAuthenticationPrincipal AdminMemberDto member,
+    public AdminTemplatesResponse findMemberTemplates(@AdminAuthenticationPrincipal AdminMemberDto member,
         @RequestParam(value = "memberId") long memberId) {
 
         info("/api/templates?memberId=" + memberId, "GET", "");
 
         validateAdmin(member);
-        return adminTemplateAggregator.findTemplatesByMemberId(memberId);
+        return adminTemplateAggregator.findMemberTemplates(memberId);
     }
 
     private void validateAdmin(AdminMemberDto member) {
-        if (!member.getIsAdmin()) {
+        if (!member.isAdmin()) {
             throw new AuthorizationException("어드민 권한이 없습니다.");
         }
     }

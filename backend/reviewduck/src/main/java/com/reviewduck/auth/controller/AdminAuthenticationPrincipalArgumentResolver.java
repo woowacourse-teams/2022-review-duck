@@ -10,11 +10,11 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import com.reviewduck.admin.dto.AdminMemberDto;
+import com.reviewduck.admin.service.AdminMemberService;
+import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.support.AdminAuthenticationPrincipal;
 import com.reviewduck.auth.support.AuthorizationExtractor;
 import com.reviewduck.auth.support.JwtTokenProvider;
-import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.service.MemberService;
 
 import lombok.AllArgsConstructor;
 
@@ -22,7 +22,7 @@ import lombok.AllArgsConstructor;
 public class AdminAuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final MemberService memberService;
+    private final AdminMemberService adminMemberService;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -36,7 +36,7 @@ public class AdminAuthenticationPrincipalArgumentResolver implements HandlerMeth
         HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
 
         if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
-            return AdminMemberDto.getMemberNotLogin();
+            throw new AuthorizationException("권한이 없는 사용자입니다.");
         }
 
         String token = AuthorizationExtractor.extract(request);
@@ -45,6 +45,6 @@ public class AdminAuthenticationPrincipalArgumentResolver implements HandlerMeth
 
         long memberId = Long.parseLong(jwtTokenProvider.getAccessTokenPayload(token));
 
-        return AdminMemberDto.from(memberService.findById(memberId));
+        return AdminMemberDto.from(adminMemberService.findMemberById(memberId));
     }
 }

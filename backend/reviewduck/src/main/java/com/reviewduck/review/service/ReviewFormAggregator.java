@@ -2,13 +2,12 @@ package com.reviewduck.review.service;
 
 import java.util.List;
 
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.common.annotation.Aggregator;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.dto.response.MemberDto;
+import com.reviewduck.member.dto.MemberDto;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;

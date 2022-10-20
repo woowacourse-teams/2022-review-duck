@@ -2,20 +2,17 @@ package com.reviewduck.admin.service;
 
 import java.util.List;
 
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.reviewduck.admin.dto.response.AdminReviewFormResponse;
 import com.reviewduck.admin.dto.response.AdminReviewFormsResponse;
 import com.reviewduck.admin.dto.response.AdminReviewResponse;
 import com.reviewduck.admin.dto.response.AdminReviewsResponse;
+import com.reviewduck.common.annotation.Aggregator;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 
 import lombok.AllArgsConstructor;
 
-@Component
-@Transactional(readOnly = true)
+@Aggregator
 @AllArgsConstructor
 public class AdminReviewAggregator {
 
@@ -27,19 +24,19 @@ public class AdminReviewAggregator {
         return AdminReviewFormsResponse.from(reviewForms);
     }
 
-    public AdminReviewFormsResponse findReviewFormsByMemberId(Long memberId) {
+    public AdminReviewFormsResponse findMemberReviewForms(long memberId) {
         List<ReviewForm> reviewForms = adminReviewFormService.findByMemberId(memberId);
         return AdminReviewFormsResponse.from(reviewForms);
     }
 
-    public AdminReviewFormResponse findReviewFormByCode(String reviewFormCode) {
+    public AdminReviewFormResponse findReviewForm(String reviewFormCode) {
         ReviewForm reviewForm = adminReviewFormService.findByCode(reviewFormCode);
         List<Review> reviews = adminReviewService.findAllByReviewForm(reviewForm);
 
         return AdminReviewFormResponse.of(reviewForm, reviews);
     }
 
-    public void deleteReviewFormById(Long reviewFormId) {
+    public void deleteReviewForm(long reviewFormId) {
         adminReviewFormService.deleteReviewFormById(reviewFormId);
     }
 
@@ -48,17 +45,17 @@ public class AdminReviewAggregator {
         return AdminReviewsResponse.from(reviews);
     }
 
-    public AdminReviewResponse findReviewByReviewId(Long reviewId) {
+    public AdminReviewResponse findReview(long reviewId) {
         Review review = adminReviewService.findById(reviewId);
         return AdminReviewResponse.from(review);
     }
 
-    public AdminReviewsResponse findAllReviewsByMemberId(Long memberId) {
+    public AdminReviewsResponse findMemberReviews(long memberId) {
         List<Review> reviews = adminReviewService.findByMemberId(memberId);
         return AdminReviewsResponse.from(reviews);
     }
 
-    public void deleteReviewById(Long reviewId) {
+    public void deleteReview(long reviewId) {
         adminReviewService.deleteReviewById(reviewId);
     }
 }

@@ -1,7 +1,7 @@
 package com.reviewduck.admin.dto;
 
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.dto.response.MemberDto;
+import com.reviewduck.member.dto.MemberDto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,6 +10,8 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class AdminMemberDto {
+
+    private static final AdminMemberDto MEMBER_NOT_LOGIN = new AdminMemberDto(false, -1, "not-login");
 
     private boolean isAdmin;
     private long id;
@@ -23,15 +25,7 @@ public class AdminMemberDto {
         );
     }
 
-    public boolean getIsAdmin() {
-        return isAdmin;
-    }
-
     public static AdminMemberDto getMemberNotLogin() {
-        return new AdminMemberDto(
-            false,
-            -1,
-            "not-login"
-        );
+        return MEMBER_NOT_LOGIN;
     }
 }

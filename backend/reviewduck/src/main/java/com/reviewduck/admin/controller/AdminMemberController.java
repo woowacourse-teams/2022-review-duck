@@ -1,6 +1,7 @@
 package com.reviewduck.admin.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/admin/members")
 @AllArgsConstructor
+@Transactional(readOnly = true)
 @Slf4j
 public class AdminMemberController {
 
@@ -48,22 +50,23 @@ public class AdminMemberController {
         Logging.info("api/admin/members" + memberId, "GET", "");
 
         validateAdmin(member);
-        return adminMemberAggregator.findMemberById(memberId);
+        return adminMemberAggregator.findMember(memberId);
     }
 
     @Operation(summary = "사용자를 탈퇴시킨다")
     @DeleteMapping("/{memberId}")
     @ResponseStatus(HttpStatus.OK)
+    @Transactional
     public void deleteMember(@AdminAuthenticationPrincipal AdminMemberDto member, @PathVariable long memberId) {
 
         Logging.info("api/admin/members/" + memberId, "DELETE", "");
 
         validateAdmin(member);
-        adminMemberAggregator.deleteMemberById(member);
+        adminMemberAggregator.deleteMember(member);
     }
 
     private void validateAdmin(AdminMemberDto member) {
-        if (!member.getIsAdmin()) {
+        if (!member.isAdmin()) {
             throw new AuthorizationException("어드민 권한이 없습니다.");
         }
     }

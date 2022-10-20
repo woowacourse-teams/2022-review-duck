@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.dto.request.MemberUpdateNicknameRequest;
-import com.reviewduck.member.dto.response.MemberDto;
+import com.reviewduck.member.dto.MemberDto;
 import com.reviewduck.member.dto.response.MemberResponse;
 import com.reviewduck.member.service.MemberAggregator;
 

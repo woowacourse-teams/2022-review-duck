@@ -5,20 +5,20 @@ import java.util.List;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.admin.dto.AdminMemberDto;
 import com.reviewduck.admin.dto.response.AdminMemberResponse;
 import com.reviewduck.admin.dto.response.AdminMembersResponse;
+import com.reviewduck.common.annotation.Aggregator;
 import com.reviewduck.member.domain.Member;
 
 import lombok.AllArgsConstructor;
 
-@Component
-@Transactional(readOnly = true)
+@Aggregator
 @AllArgsConstructor
 public class AdminMemberAggregator {
+
     private final AdminMemberService adminMemberService;
 
     public AdminMembersResponse findAllMembers() {
@@ -27,7 +27,7 @@ public class AdminMemberAggregator {
     }
 
     @Cacheable(value = "memberCacheStore", key = "#memberId")
-    public AdminMemberResponse findMemberById(Long memberId) {
+    public AdminMemberResponse findMember(long memberId) {
         Member foundMember = adminMemberService.findMemberById(memberId);
         return AdminMemberResponse.from(foundMember);
     }
@@ -37,7 +37,7 @@ public class AdminMemberAggregator {
         @CacheEvict(value = "memberCacheStore", key = "#member.id"),
         @CacheEvict(value = "memberCacheStore", key = "#member.socialId")
     })
-    public void deleteMemberById(AdminMemberDto member) {
+    public void deleteMember(AdminMemberDto member) {
         adminMemberService.deleteMemberById(member.getId());
     }
 }

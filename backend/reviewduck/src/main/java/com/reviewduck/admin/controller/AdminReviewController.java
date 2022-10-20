@@ -3,6 +3,7 @@ package com.reviewduck.admin.controller;
 import static com.reviewduck.common.util.Logging.*;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/admin")
 @AllArgsConstructor
+@Transactional(readOnly = true)
 @Slf4j
 public class AdminReviewController {
 
@@ -47,13 +49,13 @@ public class AdminReviewController {
     @Operation(summary = "사용자가 작성한 회고 폼을 모두 조회한다.")
     @GetMapping(value = "/review-forms", params = "memberId")
     @ResponseStatus(HttpStatus.OK)
-    public AdminReviewFormsResponse findAllReviewFormsByMemberId(@AdminAuthenticationPrincipal AdminMemberDto member,
+    public AdminReviewFormsResponse findMemberReviewForms(@AdminAuthenticationPrincipal AdminMemberDto member,
         @RequestParam(value = "memberId") long memberId) {
 
         info("/api/review-forms?memberId=" + memberId, "GET", "");
 
         validateAdmin(member);
-        return adminReviewAggregator.findReviewFormsByMemberId(memberId);
+        return adminReviewAggregator.findMemberReviewForms(memberId);
     }
 
     @Operation(summary = "단일 회고 폼을 조회한다")
@@ -65,9 +67,10 @@ public class AdminReviewController {
         Logging.info("api/admin/review-forms/" + reviewFormCode, "GET", "");
 
         validateAdmin(member);
-        return adminReviewAggregator.findReviewFormByCode(reviewFormCode);
+        return adminReviewAggregator.findReviewForm(reviewFormCode);
     }
 
+    @Transactional
     @Operation(summary = "회고 폼을 삭제한다")
     @DeleteMapping("/review-forms/{reviewFormId}")
     @ResponseStatus(HttpStatus.OK)
@@ -76,7 +79,7 @@ public class AdminReviewController {
         Logging.info("api/admin/review-forms/" + reviewFormId, "DELETE", "");
 
         validateAdmin(member);
-        adminReviewAggregator.deleteReviewFormById(reviewFormId);
+        adminReviewAggregator.deleteReviewForm(reviewFormId);
     }
 
     @Operation(summary = "작성된 회고 답변을 모두 조회한다")
@@ -94,39 +97,40 @@ public class AdminReviewController {
     @GetMapping("/reviews/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
     public AdminReviewResponse findReview(@AdminAuthenticationPrincipal AdminMemberDto member,
-        @PathVariable Long reviewId) {
+        @PathVariable long reviewId) {
 
         Logging.info("api/admin/reviews/" + reviewId, "GET", "");
 
         validateAdmin(member);
-        return adminReviewAggregator.findReviewByReviewId(reviewId);
+        return adminReviewAggregator.findReview(reviewId);
     }
 
     @Operation(summary = "사용자가 작성한 회고 답변을 모두 조회한다.")
     @GetMapping(value = "/reviews", params = "memberId")
     @ResponseStatus(HttpStatus.OK)
-    public AdminReviewsResponse findAllReviewsByMemberId(@AdminAuthenticationPrincipal AdminMemberDto member,
-        @RequestParam(value = "memberId") Long memberId) {
+    public AdminReviewsResponse findMemberReviews(@AdminAuthenticationPrincipal AdminMemberDto member,
+        @RequestParam(value = "memberId") long memberId) {
 
         info("/api/reviews?memberId=" + memberId, "GET", "");
 
         validateAdmin(member);
-        return adminReviewAggregator.findAllReviewsByMemberId(memberId);
+        return adminReviewAggregator.findMemberReviews(memberId);
     }
 
+    @Transactional
     @Operation(summary = "회고 답변을 삭제한다")
     @DeleteMapping("/reviews/{reviewId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteReview(@AdminAuthenticationPrincipal AdminMemberDto member, @PathVariable Long reviewId) {
+    public void deleteReview(@AdminAuthenticationPrincipal AdminMemberDto member, @PathVariable long reviewId) {
 
         Logging.info("api/admin/reviews/" + reviewId, "DELETE", "");
 
         validateAdmin(member);
-        adminReviewAggregator.deleteReviewById(reviewId);
+        adminReviewAggregator.deleteReview(reviewId);
     }
 
     private void validateAdmin(AdminMemberDto member) {
-        if (!member.getIsAdmin()) {
+        if (!member.isAdmin()) {
             throw new AuthorizationException("어드민 권한이 없습니다.");
         }
     }
