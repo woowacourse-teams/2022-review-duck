@@ -1,15 +1,18 @@
 package com.reviewduck.common.acceptance;
 
+import java.util.Objects;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.member.service.MemberService;
 
 import io.restassured.RestAssured;
@@ -24,8 +27,12 @@ public class AcceptanceTest {
 
     @Autowired
     protected JwtTokenProvider jwtTokenProvider;
+
     @Autowired
     protected MemberService memberService;
+
+    @Autowired
+    protected CacheManager cacheManager;
 
     protected final long INVALID_REVIEW_ID = 99L;
     protected final String INVALID_CODE = "aaaaaaaa";
@@ -40,6 +47,13 @@ public class AcceptanceTest {
     public void setUp() {
         RestAssured.port = port;
         createMemberAndGetAccessToken();
+    }
+
+    @AfterEach
+    public void clearCaches() {
+        for (String cacheName : cacheManager.getCacheNames()) {
+            Objects.requireNonNull(cacheManager.getCache(cacheName)).clear();
+        }
     }
 
     private void createMemberAndGetAccessToken() {

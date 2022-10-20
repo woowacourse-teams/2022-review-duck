@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.common.annotation.Aggregator;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.dto.response.MemberDto;
+import com.reviewduck.member.dto.MemberDto;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
@@ -62,7 +62,7 @@ public class ReviewFormAggregator {
         reviewFormService.deleteByCode(memberId, reviewFormCode);
     }
 
-    /* -- 회고 질문지 관련 메서드 -- */
+    /* -- 회고 답변 관련 메서드 -- */
     @Transactional
     public void createReview(long memberId, String reviewFormCode, ReviewCreateRequest request) {
         reviewService.save(memberId, reviewFormCode, request);

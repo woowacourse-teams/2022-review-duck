@@ -9,11 +9,10 @@ import com.reviewduck.admin.repository.AdminMemberRepository;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 @Service
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Transactional(readOnly = true)
 public class AdminMemberService {
 

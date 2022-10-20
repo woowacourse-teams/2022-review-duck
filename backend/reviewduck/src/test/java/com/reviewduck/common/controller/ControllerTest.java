@@ -13,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.reviewduck.admin.service.AdminMemberService;
 import com.reviewduck.auth.controller.AuthController;
 import com.reviewduck.auth.service.AuthService;
 import com.reviewduck.auth.support.JwtTokenProvider;
@@ -44,6 +45,8 @@ public class ControllerTest {
     protected AuthService authService;
     @MockBean
     protected MemberService memberService;
+    @MockBean
+    protected AdminMemberService adminMemberService;
     @MockBean
     protected ReviewService reviewService;
     @MockBean

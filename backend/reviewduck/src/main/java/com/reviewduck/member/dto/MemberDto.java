@@ -1,4 +1,4 @@
-package com.reviewduck.member.dto.response;
+package com.reviewduck.member.dto;
 
 import com.reviewduck.member.domain.Member;
 
