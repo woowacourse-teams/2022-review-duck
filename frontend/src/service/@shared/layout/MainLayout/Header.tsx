@@ -5,11 +5,13 @@ import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { faPenToSquare, faRightFromBracket, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST } from 'constant';
+import { GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST, RULE } from 'constant';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useAuth from 'service/@shared/hooks/useAuth';
 import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
+
+import { getErrorMessage } from 'service/@shared/utils';
 
 import { Button, Logo, Text, TextBox, FlexContainer, SelectPopup } from 'common/components';
 
@@ -20,9 +22,10 @@ import imageDefaultProfile from 'assets/images/profile.png';
 import styles from './styles.module.scss';
 
 import { UserAgentContext } from 'common/contexts/UserAgent';
+import { validateSearch } from 'service/@shared/validator';
 
 function Header() {
-  const { isPC, isMobile } = useContext(UserAgentContext);
+  const { isPC } = useContext(UserAgentContext);
   const { isLogin, getUserProfileQuery } = useAuth();
   const { navigate, handleLinkPage } = useNavigateHandler();
 
@@ -42,16 +45,16 @@ function Header() {
     const formData = new FormData(event.currentTarget);
     const searchKeyword = formData.get('search')?.toString() || '';
 
-    if (!searchKeyword) {
+    try {
+      validateSearch(searchKeyword);
+      navigate(`${PAGE_LIST.TEMPLATE_LIST}?search=${searchKeyword}`);
+    } catch (error) {
       snackbar.show({
         theme: 'warning',
         title: '검색어를 입력해주세요.',
-        description: '템플릿 검색은 최소 1자 이상 입력하여야 합니다.',
+        description: getErrorMessage(error),
       });
-      return;
     }
-
-    navigate(`${PAGE_LIST.TEMPLATE_LIST}?search=${searchKeyword}`);
   };
 
   return (
@@ -74,7 +77,12 @@ function Header() {
           align="center"
           onSubmit={handleSubmitSearchTemplate}
         >
-          <TextBox name="search" placeholder="회고를 위한 템플릿 검색" />
+          <TextBox
+            name="search"
+            placeholder="회고를 위한 템플릿 검색"
+            minLength={RULE.SEARCH_MIN_LENGTH}
+            maxLength={RULE.SEARCH_MAX_LENGTH}
+          />
 
           <button type="submit" className={styles.searchButton}>
             <FontAwesomeIcon icon={faSearch} />
