@@ -9,9 +9,12 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.auth.support.AuthorizationExtractor;
 import com.reviewduck.auth.support.JwtTokenProvider;
+import com.reviewduck.common.exception.NotFoundException;
+import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.response.MemberDto;
 import com.reviewduck.member.service.MemberService;
 
@@ -44,6 +47,14 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
         long memberId = Long.parseLong(jwtTokenProvider.getAccessTokenPayload(token));
 
-        return MemberDto.from(memberService.findById(memberId));
+        return MemberDto.from(getMember(memberId));
+    }
+
+    private Member getMember(long memberId) {
+        try {
+            return memberService.findById(memberId);
+        } catch (NotFoundException e) {
+            throw new AuthorizationException("존재하지 않는 사용자입니다.");
+        }
     }
 }
