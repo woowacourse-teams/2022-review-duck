@@ -17,14 +17,14 @@ public class CacheController {
 
     private final CacheManager cacheManager;
 
-    @Operation(summary = "Member Cache metric을 조회한다.")
+    @Operation(summary = "Member Cache Metric을 조회한다.")
     @GetMapping("/metrics/cache/member")
     public CacheMetricsResponse getMemberCacheMetrics() {
         CacheStats stats = ((CaffeineCache)cacheManager.getCache("memberCacheStore")).getNativeCache().stats();
         return CacheMetricsResponse.from(stats);
     }
 
-    @Operation(summary = "Template Cache metric을 조회한다.")
+    @Operation(summary = "Template Cache Metric을 조회한다.")
     @GetMapping("/metrics/cache/template")
     public CacheMetricsResponse getTemplateCacheMetrics() {
         CacheStats stats = ((CaffeineCache)cacheManager.getCache("templateCacheStore")).getNativeCache().stats();

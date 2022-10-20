@@ -1,5 +1,6 @@
 package com.reviewduck.member.service;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.common.annotation.Aggregator;
@@ -14,11 +15,13 @@ public class MemberAggregator {
 
     private final MemberService memberService;
 
+    @Cacheable(value = "memberCacheStore", key = "#myMemberId")
     public MemberResponse findMemberInfo(String socialId, long myMemberId) {
         Member member = memberService.findBySocialId(socialId);
         return MemberResponse.of(member, myMemberId);
     }
 
+    @Cacheable(value = "memberCacheStore", key = "#memberId")
     public MemberResponse findMyInfo(long memberId) {
         Member member = memberService.findById(memberId);
         return MemberResponse.from(member);

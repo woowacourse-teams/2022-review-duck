@@ -4,6 +4,8 @@ import static com.reviewduck.common.util.Logging.*;
 
 import javax.validation.Valid;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,6 +55,10 @@ public class MemberController {
     @Operation(summary = "본인의 닉네임을 변경한다.")
     @PutMapping("/me")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Caching(evict = {
+        @CacheEvict(value = "memberCacheStore", key = "#member.id"),
+        @CacheEvict(value = "memberCacheStore", key = "#member.socialId")
+    })
     public void updateMyNickname(@AuthenticationPrincipal MemberDto member, @Valid @RequestBody
         MemberUpdateNicknameRequest request) {
 

@@ -59,7 +59,7 @@ public class AdminMemberController {
         Logging.info("api/admin/members/" + memberId, "DELETE", "");
 
         validateAdmin(member);
-        adminMemberAggregator.deleteMemberById(memberId);
+        adminMemberAggregator.deleteMemberById(member);
     }
 
     private void validateAdmin(AdminMemberDto member) {
