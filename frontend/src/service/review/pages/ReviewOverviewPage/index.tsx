@@ -116,7 +116,7 @@ function ReviewOverViewPage() {
               isLoading={isFormLoading}
               fallback={<Skeleton line={4} />}
             >
-              <ListView.ParticipantList listLength={reviewForm?.participants?.length}>
+              <ListView.ParticipantList>
                 {reviewForm?.participants?.map((user) => (
                   <Profile
                     key={user.id}
@@ -168,6 +168,7 @@ function ReviewOverViewPage() {
               ))}
               {isReviewsFetching && <ListView.Loading line={PAGE_OPTION.REVIEW_ITEM_SIZE} />}
             </ListView.Content>
+
             <ListView.SideMenu isLoading={isFormLoading} fallback={<Skeleton line={3} />}>
               <ListView.FormDetail
                 reviewFormCode={reviewFormCode}
