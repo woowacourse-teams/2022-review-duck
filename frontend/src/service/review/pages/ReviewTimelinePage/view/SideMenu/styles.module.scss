@@ -2,7 +2,7 @@
 
 .component-side-menu {
   position: sticky;
-  top: 7.6rem; /* 레이아웃 헤더 Sass Variable 선언 처리하기 */
+  top: 7.2rem; /* 레이아웃 헤더 Sass Variable 선언 처리하기 */
   align-self: start;
 
   @include mobile {
