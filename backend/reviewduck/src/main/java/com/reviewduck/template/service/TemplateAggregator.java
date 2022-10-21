@@ -3,6 +3,7 @@ package com.reviewduck.template.service;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,7 @@ public class TemplateAggregator {
     private final MemberService memberService;
 
     @Transactional
+    @CacheEvict(value = "templatesCacheStore", allEntries = true)
     public TemplateIdResponse save(long memberId, TemplateCreateRequest request) {
         Member member = memberService.findById(memberId);
 
@@ -79,13 +81,19 @@ public class TemplateAggregator {
     }
 
     @Transactional
-    @CachePut(value = "templateCacheStore", key = "#templateId")
+    @Caching(evict = {
+        @CacheEvict(value = "templateCacheStore", key = "#templateId"),
+        @CacheEvict(value = "templatesCacheStore", allEntries = true)
+    })
     public void update(long memberId, long templateId, TemplateUpdateRequest request) {
         templateService.update(memberId, templateId, request);
     }
 
     @Transactional
-    @CacheEvict(value = "templateCacheStore", key = "#templateId")
+    @Caching(evict = {
+        @CacheEvict(value = "templateCacheStore", key = "#templateId"),
+        @CacheEvict(value = "templatesCacheStore", allEntries = true)
+    })
     public void delete(long memberId, long templateId) {
         templateService.deleteById(memberId, templateId);
     }
