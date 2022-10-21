@@ -16,7 +16,7 @@ public class MemberAggregator {
 
     private final MemberService memberService;
 
-    @Cacheable(value = "memberCacheStore", key = "#myMemberId")
+    @Cacheable(value = "memberCacheStore", key = "#socialId")
     public MemberResponse findMemberInfo(String socialId, long myMemberId) {
         Member member = memberService.findBySocialId(socialId);
         return MemberResponse.of(member, myMemberId);
