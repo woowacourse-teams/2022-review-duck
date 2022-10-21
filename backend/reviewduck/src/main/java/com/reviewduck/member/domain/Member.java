@@ -8,9 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
 
 import org.hibernate.Hibernate;
 
@@ -25,8 +22,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 public class Member extends BaseDate {
 
-    @Transient
-    private static final Member MEMBER_NOT_LOGIN = new Member("-1", "socialNickname", "nickname", "url");
     private static final String deletedInfo = "-";
     private static final String deletedNickname = "탈퇴한 회원입니다.";
 
@@ -44,17 +39,23 @@ public class Member extends BaseDate {
 
     private boolean isAdmin;
 
-    public Member(String socialId, String socialNickname, String nickname, String profileUrl) {
+    public Member(final Long id, final String socialId, final String socialNickname, final String nickname,
+        final String profileUrl, final boolean isAdmin) {
         validate(nickname);
+        this.id = id;
         this.socialId = socialId;
         this.socialNickname = socialNickname;
         this.nickname = nickname;
         this.profileUrl = profileUrl;
-        this.isAdmin = false;
+        this.isAdmin = isAdmin;
     }
 
-    public static Member getMemberNotLogin() {
-        return MEMBER_NOT_LOGIN;
+    public Member(Long id, String socialId, String socialNickname, String nickname, String profileUrl) {
+        this(id, socialId, socialNickname, nickname, profileUrl, false);
+    }
+
+    public Member(String socialId, String socialNickname, String nickname, String profileUrl) {
+        this(null, socialId, socialNickname, nickname, profileUrl);
     }
 
     public void updateNickname(String nickname) {
@@ -78,6 +79,10 @@ public class Member extends BaseDate {
         return this.isAdmin;
     }
 
+    public boolean isSameId(long memberId) {
+        return memberId == id;
+    }
+
     private void validate(String nickname) {
         if (nickname == null || nickname.isBlank()) {
             throw new MemberException("닉네임이 비어있을 수 없습니다.");
@@ -91,7 +96,7 @@ public class Member extends BaseDate {
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o))
             return false;
         Member member = (Member)o;
-        return id != null && Objects.equals(id, member.id);
+        return id != null && Objects.equals(id, member.getId());
     }
 
     @Override

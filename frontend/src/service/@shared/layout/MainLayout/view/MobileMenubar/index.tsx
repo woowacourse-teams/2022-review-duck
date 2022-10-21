@@ -1,11 +1,16 @@
 import { useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { faFeather } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import cn from 'classnames';
 
 import useNavigateHandler from 'service/@shared/hooks/useNavigateHandler';
 
-import { FlexContainer } from 'common/components';
+import { Button, FlexContainer } from 'common/components';
+
+import useModal from 'service/@shared/components/ModalProvider/useModal';
 
 import styles from './styles.module.scss';
 
@@ -14,7 +19,27 @@ interface MenuContainerProps {
 }
 
 function Container({ children }: MenuContainerProps) {
-  return <nav className={styles.layoutComponentMobileMenubar}>{children}</nav>;
+  const modal = useModal();
+
+  const handleReviewStart = () => {
+    modal.show({ key: 'ModalReviewStart' });
+  };
+
+  return (
+    <nav className={styles.layoutComponentMobileMenubar}>
+      {children}
+
+      <Button
+        type="button"
+        className={styles.floatingButton}
+        theme="circle"
+        size="large"
+        onClick={handleReviewStart}
+      >
+        <FontAwesomeIcon icon={faFeather} />
+      </Button>
+    </nav>
+  );
 }
 
 interface MenuItemProps {

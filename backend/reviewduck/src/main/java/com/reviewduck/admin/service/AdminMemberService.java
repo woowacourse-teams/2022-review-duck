@@ -9,11 +9,10 @@ import com.reviewduck.admin.repository.AdminMemberRepository;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 @Service
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Transactional(readOnly = true)
 public class AdminMemberService {
 
@@ -23,13 +22,13 @@ public class AdminMemberService {
         return memberRepository.findAll();
     }
 
-    public Member findMemberById(Long memberId) {
+    public Member findMemberById(long memberId) {
         return memberRepository.findById(memberId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
     }
 
     @Transactional
-    public void deleteMemberById(Long memberId) {
+    public void deleteMemberById(long memberId) {
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
 

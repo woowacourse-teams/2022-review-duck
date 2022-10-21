@@ -2,13 +2,11 @@ package com.reviewduck.review.controller;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,8 +14,7 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.springframework.http.MediaType;
 
-import com.reviewduck.controller.ControllerTest;
-import com.reviewduck.member.domain.Member;
+import com.reviewduck.common.controller.ControllerTest;
 import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
@@ -27,13 +24,6 @@ import com.reviewduck.review.dto.controller.request.ReviewFormQuestionUpdateRequ
 import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
 
 public class ReviewFormControllerTest extends ControllerTest {
-
-    @BeforeEach
-    void createMemberAndGetAccessToken() {
-        Member member = new Member("1", "jason", "제이슨", "profileUrl");
-        given(jwtTokenProvider.getAccessTokenPayload(any())).willReturn("1");
-        given(memberService.findById(any())).willReturn(member);
-    }
 
     @Nested
     @DisplayName("회고 폼 생성시")

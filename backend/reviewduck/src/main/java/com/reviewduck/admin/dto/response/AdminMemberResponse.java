@@ -12,7 +12,7 @@ import lombok.Getter;
 @Getter
 public class AdminMemberResponse {
 
-    private Long id;
+    private long id;
     private String socialId;
     private String socialNickname;
     private String nickname;

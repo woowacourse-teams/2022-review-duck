@@ -1,5 +1,5 @@
-import { Suspense, useContext, useEffect, useMemo, useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Suspense, useContext } from 'react';
+import { Outlet } from 'react-router-dom';
 
 import { faHome, faUser, faCompass, faRocket } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,7 +8,7 @@ import { PAGE_LIST } from 'constant';
 
 import useAuth from 'service/@shared/hooks/useAuth';
 
-import { ErrorBoundary, Text } from 'common/components';
+import { ErrorBoundary } from 'common/components';
 
 import PageSuspense from 'common/components/PageSuspense';
 

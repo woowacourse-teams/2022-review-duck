@@ -1,29 +1,18 @@
 package com.reviewduck.member.controller;
 
 import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.http.MediaType;
 
-import com.reviewduck.controller.ControllerTest;
-import com.reviewduck.member.domain.Member;
+import com.reviewduck.common.controller.ControllerTest;
 import com.reviewduck.member.dto.request.MemberUpdateNicknameRequest;
 
 public class MemberControllerTest extends ControllerTest {
-
-    @BeforeEach
-    void createMemberAndGetAccessToken() {
-        Member member = new Member("1", "jason", "제이슨", "profileUrl");
-        given(jwtTokenProvider.getAccessTokenPayload(any())).willReturn("1");
-        given(memberService.findById(any())).willReturn(member);
-    }
 
     @ParameterizedTest
     @NullAndEmptySource

@@ -90,9 +90,14 @@ function Header() {
         </FlexContainer>
 
         <ul className={styles.menuList}>
-          <Link to="/pending">
+          <a
+            href="https://sites.google.com/woowahan.com/woowacourse-demo-4th/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8/%ED%9A%8C%EA%B3%A0%EB%8D%95?authuser=0"
+            target="_blank"
+            rel=" noopener noreferrer"
+          >
             <li className={styles.item}>회고덕 소개</li>
-          </Link>
+          </a>
+
           <Link to={PAGE_LIST.TEMPLATE_LIST}>
             <li className={styles.item}>템플릿 탐색</li>
           </Link>

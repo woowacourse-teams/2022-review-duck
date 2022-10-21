@@ -7,16 +7,6 @@
   border-radius: 0.1875rem;
   background-color: $THEME_COLOR_STATUS_PRIMARY_100;
 
-  @include animation(0.2s linear forwards 1s) {
-    0% {
-      opacity: 1;
-    }
-
-    100% {
-      opacity: 0;
-    }
-  }
-
   .percent {
     width: 0%;
     height: 100%;
@@ -24,8 +14,14 @@
     border-radius: 0.1875rem;
     background-color: $THEME_COLOR_STATUS_PRIMARY_500;
   }
+}
 
-  .percent.animation {
+.component-progress-bar.animation-play {
+  .percent {
+    animation-play-state: running;
+    animation-fill-mode: forwards;
+    animation-timing-function: linear;
+
     @include setAnimationContent {
       from {
         width: 0%;
@@ -35,9 +31,29 @@
         width: 100%;
       }
     }
+  }
+}
 
-    animation-play-state: running;
-    animation-fill-mode: forwards;
-    animation-timing-function: linear;
+.component-progress-bar.animation-done {
+  @include animation(0.2s linear forwards 0.5s) {
+    from {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0;
+    }
+  }
+
+  .percent {
+    @include animation(0.2s ease-in forwards) {
+      from {
+        width: 0%;
+      }
+
+      to {
+        width: 100%;
+      }
+    }
   }
 }

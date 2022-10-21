@@ -1,9 +1,13 @@
-package com.reviewduck.acceptance;
+package com.reviewduck.common.acceptance;
 
+import java.util.Objects;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -17,26 +21,50 @@ import io.restassured.response.ValidatableResponse;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("classpath:truncate.sql")
 public class AcceptanceTest {
-
+    
     @Value("${local.server.port}")
     int port;
 
     @Autowired
     protected JwtTokenProvider jwtTokenProvider;
+
     @Autowired
     protected MemberService memberService;
 
-    protected final Long INVALID_REVIEW_ID = 99L;
+    @Autowired
+    protected CacheManager cacheManager;
+
+    protected final long INVALID_REVIEW_ID = 99L;
     protected final String INVALID_CODE = "aaaaaaaa";
     protected final String INVALID_TOKEN = "tokentokentoken.invalidinvalidinvalid.tokentokentoken";
 
     protected String accessToken1;
     protected String accessToken2;
     protected Member savedMember;
+    protected Member savedMember2;
 
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
+        createMemberAndGetAccessToken();
+    }
+
+    @AfterEach
+    public void clearCaches() {
+        for (String cacheName : cacheManager.getCacheNames()) {
+            Objects.requireNonNull(cacheManager.getCache(cacheName)).clear();
+        }
+    }
+
+    private void createMemberAndGetAccessToken() {
+        Member member1 = new Member("1", "panda", "제이슨", "profileUrl1");
+        savedMember = memberService.save(member1);
+
+        Member member2 = new Member("2", "ariari", "브리", "profileUrl2");
+        savedMember2 = memberService.save(member2);
+
+        accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
+        accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember2.getId()));
     }
 
     public ValidatableResponse post(String url, Object request) {

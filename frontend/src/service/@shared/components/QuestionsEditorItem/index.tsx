@@ -55,14 +55,14 @@ function QuestionsEditorItem({
   return (
     <FlexContainer className={styles.container} gap="medium">
       <div className={styles.gridContainer}>
-        <Text className={styles.numbering} size={18} weight="bold">
+        <Text as="span" className={styles.numbering} size={18} weight="bold">
           {`Q${numbering}`}
         </Text>
 
         <TextBox
           className={styles.question}
           placeholder="질문 타이틀을 입력해주세요."
-          defaultValue={children}
+          value={children}
           onChange={handleChangeQuestion}
           onKeyDown={handleKeyDownTextBox}
           onKeyPress={handleKeyUpTextBox}

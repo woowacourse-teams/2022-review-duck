@@ -14,6 +14,8 @@ import useSnackbar from 'common/hooks/useSnackbar';
 
 import { Text, FlexContainer, Button, TextBox, Skeleton, Carousel } from 'common/components';
 
+import NoResult from 'service/@shared/components/NoResult';
+
 import styles from './styles.module.scss';
 
 interface ContainerProps {
@@ -41,9 +43,11 @@ const Content = (
   );
 };
 
-type ParticipantListProps = ContainerProps;
+interface ParticipantListProps extends ContainerProps {
+  listLength?: number;
+}
 
-const ParticipantList = ({ children }: ParticipantListProps) => {
+const ParticipantList = ({ children, listLength }: ParticipantListProps) => {
   return (
     <FlexContainer
       className={cn(styles.cardBox, styles.participantList)}
@@ -54,7 +58,13 @@ const ParticipantList = ({ children }: ParticipantListProps) => {
         이 회고에 참여한 사람
       </Text>
 
-      <Carousel centerDisabled={true}>{children}</Carousel>
+      {listLength && listLength > 0 ? (
+        <Carousel centerDisabled={true}>{children}</Carousel>
+      ) : (
+        <NoResult className={styles.noResult} size="small">
+          아직 참여한 사람이 없습니다.
+        </NoResult>
+      )}
     </FlexContainer>
   );
 };

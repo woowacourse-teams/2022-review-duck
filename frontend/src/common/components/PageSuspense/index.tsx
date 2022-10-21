@@ -1,66 +1,40 @@
-import React, {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  Suspense,
-  useRef,
-} from 'react';
+import React, { useContext, useEffect, Suspense, useRef } from 'react';
+
+import { useSetRecoilState } from 'recoil';
 
 import styles from './styles.module.scss';
 
-import ProgressBar from '../ProgressBar';
-
-export interface FallbackContextType {
-  setFallback: (children: React.ReactNode) => void /* 
-  clearFallback: () => void; */;
-}
-
-export const SuspenseContext = createContext<FallbackContextType | null>(null);
+import PageProgress from './PagePrgress';
+import { pageLoadedAtom, SuspenseContext } from './store';
 
 interface ProviderProps {
   children: React.ReactNode;
 }
 
 function Provider({ children }: ProviderProps) {
-  const progress = useRef(0);
-  const [fallback, setFallback] = useState<React.ReactNode>(null);
+  const fallbackChildrenRef = useRef<React.ReactNode>(null);
+  const setPageLoaded = useSetRecoilState(pageLoadedAtom);
+  const setFallback = (children: React.ReactNode) => {
+    fallbackChildrenRef.current = children;
+  };
 
-  useEffect(() => {
-    return () => {
-      progress.current += 1;
-    };
-  }, [fallback]);
-
-  const memo = useMemo(() => ({ setFallback }), [setFallback]);
-  const content = useMemo(() => {
-    const fallbackContent = <div className={styles.fallback}>{fallback}</div>;
-
-    return fallback ? (
-      <Suspense fallback={fallbackContent}>
-        <div className={styles.content}>{children}</div>
-      </Suspense>
-    ) : (
-      children
-    );
-  }, [children, fallback]);
+  const FallbackContent = () => {
+    setPageLoaded(false);
+    return <div className={styles.fallback}>{fallbackChildrenRef.current}</div>;
+  };
 
   return (
-    <SuspenseContext.Provider value={memo}>
-      <ProgressBar
-        key={progress.current}
-        className={styles.progress}
-        autoFill
-        duration={`${500 / 1000}s`}
-      />
-      {content}
+    <SuspenseContext.Provider value={{ fallbackChildrenRef, setFallback }}>
+      <PageProgress />
+      <Suspense fallback={<FallbackContent />}>{children}</Suspense>
     </SuspenseContext.Provider>
   );
 }
 
 function PageChildrenWrapper(children: JSX.Element) {
   const context = useContext(SuspenseContext);
+
+  const setPageLoaded = useSetRecoilState(pageLoadedAtom);
 
   if (!context) {
     throw new Error(
@@ -70,10 +44,12 @@ function PageChildrenWrapper(children: JSX.Element) {
 
   useEffect(() => {
     context.setFallback(children);
+    setPageLoaded(true);
+
     return () => context.setFallback(null);
   }, [children]);
 
-  return children;
+  return <div className={styles.content}>{children}</div>;
 }
 
 const PageSuspense = Object.assign(PageChildrenWrapper, {

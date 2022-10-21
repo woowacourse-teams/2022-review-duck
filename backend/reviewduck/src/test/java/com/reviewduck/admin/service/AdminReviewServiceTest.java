@@ -62,7 +62,7 @@ public class AdminReviewServiceTest {
             new ReviewFormQuestionCreateRequest("question2", "description2"));
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
 
-        this.reviewForm = reviewFormService.save(member1, createRequest);
+        this.reviewForm = reviewFormService.save(member1.getId(), createRequest);
     }
 
     @Test
@@ -113,6 +113,6 @@ public class AdminReviewServiceTest {
             new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
         ));
 
-        return reviewService.save(member, reviewForm.getCode(), createRequest);
+        return reviewService.save(member.getId(), reviewForm.getCode(), createRequest);
     }
 }

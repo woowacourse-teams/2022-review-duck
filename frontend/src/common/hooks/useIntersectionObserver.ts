@@ -18,7 +18,10 @@ function useIntersectionObserver<T extends Element>(
 
     if (!$target) return;
 
-    const observer = new IntersectionObserver(handleObserver, { threshold: 0.75 });
+    const observer = new IntersectionObserver(handleObserver, {
+      rootMargin: '25%',
+      threshold: 0.75,
+    });
 
     observer.observe($target);
 

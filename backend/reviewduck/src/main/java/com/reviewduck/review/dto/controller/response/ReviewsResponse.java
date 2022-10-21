@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 
-import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
 
 import lombok.AccessLevel;
@@ -23,12 +22,10 @@ public class ReviewsResponse {
     private boolean isLastPage;
     private List<ReviewSummaryResponse> reviews;
 
-    public static ReviewsResponse of(Page<Review> reviews, String socialId, Member member) {
+    public static ReviewsResponse of(Page<Review> reviews, boolean isMine) {
         List<ReviewSummaryResponse> reviewResponses = reviews.getContent().stream()
             .map(ReviewSummaryResponse::from)
             .collect(Collectors.toUnmodifiableList());
-
-        boolean isMine = member.getSocialId().equals(socialId);
 
         return new ReviewsResponse(reviews.getTotalElements(), isMine, reviews.isLast(), reviewResponses);
     }

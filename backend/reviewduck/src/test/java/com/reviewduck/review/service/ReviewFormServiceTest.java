@@ -8,20 +8,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.reviewduck.common.service.ServiceTest;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
-import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.domain.ReviewFormQuestion;
 import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
@@ -34,42 +29,11 @@ import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
-import com.reviewduck.template.service.TemplateService;
 
-@SpringBootTest
-@Sql("classpath:truncate.sql")
-@Transactional
-public class ReviewFormServiceTest {
+public class ReviewFormServiceTest extends ServiceTest {
 
     private final String invalidCode = "aaaaaaaa";
     private final ReviewForm mockReviewForm = mock(ReviewForm.class);
-
-    @Autowired
-    private ReviewFormService reviewFormService;
-
-    @Autowired
-    private ReviewFormQuestionService reviewFormQuestionService;
-
-    @Autowired
-    private ReviewService reviewService;
-
-    @Autowired
-    private TemplateService templateService;
-
-    @Autowired
-    private MemberService memberService;
-
-    private Member member1;
-    private Member member2;
-
-    @BeforeEach
-    void setUp() {
-        Member tempMember1 = new Member("1", "jason", "제이슨", "testUrl1");
-        member1 = memberService.save(tempMember1);
-
-        Member tempMember2 = new Member("2", "woni", "워니", "testUrl2");
-        member2 = memberService.save(tempMember2);
-    }
 
     @Nested
     @DisplayName("회고 폼 생성")
@@ -98,7 +62,7 @@ public class ReviewFormServiceTest {
             }
 
             // when
-            ReviewForm reviewForm = reviewFormService.save(member1, createRequest);
+            ReviewForm reviewForm = reviewFormService.save(memberId1, createRequest);
 
             // then
             assertAll(
@@ -135,11 +99,11 @@ public class ReviewFormServiceTest {
 
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 questions);
-            Long templateId = templateService.save(member1, templateRequest).getId();
+            long templateId = templateService.save(member1, templateRequest).getId();
 
             // when
             // 템플릿 기반 회고 폼 생성
-            ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(member1, templateId);
+            ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(memberId1, templateId);
 
             List<ReviewFormQuestion> expected = questions.stream()
                 .map(question -> new ReviewFormQuestion(question.getValue(), question.getDescription(), mockReviewForm))
@@ -183,14 +147,14 @@ public class ReviewFormServiceTest {
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 questions);
             Template savedTemplate = templateService.save(member1, templateRequest);
-            Long templateId = savedTemplate.getId();
+            long templateId = savedTemplate.getId();
 
             // 초기 수정 시간
             LocalDateTime updatedAt = templateService.findById(templateId).getUpdatedAt();
 
             // when
             // 템플릿 기반 회고 폼 생성
-            reviewFormService.saveFromTemplate(member1, templateId);
+            reviewFormService.saveFromTemplate(memberId1, templateId);
 
             // 템플릿 기반 회고 폼 생성 후 수정 시간
             LocalDateTime updatedAtAfterCreateReviewForm = templateService.findById(templateId).getUpdatedAt();
@@ -213,7 +177,7 @@ public class ReviewFormServiceTest {
 
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 templateQuestions);
-            Long templateId = templateService.save(member1, templateRequest).getId();
+            long templateId = templateService.save(member1, templateRequest).getId();
 
             String reviewFormTitle = "title";
             List<ReviewFormQuestionCreateRequest> reviewFromQuestions = List.of(
@@ -233,8 +197,7 @@ public class ReviewFormServiceTest {
 
             // when
             ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewFormTitle, reviewFromQuestions);
-            ReviewForm createdReviewForm = reviewFormService.saveFromTemplate(member1, templateId,
-                createRequest);
+            ReviewForm createdReviewForm = reviewFormService.saveFromTemplate(memberId1, templateId, createRequest);
 
             // then
             assertAll(
@@ -269,7 +232,7 @@ public class ReviewFormServiceTest {
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 templateQuestions);
 
-            Long templateId = templateService.save(member1, templateRequest).getId();
+            long templateId = templateService.save(member1, templateRequest).getId();
 
             String reviewFormTitle = "title";
             List<ReviewFormQuestionCreateRequest> reviewFromQuestions = List.of(
@@ -293,7 +256,7 @@ public class ReviewFormServiceTest {
             // when
             // 템플릿 기반 회고 폼 생성
             ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewFormTitle, reviewFromQuestions);
-            reviewFormService.saveFromTemplate(member1, templateId,
+            reviewFormService.saveFromTemplate(memberId1, templateId,
                 createRequest);
 
             // 템플릿 기반 회고 폼 생성 후 수정 시간
@@ -313,7 +276,7 @@ public class ReviewFormServiceTest {
         @DisplayName("회고 폼 코드로 회고 폼을 조회한다.")
         void findReviewForm() throws InterruptedException {
             // given
-            ReviewForm expected = saveReviewForm(member1);
+            ReviewForm expected = saveReviewForm(memberId1);
 
             // when
             ReviewForm actual = reviewFormService.findByCode(expected.getCode());
@@ -341,21 +304,21 @@ public class ReviewFormServiceTest {
         @DisplayName("자신이 작성한 회고 질문지 중 최신순으로 첫 페이지를 조회한다.")
         void findPageOfReviewsFormsOrderByLatest() throws InterruptedException {
             // given
-            saveReviewForm(member1);
-            ReviewForm expected = saveReviewForm(member1);
+            saveReviewForm(memberId1);
+            ReviewForm expected = saveReviewForm(memberId1);
 
             // when
             int page = 0;
             int size = 3;
-            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page, size)
-                .getContent();
+
+            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page,
+                size).getContent();
 
             // then
             assertAll(
                 () -> assertThat(myReviewForms).hasSize(2),
                 () -> assertThat(myReviewForms.get(0)).isNotNull(),
-                () -> assertThat(myReviewForms.get(0).getMember().getNickname()).isEqualTo("제이슨"),
-                () -> assertThat(myReviewForms.get(0).getId()).isNotNull(),
+                () -> assertThat(myReviewForms.get(0).isMine(memberId1)).isTrue(),
                 () -> assertThat(myReviewForms.get(0).getCode().length()).isEqualTo(8),
                 () -> assertThat(myReviewForms.get(0).getUpdatedAt()).isEqualTo(expected.getUpdatedAt()),
                 () -> assertThat(myReviewForms.get(0).getQuestions())
@@ -369,23 +332,23 @@ public class ReviewFormServiceTest {
         @DisplayName("삭제한 회고는 조회 대상에서 제외된다.")
         void findReviewFormsExceptDeleted() throws InterruptedException {
             // given
-            ReviewForm expected = saveReviewForm(member1);
-            ReviewForm reviewForm = saveReviewForm(member1);
+            ReviewForm expected = saveReviewForm(memberId1);
+            ReviewForm reviewForm = saveReviewForm(memberId1);
 
-            reviewFormService.deleteByCode(member1, reviewForm.getCode());
+            reviewFormService.deleteByCode(memberId1, reviewForm.getCode());
 
             // when
             int page = 0;
             int size = 3;
-            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page, size)
-                .getContent();
+
+            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page,
+                size).getContent();
 
             // then
             assertAll(
                 () -> assertThat(myReviewForms).hasSize(1),
                 () -> assertThat(myReviewForms.get(0)).isNotNull(),
-                () -> assertThat(myReviewForms.get(0).getMember().getNickname()).isEqualTo("제이슨"),
-                () -> assertThat(myReviewForms.get(0).getId()).isNotNull(),
+                () -> assertThat(myReviewForms.get(0).isMine(memberId1)).isTrue(),
                 () -> assertThat(myReviewForms.get(0).getCode().length()).isEqualTo(8),
                 () -> assertThat(myReviewForms.get(0).getUpdatedAt()).isEqualTo(expected.getUpdatedAt()),
                 () -> assertThat(myReviewForms.get(0).getQuestions())
@@ -404,9 +367,9 @@ public class ReviewFormServiceTest {
         @DisplayName("회고 폼을 수정한다.")
         void updateReviewForm() throws InterruptedException {
             // given
-            ReviewForm savedReviewForm = saveReviewForm(member1);
+            ReviewForm savedReviewForm = saveReviewForm(memberId1);
             String code = savedReviewForm.getCode();
-            Long questionId = savedReviewForm.getQuestions().get(0).getId();
+            long questionId = savedReviewForm.getQuestions().get(0).getId();
 
             // when
             String reviewFormTitle = "new title";
@@ -426,7 +389,7 @@ public class ReviewFormServiceTest {
                 reviewFormQuestion.setPosition(index++);
             }
 
-            reviewFormService.update(member1, code, updateRequest);
+            reviewFormService.update(memberId1, code, updateRequest);
             ReviewForm foundReviewForm = reviewFormService.findByCode(code);
 
             assertAll(
@@ -446,9 +409,9 @@ public class ReviewFormServiceTest {
         @DisplayName("본인이 생성한 회고 폼이 아니면 수정할 수 없다.")
         void updateNotMyReviewForm() throws InterruptedException {
             // given
-            ReviewForm savedReviewForm = saveReviewForm(member1);
+            ReviewForm savedReviewForm = saveReviewForm(memberId1);
             String code = savedReviewForm.getCode();
-            Long questionId = savedReviewForm.getQuestions().get(0).getId();
+            long questionId = savedReviewForm.getQuestions().get(0).getId();
 
             // when
             String reviewFormTitle = "new title";
@@ -467,7 +430,7 @@ public class ReviewFormServiceTest {
                 reviewFormQuestion.setPosition(index++);
             }
 
-            assertThatThrownBy(() -> reviewFormService.update(member2, code, updateRequest))
+            assertThatThrownBy(() -> reviewFormService.update(memberId2, code, updateRequest))
                 .isInstanceOf(AuthorizationException.class)
                 .hasMessageContaining("본인이 생성한 회고 폼이 아니면 수정할 수 없습니다.");
         }
@@ -483,7 +446,7 @@ public class ReviewFormServiceTest {
 
             ReviewFormUpdateRequest reviewFormUpdateRequest = new ReviewFormUpdateRequest("new title", updateRequests);
 
-            assertThatThrownBy(() -> reviewFormService.update(member1, invalidCode, reviewFormUpdateRequest))
+            assertThatThrownBy(() -> reviewFormService.update(memberId1, invalidCode, reviewFormUpdateRequest))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
@@ -492,14 +455,14 @@ public class ReviewFormServiceTest {
         @DisplayName("존재하지 않는 질문을 수정할 수 없다.")
         void updateReviewFormByInvalidQuestionId() throws InterruptedException {
             // given
-            String code = saveReviewForm(member1).getCode();
+            String code = saveReviewForm(memberId1).getCode();
 
             // when, then
             List<ReviewFormQuestionUpdateRequest> updateRequests = List.of(
                 new ReviewFormQuestionUpdateRequest(9999999L, "new question", "new description"));
 
             assertThatThrownBy(
-                () -> reviewFormService.update(member1, code, new ReviewFormUpdateRequest("new title", updateRequests)))
+                () -> reviewFormService.update(memberId1, code, new ReviewFormUpdateRequest("new title", updateRequests)))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 질문입니다.");
         }
@@ -514,16 +477,16 @@ public class ReviewFormServiceTest {
         @DisplayName("회고 폼을 삭제한다(생성한 회고 있는 상태).")
         void deleteReviewForm_reviewExists() throws InterruptedException {
             // given
-            ReviewForm savedReviewForm = saveReviewForm(member1);
+            ReviewForm savedReviewForm = saveReviewForm(memberId1);
             String code = savedReviewForm.getCode();
             ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, "title", List.of(
                 new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
                 new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
             ));
-            reviewService.save(member1, code, reviewCreateRequest);
+            reviewService.save(memberId1, code, reviewCreateRequest);
 
             // when
-            reviewFormService.deleteByCode(member1, code);
+            reviewFormService.deleteByCode(memberId1, code);
 
             // then
             assertThatThrownBy(() -> reviewFormService.findByCode(code))
@@ -535,11 +498,11 @@ public class ReviewFormServiceTest {
         @DisplayName("회고 폼을 삭제한다(생성한 회고 없는 상태).")
         void deleteReviewForm_reviewNotExists() throws InterruptedException {
             // given
-            ReviewForm savedReviewForm = saveReviewForm(member1);
+            ReviewForm savedReviewForm = saveReviewForm(memberId1);
             String code = savedReviewForm.getCode();
 
             // when
-            reviewFormService.deleteByCode(member1, code);
+            reviewFormService.deleteByCode(memberId1, code);
 
             // then
             assertThatThrownBy(() -> reviewFormService.findByCode(code))
@@ -551,11 +514,11 @@ public class ReviewFormServiceTest {
         @DisplayName("본인이 생성한 회고 폼이 아니면 삭제할 수 없다.")
         void deleteNotMyReviewForm() throws InterruptedException {
             // given
-            ReviewForm savedReviewForm = saveReviewForm(member1);
+            ReviewForm savedReviewForm = saveReviewForm(memberId1);
             String code = savedReviewForm.getCode();
 
             // when, then
-            assertThatThrownBy(() -> reviewFormService.deleteByCode(member2, code))
+            assertThatThrownBy(() -> reviewFormService.deleteByCode(memberId2, code))
                 .isInstanceOf(AuthorizationException.class)
                 .hasMessageContaining("본인이 생성한 회고 폼이 아니면 삭제할 수 없습니다.");
         }
@@ -564,14 +527,14 @@ public class ReviewFormServiceTest {
         @DisplayName("존재하지 않는 회고 폼을 삭제할 수 없다.")
         void deleteReviewFormByInvalidCode() {
             // when, then
-            assertThatThrownBy(() -> reviewFormService.deleteByCode(member1, invalidCode))
+            assertThatThrownBy(() -> reviewFormService.deleteByCode(memberId1, invalidCode))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
 
     }
 
-    private ReviewForm saveReviewForm(Member member) throws InterruptedException {
+    private ReviewForm saveReviewForm(long memberId) throws InterruptedException {
         Thread.sleep(1);
 
         List<ReviewFormQuestionCreateRequest> createRequests = List.of(
@@ -580,6 +543,6 @@ public class ReviewFormServiceTest {
 
         ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest("title", createRequests);
 
-        return reviewFormService.save(member, createRequest);
+        return reviewFormService.save(memberId, createRequest);
     }
 }
