@@ -12,17 +12,10 @@
   }
 }
 
-// .reviewContainer {
-//   padding: 2rem 2.5rem;
-//   margin: 10px;
-//   border-radius: 10px;
-//   background-color: $THEME_COLOR_THEME_BACKGROUND_100;
-
-//   box-shadow: 0px 2px 2px $GLOBAL_COLOR_BLACK_20, 0px 0.575rem 1.56rem $GLOBAL_COLOR_BLACK_100;
-//   border-radius: 16px;
-//   border-top: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
-// }
-
 .no-result {
   margin-top: 17.25rem;
+
+  @include mobile {
+    margin: 0;
+  }
 }
