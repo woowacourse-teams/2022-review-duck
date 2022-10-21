@@ -17,6 +17,17 @@
   border-radius: 2rem 2rem 0 0;
   z-index: 5;
 
+  .floating-button {
+    position: fixed;
+    bottom: 8rem;
+    right: 1.5rem;
+    font-size: 1.35rem;
+    color: $THEME_COLOR_STATUS_PRIMARY_500;
+    background-color: $THEME_COLOR_THEME_BACKGROUND_BLUR;
+    backdrop-filter: blur(0.25rem);
+    box-shadow: 0 0.15rem 0.5rem 0.25rem $GLOBAL_COLOR_BLACK_100;
+  }
+
   .menu {
     cursor: pointer;
     position: relative;
