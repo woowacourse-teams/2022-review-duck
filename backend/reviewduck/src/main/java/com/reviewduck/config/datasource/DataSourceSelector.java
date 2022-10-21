@@ -2,12 +2,13 @@ package com.reviewduck.config.datasource;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class DataSourceSelector {
 
     private final List<String> dataSources;
-    private int counter = 0;
+    private final AtomicInteger counter = new AtomicInteger();
 
     public DataSourceSelector(String... dataSources) {
         this.dataSources = Arrays.stream(dataSources)
@@ -15,9 +16,9 @@ public class DataSourceSelector {
     }
 
     public String getOne() {
-        if (counter == dataSources.size()) {
-            counter = 0;
+        if (counter.get() >= dataSources.size()) {
+            counter.set(0);
         }
-        return dataSources.get(counter++);
+        return dataSources.get(counter.getAndIncrement());
     }
 }
