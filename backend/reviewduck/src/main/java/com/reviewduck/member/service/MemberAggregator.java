@@ -1,5 +1,6 @@
 package com.reviewduck.member.service;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +29,7 @@ public class MemberAggregator {
     }
 
     @Transactional
+    @CacheEvict(value = "memberCacheStore", key = "#memberId")
     public void updateNickname(long memberId, String nickname) {
         memberService.updateNickname(memberId, nickname);
     }
