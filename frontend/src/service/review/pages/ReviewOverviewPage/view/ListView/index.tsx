@@ -47,7 +47,9 @@ interface ParticipantListProps extends ContainerProps {
   listLength?: number;
 }
 
-const ParticipantList = ({ children, listLength }: ParticipantListProps) => {
+const ParticipantList = ({ children }: ParticipantListProps) => {
+  const childrenLength = React.Children.count(children);
+
   return (
     <FlexContainer
       className={cn(styles.cardBox, styles.participantList)}
@@ -58,12 +60,10 @@ const ParticipantList = ({ children, listLength }: ParticipantListProps) => {
         이 회고에 참여한 사람
       </Text>
 
-      {listLength && listLength > 0 ? (
+      {childrenLength > 0 ? (
         <Carousel centerDisabled={true}>{children}</Carousel>
       ) : (
-        <NoResult className={styles.noResult} size="small">
-          아직 참여한 사람이 없습니다.
-        </NoResult>
+        <NoResult className={styles.noResult}>아직 참여한 사람이 없습니다.</NoResult>
       )}
     </FlexContainer>
   );
