@@ -62,7 +62,7 @@ function QuestionsEditorItem({
         <TextBox
           className={styles.question}
           placeholder="질문 타이틀을 입력해주세요."
-          defaultValue={children}
+          value={children}
           onChange={handleChangeQuestion}
           onKeyDown={handleKeyDownTextBox}
           onKeyPress={handleKeyUpTextBox}

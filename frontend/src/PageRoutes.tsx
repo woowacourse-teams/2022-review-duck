@@ -52,7 +52,7 @@ function PageRoutes() {
         />
         <Route
           path={`${PAGE_LIST.USER_PROFILE}/:socialId`}
-          element={<Page title="프로필 조회" component={lazy.ProfilePage} />}
+          element={<Page title="프로필 조회" component={lazy.ProfilePage} permission={PERMISSION.LOGIN_USER} />}
         />
       </Route>
 

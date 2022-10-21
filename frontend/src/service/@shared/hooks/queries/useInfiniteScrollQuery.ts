@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { QueryKey, useInfiniteQuery, UseInfiniteQueryOptions } from '@tanstack/react-query';
 
@@ -18,7 +18,7 @@ function useInfiniteScrollQuery<
 ) {
   const pageNumber = useRef(1);
 
-  return useInfiniteQuery(
+  const query = useInfiniteQuery(
     queryKey,
     async ({ pageParam = 1 }) => {
       pageNumber.current += 1;
@@ -30,6 +30,15 @@ function useInfiniteScrollQuery<
       ...queryOptions,
     },
   );
+
+  useEffect(function clearCacheOnUnmount() {
+    return () => {
+      query.remove();
+      pageNumber.current = 1;
+    };
+  }, []);
+
+  return query;
 }
 
 export default useInfiniteScrollQuery;
