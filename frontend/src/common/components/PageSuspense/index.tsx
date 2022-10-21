@@ -33,6 +33,7 @@ function Provider({ children }: ProviderProps) {
 
 function PageChildrenWrapper(children: JSX.Element) {
   const context = useContext(SuspenseContext);
+
   const setPageLoaded = useSetRecoilState(pageLoadedAtom);
 
   if (!context) {
@@ -42,11 +43,9 @@ function PageChildrenWrapper(children: JSX.Element) {
   }
 
   useEffect(() => {
-    setPageLoaded(true);
-  }, []);
-
-  useEffect(() => {
     context.setFallback(children);
+    setPageLoaded(true);
+
     return () => context.setFallback(null);
   }, [children]);
 
