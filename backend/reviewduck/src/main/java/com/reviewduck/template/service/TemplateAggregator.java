@@ -81,8 +81,10 @@ public class TemplateAggregator {
     }
 
     @Transactional
-    @CachePut(value = "templateCacheStore", key = "#templateId")
-    @CacheEvict(value = "templatesCacheStore", allEntries = true)
+    @Caching(evict = {
+        @CacheEvict(value = "templateCacheStore", key = "#templateId"),
+        @CacheEvict(value = "templatesCacheStore", allEntries = true)
+    })
     public void update(long memberId, long templateId, TemplateUpdateRequest request) {
         templateService.update(memberId, templateId, request);
     }
