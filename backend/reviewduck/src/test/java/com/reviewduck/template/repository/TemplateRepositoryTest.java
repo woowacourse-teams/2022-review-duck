@@ -24,6 +24,8 @@ import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.config.JpaAuditingConfig;
+import com.reviewduck.config.datasource.CustomDatasourceConfig;
+import com.reviewduck.config.datasource.DataSourceConfiguration;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.template.domain.Template;
@@ -31,7 +33,7 @@ import com.reviewduck.template.domain.TemplateQuestion;
 import com.reviewduck.template.dto.service.TemplateQuestionCreateDto;
 
 @DataJpaTest
-@Import(JpaAuditingConfig.class)
+@Import({JpaAuditingConfig.class, DataSourceConfiguration.class, CustomDatasourceConfig.class})
 @AutoConfigureTestDatabase(replace = NONE)
 @Sql("classpath:truncate.sql")
 public class TemplateRepositoryTest {
@@ -140,30 +142,6 @@ public class TemplateRepositoryTest {
         assertAll(
             () -> assertThat(templates).hasSize(1),
             () -> assertThat(templates.get(0)).isEqualTo(template2)
-        );
-    }
-
-    @Test
-    @DisplayName("특정 문자열을 포함하는 템플릿을 검색한다.")
-    void findByTemplateTitleContaining() {
-        // given
-        Template template1 = new Template(member1, "title1", "description1", questions1);
-        templateRepository.save(template1);
-
-        Template template2 = new Template(member2, "title2", "description2", questions2);
-        templateRepository.save(template2);
-
-        // when
-        Pageable pageable = PageRequest.of(0, 1, Sort.by(Sort.Direction.DESC, "updatedAt"));
-        List<Template> searched = templateRepository.findByTemplateTitleContaining(pageable, "title2").getContent();
-
-        // then
-        assertAll(
-            () -> assertThat(searched).hasSize(1),
-            () -> assertThat(searched.get(0).getQuestions())
-                .usingRecursiveComparison()
-                .ignoringFields("id", "template")
-                .isEqualTo(toEntity(questions2))
         );
     }
 

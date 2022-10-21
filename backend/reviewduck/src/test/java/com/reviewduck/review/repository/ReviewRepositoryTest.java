@@ -23,6 +23,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.config.JpaAuditingConfig;
+import com.reviewduck.config.datasource.CustomDatasourceConfig;
+import com.reviewduck.config.datasource.DataSourceConfiguration;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.review.domain.Answer;
@@ -32,7 +34,7 @@ import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
 import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
 
 @DataJpaTest
-@Import(JpaAuditingConfig.class)
+@Import({JpaAuditingConfig.class, DataSourceConfiguration.class, CustomDatasourceConfig.class})
 @AutoConfigureTestDatabase(replace = NONE)
 @Sql("classpath:truncate.sql")
 public class ReviewRepositoryTest {

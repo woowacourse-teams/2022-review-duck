@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reviewduck.auth.support.AuthenticationPrincipal;
-import com.reviewduck.member.dto.response.MemberDto;
+import com.reviewduck.member.dto.MemberDto;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.response.ReviewFormCodeResponse;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
@@ -108,12 +108,11 @@ public class TemplateController {
     public TemplatesResponse search(@AuthenticationPrincipal MemberDto member,
         @RequestParam String query,
         @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
-        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size,
-        @RequestParam(required = false, defaultValue = "trend") String sort) {
+        @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size) {
 
         info("/api/templates/search?query=" + query + " page=" + page + " size=" + size, "GET", "");
 
-        return aggregator.search(query, page, size, sort, member.getId());
+        return aggregator.search(query, page, size, member.getId());
     }
 
     @Operation(summary = "특정 템플릿을 조회한다.")

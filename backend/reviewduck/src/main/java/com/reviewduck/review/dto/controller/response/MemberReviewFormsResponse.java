@@ -5,8 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 
-import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.dto.response.MemberDto;
+import com.reviewduck.member.dto.MemberDto;
 import com.reviewduck.review.domain.ReviewForm;
 
 import lombok.AccessLevel;

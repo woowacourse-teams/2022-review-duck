@@ -1,5 +1,8 @@
 package com.reviewduck.template.service;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,18 +52,21 @@ public class TemplateAggregator {
         return ReviewFormCodeResponse.from(reviewForm);
     }
 
+    @Cacheable(value = "templateCacheStore", key = "#templateId")
     public TemplateResponse find(long templateId, long memberId) {
         Template template = templateService.findById(templateId);
         return TemplateResponse.of(template, memberId);
     }
 
+    @Cacheable(value = "templatesCacheStore", key = "#page + #size + #sort")
     public TemplatesResponse findAll(int page, int size, String sort, long memberId) {
         Page<Template> templates = templateService.findAll(page, size, sort);
         return TemplatesResponse.of(templates, memberId);
     }
 
-    public TemplatesResponse search(String query, int page, int size, String sort, long memberId) {
-        Page<Template> templates = templateService.search(query, page - 1, size, sort);
+    @Cacheable(value = "templatesCacheStore", key = "#query + #page + #size")
+    public TemplatesResponse search(String query, int page, int size, long memberId) {
+        Page<Template> templates = templateService.search(query, page - 1, size);
         return TemplatesResponse.of(templates, memberId);
     }
 
@@ -73,11 +79,13 @@ public class TemplateAggregator {
     }
 
     @Transactional
+    @CachePut(value = "templateCacheStore", key = "#templateId")
     public void update(long memberId, long templateId, TemplateUpdateRequest request) {
         templateService.update(memberId, templateId, request);
     }
 
     @Transactional
+    @CacheEvict(value = "templateCacheStore", key = "#templateId")
     public void delete(long memberId, long templateId) {
         templateService.deleteById(memberId, templateId);
     }

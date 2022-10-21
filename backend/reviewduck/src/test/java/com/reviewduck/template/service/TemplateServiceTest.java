@@ -6,14 +6,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import com.reviewduck.common.service.ServiceTest;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
+import com.reviewduck.common.service.ServiceTest;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.domain.TemplateQuestion;
@@ -64,7 +63,6 @@ public class TemplateServiceTest extends ServiceTest {
             );
         }
 
-
     }
 
     @Nested
@@ -114,7 +112,6 @@ public class TemplateServiceTest extends ServiceTest {
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 템플릿입니다.");
         }
-
 
     }
 
@@ -167,37 +164,6 @@ public class TemplateServiceTest extends ServiceTest {
                 () -> assertThat(templates).hasSize(1),
                 () -> assertThat(templates.get(0).getId()).isEqualTo(template2.getId()),
                 () -> assertThat(templates.get(0).getTemplateTitle()).isEqualTo(template2.getTemplateTitle())
-            );
-        }
-    }
-
-    @Nested
-    @DisplayName("전체 템플릿 조회")
-    class SearchTest {
-
-        @Test
-        @DisplayName("템플릿 검색 결과를 조회한다.")
-        void search() throws InterruptedException {
-            // given
-            // create template
-            Template template1 = saveTemplate(member1, "title1", "description1", questions1);
-            Template template2 = saveTemplate(member1, "title2", "description2", questions2);
-
-            templateService.increaseUsedCount(template1.getId());
-
-            // when
-            String query = "tle1";
-            int page = 0;
-            int size = 1;
-            String sort = "trend";
-
-            List<Template> templates = templateService.search(query, page, size, sort).getContent();
-
-            // then
-            assertAll(
-                () -> assertThat(templates).hasSize(1),
-                () -> assertThat(templates.get(0).getId()).isEqualTo(template1.getId()),
-                () -> assertThat(templates.get(0).getTemplateTitle()).isEqualTo(template1.getTemplateTitle())
             );
         }
     }
@@ -317,7 +283,6 @@ public class TemplateServiceTest extends ServiceTest {
                 .hasMessageContaining("존재하지 않는 템플릿입니다.");
         }
 
-
     }
 
     @Nested
@@ -368,7 +333,6 @@ public class TemplateServiceTest extends ServiceTest {
         }
 
     }
-
 
     private List<TemplateQuestion> convertRequestToQuestions(List<TemplateQuestionCreateRequest> questions) {
         List<TemplateQuestion> expected = questions.stream()
