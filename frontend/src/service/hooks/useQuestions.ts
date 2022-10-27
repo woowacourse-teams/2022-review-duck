@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { Answer, Question } from 'types';
+import { Answer, Question } from 'service/types';
 
 import useUniqueKey from 'common/hooks/useUniqueKey';
 

@@ -4,7 +4,7 @@ import {
   ReviewAnswer,
   ReviewForm,
   UpdateReviewAnswerRequest,
-} from 'types';
+} from 'service/types';
 
 import { useGetAuthProfile } from 'service/hooks/queries/auth';
 import {

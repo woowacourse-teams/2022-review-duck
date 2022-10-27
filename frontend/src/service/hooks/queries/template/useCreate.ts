@@ -2,7 +2,12 @@ import { useMutation } from '@tanstack/react-query';
 
 import { templateAPI } from 'api';
 import { QUERY_KEY } from 'constant';
-import { CreateFormResponse, UseCustomMutationOptions, CreateTemplateResponse } from 'types';
+
+import {
+  CreateFormResponse,
+  UseCustomMutationOptions,
+  CreateTemplateResponse,
+} from 'service/types';
 
 import queryClient from 'api/config/queryClient';
 

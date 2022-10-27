@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 
-import { DisplayModeType } from 'types';
+import { DisplayModeType } from 'service/types';
 
 import useIntersectionObserver from 'common/hooks/useIntersectionObserver';
 import useOptimisticUpdate from 'common/hooks/useOptimisticUpdate';

@@ -1,7 +1,8 @@
 import { useRef } from 'react';
 
 import { FILTER } from 'constant';
-import { Tabs } from 'types';
+
+import { Tabs } from 'service/types';
 
 import useOptimisticUpdate from 'common/hooks/useOptimisticUpdate';
 import useStackFetch from 'common/hooks/useStackFetch';

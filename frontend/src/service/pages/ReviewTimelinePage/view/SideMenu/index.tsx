@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
 import { FILTER, PAGE_LIST } from 'constant';
-import { TimelineFilterType } from 'types';
+
+import { TimelineFilterType } from 'service/types';
 
 import { FlexContainer, Text } from 'common/components';
 

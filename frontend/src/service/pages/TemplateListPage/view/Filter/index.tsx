@@ -6,7 +6,8 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
-import { TemplateFilterType } from 'types';
+
+import { TemplateFilterType } from 'service/types';
 
 import { Button, FlexContainer } from 'common/components';
 

@@ -2,7 +2,8 @@ import { FormEvent, HTMLAttributes } from 'react';
 import { flushSync } from 'react-dom';
 
 import cn from 'classnames';
-import { Question } from 'types';
+
+import { Question } from 'service/types';
 
 import useQuestions from 'service/hooks/useQuestions';
 

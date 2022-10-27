@@ -2,11 +2,12 @@ import { useMutation } from '@tanstack/react-query';
 
 import { reviewAPI } from 'api';
 import { QUERY_KEY } from 'constant';
+
 import {
   DeleteReviewAnswerResponse,
   DeleteReviewFormResponse,
   UseCustomMutationOptions,
-} from 'types';
+} from 'service/types';
 
 import queryClient from 'api/config/queryClient';
 

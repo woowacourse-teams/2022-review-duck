@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 
-import { Question } from 'types';
+import { Question } from 'service/types';
 
 import { useTemplateMutations } from 'service/hooks/queries/template';
 

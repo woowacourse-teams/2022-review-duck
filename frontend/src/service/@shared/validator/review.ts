@@ -1,6 +1,6 @@
 import { REGEX, RULE } from 'constant';
 
-import { Question } from '../../../types';
+import { Question } from '../../types';
 
 import QuestionsModel from 'models/Questions';
 

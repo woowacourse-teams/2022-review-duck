@@ -8,7 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
 import { PAGE_LIST } from 'constant';
-import { ReviewFormAnswer } from 'types';
+
+import { ReviewFormAnswer } from 'service/types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 

@@ -6,7 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
 import { PAGE_LIST } from 'constant';
-import { Question } from 'types';
+
+import { Question } from 'service/types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useNavigateHandler from 'service/hooks/useNavigateHandler';

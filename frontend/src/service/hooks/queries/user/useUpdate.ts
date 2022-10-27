@@ -2,7 +2,8 @@ import { useMutation } from '@tanstack/react-query';
 
 import { userAPI } from 'api';
 import { QUERY_KEY } from 'constant';
-import { UseCustomMutationOptions, UpdateProfileResponse } from 'types';
+
+import { UseCustomMutationOptions, UpdateProfileResponse } from 'service/types';
 
 import queryClient from 'api/config/queryClient';
 

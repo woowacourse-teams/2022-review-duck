@@ -1,4 +1,4 @@
-import * as UserType from '../types';
+import * as UserType from '../service/types';
 
 import { API_URI, FILTER, PAGE_OPTION } from '../constant';
 import * as transformer from './user.transformer';

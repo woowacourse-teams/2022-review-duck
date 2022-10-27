@@ -2,14 +2,15 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { reviewAPI } from 'api';
 import { QUERY_KEY } from 'constant';
+
 import {
   DisplayModeType,
   ErrorResponse,
   ReviewAnswer,
   ReviewForm,
   TimelineFilterType,
-} from 'types';
-import 'types';
+} from 'service/types';
+import 'service/types';
 
 import useInfiniteScrollQuery from '../useInfiniteScrollQuery';
 

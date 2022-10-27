@@ -2,7 +2,8 @@ import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { userAPI } from 'api';
 import { QUERY_KEY } from 'constant';
-import { ErrorResponse, GetUserProfileResponse, UserArticleList } from 'types';
+
+import { ErrorResponse, GetUserProfileResponse, UserArticleList } from 'service/types';
 
 interface UseGetUserProfile {
   socialId: number;

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import { Question } from 'types';
+import { Question } from 'service/types';
 
 import { FlexContainer, Logo } from 'common/components';
 

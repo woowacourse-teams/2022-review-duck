@@ -1,6 +1,6 @@
 import { UseMutationOptions } from '@tanstack/react-query';
 
-import { ErrorResponse } from 'types';
+import { ErrorResponse } from 'service/types';
 
 export type UseCustomMutationOptions<TData = unknown> = UseMutationOptions<
   TData,

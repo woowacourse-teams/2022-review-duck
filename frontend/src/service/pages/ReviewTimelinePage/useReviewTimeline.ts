@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import { TimelineFilterType } from 'types';
+import { TimelineFilterType } from 'service/types';
 
 import useIntersectionObserver from 'common/hooks/useIntersectionObserver';
 import useOptimisticUpdate from 'common/hooks/useOptimisticUpdate';

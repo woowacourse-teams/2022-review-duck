@@ -4,7 +4,8 @@ import { useSearchParams } from 'react-router-dom';
 import { faArrowTrendUp, faBarsStaggered } from '@fortawesome/free-solid-svg-icons';
 
 import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
-import { TemplateFilterType } from 'types';
+
+import { TemplateFilterType } from 'service/types';
 
 import { useGetTemplates } from 'service/hooks/queries/template';
 import useNavigateHandler from 'service/hooks/useNavigateHandler';

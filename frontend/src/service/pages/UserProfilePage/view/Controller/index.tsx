@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
 import { GITHUB_PROFILE_URL, FILTER } from 'constant';
-import { Tabs } from 'types';
+
+import { Tabs } from 'service/types';
 
 import { Text, Button, FlexContainer } from 'common/components';
 
