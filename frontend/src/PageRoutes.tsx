@@ -4,15 +4,14 @@ import { Route, Routes } from 'react-router-dom';
 import { PAGE_LIST, PERMISSION } from 'constant';
 import * as lazy from 'routes';
 
-import useAuth from 'service/@shared/hooks/useAuth';
-
-import Page from 'service/@shared/components/Page';
+import useAuth from 'service/hooks/useAuth';
 
 import { UserAgentContext } from 'common/contexts/UserAgent';
-import MainLayout from 'service/@shared/layout/MainLayout';
-import ErrorPage from 'service/@shared/pages/ErrorPage';
-import ReviewLayout from 'service/review/layout/ReviewLayout';
-import MainPage from 'service/user/pages/MainPage';
+import Page from 'service/components/Page';
+import MainLayout from 'service/layout/MainLayout';
+import ReviewLayout from 'service/layout/ReviewLayout';
+import ErrorPage from 'service/pages/ErrorPage';
+import MainPage from 'service/pages/MainPage';
 
 // ✅ 코드 가독성을 위해 Prettier 무시 처리
 // prettier-ignore
