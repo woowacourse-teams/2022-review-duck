@@ -3,16 +3,15 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { QueryClientProvider } from '@tanstack/react-query';
 
-import PageRoutes from 'PageRoutes';
 import { RecoilRoot } from 'recoil';
+import PageRoutes from 'routes';
 
 import { ErrorBoundary, SnackbarProvider } from 'common/components';
 
-import ModalProvider from 'service/@shared/components/ModalProvider';
-
 import queryClient from 'api/config/queryClient';
 import UserAgentProvider from 'common/contexts/UserAgent';
-import ErrorPage from 'service/@shared/pages/ErrorPage';
+import ModalProvider from 'service/components/ModalProvider';
+import ErrorPage from 'service/pages/ErrorPage';
 import 'styles/@app.scss';
 
 function ContextWrapper({ children }: { children: ReactNode }) {

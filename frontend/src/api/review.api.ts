@@ -1,4 +1,4 @@
-import * as ReviewType from '../types/review';
+import * as ReviewType from '../service/types/review';
 
 import { API_URI, FILTER, PAGE_OPTION } from '../constant';
 import * as transformer from './review.transformer';
