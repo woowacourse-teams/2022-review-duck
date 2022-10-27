@@ -1,5 +1,4 @@
 import { MODAL_LIST, FILTER, PAGE_LIST, PAGE_OPTION } from 'constant';
-import { ReviewTimelinePage } from 'routes';
 import { getElapsedTimeText } from 'utils';
 
 import { useGetTemplates } from 'service/hooks/queries/template';
@@ -13,6 +12,7 @@ import styles from './styles.module.scss';
 
 import Intro from './view/Intro';
 import TrendTemplate from './view/TrendTemplate';
+import { ReviewTimelinePage } from 'routes/lazy';
 import useModal from 'service/components/ModalProvider/useModal';
 import TemplateCard from 'service/components/TemplateCard';
 

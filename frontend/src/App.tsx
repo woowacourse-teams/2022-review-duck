@@ -3,8 +3,8 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { QueryClientProvider } from '@tanstack/react-query';
 
-import PageRoutes from 'PageRoutes';
 import { RecoilRoot } from 'recoil';
+import PageRoutes from 'routes';
 
 import { ErrorBoundary, SnackbarProvider } from 'common/components';
 
