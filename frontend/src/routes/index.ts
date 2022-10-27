@@ -16,8 +16,8 @@ export const TemplateEditorPage = React.lazy(() => import('service/pages/Templat
 
 export const TemplateListPage = React.lazy(() => import('service/pages/TemplateListPage'));
 
-export const AuthorizePage = React.lazy(() => import('service/pages/UserAuthorizePage'));
+export const UserAuthorizePage = React.lazy(() => import('service/pages/UserAuthorizePage'));
 
-export const LogoutPage = React.lazy(() => import('service/pages/UserLogoutPage'));
+export const UserLogoutPage = React.lazy(() => import('service/pages/UserLogoutPage'));
 
-export const ProfilePage = React.lazy(() => import('service/pages/UserProfilePage'));
+export const UserProfilePage = React.lazy(() => import('service/pages/UserProfilePage'));

@@ -8,7 +8,7 @@ import { PAGE_LIST } from 'constant';
 import useSnackbar from 'common/hooks/useSnackbar';
 import useAuth from 'service/hooks/useAuth';
 
-function Logout() {
+function UserLogoutPage() {
   const navigate = useNavigate();
 
   const snackbar = useSnackbar();
@@ -38,4 +38,4 @@ function Logout() {
   return <></>;
 }
 
-export default Logout;
+export default UserLogoutPage;

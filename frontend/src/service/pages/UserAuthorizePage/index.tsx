@@ -10,7 +10,7 @@ import { getErrorMessage } from 'service/@shared/utils';
 
 import { validateGithubOAuth } from 'service/@shared/validator';
 
-function Authorize() {
+function UserAuthorizePage() {
   const [searchParams] = useSearchParams();
   const snackbar = useSnackbar();
 
@@ -55,4 +55,4 @@ function Authorize() {
   return <></>;
 }
 
-export default Authorize;
+export default UserAuthorizePage;

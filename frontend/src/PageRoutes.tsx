@@ -50,7 +50,7 @@ function PageRoutes() {
         />
         <Route
           path={`${PAGE_LIST.USER_PROFILE}/:socialId`}
-          element={<Page title="프로필 조회" component={lazy.ProfilePage} permission={isPC ? PERMISSION.ALL : PERMISSION.LOGIN_USER} />}
+          element={<Page title="프로필 조회" component={lazy.UserProfilePage} permission={isPC ? PERMISSION.ALL : PERMISSION.LOGIN_USER} />}
         />
       </Route>
 
@@ -93,11 +93,11 @@ function PageRoutes() {
       {/* 회원 관련 서비스 */}
       <Route
         path={PAGE_LIST.AUTHORIZE}
-        element={<Page title="로그인" component={lazy.AuthorizePage} />}
+        element={<Page title="로그인" component={lazy.UserAuthorizePage} />}
       />
       <Route
         path={PAGE_LIST.LOGOUT}
-        element={<Page title="로그아웃" component={lazy.LogoutPage} />}
+        element={<Page title="로그아웃" component={lazy.UserLogoutPage} />}
       />
 
       {/* Etc */}

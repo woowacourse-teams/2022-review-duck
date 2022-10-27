@@ -24,7 +24,7 @@ import LayoutContainer from 'service/components/LayoutContainer';
 import useModal from 'service/components/ModalProvider/useModal';
 import Questions from 'service/components/Questions';
 
-function ProfilePage() {
+function UserProfilePage() {
   const navigate = useNavigate();
   const { socialId = '' } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -273,4 +273,4 @@ function ProfilePage() {
   );
 }
 
-export default ProfilePage;
+export default UserProfilePage;
