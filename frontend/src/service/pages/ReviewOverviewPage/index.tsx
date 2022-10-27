@@ -1,10 +1,9 @@
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { FILTER, PAGE_LIST, PAGE_OPTION } from 'constant';
+import { isInclude } from 'utils';
 
 import useSnackbar from 'common/hooks/useSnackbar';
-
-import { isInclude } from 'service/@shared/utils';
 
 import { FlexContainer, Skeleton } from 'common/components';
 

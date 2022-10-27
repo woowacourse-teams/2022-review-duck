@@ -3,11 +3,9 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import { FILTER, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
+import { isInclude } from 'utils';
 
 import useSnackbar from 'common/hooks/useSnackbar';
-
-import { isNumberString } from 'common/utils/validator';
-import { isInclude } from 'service/@shared/utils';
 
 import { FlexContainer, PaginationBar } from 'common/components';
 
@@ -23,6 +21,7 @@ import { updateReviewLike } from 'api/review.api';
 import LayoutContainer from 'service/components/LayoutContainer';
 import useModal from 'service/components/ModalProvider/useModal';
 import Questions from 'service/components/Questions';
+import { isNumberString } from 'utils/validator';
 
 function UserProfilePage() {
   const navigate = useNavigate();

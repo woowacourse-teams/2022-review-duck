@@ -12,8 +12,6 @@ import { Question } from 'service/types';
 import useSnackbar from 'common/hooks/useSnackbar';
 import useNavigateHandler from 'service/hooks/useNavigateHandler';
 
-import { isNumberString } from 'common/utils/validator';
-
 import {
   Button,
   TextBox,
@@ -30,6 +28,7 @@ import useTemplateEditor from './useTemplateEditor';
 import { UserAgentContext } from 'common/contexts/UserAgent';
 import LayoutContainer from 'service/components/LayoutContainer';
 import QuestionsEditor from 'service/components/QuestionsEditor';
+import { isNumberString } from 'utils/validator';
 
 function TemplateFormPage() {
   const { templateId: templateIdParams = '' } = useParams();

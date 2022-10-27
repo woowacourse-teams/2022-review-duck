@@ -2,12 +2,11 @@ import { FormEvent, HTMLAttributes } from 'react';
 import { flushSync } from 'react-dom';
 
 import cn from 'classnames';
+import { setFormFocus } from 'utils';
 
 import { Question } from 'service/types';
 
 import useQuestions from 'service/hooks/useQuestions';
-
-import { setFormFocus } from 'service/@shared/utils';
 
 import styles from './styles.module.scss';
 

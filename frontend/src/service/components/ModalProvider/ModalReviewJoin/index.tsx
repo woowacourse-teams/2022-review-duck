@@ -5,13 +5,12 @@ import { faBan, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { MODAL_LIST, PAGE_LIST } from 'constant';
-
-import { getErrorMessage } from 'service/@shared/utils';
+import { getErrorMessage } from 'utils';
 
 import { Button, FieldSet, TextBox } from 'common/components';
 
-import { validateReviewFormCode } from 'service/@shared/validator';
 import useModal from 'service/components/ModalProvider/useModal';
+import { validateReviewFormCode } from 'service/validator';
 
 function ModalReviewJoin() {
   const navigate = useNavigate();

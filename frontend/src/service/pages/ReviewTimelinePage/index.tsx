@@ -4,10 +4,9 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { faArrowTrendUp, faPenNib } from '@fortawesome/free-solid-svg-icons';
 
 import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
+import { isInclude } from 'utils';
 
 import useSnackbar from 'common/hooks/useSnackbar';
-
-import { isInclude } from 'service/@shared/utils';
 
 import PageSuspense from 'common/components/PageSuspense';
 

@@ -3,12 +3,11 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import { faArrowTrendUp } from '@fortawesome/free-solid-svg-icons';
 
 import { PAGE_LIST, FILTER } from 'constant';
+import { getElapsedTimeText, isInclude } from 'utils';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import { useTemplateMutations } from 'service/hooks/queries/template';
 import useNavigateHandler from 'service/hooks/useNavigateHandler';
-
-import { getElapsedTimeText, isInclude } from 'service/@shared/utils';
 
 import PageSuspense from 'common/components/PageSuspense';
 

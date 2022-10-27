@@ -2,8 +2,7 @@ import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
 import { PAGE_LIST } from 'constant';
-
-import { getChildComponent } from 'service/@shared/utils';
+import { getChildComponent } from 'utils';
 
 import { Text } from 'common/components';
 

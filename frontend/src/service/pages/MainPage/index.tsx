@@ -1,10 +1,9 @@
 import { MODAL_LIST, FILTER, PAGE_LIST, PAGE_OPTION } from 'constant';
 import { ReviewTimelinePage } from 'routes';
+import { getElapsedTimeText } from 'utils';
 
 import { useGetTemplates } from 'service/hooks/queries/template';
 import useNavigateHandler from 'service/hooks/useNavigateHandler';
-
-import { getElapsedTimeText } from 'service/@shared/utils';
 
 import { FlexContainer } from 'common/components';
 

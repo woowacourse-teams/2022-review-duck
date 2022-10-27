@@ -1,4 +1,4 @@
-import { axiosInstanceUtils } from '../@shared/utils';
+import { axiosInstanceUtils } from '../../utils';
 
 import {
   useGetAccessToken,
