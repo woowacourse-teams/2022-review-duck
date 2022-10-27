@@ -18,8 +18,7 @@ import MainPage from 'service/user/pages/MainPage';
 // prettier-ignore
 function PageRoutes() {
   const { isPC } = useContext(UserAgentContext);
-  
-  useAuth();
+  const { isLogin } = useAuth();
 
   return (
     <Routes>
@@ -52,7 +51,7 @@ function PageRoutes() {
         />
         <Route
           path={`${PAGE_LIST.USER_PROFILE}/:socialId`}
-          element={<Page title="프로필 조회" component={lazy.ProfilePage} permission={PERMISSION.LOGIN_USER} />}
+          element={<Page title="프로필 조회" component={lazy.ProfilePage} permission={isPC ? PERMISSION.ALL : PERMISSION.LOGIN_USER} />}
         />
       </Route>
 
