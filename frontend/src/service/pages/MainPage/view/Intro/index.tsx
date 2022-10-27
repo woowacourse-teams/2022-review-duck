@@ -5,10 +5,10 @@ import cn from 'classnames';
 
 import { Button, Text, TransitionDiv } from 'common/components';
 
-import styles from './styles.module.scss';
-
 import LayoutContainer from 'service/components/LayoutContainer';
 import QuestionCard from 'service/components/QuestionCard';
+
+import styles from './styles.module.scss';
 
 interface ContainerProps {
   children: React.ReactNode;

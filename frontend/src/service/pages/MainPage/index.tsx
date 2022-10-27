@@ -4,17 +4,18 @@ import { getElapsedTimeText } from 'utils';
 import { useGetTemplates } from 'service/hooks/queries/template';
 import useNavigateHandler from 'service/hooks/useNavigateHandler';
 
-import { FlexContainer } from 'common/components';
+import { ReviewTimelinePage } from 'routes/lazy';
 
+import { FlexContainer } from 'common/components';
 import PageSuspense from 'common/components/PageSuspense';
 
-import styles from './styles.module.scss';
+import useModal from 'service/components/ModalProvider/useModal';
+import TemplateCard from 'service/components/TemplateCard';
 
 import Intro from './view/Intro';
 import TrendTemplate from './view/TrendTemplate';
-import { ReviewTimelinePage } from 'routes/lazy';
-import useModal from 'service/components/ModalProvider/useModal';
-import TemplateCard from 'service/components/TemplateCard';
+
+import styles from './styles.module.scss';
 
 function MainPage() {
   const modal = useModal();
