@@ -7,20 +7,20 @@
   "printWidth": 100,
   "endOfLine": "lf",
   "importOrder": [
-    "^(react)",
-    "^(@)",
+    "^react",
+    "^@",
+    "<THIRD_PARTY_MODULES>",
     "^((?!/).)*$",
     "^((.*)/types)(.*|$)",
     "^((.*)/hooks)(.*|$)",
     "^((.*)/utils)(.*|$)",
-    "^(common/components)*$",
-    "^(common/components)(.*|$)",
-    "^(service/(.*)/components)(.*|$)",
-    "^(pages)(.*|$)",
+    "^routes(.*|$)",
+    "^common/components(.*|$)",
+    "^service/components(.*|$)",
+    "^pages(.*|$)",
     "^((assets|constants))(.*|$)",
-    "^(./styles.module)(.*|$)",
-    "^(.)(.*|$)",
-    "^(..)(.*|$)"
+    "^((.|..)/(?!styles))(.*|$)",
+    "^(./styles.module)(.*|$)"
   ],
   "importOrderSeparation": true
 }
