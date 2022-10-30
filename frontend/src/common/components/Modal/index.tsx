@@ -5,19 +5,22 @@ import TransitionDiv from '../TransitionDiv';
 import styles from './styles.module.scss';
 
 interface ModalProps {
-  isVisible: boolean;
+  visible: boolean;
   onCloseModal: React.MouseEventHandler;
   children: React.ReactNode;
 }
 
-function Modal({ isVisible, onCloseModal, children }: ModalProps) {
-  const [isDimmerVisible, setDimmerVisible] = useState(isVisible);
+function Modal({ visible, onCloseModal, children }: ModalProps) {
+  const [isDimmerVisible, setDimmerVisible] = useState(visible);
 
-  useLayoutEffect(() => {
-    setDimmerVisible(isVisible);
-  }, [isVisible]);
+  useLayoutEffect(
+    function visibleStateDetection() {
+      setDimmerVisible(visible);
+    },
+    [visible],
+  );
 
-  const onDisappearContainer = () => {
+  const handleHideDimmer = () => {
     setDimmerVisible(false);
   };
 
@@ -34,8 +37,8 @@ function Modal({ isVisible, onCloseModal, children }: ModalProps) {
         all="drop"
         duration={300}
         direction="up"
-        visible={isVisible}
-        onDisappear={onDisappearContainer}
+        visible={visible}
+        onDisappear={handleHideDimmer}
       >
         {children}
       </TransitionDiv>
