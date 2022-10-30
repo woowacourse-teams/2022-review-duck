@@ -3,6 +3,9 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { faArrowTrendUp, faPenNib } from '@fortawesome/free-solid-svg-icons';
 
+import { updateReviewLike } from 'api/review.api';
+import { UserAgentContext } from 'common/contexts/UserAgent';
+
 import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
 import { isInclude } from 'utils';
 
@@ -10,15 +13,14 @@ import useSnackbar from 'common/hooks/useSnackbar';
 
 import PageSuspense from 'common/components/PageSuspense';
 
-import styles from './styles.module.scss';
+import LayoutContainer from 'service/components/LayoutContainer';
+import Questions from 'service/components/Questions';
 
 import useReviewTimeline from './useReviewTimeline';
 import Feed from './view/Feed';
 import SideMenu from './view/SideMenu';
-import { updateReviewLike } from 'api/review.api';
-import { UserAgentContext } from 'common/contexts/UserAgent';
-import LayoutContainer from 'service/components/LayoutContainer';
-import Questions from 'service/components/Questions';
+
+import styles from './styles.module.scss';
 
 function ReviewTimelinePage() {
   const [searchParam] = useSearchParams();
@@ -100,7 +102,7 @@ function ReviewTimelinePage() {
     });
   };
 
-  return PageSuspense(
+  return PageSuspense.subscribe(
     <LayoutContainer className={styles.container}>
       <SideMenu>
         {!isMobile && <SideMenu.Title>탐색하기</SideMenu.Title>}

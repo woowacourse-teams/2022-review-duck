@@ -1,13 +1,14 @@
+import { useContext } from 'react';
+
 import { API_REQUEST_TIMEOUT } from 'constant';
-import { useRecoilValue } from 'recoil';
+
+import ProgressBar from '../ProgressBar';
+import { IsPageLoadedContext } from './Provider';
 
 import styles from './styles.module.scss';
 
-import ProgressBar from '../ProgressBar';
-import { pageLoadedAtom } from './store';
-
 function PageProgress() {
-  const isPageLoaded = useRecoilValue(pageLoadedAtom);
+  const isPageLoaded = useContext(IsPageLoadedContext);
 
   return (
     <ProgressBar
