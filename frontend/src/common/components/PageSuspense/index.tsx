@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, Suspense } from 'react';
 
 import PageProgress from './PagePrgress';
-import { SetPageLoadedContext, SuspenseFallbackContext } from './Provider';
+import PageSuspenseProvider, { SetPageLoadedContext, SuspenseFallbackContext } from './Provider';
 
 import styles from './styles.module.scss';
 
@@ -55,6 +55,7 @@ function PageChildrenWrapper(children: JSX.Element) {
 }
 
 const PageSuspense = Object.assign(SuspenseContainer, {
+  Provider: PageSuspenseProvider,
   subscribe: PageChildrenWrapper,
 });
 

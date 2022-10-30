@@ -11,8 +11,7 @@ import 'styles/@app.scss';
 import { RecoilRoot } from 'recoil';
 import PageRoutes from 'routes';
 
-import { ErrorBoundary, SnackbarProvider } from 'common/components';
-import PageSuspenseProvider from 'common/components/PageSuspense/Provider';
+import { ErrorBoundary, PageSuspense, SnackbarProvider } from 'common/components';
 
 import ModalProvider from 'service/components/ModalProvider';
 
@@ -23,7 +22,7 @@ function ContextWrapper({ children }: { children: ReactNode }) {
         <QueryClientProvider client={queryClient}>
           <ModalProvider />
           <UserAgentProvider>
-            <PageSuspenseProvider>{children}</PageSuspenseProvider>
+            <PageSuspense.Provider>{children}</PageSuspense.Provider>
           </UserAgentProvider>
         </QueryClientProvider>
       </BrowserRouter>
