@@ -57,7 +57,7 @@ function Snackbar({
       duration={500}
       onClick={handleHideSnackbar}
       onDisappear={handleDisappear}
-      isVisible={isVisible}
+      visible={isVisible}
     >
       <div className={styles.content}>
         <FontAwesomeIcon className={styles.icon} icon={icon} />
@@ -66,6 +66,7 @@ function Snackbar({
           <Text className={styles.title} size={18} weight="bold">
             {title}
           </Text>
+
           {description && (
             <Text className={styles.description} size={14}>
               {description}

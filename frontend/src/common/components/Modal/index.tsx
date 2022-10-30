@@ -1,8 +1,8 @@
 import React, { useLayoutEffect, useState } from 'react';
 
-import styles from './styles.module.scss';
-
 import TransitionDiv from '../TransitionDiv';
+
+import styles from './styles.module.scss';
 
 interface ModalProps {
   isVisible: boolean;
@@ -26,7 +26,7 @@ function Modal({ isVisible, onCloseModal, children }: ModalProps) {
       className={styles.componentModal}
       all="fade"
       duration={200}
-      isVisible={isDimmerVisible}
+      visible={isDimmerVisible}
       onClick={onCloseModal}
     >
       <TransitionDiv
@@ -34,7 +34,7 @@ function Modal({ isVisible, onCloseModal, children }: ModalProps) {
         all="drop"
         duration={300}
         direction="up"
-        isVisible={isVisible}
+        visible={isVisible}
         onDisappear={onDisappearContainer}
       >
         {children}
