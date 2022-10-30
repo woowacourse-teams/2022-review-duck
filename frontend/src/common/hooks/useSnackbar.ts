@@ -1,8 +1,8 @@
+import snackbarStackAtom from 'common/recoil/snackbar';
+
 import { useResetRecoilState, useSetRecoilState } from 'recoil';
 
-import { SnackbarProps } from 'common/components/Snackbar';
-
-import snackbarStackAtom from 'common/recoil/snackbar';
+import { SnackbarProps } from 'common/components/Snackbar/component';
 
 function useSnackbar() {
   const resetSnackbar = useResetRecoilState(snackbarStackAtom);

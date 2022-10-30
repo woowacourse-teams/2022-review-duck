@@ -1,6 +1,6 @@
 import { atom } from 'recoil';
 
-import { SnackbarProps } from 'common/components/Snackbar';
+import { SnackbarProps } from 'common/components/Snackbar/component';
 
 interface snackbarStackAtom extends SnackbarProps {
   key: number;
