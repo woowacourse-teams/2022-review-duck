@@ -1,4 +1,4 @@
-import { SnackbarProps } from 'common/components/Snackbar';
+import { SnackbarProps } from 'common/components/Snackbar/component';
 
 interface snackbarStackAtom extends SnackbarProps {
   key: number;
