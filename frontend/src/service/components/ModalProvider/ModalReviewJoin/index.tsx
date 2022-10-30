@@ -4,13 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { faBan, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { MODAL_LIST, PAGE_LIST } from 'constant';
-import { getErrorMessage } from 'utils';
+import { validateReviewFormCode } from 'service/validator';
 
 import { Button, FieldSet, TextBox } from 'common/components';
-
 import useModal from 'service/components/ModalProvider/useModal';
-import { validateReviewFormCode } from 'service/validator';
+
+import { MODAL_LIST, PAGE_LIST } from 'constant';
+import { getErrorMessage } from 'utils';
 
 function ModalReviewJoin() {
   const navigate = useNavigate();

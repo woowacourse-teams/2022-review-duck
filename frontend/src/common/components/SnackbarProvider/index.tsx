@@ -1,10 +1,9 @@
+import { snackbarStackWithActive } from 'common/recoil/snackbar';
 import { useRecoilValue } from 'recoil';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
 import Snackbar from 'common/components/Snackbar';
-
-import { snackbarStackWithActive } from 'common/recoil/snackbar';
 
 function SnackbarProvider() {
   const snackbarActivityStack = useRecoilValue(snackbarStackWithActive);

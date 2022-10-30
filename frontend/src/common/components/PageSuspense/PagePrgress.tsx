@@ -1,10 +1,11 @@
-import { API_REQUEST_TIMEOUT } from 'constant';
 import { useRecoilValue } from 'recoil';
 
-import styles from './styles.module.scss';
+import { API_REQUEST_TIMEOUT } from 'constant';
 
 import ProgressBar from '../ProgressBar';
 import { pageLoadedAtom } from './store';
+
+import styles from './styles.module.scss';
 
 function PageProgress() {
   const isPageLoaded = useRecoilValue(pageLoadedAtom);

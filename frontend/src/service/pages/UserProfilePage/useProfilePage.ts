@@ -1,7 +1,5 @@
 import { useRef } from 'react';
 
-import { FILTER } from 'constant';
-
 import { Tabs } from 'service/types';
 
 import useOptimisticUpdate from 'common/hooks/useOptimisticUpdate';
@@ -14,6 +12,8 @@ import {
   useGetUserProfile,
   useGetUserTemplates,
 } from 'service/hooks/queries/user';
+
+import { FILTER } from 'constant';
 
 function useProfilePage(currentTab: Tabs, socialIdPrams: string, pageNumber: number) {
   const reviewMutations = useReviewMutations();

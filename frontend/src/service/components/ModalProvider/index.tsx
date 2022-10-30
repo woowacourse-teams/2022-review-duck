@@ -1,11 +1,11 @@
 import React from 'react';
 
 import { useRecoilState } from 'recoil';
+import modalAtom from 'service/recoil/modalProvider';
 
 import { Modal } from 'common/components';
 
 import * as modals from './modals';
-import modalAtom from 'service/recoil/modalProvider';
 
 function ModalProvider() {
   const [modalState, setModal] = useRecoilState(modalAtom);

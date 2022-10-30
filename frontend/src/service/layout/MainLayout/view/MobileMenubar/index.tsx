@@ -9,10 +9,9 @@ import cn from 'classnames';
 import useNavigateHandler from 'service/hooks/useNavigateHandler';
 
 import { Button, FlexContainer } from 'common/components';
+import useModal from 'service/components/ModalProvider/useModal';
 
 import styles from './styles.module.scss';
-
-import useModal from 'service/components/ModalProvider/useModal';
 
 interface MenuContainerProps {
   children: React.ReactNode;

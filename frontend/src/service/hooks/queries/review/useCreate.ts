@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { reviewAPI } from 'api';
-import { QUERY_KEY } from 'constant';
+import queryClient from 'api/config/queryClient';
 
 import {
   UpdateReviewAnswerResponse,
@@ -10,7 +10,7 @@ import {
   CreateFormByTemplateResponse,
 } from 'service/types';
 
-import queryClient from 'api/config/queryClient';
+import { QUERY_KEY } from 'constant';
 
 function useCreateReviewForm(mutationOptions?: UseCustomMutationOptions<UpdateReviewFormResponse>) {
   return useMutation(reviewAPI.createForm, {

@@ -9,7 +9,6 @@ import {
   GetTemplateResponse,
   GetTemplatesResponse,
 } from '../service/types/template';
-
 import axiosInstance from './config/axiosInstance';
 
 export const getTemplates = async (

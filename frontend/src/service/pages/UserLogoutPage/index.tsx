@@ -3,10 +3,10 @@ import { Navigate, useNavigate } from 'react-router-dom';
 
 import { faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 
-import { PAGE_LIST } from 'constant';
-
 import useSnackbar from 'common/hooks/useSnackbar';
 import useAuth from 'service/hooks/useAuth';
+
+import { PAGE_LIST } from 'constant';
 
 function UserLogoutPage() {
   const navigate = useNavigate();

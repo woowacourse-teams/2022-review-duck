@@ -3,18 +3,18 @@ import React, { useState } from 'react';
 import { faBan, faUserPen } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { getErrorMessage } from 'utils';
+import { validateNickname } from 'service/validator';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import { useGetAuthProfile } from 'service/hooks/queries/auth';
 import { useUpdateProfile } from 'service/hooks/queries/user/useUpdate';
 
 import { Button, FieldSet, TextBox } from 'common/components';
+import useModal from 'service/components/ModalProvider/useModal';
+
+import { getErrorMessage } from 'utils';
 
 import styles from './styles.module.scss';
-
-import useModal from 'service/components/ModalProvider/useModal';
-import { validateNickname } from 'service/validator';
 
 function ModalProfileEdit() {
   const modal = useModal();

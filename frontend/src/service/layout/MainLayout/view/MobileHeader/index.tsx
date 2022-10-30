@@ -1,10 +1,9 @@
 import { useRecoilValue } from 'recoil';
+import { pageTitleAtom } from 'recoil/pageTitle';
 
 import { Text } from 'common/components';
 
 import styles from './styles.module.scss';
-
-import { pageTitleAtom } from 'recoil/pageTitle';
 
 function MobileHeader() {
   const pageTitle = useRecoilValue(pageTitleAtom);

@@ -7,17 +7,17 @@ import { faPenToSquare, faRightToBracket, faShareNodes } from '@fortawesome/free
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
-import { PAGE_LIST } from 'constant';
 
 import { ReviewFormAnswer } from 'service/types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
 import { Text, FlexContainer, Button, TextBox, Skeleton, Carousel } from 'common/components';
+import NoResult from 'service/components/NoResult';
+
+import { PAGE_LIST } from 'constant';
 
 import styles from './styles.module.scss';
-
-import NoResult from 'service/components/NoResult';
 
 interface ContainerProps {
   children: React.ReactNode;

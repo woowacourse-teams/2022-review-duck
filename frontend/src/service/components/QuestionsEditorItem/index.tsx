@@ -2,7 +2,6 @@ import { faBackspace, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { FlexContainer, Textarea } from 'common/components';
-
 import Button from 'common/components/Button';
 import Text from 'common/components/Text';
 import TextBox from 'common/components/TextBox';

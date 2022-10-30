@@ -5,9 +5,9 @@ import cn from 'classnames';
 
 import { FlexContainer } from 'common/components';
 
-import styles from './styles.module.scss';
-
 import useIconEffectStack from './useIconEffectStack';
+
+import styles from './styles.module.scss';
 
 export interface ReactionsContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;

@@ -1,5 +1,4 @@
 import { axiosInstanceUtils } from '../../utils';
-
 import {
   useGetAccessToken,
   useGetAuthProfile,

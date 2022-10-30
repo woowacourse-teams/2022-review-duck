@@ -6,12 +6,11 @@ import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
+import { UserAgentContext } from 'common/contexts/UserAgent';
 
 import { TransitionDiv, Text } from 'common/components';
 
 import styles from './styles.module.scss';
-
-import { UserAgentContext } from 'common/contexts/UserAgent';
 
 export interface SnackbarProps {
   icon?: IconProp;

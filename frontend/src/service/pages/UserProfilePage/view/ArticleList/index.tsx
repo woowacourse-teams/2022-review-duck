@@ -1,6 +1,6 @@
-import styles from './styles.module.scss';
-
 import NoResult from 'service/components/NoResult';
+
+import styles from './styles.module.scss';
 
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;

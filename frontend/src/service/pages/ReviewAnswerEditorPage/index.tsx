@@ -3,12 +3,12 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { faCircleCheck } from '@fortawesome/free-regular-svg-icons';
 
-import { PAGE_LIST } from 'constant';
-
 import { ErrorResponse, Question } from 'service/types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useQuestions from 'service/hooks/useQuestions';
+
+import { PAGE_LIST } from 'constant';
 
 import useAnswerEditorPage from './useAnswerEditorPage';
 import { Editor } from './view/Editor';

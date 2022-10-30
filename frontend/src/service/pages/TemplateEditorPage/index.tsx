@@ -5,7 +5,7 @@ import { faArrowRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
-import { PAGE_LIST } from 'constant';
+import { UserAgentContext } from 'common/contexts/UserAgent';
 
 import { Question } from 'service/types';
 
@@ -21,14 +21,15 @@ import {
   FlexContainer,
   PageSuspense,
 } from 'common/components';
-
-import styles from './styles.module.scss';
-
-import useTemplateEditor from './useTemplateEditor';
-import { UserAgentContext } from 'common/contexts/UserAgent';
 import LayoutContainer from 'service/components/LayoutContainer';
 import QuestionsEditor from 'service/components/QuestionsEditor';
+
+import { PAGE_LIST } from 'constant';
 import { isNumberString } from 'utils/validator';
+
+import useTemplateEditor from './useTemplateEditor';
+
+import styles from './styles.module.scss';
 
 function TemplateFormPage() {
   const { templateId: templateIdParams = '' } = useParams();

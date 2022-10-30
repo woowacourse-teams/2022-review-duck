@@ -4,21 +4,21 @@ import { Outlet } from 'react-router-dom';
 import { faHome, faUser, faCompass, faRocket } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { PAGE_LIST } from 'constant';
+import { UserAgentContext } from 'common/contexts/UserAgent';
+import ErrorPage from 'service/pages/ErrorPage';
 
 import useAuth from 'service/hooks/useAuth';
 
 import { ErrorBoundary } from 'common/components';
-
 import PageSuspense from 'common/components/PageSuspense';
 
-import styles from './styles.module.scss';
+import { PAGE_LIST } from 'constant';
 
 import Header from './Header';
 import MobileHeader from './view/MobileHeader';
 import MobileMenu from './view/MobileMenubar';
-import { UserAgentContext } from 'common/contexts/UserAgent';
-import ErrorPage from 'service/pages/ErrorPage';
+
+import styles from './styles.module.scss';
 
 function MainLayout() {
   const { getUserProfileQuery } = useAuth();

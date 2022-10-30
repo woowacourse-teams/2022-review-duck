@@ -1,7 +1,6 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { reviewAPI } from 'api';
-import { QUERY_KEY } from 'constant';
 
 import {
   DisplayModeType,
@@ -11,6 +10,8 @@ import {
   TimelineFilterType,
 } from 'service/types';
 import 'service/types';
+
+import { QUERY_KEY } from 'constant';
 
 import useInfiniteScrollQuery from '../useInfiniteScrollQuery';
 

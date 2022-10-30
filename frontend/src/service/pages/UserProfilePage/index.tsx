@@ -2,26 +2,26 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
-import { FILTER, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
-import { isInclude } from 'utils';
+import { updateReviewLike } from 'api/review.api';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
 import { FlexContainer, PaginationBar } from 'common/components';
-
 import PageSuspense from 'common/components/PageSuspense';
 import { PaginationBarProps } from 'common/components/PaginationBar';
+import LayoutContainer from 'service/components/LayoutContainer';
+import useModal from 'service/components/ModalProvider/useModal';
+import Questions from 'service/components/Questions';
 
-import styles from './styles.module.scss';
+import { FILTER, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
+import { isInclude } from 'utils';
+import { isNumberString } from 'utils/validator';
 
 import useProfilePage from './useProfilePage';
 import ArticleList from './view/ArticleList';
 import Controller from './view/Controller';
-import { updateReviewLike } from 'api/review.api';
-import LayoutContainer from 'service/components/LayoutContainer';
-import useModal from 'service/components/ModalProvider/useModal';
-import Questions from 'service/components/Questions';
-import { isNumberString } from 'utils/validator';
+
+import styles from './styles.module.scss';
 
 function UserProfilePage() {
   const navigate = useNavigate();

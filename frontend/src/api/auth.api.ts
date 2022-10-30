@@ -3,7 +3,6 @@ import {
   CreateRefreshResponse,
   UserProfileResponse,
 } from '../service/types';
-
 import axiosInstance from './config/axiosInstance';
 
 export const createRefreshToken = async (

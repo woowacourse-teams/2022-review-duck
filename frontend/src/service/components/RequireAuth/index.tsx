@@ -1,8 +1,8 @@
-import { PERMISSION } from 'constant';
+import ErrorPage from 'service/pages/ErrorPage';
 
 import useAuth from 'service/hooks/useAuth';
 
-import ErrorPage from 'service/pages/ErrorPage';
+import { PERMISSION } from 'constant';
 
 export interface RequireAuthProps {
   permission?: ValueOf<typeof PERMISSION>;

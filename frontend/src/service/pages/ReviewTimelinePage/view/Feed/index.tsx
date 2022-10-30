@@ -1,10 +1,9 @@
 import React, { ForwardedRef, forwardRef } from 'react';
 
 import { FlexContainer, Skeleton, Text } from 'common/components';
+import Profile from 'service/components/Profile';
 
 import styles from './styles.module.scss';
-
-import Profile from 'service/components/Profile';
 
 interface ContainerProps {
   children: React.ReactNode;

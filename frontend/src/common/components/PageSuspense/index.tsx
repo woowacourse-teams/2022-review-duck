@@ -2,10 +2,10 @@ import React, { useContext, useEffect, Suspense, useRef } from 'react';
 
 import { useSetRecoilState } from 'recoil';
 
-import styles from './styles.module.scss';
-
 import PageProgress from './PagePrgress';
 import { pageLoadedAtom, SuspenseContext } from './store';
+
+import styles from './styles.module.scss';
 
 interface ProviderProps {
   children: React.ReactNode;

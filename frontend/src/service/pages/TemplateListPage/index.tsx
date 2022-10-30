@@ -3,8 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 
 import { faArrowTrendUp, faBarsStaggered } from '@fortawesome/free-solid-svg-icons';
 
-import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
-import { getElapsedTimeText, isInclude } from 'utils';
+import { UserAgentContext } from 'common/contexts/UserAgent';
 
 import { TemplateFilterType } from 'service/types';
 
@@ -12,17 +11,18 @@ import { useGetTemplates } from 'service/hooks/queries/template';
 import useNavigateHandler from 'service/hooks/useNavigateHandler';
 
 import { PaginationBar } from 'common/components';
-
 import PageSuspense from 'common/components/PageSuspense';
-
-import styles from './styles.module.scss';
-
-import Filter from './view/Filter';
-import { UserAgentContext } from 'common/contexts/UserAgent';
 import LayoutContainer from 'service/components/LayoutContainer';
 import NoResult from 'service/components/NoResult';
 import TemplateCard from 'service/components/TemplateCard';
+
+import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
+import { getElapsedTimeText, isInclude } from 'utils';
 import { isNumberString } from 'utils/validator';
+
+import Filter from './view/Filter';
+
+import styles from './styles.module.scss';
 
 function TemplateListPage() {
   const [searchParam, setSearchParam] = useSearchParams();

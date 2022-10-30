@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { templateAPI } from 'api';
-import { QUERY_KEY } from 'constant';
+import queryClient from 'api/config/queryClient';
 
 import {
   CreateFormResponse,
@@ -9,7 +9,7 @@ import {
   CreateTemplateResponse,
 } from 'service/types';
 
-import queryClient from 'api/config/queryClient';
+import { QUERY_KEY } from 'constant';
 
 function useCreateForm(mutationOptions?: UseCustomMutationOptions<CreateFormResponse>) {
   return useMutation(templateAPI.createForm, {

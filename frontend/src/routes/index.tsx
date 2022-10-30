@@ -1,17 +1,19 @@
 import { useContext } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
-import { PAGE_LIST, PERMISSION } from 'constant';
-
-import useAuth from 'service/hooks/useAuth';
-
 import { UserAgentContext } from 'common/contexts/UserAgent';
-import * as lazy from 'routes/lazy';
-import Page from 'service/components/Page';
 import MainLayout from 'service/layout/MainLayout';
 import ReviewLayout from 'service/layout/ReviewLayout';
 import ErrorPage from 'service/pages/ErrorPage';
 import MainPage from 'service/pages/MainPage';
+
+import * as lazy from 'routes/lazy';
+
+import useAuth from 'service/hooks/useAuth';
+
+import Page from 'service/components/Page';
+
+import { PAGE_LIST, PERMISSION } from 'constant';
 
 // ✅ 코드 가독성을 위해 Prettier 무시 처리
 // prettier-ignore

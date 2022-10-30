@@ -1,8 +1,8 @@
 import React, { useLayoutEffect, useState } from 'react';
 
-import styles from './styles.module.scss';
-
 import TransitionDiv from '../TransitionDiv';
+
+import styles from './styles.module.scss';
 
 interface ModalProps {
   isVisible: boolean;
