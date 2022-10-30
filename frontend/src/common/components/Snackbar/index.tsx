@@ -5,18 +5,18 @@ import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import { UserAgentContext } from 'common/contexts/UserAgent';
+
 import cn from 'classnames';
 
 import { TransitionDiv, Text } from 'common/components';
 
 import styles from './styles.module.scss';
 
-import { UserAgentContext } from 'common/contexts/UserAgent';
-
 export interface SnackbarProps {
   icon?: IconProp;
   theme?: 'primary' | 'success' | 'warning' | 'danger';
-  title: string;
+  title?: string;
   description?: string;
   duration?: number;
   onDisappear?: React.AnimationEventHandler<HTMLDivElement>;
@@ -25,7 +25,7 @@ export interface SnackbarProps {
 function Snackbar({
   icon = faBell,
   theme = 'primary',
-  title,
+  title = '스낵바 타이틀이 비어있습니다',
   description,
   duration = 3000,
   onDisappear,
@@ -35,7 +35,7 @@ function Snackbar({
 
   const progressDuration = `${(duration / 1000).toFixed(2)}s`;
 
-  const onProgressEnd = ({
+  const handleHideSnackbar = ({
     type,
     target,
     currentTarget,
@@ -45,7 +45,7 @@ function Snackbar({
     setVisible(false);
   };
 
-  const onDisappearContainer = (event: React.AnimationEvent<HTMLDivElement>) => {
+  const handleDisappear = (event: React.AnimationEvent<HTMLDivElement>) => {
     onDisappear && onDisappear(event);
   };
 
@@ -55,8 +55,8 @@ function Snackbar({
       all="drop"
       direction={isPC ? 'right' : 'up'}
       duration={500}
-      onClick={onProgressEnd}
-      onDisappear={onDisappearContainer}
+      onClick={handleHideSnackbar}
+      onDisappear={handleDisappear}
       isVisible={isVisible}
     >
       <div className={styles.content}>
@@ -79,19 +79,12 @@ function Snackbar({
       <div className={styles.progress}>
         <div
           className={styles.percent}
-          onAnimationEnd={onProgressEnd}
+          onAnimationEnd={handleHideSnackbar}
           style={{ animationDuration: progressDuration }}
         ></div>
       </div>
     </TransitionDiv>
   );
 }
-
-Snackbar.defaultType = {
-  icon: faBell,
-  theme: 'primary',
-  title: '스낵바 타이틀이 비어있습니다',
-  duration: 3000,
-};
 
 export default Snackbar;
