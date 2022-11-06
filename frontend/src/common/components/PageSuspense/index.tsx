@@ -1,50 +1,52 @@
-import React, { useContext, useEffect, Suspense, useRef } from 'react';
-
-import { useSetRecoilState } from 'recoil';
-
-import styles from './styles.module.scss';
+import React, { useContext, useEffect, Suspense } from 'react';
 
 import PageProgress from './PagePrgress';
-import { pageLoadedAtom, SuspenseContext } from './store';
+import PageSuspenseProvider, { SetPageLoadedContext, SuspenseFallbackContext } from './Provider';
+
+import styles from './styles.module.scss';
 
 interface ProviderProps {
   children: React.ReactNode;
 }
 
-function Provider({ children }: ProviderProps) {
-  const fallbackChildrenRef = useRef<React.ReactNode>(null);
-  const setPageLoaded = useSetRecoilState(pageLoadedAtom);
-  const setFallback = (children: React.ReactNode) => {
-    fallbackChildrenRef.current = children;
-  };
+function SuspenseContainer({ children }: ProviderProps) {
+  const setPageLoaded = useContext(SetPageLoadedContext);
+  const fallbackContext = useContext(SuspenseFallbackContext);
 
-  const FallbackContent = () => {
-    setPageLoaded(false);
-    return <div className={styles.fallback}>{fallbackChildrenRef.current}</div>;
+  if (!fallbackContext) {
+    throw new Error(
+      'SuspenseFallbackProvider가 호출되지 않았거나, 상태 업데이트에 문제가 있습니다.',
+    );
+  }
+
+  const { fallbackRef } = fallbackContext;
+
+  const FallbackComponent = () => {
+    setPageLoaded && setPageLoaded(false);
+    return <div className={styles.fallback}>{fallbackRef.current}</div>;
   };
 
   return (
-    <SuspenseContext.Provider value={{ fallbackChildrenRef, setFallback }}>
+    <>
       <PageProgress />
-      <Suspense fallback={<FallbackContent />}>{children}</Suspense>
-    </SuspenseContext.Provider>
+      <Suspense fallback={<FallbackComponent />}>{children}</Suspense>
+    </>
   );
 }
 
 function PageChildrenWrapper(children: JSX.Element) {
-  const context = useContext(SuspenseContext);
-
-  const setPageLoaded = useSetRecoilState(pageLoadedAtom);
+  const context = useContext(SuspenseFallbackContext);
+  const setPageLoaded = useContext(SetPageLoadedContext);
 
   if (!context) {
     throw new Error(
-      'PageSuspense.Provider가 사용되지 않았습니다. 상위 컴포넌트에서 추가하여주세요.',
+      'SuspenseFallbackProvider가 호출되지 않았거나, 상태 업데이트에 문제가 있습니다.',
     );
   }
 
   useEffect(() => {
     context.setFallback(children);
-    setPageLoaded(true);
+    setPageLoaded && setPageLoaded(true);
 
     return () => context.setFallback(null);
   }, [children]);
@@ -52,8 +54,9 @@ function PageChildrenWrapper(children: JSX.Element) {
   return <div className={styles.content}>{children}</div>;
 }
 
-const PageSuspense = Object.assign(PageChildrenWrapper, {
-  Provider,
+const PageSuspense = Object.assign(SuspenseContainer, {
+  Provider: PageSuspenseProvider,
+  subscribe: PageChildrenWrapper,
 });
 
 export default PageSuspense;

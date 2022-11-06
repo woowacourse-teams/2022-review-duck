@@ -34,7 +34,7 @@ function MainPage() {
     modal.show({ key: MODAL_LIST.REVIEW_START });
   };
 
-  return PageSuspense(
+  return PageSuspense.subscribe(
     <>
       <FlexContainer className={styles.mainPageContainer}>
         <Intro>
