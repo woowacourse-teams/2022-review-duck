@@ -1,6 +1,15 @@
 import { atom } from 'recoil';
 
-import { SnackbarAtom } from 'common/types';
+import { SnackbarProps } from 'common/components/Snackbar/component';
+
+interface SnackbarStackAtom extends SnackbarProps {
+  key: number;
+}
+
+export interface SnackbarAtom {
+  uniqueKey: number;
+  stack: SnackbarStackAtom[];
+}
 
 const snackbarStackAtom = atom<SnackbarAtom>({
   key: 'snackbarStack',

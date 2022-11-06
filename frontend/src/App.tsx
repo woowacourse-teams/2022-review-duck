@@ -11,7 +11,7 @@ import 'styles/@app.scss';
 import { RecoilRoot } from 'recoil';
 import PageRoutes from 'routes';
 
-import { ErrorBoundary, PageSuspense, SnackbarProvider } from 'common/components';
+import { ErrorBoundary, Snackbar, PageSuspense } from 'common/components';
 
 import ModalProvider from 'service/components/ModalProvider';
 
@@ -33,7 +33,7 @@ function ContextWrapper({ children }: { children: ReactNode }) {
 function App() {
   return (
     <ContextWrapper>
-      <SnackbarProvider />
+      <Snackbar.Provider />
       <Suspense>
         <ErrorBoundary fallback={ErrorPage}>
           <PageRoutes />

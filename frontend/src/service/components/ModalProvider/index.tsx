@@ -1,11 +1,12 @@
 import React from 'react';
 
+import modalAtom from 'service/recoil/modalProvider';
+
 import { useRecoilState } from 'recoil';
 
 import { Modal } from 'common/components';
 
 import * as modals from './modals';
-import modalAtom from 'service/recoil/modalProvider';
 
 function ModalProvider() {
   const [modalState, setModal] = useRecoilState(modalAtom);
@@ -14,7 +15,7 @@ function ModalProvider() {
 
   const ModalContent = modalKey ? modals[modalKey] : React.Fragment;
 
-  const onCloseModal = ({ target, currentTarget }: React.MouseEvent) => {
+  const handleClose = ({ target, currentTarget }: React.MouseEvent) => {
     const isCapturing = target !== currentTarget;
 
     if (isCapturing) return;
@@ -24,7 +25,7 @@ function ModalProvider() {
 
   return (
     <div id="modal-container">
-      <Modal isVisible={isVisible} onCloseModal={onCloseModal}>
+      <Modal visible={isVisible} onCloseModal={handleClose}>
         <ModalContent />
       </Modal>
     </div>
