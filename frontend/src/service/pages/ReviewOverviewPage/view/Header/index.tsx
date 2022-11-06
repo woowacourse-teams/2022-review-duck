@@ -4,11 +4,11 @@ import { faListCheck, faTableList } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
-import { PAGE_LIST } from 'constant';
 
 import { Logo, Text, Button } from 'common/components';
-
 import FlexContainer from 'common/components/FlexContainer';
+
+import { PAGE_LIST } from 'constant';
 
 import styles from './styles.module.scss';
 

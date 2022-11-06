@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 
-import { PERMISSION, SERVICE_NAME } from 'constant';
 import { useSetRecoilState } from 'recoil';
+import { pageTitleAtom } from 'recoil/pageTitle';
 
 import usePageTitle from 'common/hooks/usePageTitle';
 
+import { PERMISSION, SERVICE_NAME } from 'constant';
+
 import RequireAuth, { RequireAuthProps } from '../RequireAuth';
-import { pageTitleAtom } from 'recoil/pageTitle';
 
 export interface PageTitleProps {
   title?: string;

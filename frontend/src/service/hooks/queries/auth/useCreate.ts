@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { authAPI } from 'api';
-import { QUERY_KEY } from 'constant';
+import queryClient from 'api/config/queryClient';
 
 import { CreateRefreshResponse, UseCustomMutationOptions } from 'service/types';
 
-import queryClient from 'api/config/queryClient';
+import { QUERY_KEY } from 'constant';
 
 function useCreateRefreshToken(mutationOptions?: UseCustomMutationOptions<CreateRefreshResponse>) {
   return useMutation(authAPI.createRefreshToken, {

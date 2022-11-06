@@ -1,13 +1,13 @@
 import { useLayoutEffect } from 'react';
 import { Navigate, useSearchParams } from 'react-router-dom';
 
-import { PAGE_LIST } from 'constant';
-import { getErrorMessage } from 'utils';
+import { validateGithubOAuth } from 'service/validator';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useAuth from 'service/hooks/useAuth';
 
-import { validateGithubOAuth } from 'service/validator';
+import { PAGE_LIST } from 'constant';
+import { getErrorMessage } from 'utils';
 
 function UserAuthorizePage() {
   const [searchParams] = useSearchParams();

@@ -5,9 +5,9 @@ import cn from 'classnames';
 
 import { Text } from 'common/components';
 
-import styles from './styles.module.scss';
-
 import FlexContainer from '../FlexContainer';
+
+import styles from './styles.module.scss';
 
 interface FieldSetContainerProps {
   className?: string;

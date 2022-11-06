@@ -6,7 +6,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { FieldSet, Textarea, Button, ToolTip, CheckBox, TextBox } from 'common/components';
-
 import { CheckboxProps } from 'common/components/CheckBox';
 
 import styles from './styles.module.scss';

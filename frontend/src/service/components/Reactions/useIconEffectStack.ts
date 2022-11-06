@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-import { getRandomNumber } from 'utils';
-
 import useUniqueKey from 'common/hooks/useUniqueKey';
+
+import { getRandomNumber } from 'utils';
 
 interface ReactionIconStack {
   id: number;

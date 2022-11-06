@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 
 import cn from 'classnames';
-import { PAGE_LIST } from 'constant';
-import { getChildComponent } from 'utils';
 
 import { Text } from 'common/components';
-
 import FlexContainer, { FlexContainerProps } from 'common/components/FlexContainer';
 import { TextProps } from 'common/components/Text';
+
+import { PAGE_LIST } from 'constant';
+import { getChildComponent } from 'utils';
 
 import styles from './styles.module.scss';
 

@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 
-import { FILTER, SERVICE_NAME } from 'constant';
-
 import usePageTitle from 'common/hooks/usePageTitle';
 import { useGetTemplate, useGetTemplates } from 'service/hooks/queries/template';
+
+import { FILTER, SERVICE_NAME } from 'constant';
 
 function useTemplateDetailQueries(templateId: number) {
   const getTemplateQuery = useGetTemplate(templateId);

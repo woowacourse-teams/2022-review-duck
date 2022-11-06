@@ -10,11 +10,10 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { GITHUB_OAUTH_LOGIN_URL, PAGE_LIST } from 'constant';
-
 import { Button, FlexContainer, Text } from 'common/components';
-
 import { ErrorBoundaryFallbackProps } from 'common/components/ErrorBoundary';
+
+import { GITHUB_OAUTH_LOGIN_URL, PAGE_LIST } from 'constant';
 
 import styles from './styles.module.scss';
 

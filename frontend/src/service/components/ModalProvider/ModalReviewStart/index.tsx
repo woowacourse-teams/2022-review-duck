@@ -7,13 +7,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import { Button, Text } from 'common/components';
+import useModal from 'service/components/ModalProvider/useModal';
+
 import { MODAL_LIST, PAGE_LIST } from 'constant';
 
-import { Button, Text } from 'common/components';
-
 import styles from './styles.module.scss';
-
-import useModal from 'service/components/ModalProvider/useModal';
 
 function ModalReviewStart() {
   const navigate = useNavigate();

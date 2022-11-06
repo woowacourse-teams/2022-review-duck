@@ -5,9 +5,8 @@ import { faBell } from '@fortawesome/free-regular-svg-icons';
 import { faClose } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { UserAgentContext } from 'common/contexts/UserAgent';
-
 import cn from 'classnames';
+import { UserAgentContext } from 'common/contexts/UserAgent';
 
 import { TransitionDiv, Text } from 'common/components';
 

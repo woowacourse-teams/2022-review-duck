@@ -1,7 +1,6 @@
 import cn from 'classnames';
 
 import { FlexContainer } from 'common/components';
-
 import Text from 'common/components/Text';
 
 import styles from './styles.module.scss';

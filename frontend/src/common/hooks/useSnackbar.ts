@@ -1,5 +1,4 @@
 import snackbarStackAtom from 'common/recoil/snackbar';
-
 import { useResetRecoilState, useSetRecoilState } from 'recoil';
 
 import { SnackbarProps } from 'common/components/Snackbar/component';

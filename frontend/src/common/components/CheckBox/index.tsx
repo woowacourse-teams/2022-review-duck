@@ -1,10 +1,11 @@
-import cn from 'classnames';
-
-import styles from './styles.module.scss';
-
-import FlexContainer from '../FlexContainer';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import cn from 'classnames';
+
+import FlexContainer from '../FlexContainer';
+
+import styles from './styles.module.scss';
 
 export interface CheckboxProps extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;

@@ -2,9 +2,9 @@ import { ReactNode } from 'react';
 
 import cn from 'classnames';
 
-import styles from './styles.module.scss';
-
 import FlexContainer from '../FlexContainer';
+
+import styles from './styles.module.scss';
 
 interface TagLabelProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;

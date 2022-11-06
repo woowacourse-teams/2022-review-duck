@@ -1,7 +1,7 @@
 import { useSetRecoilState } from 'recoil';
+import modalAtom from 'service/recoil/modalProvider';
 
 import * as modals from './modals';
-import modalAtom from 'service/recoil/modalProvider';
 
 export interface ShowModal<TargetName extends keyof typeof modals> {
   key: TargetName;

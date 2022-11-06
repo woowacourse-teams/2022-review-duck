@@ -4,10 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cn from 'classnames';
 
 import { FlexContainer, Text, TagLabel } from 'common/components';
+import SmallProfileCard from 'service/components/SmallProfileCard';
 
 import styles from './styles.module.scss';
-
-import SmallProfileCard from 'service/components/SmallProfileCard';
 
 interface ContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;

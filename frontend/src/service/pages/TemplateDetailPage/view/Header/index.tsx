@@ -7,7 +7,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { Button, FlexContainer, Text, ToolTip } from 'common/components';
-
 import TagLabel from 'common/components/TagLabel';
 
 import styles from './styles.module.scss';

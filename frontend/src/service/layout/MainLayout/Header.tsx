@@ -5,22 +5,21 @@ import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { faPenToSquare, faRightFromBracket, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST, RULE } from 'constant';
-import { getErrorMessage } from 'utils';
+import { UserAgentContext } from 'common/contexts/UserAgent';
+import { validateSearch } from 'service/validator';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 import useAuth from 'service/hooks/useAuth';
 import useNavigateHandler from 'service/hooks/useNavigateHandler';
 
 import { Button, Logo, Text, TextBox, FlexContainer, SelectPopup } from 'common/components';
+import useModal from 'service/components/ModalProvider/useModal';
 
 import imageDefaultProfile from 'assets/images/profile.png';
+import { GITHUB_OAUTH_LOGIN_URL, MODAL_LIST, PAGE_LIST, RULE } from 'constant';
+import { getErrorMessage } from 'utils';
 
 import styles from './styles.module.scss';
-
-import { UserAgentContext } from 'common/contexts/UserAgent';
-import useModal from 'service/components/ModalProvider/useModal';
-import { validateSearch } from 'service/validator';
 
 function Header() {
   const { isPC } = useContext(UserAgentContext);

@@ -5,9 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
 
-import styles from './styles.module.scss';
-
 import setDebounceCallback from 'utils/setDebounceCallback';
+
+import styles from './styles.module.scss';
 
 interface CarouselProps {
   className?: string;

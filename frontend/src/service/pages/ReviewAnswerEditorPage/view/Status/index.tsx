@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 
 import { Logo, ProgressBar, Text } from 'common/components';
-
 import FlexContainer from 'common/components/FlexContainer';
 
 import styles from './styles.module.scss';

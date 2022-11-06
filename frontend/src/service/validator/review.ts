@@ -1,8 +1,8 @@
+import QuestionsModel from 'models/Questions';
+
 import { REGEX, RULE } from 'constant';
 
 import { Question } from '../types';
-
-import QuestionsModel from 'models/Questions';
 
 function validateReviewFormCode(reviewFormCode: string) {
   if (!new RegExp(REGEX.REVIEW_FORM_CODE, 'g').test(reviewFormCode)) {

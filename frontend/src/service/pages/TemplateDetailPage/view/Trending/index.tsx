@@ -4,12 +4,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cn from 'classnames';
 
 import { FlexContainer, Text } from 'common/components';
-
 import Carousel from 'common/components/Carousel';
+import Profile from 'service/components/Profile';
 
 import styles from './styles.module.scss';
-
-import Profile from 'service/components/Profile';
 
 interface ContainerProps {
   children: React.ReactNode;

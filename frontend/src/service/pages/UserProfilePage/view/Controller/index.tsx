@@ -4,15 +4,15 @@ import { faPenToSquare, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
-import { GITHUB_PROFILE_URL, FILTER } from 'constant';
+import { UserAgentContext } from 'common/contexts/UserAgent';
 
 import { Tabs } from 'service/types';
 
 import { Text, Button, FlexContainer } from 'common/components';
 
-import styles from './styles.module.scss';
+import { GITHUB_PROFILE_URL, FILTER } from 'constant';
 
-import { UserAgentContext } from 'common/contexts/UserAgent';
+import styles from './styles.module.scss';
 
 interface ContainerProps extends React.HTMLAttributes<HTMLElement> {
   children: React.ReactNode;

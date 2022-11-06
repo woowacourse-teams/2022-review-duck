@@ -7,12 +7,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { UserAgentContext } from 'common/contexts/UserAgent';
 import ErrorPage from 'service/pages/ErrorPage';
 
-import { PAGE_LIST } from 'constant';
-
 import useAuth from 'service/hooks/useAuth';
 
 import { ErrorBoundary } from 'common/components';
 import PageSuspense from 'common/components/PageSuspense';
+
+import { PAGE_LIST } from 'constant';
 
 import Header from './Header';
 import MobileHeader from './view/MobileHeader';

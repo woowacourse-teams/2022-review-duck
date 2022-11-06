@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { authAPI } from 'api';
-import { QUERY_KEY } from 'constant';
+import queryClient from 'api/config/queryClient';
 
 import { UseCustomMutationOptions } from 'service/types';
 
-import queryClient from 'api/config/queryClient';
+import { QUERY_KEY } from 'constant';
 
 function useDeleteRefreshToken(mutationOptions?: UseCustomMutationOptions<null>) {
   return useMutation(authAPI.deleteRefreshToken, {
