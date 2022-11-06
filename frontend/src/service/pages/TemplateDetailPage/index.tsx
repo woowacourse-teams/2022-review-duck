@@ -2,18 +2,17 @@ import { useParams, useSearchParams } from 'react-router-dom';
 
 import { faArrowTrendUp } from '@fortawesome/free-solid-svg-icons';
 
-import { PAGE_LIST, FILTER } from 'constant';
-import { getElapsedTimeText, isInclude } from 'utils';
-
 import useSnackbar from 'common/hooks/useSnackbar';
 import { useTemplateMutations } from 'service/hooks/queries/template';
 import useNavigateHandler from 'service/hooks/useNavigateHandler';
 
 import PageSuspense from 'common/components/PageSuspense';
-
 import LayoutContainer from 'service/components/LayoutContainer';
 import Questions from 'service/components/Questions';
 import TemplateCard from 'service/components/TemplateCard';
+
+import { PAGE_LIST, FILTER } from 'constant';
+import { getElapsedTimeText, isInclude } from 'utils';
 
 import useTemplateDetailQueries from './useTemplateDetailQueries';
 import Content from './view/Content';

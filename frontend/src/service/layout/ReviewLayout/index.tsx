@@ -2,7 +2,6 @@ import { Suspense } from 'react';
 import { Outlet } from 'react-router-dom';
 
 import { FlexContainer, Logo } from 'common/components';
-
 import Skeleton from 'common/components/Skeleton';
 
 import styles from './styles.module.scss';

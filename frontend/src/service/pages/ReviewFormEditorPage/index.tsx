@@ -1,19 +1,21 @@
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import cn from 'classnames';
-import { PAGE_LIST } from 'constant';
-import { getErrorMessage } from 'utils';
+import { validateReviewForm } from 'service/validator';
 
 import { Question } from 'service/types';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
+import QuestionsEditor from 'service/components/QuestionsEditor';
+
+import { PAGE_LIST } from 'constant';
+import { getErrorMessage } from 'utils';
+import { isNumberString } from 'utils/validator';
+
 import useReviewFormEditor from './useReviewFormEditor';
 import Editor from './view/Editor';
 import Status from './view/Status';
-import QuestionsEditor from 'service/components/QuestionsEditor';
-import { validateReviewForm } from 'service/validator';
-import { isNumberString } from 'utils/validator';
 
 function ReviewFormEditorPage() {
   const { reviewFormCode = '' } = useParams();

@@ -4,10 +4,6 @@ import { useSearchParams } from 'react-router-dom';
 import { faArrowTrendUp, faBarsStaggered } from '@fortawesome/free-solid-svg-icons';
 
 import { UserAgentContext } from 'common/contexts/UserAgent';
-import { isNumberString } from 'utils/validator';
-
-import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
-import { getElapsedTimeText, isInclude } from 'utils';
 
 import { TemplateFilterType } from 'service/types';
 
@@ -16,10 +12,13 @@ import useNavigateHandler from 'service/hooks/useNavigateHandler';
 
 import { PaginationBar } from 'common/components';
 import PageSuspense from 'common/components/PageSuspense';
-
 import LayoutContainer from 'service/components/LayoutContainer';
 import NoResult from 'service/components/NoResult';
 import TemplateCard from 'service/components/TemplateCard';
+
+import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
+import { getElapsedTimeText, isInclude } from 'utils';
+import { isNumberString } from 'utils/validator';
 
 import Filter from './view/Filter';
 

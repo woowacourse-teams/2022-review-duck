@@ -1,8 +1,7 @@
 import React from 'react';
 
-import modalAtom from 'service/recoil/modalProvider';
-
 import { useRecoilState } from 'recoil';
+import modalAtom from 'service/recoil/modalProvider';
 
 import { Modal } from 'common/components';
 

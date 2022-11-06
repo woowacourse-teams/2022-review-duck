@@ -3,20 +3,19 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 import { updateReviewLike } from 'api/review.api';
-import { isNumberString } from 'utils/validator';
-
-import { FILTER, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
-import { isInclude } from 'utils';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
 import { FlexContainer, PaginationBar } from 'common/components';
 import PageSuspense from 'common/components/PageSuspense';
 import { PaginationBarProps } from 'common/components/PaginationBar';
-
 import LayoutContainer from 'service/components/LayoutContainer';
 import useModal from 'service/components/ModalProvider/useModal';
 import Questions from 'service/components/Questions';
+
+import { FILTER, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
+import { isInclude } from 'utils';
+import { isNumberString } from 'utils/validator';
 
 import useProfilePage from './useProfilePage';
 import ArticleList from './view/ArticleList';

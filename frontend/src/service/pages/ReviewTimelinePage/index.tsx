@@ -6,15 +6,14 @@ import { faArrowTrendUp, faPenNib } from '@fortawesome/free-solid-svg-icons';
 import { updateReviewLike } from 'api/review.api';
 import { UserAgentContext } from 'common/contexts/UserAgent';
 
-import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
-import { isInclude } from 'utils';
-
 import useSnackbar from 'common/hooks/useSnackbar';
 
 import PageSuspense from 'common/components/PageSuspense';
-
 import LayoutContainer from 'service/components/LayoutContainer';
 import Questions from 'service/components/Questions';
+
+import { PAGE_LIST, FILTER, PAGE_OPTION } from 'constant';
+import { isInclude } from 'utils';
 
 import useReviewTimeline from './useReviewTimeline';
 import Feed from './view/Feed';

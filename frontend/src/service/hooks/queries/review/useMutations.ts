@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { reviewAPI } from 'api';
-import { QUERY_KEY } from 'constant';
+import queryClient from 'api/config/queryClient';
 
 import { UseCustomMutationOptions } from 'service/types';
 
-import queryClient from 'api/config/queryClient';
+import { QUERY_KEY } from 'constant';
 
 // TODO: invalidateQueries 무효화 대상 정확히 지정해주기
 

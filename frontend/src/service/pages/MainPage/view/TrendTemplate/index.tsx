@@ -1,8 +1,7 @@
 import { Carousel, Text } from 'common/components';
+import LayoutContainer from 'service/components/LayoutContainer';
 
 import styles from './styles.module.scss';
-
-import LayoutContainer from 'service/components/LayoutContainer';
 
 interface ContainerProps {
   children: React.ReactNode;

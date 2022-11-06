@@ -1,5 +1,4 @@
 import { snackbarStackWithActive } from 'common/recoil/snackbar';
-
 import { useRecoilValue } from 'recoil';
 
 import useSnackbar from 'common/hooks/useSnackbar';

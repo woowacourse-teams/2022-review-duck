@@ -3,10 +3,9 @@ import { Link } from 'react-router-dom';
 import { Question } from 'service/types';
 
 import { FlexContainer, Logo } from 'common/components';
+import QuestionCard from 'service/components/QuestionCard';
 
 import styles from './styles.module.scss';
-
-import QuestionCard from 'service/components/QuestionCard';
 
 interface ContainerProps {
   children: React.ReactNode;

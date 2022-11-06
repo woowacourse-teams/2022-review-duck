@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 
+import QuestionsModel from 'models/Questions';
+
 import { Question } from 'service/types';
 
 import { useTemplateMutations } from 'service/hooks/queries/template';
-
-import QuestionsModel from 'models/Questions';
 
 function useTemplateEditor(templateId: number | null) {
   const templateMutation = useTemplateMutations();

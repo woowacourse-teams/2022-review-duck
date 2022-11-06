@@ -4,11 +4,8 @@ import { useParams } from 'react-router-dom';
 import { faArrowRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { UserAgentContext } from 'common/contexts/UserAgent';
-import { isNumberString } from 'utils/validator';
-
 import cn from 'classnames';
-import { PAGE_LIST } from 'constant';
+import { UserAgentContext } from 'common/contexts/UserAgent';
 
 import { Question } from 'service/types';
 
@@ -24,9 +21,11 @@ import {
   FlexContainer,
   PageSuspense,
 } from 'common/components';
-
 import LayoutContainer from 'service/components/LayoutContainer';
 import QuestionsEditor from 'service/components/QuestionsEditor';
+
+import { PAGE_LIST } from 'constant';
+import { isNumberString } from 'utils/validator';
 
 import useTemplateEditor from './useTemplateEditor';
 

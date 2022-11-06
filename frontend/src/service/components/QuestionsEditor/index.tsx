@@ -2,15 +2,16 @@ import { FormEvent, HTMLAttributes } from 'react';
 import { flushSync } from 'react-dom';
 
 import cn from 'classnames';
-import { setFormFocus } from 'utils';
 
 import { Question } from 'service/types';
 
 import useQuestions from 'service/hooks/useQuestions';
 
-import styles from './styles.module.scss';
-
 import QuestionEditorItem from 'service/components/QuestionsEditorItem';
+
+import { setFormFocus } from 'utils';
+
+import styles from './styles.module.scss';
 
 interface QuestionsEditorProps extends Omit<HTMLAttributes<HTMLFormElement>, 'onChange'> {
   value: Question[];

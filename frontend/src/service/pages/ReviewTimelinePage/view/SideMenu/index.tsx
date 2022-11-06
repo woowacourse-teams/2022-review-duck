@@ -4,11 +4,12 @@ import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
-import { FILTER, PAGE_LIST } from 'constant';
 
 import { TimelineFilterType } from 'service/types';
 
 import { FlexContainer, Text } from 'common/components';
+
+import { FILTER, PAGE_LIST } from 'constant';
 
 import styles from './styles.module.scss';
 

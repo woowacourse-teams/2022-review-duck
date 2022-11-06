@@ -1,16 +1,15 @@
-import { MODAL_LIST, FILTER, PAGE_LIST, PAGE_OPTION } from 'constant';
-import { getElapsedTimeText } from 'utils';
+import { ReviewTimelinePage } from 'routes/lazy';
 
 import { useGetTemplates } from 'service/hooks/queries/template';
 import useNavigateHandler from 'service/hooks/useNavigateHandler';
 
-import { ReviewTimelinePage } from 'routes/lazy';
-
 import { FlexContainer } from 'common/components';
 import PageSuspense from 'common/components/PageSuspense';
-
 import useModal from 'service/components/ModalProvider/useModal';
 import TemplateCard from 'service/components/TemplateCard';
+
+import { MODAL_LIST, FILTER, PAGE_LIST, PAGE_OPTION } from 'constant';
+import { getElapsedTimeText } from 'utils';
 
 import Intro from './view/Intro';
 import TrendTemplate from './view/TrendTemplate';

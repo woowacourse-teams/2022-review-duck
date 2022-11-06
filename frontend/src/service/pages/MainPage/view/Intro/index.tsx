@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cn from 'classnames';
 
 import { Button, Text, TransitionDiv } from 'common/components';
-
 import LayoutContainer from 'service/components/LayoutContainer';
 import QuestionCard from 'service/components/QuestionCard';
 

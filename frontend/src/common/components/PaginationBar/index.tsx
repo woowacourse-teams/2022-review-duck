@@ -2,9 +2,9 @@ import { useEffect, useMemo } from 'react';
 
 import cn from 'classnames';
 
-import styles from './styles.module.scss';
-
 import FlexContainer from '../FlexContainer';
+
+import styles from './styles.module.scss';
 
 export interface PaginationBarProps extends React.HTMLAttributes<HTMLDivElement> {
   visiblePageButtonLength?: number;
