@@ -4,6 +4,9 @@ import { useParams } from 'react-router-dom';
 import { faArrowRightFromBracket, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import { UserAgentContext } from 'common/contexts/UserAgent';
+import { isNumberString } from 'utils/validator';
+
 import cn from 'classnames';
 import { PAGE_LIST } from 'constant';
 
@@ -22,13 +25,12 @@ import {
   PageSuspense,
 } from 'common/components';
 
-import styles from './styles.module.scss';
-
-import useTemplateEditor from './useTemplateEditor';
-import { UserAgentContext } from 'common/contexts/UserAgent';
 import LayoutContainer from 'service/components/LayoutContainer';
 import QuestionsEditor from 'service/components/QuestionsEditor';
-import { isNumberString } from 'utils/validator';
+
+import useTemplateEditor from './useTemplateEditor';
+
+import styles from './styles.module.scss';
 
 function TemplateFormPage() {
   const { templateId: templateIdParams = '' } = useParams();
@@ -103,7 +105,7 @@ function TemplateFormPage() {
     navigate(-1);
   };
 
-  return PageSuspense(
+  return PageSuspense.subscribe(
     <LayoutContainer className={styles.container}>
       <FlexContainer className={styles.informationEditor} gap={isMobile ? 'small' : 'large'}>
         <FlexContainer gap="medium">

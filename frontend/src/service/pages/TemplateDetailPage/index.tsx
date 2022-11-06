@@ -11,15 +11,16 @@ import useNavigateHandler from 'service/hooks/useNavigateHandler';
 
 import PageSuspense from 'common/components/PageSuspense';
 
-import styles from './styles.module.scss';
+import LayoutContainer from 'service/components/LayoutContainer';
+import Questions from 'service/components/Questions';
+import TemplateCard from 'service/components/TemplateCard';
 
 import useTemplateDetailQueries from './useTemplateDetailQueries';
 import Content from './view/Content';
 import Header from './view/Header';
 import Trending from './view/Trending';
-import LayoutContainer from 'service/components/LayoutContainer';
-import Questions from 'service/components/Questions';
-import TemplateCard from 'service/components/TemplateCard';
+
+import styles from './styles.module.scss';
 
 function TemplateDetailPage() {
   const { navigate, handleLinkPage } = useNavigateHandler();
@@ -90,7 +91,7 @@ function TemplateDetailPage() {
     });
   };
 
-  return PageSuspense(
+  return PageSuspense.subscribe(
     <>
       <LayoutContainer>
         <Header>

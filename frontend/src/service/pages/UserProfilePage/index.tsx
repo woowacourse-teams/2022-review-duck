@@ -2,28 +2,31 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
+import { updateReviewLike } from 'api/review.api';
+import { isNumberString } from 'utils/validator';
+
 import { FILTER, PAGE_LIST, MODAL_LIST, PAGE_OPTION } from 'constant';
 import { isInclude } from 'utils';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
 import { FlexContainer, PaginationBar } from 'common/components';
-
 import PageSuspense from 'common/components/PageSuspense';
 import { PaginationBarProps } from 'common/components/PaginationBar';
 
-import styles from './styles.module.scss';
+import LayoutContainer from 'service/components/LayoutContainer';
+import useModal from 'service/components/ModalProvider/useModal';
+import Questions from 'service/components/Questions';
 
 import useProfilePage from './useProfilePage';
 import ArticleList from './view/ArticleList';
 import Controller from './view/Controller';
-import { updateReviewLike } from 'api/review.api';
-import LayoutContainer from 'service/components/LayoutContainer';
-import useModal from 'service/components/ModalProvider/useModal';
-import Questions from 'service/components/Questions';
-import { isNumberString } from 'utils/validator';
+
+import styles from './styles.module.scss';
 
 function UserProfilePage() {
+  console.log('test');
+
   const navigate = useNavigate();
   const { socialId = '' } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -163,7 +166,7 @@ function UserProfilePage() {
       });
     };
 
-  return PageSuspense(
+  return PageSuspense.subscribe(
     <div className={styles.pageProfile}>
       <div
         className={styles.profileBackground}
