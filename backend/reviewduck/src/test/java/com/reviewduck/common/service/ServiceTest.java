@@ -10,6 +10,7 @@ import org.springframework.test.context.jdbc.Sql;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.repository.ReviewFormRepository;
+import com.reviewduck.review.repository.ReviewRepository;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 import com.reviewduck.template.service.TemplateService;
@@ -28,6 +29,8 @@ public class ServiceTest {
     protected TemplateService templateService;
     @Autowired
     protected ReviewFormRepository reviewFormRepository;
+    @Autowired
+    protected ReviewRepository reviewRepository;
     @Autowired
     protected ReviewService reviewService;
     @Autowired

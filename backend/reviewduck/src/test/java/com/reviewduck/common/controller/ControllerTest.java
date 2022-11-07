@@ -1,7 +1,6 @@
 package com.reviewduck.common.controller;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Optional;
@@ -25,7 +24,6 @@ import com.reviewduck.review.controller.ReviewController;
 import com.reviewduck.review.controller.ReviewFormController;
 import com.reviewduck.review.service.ReviewFormAggregator;
 import com.reviewduck.review.service.ReviewFormService;
-import com.reviewduck.review.service.ReviewAggregator;
 import com.reviewduck.review.service.ReviewService;
 import com.reviewduck.template.controller.TemplateController;
 import com.reviewduck.template.service.TemplateAggregator;
@@ -59,8 +57,6 @@ public class ControllerTest {
     protected TemplateAggregator templateAggregator;
     @MockBean
     protected ReviewFormAggregator reviewFormAggregator;
-    @MockBean
-    protected ReviewAggregator reviewAggregator;
 
     protected final String ACCESS_TOKEN = "access_token";
     protected final Long INVALID_REVIEW_ID = 1L;

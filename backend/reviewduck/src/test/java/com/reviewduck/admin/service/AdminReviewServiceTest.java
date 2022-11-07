@@ -93,7 +93,7 @@ public class AdminReviewServiceTest {
         adminReviewService.deleteReviewById(review.getId());
 
         // then
-        assertThatThrownBy(() -> reviewService.findById(review.getId()))
+        assertThatThrownBy(() -> adminReviewService.findById(review.getId()))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 회고입니다.");
     }
