@@ -28,6 +28,7 @@ import com.reviewduck.review.dto.controller.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.controller.response.ReviewFormResponse;
 import com.reviewduck.review.dto.controller.response.ReviewsOfReviewFormResponse;
 import com.reviewduck.review.service.ReviewFormAggregator;
+import com.reviewduck.review.service.ReviewFormService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,7 @@ import lombok.AllArgsConstructor;
 public class ReviewFormController {
 
     private final ReviewFormAggregator aggregator;
+    private final ReviewFormService reviewFormService;
 
     @Operation(summary = "회고 폼을 생성한다.")
     @PostMapping
@@ -47,7 +49,7 @@ public class ReviewFormController {
 
         info("/api/review-forms", "POST", request.toString());
 
-        return aggregator.save(member.getId(), request);
+        return reviewFormService.save(member.getId(), request);
     }
 
     @Operation(summary = "회고 답변을 생성한다.")

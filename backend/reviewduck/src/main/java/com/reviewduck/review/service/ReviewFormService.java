@@ -16,6 +16,7 @@ import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
+import com.reviewduck.review.dto.controller.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
 import com.reviewduck.review.dto.service.ServiceDtoConverter;
 import com.reviewduck.review.repository.ReviewFormRepository;
@@ -37,12 +38,9 @@ public class ReviewFormService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public ReviewForm save(long memberId, ReviewFormCreateRequest createRequest) {
-        Member member = findMemberById(memberId);
-        List<ReviewFormQuestionCreateDto> questions = ServiceDtoConverter.toReviewFormQuestionCreateDtos(
-            createRequest.getQuestions());
-        ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewFormTitle(), questions);
-        return reviewFormRepository.save(reviewForm);
+    public ReviewFormCodeResponse save(long memberId, ReviewFormCreateRequest createRequest) {
+        ReviewForm saveReviewForm = saveReviewForm(memberId, createRequest);
+        return ReviewFormCodeResponse.from(saveReviewForm);
     }
 
     @Transactional
@@ -62,7 +60,7 @@ public class ReviewFormService {
     @Transactional
     public ReviewForm saveFromTemplate(long memberId, long templateId, ReviewFormCreateRequest request) {
         templateRepository.increaseUsedCount(templateId);
-        return save(memberId, request);
+        return saveReviewForm(memberId, request);
     }
 
     public ReviewForm findByCode(String code) {
@@ -102,6 +100,14 @@ public class ReviewFormService {
             return;
         }
         reviewFormRepository.delete(reviewForm);
+    }
+
+    private ReviewForm saveReviewForm(long memberId, ReviewFormCreateRequest createRequest) {
+        Member member = findMemberById(memberId);
+        List<ReviewFormQuestionCreateDto> questions = ServiceDtoConverter.toReviewFormQuestionCreateDtos(
+            createRequest.getQuestions());
+        ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewFormTitle(), questions);
+        return reviewFormRepository.save(reviewForm);
     }
 
     private Member findMemberById(long memberId) {

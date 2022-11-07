@@ -29,11 +29,6 @@ public class ReviewFormAggregator {
     private final ReviewService reviewService;
     private final MemberService memberService;
 
-    @Transactional
-    public ReviewFormCodeResponse save(long memberId, ReviewFormCreateRequest request) {
-        return ReviewFormCodeResponse.from(reviewFormService.save(memberId, request));
-    }
-
     public ReviewFormResponse findByCode(String reviewFormCode, long memberId) {
         ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
         List<Member> members = memberService.findAllParticipantsByCode(reviewForm);
