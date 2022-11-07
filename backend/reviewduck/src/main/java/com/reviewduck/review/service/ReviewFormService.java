@@ -17,6 +17,7 @@ import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.dto.controller.response.ReviewFormCodeResponse;
+import com.reviewduck.review.dto.controller.response.ReviewFormResponse;
 import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
 import com.reviewduck.review.dto.service.ServiceDtoConverter;
 import com.reviewduck.review.repository.ReviewFormRepository;
@@ -63,9 +64,11 @@ public class ReviewFormService {
         return saveReviewForm(memberId, request);
     }
 
-    public ReviewForm findByCode(String code) {
-        return reviewFormRepository.findByCodeAndIsActiveTrue(code)
-            .orElseThrow(() -> new NotFoundException("존재하지 않는 회고 폼입니다."));
+    public ReviewFormResponse findByCode(String reviewFormCode, long memberId) {
+        ReviewForm reviewForm = getReviewFormByCode(reviewFormCode);
+        List<Member> members = memberRepository.findAllParticipantsByReviewFormCode(reviewForm);
+
+        return ReviewFormResponse.of(reviewForm, reviewForm.isMine(memberId), members);
     }
 
     public Page<ReviewForm> findBySocialId(String socialId, int page, int size) {
@@ -80,7 +83,7 @@ public class ReviewFormService {
 
     @Transactional
     public ReviewForm update(long memberId, String code, ReviewFormUpdateRequest updateRequest) {
-        ReviewForm reviewForm = findByCode(code);
+        ReviewForm reviewForm = getReviewFormByCode(code);
         validateReviewFormIsMine(memberId, reviewForm, "본인이 생성한 회고 폼이 아니면 수정할 수 없습니다.");
 
         reviewForm.update(
@@ -93,7 +96,7 @@ public class ReviewFormService {
 
     @Transactional
     public void deleteByCode(long memberId, String reviewFormCode) {
-        ReviewForm reviewForm = findByCode(reviewFormCode);
+        ReviewForm reviewForm = getReviewFormByCode(reviewFormCode);
         validateReviewFormIsMine(memberId, reviewForm, "본인이 생성한 회고 폼이 아니면 삭제할 수 없습니다.");
         if (reviewRepository.existsByReviewForm(reviewForm)) {
             reviewFormRepository.inactivate(reviewForm);
@@ -108,6 +111,11 @@ public class ReviewFormService {
             createRequest.getQuestions());
         ReviewForm reviewForm = new ReviewForm(member, createRequest.getReviewFormTitle(), questions);
         return reviewFormRepository.save(reviewForm);
+    }
+
+    private ReviewForm getReviewFormByCode(String code) {
+        return reviewFormRepository.findByCodeAndIsActiveTrue(code)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 회고 폼입니다."));
     }
 
     private Member findMemberById(long memberId) {

@@ -71,7 +71,7 @@ public class ReviewFormController {
 
         info("/api/review-forms/" + reviewFormCode, "GET", "");
 
-        return aggregator.findByCode(reviewFormCode, member.getId());
+        return reviewFormService.findByCode(reviewFormCode, member.getId());
     }
 
     @Operation(summary = "사용자가 작성한 회고 질문지 중 특정 페이지를 조회한다.")

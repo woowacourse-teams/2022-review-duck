@@ -28,6 +28,7 @@ import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequ
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.dto.controller.response.ReviewFormCodeResponse;
+import com.reviewduck.review.dto.controller.response.ReviewFormResponse;
 import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
 import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
 import com.reviewduck.review.repository.ReviewFormRepository;
@@ -49,6 +50,7 @@ public class ReviewFormServiceTest extends ServiceTest {
 
     @Nested
     @DisplayName("회고 폼 생성")
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     class saveReviewForm {
 
         @Test
@@ -272,26 +274,30 @@ public class ReviewFormServiceTest extends ServiceTest {
 
     @Nested
     @DisplayName("회고 폼 코드로 회고 폼 조회")
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     class findByCode {
 
         @Test
         @DisplayName("회고 폼 코드로 회고 폼을 조회한다.")
         void findReviewForm() throws InterruptedException {
             // given
-            ReviewForm expected = saveReviewForm(member1);
+            ReviewForm reviewForm = saveReviewForm(member1);
 
             // when
-            ReviewForm actual = reviewFormService.findByCode(expected.getCode());
+            ReviewFormResponse response = reviewFormService.findByCode(reviewForm.getCode(), member1.getId());
 
             // then
-            assertThat(expected).isSameAs(actual);
+            assertAll(
+                () -> assertThat(response.getReviewFormTitle()).isEqualTo(reviewForm.getTitle()),
+                () -> assertThat(response.getCreator().getId()).isEqualTo(member1.getId())
+            );
         }
 
         @Test
         @DisplayName("존재하지 않는 코드로 조회할 수 없다.")
         void findReviewFormByInvalidCode() {
             // when, then
-            assertThatThrownBy(() -> reviewFormService.findByCode(invalidCode))
+            assertThatThrownBy(() -> reviewFormService.findByCode(invalidCode, member1.getId()))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
@@ -381,29 +387,15 @@ public class ReviewFormServiceTest extends ServiceTest {
 
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(reviewFormTitle, updateRequests);
 
-            List<ReviewFormQuestion> expected = updateRequests.stream()
-                .map(questionRequest -> new ReviewFormQuestion(questionRequest.getValue(),
-                    questionRequest.getDescription(), mockReviewForm))
-                .collect(Collectors.toUnmodifiableList());
-
-            int index = 0;
-            for (ReviewFormQuestion reviewFormQuestion : expected) {
-                reviewFormQuestion.setPosition(index++);
-            }
-
             reviewFormService.update(memberId1, code, updateRequest);
-            ReviewForm foundReviewForm = reviewFormService.findByCode(code);
+            ReviewFormResponse foundReviewForm = reviewFormService.findByCode(code, memberId1);
 
             assertAll(
                 () -> assertThat(foundReviewForm).isNotNull(),
-                () -> assertThat(foundReviewForm.getId()).isNotNull(),
-                () -> assertThat(foundReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
-                () -> assertThat(foundReviewForm.getCode().length()).isEqualTo(8),
-                () -> assertThat(foundReviewForm.getTitle()).isEqualTo(reviewFormTitle),
-                () -> assertThat(foundReviewForm.getQuestions())
-                    .usingRecursiveComparison()
-                    .ignoringFields("id", "reviewForm")
-                    .isEqualTo(expected)
+                () -> assertThat(foundReviewForm.getReviewFormTitle()).isEqualTo(reviewFormTitle),
+                () -> assertThat(foundReviewForm.getQuestions()).hasSize(2),
+                () -> assertThat(foundReviewForm.getQuestions().get(0).getValue()).isEqualTo("new question1"),
+                () -> assertThat(foundReviewForm.getQuestions().get(1).getValue()).isEqualTo("new question3")
             );
         }
 
@@ -488,7 +480,7 @@ public class ReviewFormServiceTest extends ServiceTest {
             reviewFormService.deleteByCode(memberId1, code);
 
             // then
-            assertThatThrownBy(() -> reviewFormService.findByCode(code))
+            assertThatThrownBy(() -> reviewFormService.findByCode(code, member1.getId()))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
@@ -504,7 +496,7 @@ public class ReviewFormServiceTest extends ServiceTest {
             reviewFormService.deleteByCode(memberId1, code);
 
             // then
-            assertThatThrownBy(() -> reviewFormService.findByCode(code))
+            assertThatThrownBy(() -> reviewFormService.findByCode(code, member1.getId()))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
@@ -533,16 +525,6 @@ public class ReviewFormServiceTest extends ServiceTest {
 
     }
 
-    private void saveReview(Member member, ReviewForm reviewForm) {
-        List<QuestionAnswerCreateDto> questionAnswers = reviewForm.getQuestions().stream()
-            .map(it -> new QuestionAnswerCreateDto(it, new Answer("answer")))
-            .collect(Collectors.toUnmodifiableList());
-
-        Review review = new Review("title", member, reviewForm, questionAnswers, false);
-
-        reviewRepository.save(review);
-    }
-
     private ReviewForm saveReviewForm(Member member) throws InterruptedException {
         Thread.sleep(1);
 
@@ -553,5 +535,15 @@ public class ReviewFormServiceTest extends ServiceTest {
 
         ReviewForm reviewForm = new ReviewForm(member, "title", questions);
         return reviewFormRepository.save(reviewForm);
+    }
+
+    private void saveReview(Member member, ReviewForm reviewForm) {
+        List<QuestionAnswerCreateDto> questionAnswers = reviewForm.getQuestions().stream()
+            .map(it -> new QuestionAnswerCreateDto(it, new Answer("answer")))
+            .collect(Collectors.toUnmodifiableList());
+
+        Review review = new Review("title", member, reviewForm, questionAnswers, false);
+
+        reviewRepository.save(review);
     }
 }
