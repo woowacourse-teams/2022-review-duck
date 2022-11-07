@@ -169,7 +169,7 @@ public class ReviewServiceTest extends ServiceTest {
 
             // then
             assertAll(
-                () -> assertThat(reviewsResponse.getNumberOfReviews()).isEqualTo(2),
+                () -> assertThat(reviewsResponse.getReviews()).hasSize(2),
                 () -> assertThat(reviewsResponse.getReviews().get(0).getId()).isEqualTo(review.getId()),
                 () -> assertThat(reviewsResponse.getIsMine()).isTrue()
             );
@@ -191,7 +191,7 @@ public class ReviewServiceTest extends ServiceTest {
 
             // then
             assertAll(
-                () -> assertThat(reviewsResponse.getNumberOfReviews()).isEqualTo(2),
+                () -> assertThat(reviewsResponse.getReviews()).hasSize(2),
                 () -> assertThat(reviewsResponse.getReviews().get(0).getId()).isEqualTo(review.getId()),
                 () -> assertThat(reviewsResponse.getIsMine()).isFalse()
             );
@@ -207,12 +207,12 @@ public class ReviewServiceTest extends ServiceTest {
             reviewFormRepository.delete(reviewForm1);
             int page = 0;
             int size = 3;
-            ReviewsResponse reviewsResponse = reviewService.findAllBySocialId(member1.getSocialId(), memberId1, page,
+            ReviewsResponse reviewsResponse = reviewService.findAllBySocialId(member1.getSocialId(), memberId2, page,
                 size);
 
             // then
             assertAll(
-                () -> assertThat(reviewsResponse.getNumberOfReviews()).isEqualTo(2),
+                () -> assertThat(reviewsResponse.getReviews()).hasSize(1),
                 () -> assertThat(reviewsResponse.getReviews().get(0).getId()).isEqualTo(savedReview.getId())
             );
         }
@@ -221,6 +221,7 @@ public class ReviewServiceTest extends ServiceTest {
 
     @Nested
     @DisplayName("회고 폼 code로 회고 조회")
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     class findByCode {
 
         @Test
@@ -244,7 +245,7 @@ public class ReviewServiceTest extends ServiceTest {
 
             // then
             assertAll(
-                () -> assertThat(result.getNumberOfReviews()).isEqualTo(1),
+                () -> assertThat(reviewResponses).hasSize(1),
                 () -> assertThat(reviewResponses.get(0).getId()).isEqualTo(review.getId()),
                 () -> assertThat(reviewResponses.get(0).getReviewTitle()).isEqualTo(review.getTitle())
             );
@@ -262,6 +263,7 @@ public class ReviewServiceTest extends ServiceTest {
 
     @Nested
     @DisplayName("비밀글이 아닌 회고 답변을 모두 조회한다.")
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     class findTimelineReview {
 
         @Test
@@ -281,7 +283,7 @@ public class ReviewServiceTest extends ServiceTest {
 
             // then
             assertAll(
-                () -> assertThat(reviewsResponse.getNumberOfReviews()).isEqualTo(1),
+                () -> assertThat(reviewsResponse.getReviews()).hasSize(1),
                 () -> assertThat(reviewsResponse.getReviews().get(0).getId()).isEqualTo(review.getId()),
                 () -> assertThat(reviewsResponse.getReviews().get(0).getReviewTitle()).isEqualTo(review.getTitle())
             );
@@ -309,7 +311,7 @@ public class ReviewServiceTest extends ServiceTest {
 
             // then
             assertAll(
-                () -> assertThat(reviewsResponse.getNumberOfReviews()).isEqualTo(1),
+                () -> assertThat(reviewsResponse.getReviews()).hasSize(1),
                 () -> assertThat(reviewsResponse.getReviews().get(0).getId()).isEqualTo(review2.getId()),
                 () -> assertThat(reviewsResponse.getReviews().get(0).getLikes()).isEqualTo(300)
             );
@@ -416,7 +418,7 @@ public class ReviewServiceTest extends ServiceTest {
 
             // then
             assertThat(reviewService.newFindAllByCode(reviewForm1.getCode(), 0, 1, "list", memberId1)
-                .getNumberOfReviews()).isEqualTo(0);
+                .getReviews()).hasSize(0);
         }
 
         @Test
@@ -508,18 +510,11 @@ public class ReviewServiceTest extends ServiceTest {
     private Review saveReview(ReviewForm reviewForm, Member member, boolean isPrivate) throws InterruptedException {
         Thread.sleep(1);
 
-        List<QuestionAnswerCreateDto> questionAnswerCreateDtos = List.of(
-            new QuestionAnswerCreateDto(
-                reviewForm.getQuestions().get(0),
-                new Answer("answer1")
-            ),
-            new QuestionAnswerCreateDto(
-                reviewForm.getQuestions().get(1),
-                new Answer("answer2")
-            )
-        );
+        List<QuestionAnswerCreateDto> questionAnswers = reviewForm.getQuestions().stream()
+            .map(it -> new QuestionAnswerCreateDto(it, new Answer("answer")))
+            .collect(Collectors.toUnmodifiableList());
 
-        Review review = new Review("title", member, reviewForm, questionAnswerCreateDtos, isPrivate);
+        Review review = new Review("title", member, reviewForm, questionAnswers, isPrivate);
         return reviewRepository.save(review);
     }
 
