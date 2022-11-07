@@ -4,14 +4,12 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,9 +31,6 @@ import com.reviewduck.review.dto.controller.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.controller.response.ReviewFormResponse;
 import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
 import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
-import com.reviewduck.review.repository.ReviewFormRepository;
-import com.reviewduck.review.repository.ReviewRepository;
-import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
 
@@ -43,12 +38,6 @@ public class ReviewFormServiceTest extends ServiceTest {
 
     private final String invalidCode = "aaaaaaaa";
     private final ReviewForm mockReviewForm = mock(ReviewForm.class);
-
-    @Autowired
-    private ReviewFormRepository reviewFormRepository;
-
-    @Autowired
-    private ReviewRepository reviewRepository;
 
     @Nested
     @DisplayName("회고 폼 생성")
