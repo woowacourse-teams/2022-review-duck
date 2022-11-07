@@ -28,7 +28,6 @@ import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewAggregator;
 import com.reviewduck.review.service.ReviewService;
 import com.reviewduck.template.controller.TemplateController;
-import com.reviewduck.template.service.TemplateAggregator;
 import com.reviewduck.template.service.TemplateService;
 
 @WebMvcTest({AuthController.class, MemberController.class, ReviewController.class,
@@ -55,8 +54,6 @@ public class ControllerTest {
     protected TemplateService TemplateService;
     @MockBean
     protected MemberAggregator memberAggregator;
-    @MockBean
-    protected TemplateAggregator templateAggregator;
     @MockBean
     protected ReviewFormAggregator reviewFormAggregator;
     @MockBean
