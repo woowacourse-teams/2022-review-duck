@@ -340,16 +340,4 @@ public class ReviewFormServiceTest extends ServiceTest {
         reviewRepository.save(review);
     }
 
-    private long saveTemplateAndGetId() {
-        String templateTitle = "title";
-        String templateDescription = "description";
-        List<TemplateQuestionCreateRequest> questions = List.of(
-            new TemplateQuestionCreateRequest("question1", "description1"),
-            new TemplateQuestionCreateRequest("question2", "description2"));
-
-        TemplateCreateRequest templateRequest = new TemplateCreateRequest(
-            templateTitle, templateDescription, questions);
-
-        return templateService.save(memberId1, templateRequest).getTemplateId();
-    }
 }
