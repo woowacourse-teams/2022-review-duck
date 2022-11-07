@@ -1,7 +1,5 @@
 package com.reviewduck.common.service;
 
-import javax.transaction.Transactional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,11 +11,11 @@ import com.reviewduck.review.repository.ReviewFormRepository;
 import com.reviewduck.review.repository.ReviewRepository;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
+import com.reviewduck.template.repository.TemplateRepository;
 import com.reviewduck.template.service.TemplateService;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")
-@Transactional
 public class ServiceTest {
 
     protected Member member1;
@@ -31,6 +29,8 @@ public class ServiceTest {
     protected ReviewFormRepository reviewFormRepository;
     @Autowired
     protected ReviewRepository reviewRepository;
+    @Autowired
+    protected TemplateRepository templateRepository;
     @Autowired
     protected ReviewService reviewService;
     @Autowired

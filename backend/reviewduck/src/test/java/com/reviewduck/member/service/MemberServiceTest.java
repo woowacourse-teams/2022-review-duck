@@ -2,6 +2,9 @@ package com.reviewduck.member.service;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.time.format.DateTimeFormatter;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,7 +26,7 @@ public class MemberServiceTest extends ServiceTest {
         Member savedMember = memberService.save(member);
 
         // then
-        assertThat(savedMember).usingRecursiveComparison().isEqualTo(savedMember);
+        assertMember(savedMember, member1);
     }
 
     @Test
@@ -33,7 +36,7 @@ public class MemberServiceTest extends ServiceTest {
         Member foundMember = memberService.findById(member1.getId());
 
         // then
-        assertThat(foundMember).usingRecursiveComparison().isEqualTo(member1);
+        assertMember(foundMember, member1);
     }
 
     @ParameterizedTest
@@ -44,5 +47,16 @@ public class MemberServiceTest extends ServiceTest {
         assertThatThrownBy(() -> memberService.updateNickname(member1.getId(), nicknameToUpdate))
             .isInstanceOf(MemberException.class)
             .hasMessageContaining("닉네임이 비어있을 수 없습니다.");
+    }
+
+    private void assertMember(Member actual, Member expected) {
+        Assertions.assertAll(
+            () -> assertThat(actual).usingRecursiveComparison()
+                .ignoringFields("createdAt", "updatedAt").isEqualTo(expected),
+            () -> assertThat(actual.getCreatedAt().format(DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss")))
+                .isEqualTo(expected.getCreatedAt().format(DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss"))),
+            () -> assertThat(actual.getUpdatedAt().format(DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss")))
+                .isEqualTo(expected.getUpdatedAt().format(DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss")))
+        );
     }
 }
