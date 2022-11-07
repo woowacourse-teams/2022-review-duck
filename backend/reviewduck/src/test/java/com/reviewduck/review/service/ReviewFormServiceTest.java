@@ -19,6 +19,7 @@ import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.common.service.ServiceTest;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.MemberDto;
 import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
@@ -27,6 +28,7 @@ import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
+import com.reviewduck.review.dto.controller.response.MemberReviewFormsResponse;
 import com.reviewduck.review.dto.controller.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.controller.response.ReviewFormResponse;
 import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
@@ -85,194 +87,6 @@ public class ReviewFormServiceTest extends ServiceTest {
     }
 
     @Nested
-    @DisplayName("템플릿 기반 회고폼 생성")
-    class saveReviewFormByTemplate {
-
-        @Test
-        // 1차 캐시에서 조회하는 것을 막기 위해 테스트 메서드가 트랜잭션을 생성하지 않게 한다.
-        @Transactional(propagation = Propagation.NOT_SUPPORTED)
-        @DisplayName("템플릿과 동일한 모양의 회고 폼을 생성한다.")
-        void saveFromTemplate_Same() {
-            // given
-            // 템플릿 생성
-            String templateTitle = "title";
-            String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(
-                new TemplateQuestionCreateRequest("question1", "description1"),
-                new TemplateQuestionCreateRequest("question2", "description2"));
-
-            TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
-                questions);
-            long templateId = templateService.save(member1, templateRequest).getId();
-
-            // when
-            // 템플릿 기반 회고 폼 생성
-            ReviewForm savedReviewForm = reviewFormService.saveFromTemplate(memberId1, templateId);
-
-            List<ReviewFormQuestion> expected = questions.stream()
-                .map(question -> new ReviewFormQuestion(question.getValue(), question.getDescription(), mockReviewForm))
-                .collect(Collectors.toUnmodifiableList());
-
-            int index = 0;
-            for (ReviewFormQuestion reviewFormQuestion : expected) {
-                reviewFormQuestion.setPosition(index++);
-            }
-
-            // then
-            assertAll(
-                // save Review Form
-                () -> assertThat(savedReviewForm).isNotNull(),
-                () -> assertThat(savedReviewForm.getId()).isNotNull(),
-                () -> assertThat(savedReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
-                () -> assertThat(savedReviewForm.getCode().length()).isEqualTo(8),
-                () -> assertThat(savedReviewForm.getTitle()).isEqualTo(templateTitle),
-                () -> assertThat(savedReviewForm.getQuestions())
-                    .usingRecursiveComparison()
-                    .ignoringFields("id", "reviewForm")
-                    .isEqualTo(expected),
-                // template usedCount ++
-                // DB에 반영된 usedCount를 확인하기 위해 새로 조회
-                () -> assertThat(templateService.findById(templateId).getUsedCount()).isEqualTo(1)
-            );
-        }
-
-        @Test
-        @Transactional(propagation = Propagation.NOT_SUPPORTED)
-        @DisplayName("템플릿과 동일한 모양으로 회고 폼을 생성해도 수정 시간을 갱신하지 않는다.")
-        void saveReviewFormFromTemplateWithNotUpdatedAt() {
-            // given
-            // 템플릿 생성
-            String templateTitle = "title";
-            String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(
-                new TemplateQuestionCreateRequest("question1", "description1"),
-                new TemplateQuestionCreateRequest("question2", "description2"));
-
-            TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
-                questions);
-            Template savedTemplate = templateService.save(member1, templateRequest);
-            long templateId = savedTemplate.getId();
-
-            // 초기 수정 시간
-            LocalDateTime updatedAt = templateService.findById(templateId).getUpdatedAt();
-
-            // when
-            // 템플릿 기반 회고 폼 생성
-            reviewFormService.saveFromTemplate(memberId1, templateId);
-
-            // 템플릿 기반 회고 폼 생성 후 수정 시간
-            LocalDateTime updatedAtAfterCreateReviewForm = templateService.findById(templateId).getUpdatedAt();
-
-            // then
-            assertThat(updatedAtAfterCreateReviewForm.isEqual(updatedAt)).isTrue();
-        }
-
-        @Test
-        @Transactional(propagation = Propagation.NOT_SUPPORTED)
-        @DisplayName("템플릿과 동일하지 않은 모양의 회고 폼을 생성한다.")
-        void saveFromTemplate_Different() {
-            // given
-            // 템플릿 생성
-            String templateTitle = "title";
-            String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> templateQuestions = List.of(
-                new TemplateQuestionCreateRequest("question1", "description1"),
-                new TemplateQuestionCreateRequest("question2", "description2"));
-
-            TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
-                templateQuestions);
-            long templateId = templateService.save(member1, templateRequest).getId();
-
-            String reviewFormTitle = "title";
-            List<ReviewFormQuestionCreateRequest> reviewFromQuestions = List.of(
-                new ReviewFormQuestionCreateRequest("question3", "description3"),
-                new ReviewFormQuestionCreateRequest("question4", "description4"));
-
-            List<ReviewFormQuestion> expected = reviewFromQuestions.stream()
-                .map(request -> new ReviewFormQuestion(
-                    request.getValue(),
-                    request.getDescription(), mockReviewForm))
-                .collect(Collectors.toUnmodifiableList());
-
-            int index = 0;
-            for (ReviewFormQuestion reviewFormQuestion : expected) {
-                reviewFormQuestion.setPosition(index++);
-            }
-
-            // when
-            ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewFormTitle, reviewFromQuestions);
-            ReviewForm createdReviewForm = reviewFormService.saveFromTemplate(memberId1, templateId, createRequest);
-
-            // then
-            assertAll(
-                // save reviewForm
-                () -> assertThat(createdReviewForm).isNotNull(),
-                () -> assertThat(createdReviewForm.getId()).isNotNull(),
-                () -> assertThat(createdReviewForm.getMember().getNickname()).isEqualTo("제이슨"),
-                () -> assertThat(createdReviewForm.getCode().length()).isEqualTo(8),
-                () -> assertThat(createdReviewForm.getTitle()).isEqualTo(reviewFormTitle),
-                () -> assertThat(createdReviewForm.getQuestions())
-                    .usingRecursiveComparison()
-                    .ignoringFields("id", "reviewForm")
-                    .isEqualTo(expected),
-                // usedCount ++
-                // DB에 반영된 usedCount를 확인하기 위해 새로 조회
-                () -> assertThat(templateService.findById(templateId).getUsedCount()).isEqualTo(1)
-            );
-        }
-
-        @Test
-        @Transactional(propagation = Propagation.NOT_SUPPORTED)
-        @DisplayName("템플릿과 동일하지 않은 모양으로 회고 폼을 생성해도 수정 시간을 갱신하지 않는다.")
-        void saveReviewFormFromTemplateWithNotUpdatedAt_Different() {
-            // given
-            // 템플릿 생성
-            String templateTitle = "title";
-            String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> templateQuestions = List.of(
-                new TemplateQuestionCreateRequest("question1", "description1"),
-                new TemplateQuestionCreateRequest("question2", "description2"));
-
-            TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
-                templateQuestions);
-
-            long templateId = templateService.save(member1, templateRequest).getId();
-
-            String reviewFormTitle = "title";
-            List<ReviewFormQuestionCreateRequest> reviewFromQuestions = List.of(
-                new ReviewFormQuestionCreateRequest("question3", "description3"),
-                new ReviewFormQuestionCreateRequest("question4", "description4"));
-
-            List<ReviewFormQuestion> expected = reviewFromQuestions.stream()
-                .map(request -> new ReviewFormQuestion(
-                    request.getValue(),
-                    request.getDescription(), mockReviewForm))
-                .collect(Collectors.toUnmodifiableList());
-
-            int index = 0;
-            for (ReviewFormQuestion reviewFormQuestion : expected) {
-                reviewFormQuestion.setPosition(index++);
-            }
-
-            // 초기 수정 시간
-            LocalDateTime updatedAt = templateService.findById(templateId).getUpdatedAt();
-
-            // when
-            // 템플릿 기반 회고 폼 생성
-            ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewFormTitle, reviewFromQuestions);
-            reviewFormService.saveFromTemplate(memberId1, templateId,
-                createRequest);
-
-            // 템플릿 기반 회고 폼 생성 후 수정 시간
-            LocalDateTime updatedAtAfterCreateReviewForm = templateService.findById(templateId).getUpdatedAt();
-
-            // then
-            assertThat(updatedAtAfterCreateReviewForm.isEqual(updatedAt)).isTrue();
-        }
-
-    }
-
-    @Nested
     @DisplayName("회고 폼 코드로 회고 폼 조회")
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     class findByCode {
@@ -312,27 +126,22 @@ public class ReviewFormServiceTest extends ServiceTest {
         @DisplayName("자신이 작성한 회고 질문지 중 최신순으로 첫 페이지를 조회한다.")
         void findPageOfReviewsFormsOrderByLatest() throws InterruptedException {
             // given
+            MemberDto member = MemberDto.from(member1);
             saveReviewForm(member1);
             ReviewForm expected = saveReviewForm(member1);
 
             // when
             int page = 0;
-            int size = 3;
+            int size = 1;
 
-            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page,
-                size).getContent();
+            MemberReviewFormsResponse myReviewForms = reviewFormService.findBySocialId(
+                member1.getSocialId(), page, size, member);
 
             // then
             assertAll(
-                () -> assertThat(myReviewForms).hasSize(2),
-                () -> assertThat(myReviewForms.get(0)).isNotNull(),
-                () -> assertThat(myReviewForms.get(0).isMine(memberId1)).isTrue(),
-                () -> assertThat(myReviewForms.get(0).getCode().length()).isEqualTo(8),
-                () -> assertThat(myReviewForms.get(0).getUpdatedAt()).isEqualTo(expected.getUpdatedAt()),
-                () -> assertThat(myReviewForms.get(0).getQuestions())
-                    .usingRecursiveComparison()
-                    .ignoringFields("id")
-                    .isEqualTo(expected.getQuestions())
+                () -> assertThat(myReviewForms.getReviewForms()).hasSize(1),
+                () -> assertThat(myReviewForms.getReviewForms().get(0).getCode()).isEqualTo(expected.getCode()),
+                () -> assertThat(myReviewForms.getIsMine()).isTrue()
             );
         }
 
@@ -340,6 +149,7 @@ public class ReviewFormServiceTest extends ServiceTest {
         @DisplayName("삭제한 회고는 조회 대상에서 제외된다.")
         void findReviewFormsExceptDeleted() throws InterruptedException {
             // given
+            MemberDto member = MemberDto.from(member1);
             ReviewForm expected = saveReviewForm(member1);
             ReviewForm reviewForm = saveReviewForm(member1);
 
@@ -347,22 +157,16 @@ public class ReviewFormServiceTest extends ServiceTest {
 
             // when
             int page = 0;
-            int size = 3;
+            int size = 1;
 
-            List<ReviewForm> myReviewForms = reviewFormService.findBySocialId(member1.getSocialId(), page,
-                size).getContent();
+            MemberReviewFormsResponse myReviewForms = reviewFormService.findBySocialId(
+                member1.getSocialId(), page, size, member);
 
             // then
             assertAll(
-                () -> assertThat(myReviewForms).hasSize(1),
-                () -> assertThat(myReviewForms.get(0)).isNotNull(),
-                () -> assertThat(myReviewForms.get(0).isMine(memberId1)).isTrue(),
-                () -> assertThat(myReviewForms.get(0).getCode().length()).isEqualTo(8),
-                () -> assertThat(myReviewForms.get(0).getUpdatedAt()).isEqualTo(expected.getUpdatedAt()),
-                () -> assertThat(myReviewForms.get(0).getQuestions())
-                    .usingRecursiveComparison()
-                    .ignoringFields("id")
-                    .isEqualTo(expected.getQuestions())
+                () -> assertThat(myReviewForms.getReviewForms()).hasSize(1),
+                () -> assertThat(myReviewForms.getReviewForms().get(0).getCode()).isEqualTo(expected.getCode()),
+                () -> assertThat(myReviewForms.getIsMine()).isTrue()
             );
         }
     }
@@ -545,5 +349,18 @@ public class ReviewFormServiceTest extends ServiceTest {
         Review review = new Review("title", member, reviewForm, questionAnswers, false);
 
         reviewRepository.save(review);
+    }
+
+    private long saveTemplateAndGetId() {
+        String templateTitle = "title";
+        String templateDescription = "description";
+        List<TemplateQuestionCreateRequest> questions = List.of(
+            new TemplateQuestionCreateRequest("question1", "description1"),
+            new TemplateQuestionCreateRequest("question2", "description2"));
+
+        TemplateCreateRequest templateRequest = new TemplateCreateRequest(
+            templateTitle, templateDescription, questions);
+
+        return templateService.save(memberId1, templateRequest).getTemplateId();
     }
 }

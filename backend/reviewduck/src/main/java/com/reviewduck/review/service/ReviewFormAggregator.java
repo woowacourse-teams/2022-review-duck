@@ -22,11 +22,6 @@ public class ReviewFormAggregator {
     private final ReviewFormService reviewFormService;
     private final ReviewService reviewService;
 
-    public MemberReviewFormsResponse findBySocialId(String socialId, int page, int size, MemberDto member) {
-        Page<ReviewForm> reviewForms = reviewFormService.findBySocialId(socialId, page, size);
-        return MemberReviewFormsResponse.of(reviewForms, socialId, member);
-    }
-
     public ReviewsOfReviewFormResponse findAllByCode(String reviewFormCode, int page, int size,
         String displayType, long memberId) {
         Page<Review> reviews = reviewService.findAllByCode(reviewFormCode, page, size);

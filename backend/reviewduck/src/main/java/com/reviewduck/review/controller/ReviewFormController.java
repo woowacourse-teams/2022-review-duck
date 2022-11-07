@@ -84,7 +84,7 @@ public class ReviewFormController {
 
         info("/api/review-forms?member=" + socialId + "page=" + page + " size=" + size, "GET", "");
 
-        return aggregator.findBySocialId(socialId, page - 1, size, member);
+        return reviewFormService.findBySocialId(socialId, page - 1, size, member);
     }
 
     @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 모두 조회한다.")

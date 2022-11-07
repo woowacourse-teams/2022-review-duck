@@ -12,10 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.dto.MemberDto;
 import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
+import com.reviewduck.review.dto.controller.response.MemberReviewFormsResponse;
 import com.reviewduck.review.dto.controller.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.controller.response.ReviewFormResponse;
 import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
@@ -35,33 +37,12 @@ public class ReviewFormService {
 
     private final ReviewFormRepository reviewFormRepository;
     private final ReviewRepository reviewRepository;
-    private final TemplateRepository templateRepository;
     private final MemberRepository memberRepository;
 
     @Transactional
     public ReviewFormCodeResponse save(long memberId, ReviewFormCreateRequest createRequest) {
         ReviewForm saveReviewForm = saveReviewForm(memberId, createRequest);
         return ReviewFormCodeResponse.from(saveReviewForm);
-    }
-
-    @Transactional
-    public ReviewForm saveFromTemplate(long memberId, long templateId) {
-        Template template = templateRepository.findById(templateId)
-            .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
-        templateRepository.increaseUsedCount(templateId);
-
-        List<ReviewFormQuestionCreateDto> questions = template.getQuestions().stream()
-            .map(question -> new ReviewFormQuestionCreateDto(question.getValue(), question.getDescription()))
-            .collect(Collectors.toUnmodifiableList());
-        Member member = findMemberById(memberId);
-        ReviewForm reviewForm = new ReviewForm(member, template.getTemplateTitle(), questions);
-        return reviewFormRepository.save(reviewForm);
-    }
-
-    @Transactional
-    public ReviewForm saveFromTemplate(long memberId, long templateId, ReviewFormCreateRequest request) {
-        templateRepository.increaseUsedCount(templateId);
-        return saveReviewForm(memberId, request);
     }
 
     public ReviewFormResponse findByCode(String reviewFormCode, long memberId) {
@@ -71,14 +52,15 @@ public class ReviewFormService {
         return ReviewFormResponse.of(reviewForm, reviewForm.isMine(memberId), members);
     }
 
-    public Page<ReviewForm> findBySocialId(String socialId, int page, int size) {
-        Member member = memberRepository.findBySocialId(socialId)
+    public MemberReviewFormsResponse findBySocialId(String socialId, int page, int size, MemberDto member) {
+        Member creator = memberRepository.findBySocialId(socialId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
 
         Sort sort = Sort.by(Sort.Direction.DESC, ReviewFormSortType.LATEST.getSortBy());
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
-        return reviewFormRepository.findByMemberAndIsActiveTrue(member, pageRequest);
+        Page<ReviewForm> reviewForms = reviewFormRepository.findByMemberAndIsActiveTrue(creator, pageRequest);
+        return MemberReviewFormsResponse.of(reviewForms, socialId, member);
     }
 
     @Transactional
