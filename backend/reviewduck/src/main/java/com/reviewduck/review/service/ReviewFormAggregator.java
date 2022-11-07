@@ -19,24 +19,12 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ReviewFormAggregator {
 
-    private final ReviewFormService reviewFormService;
     private final ReviewService reviewService;
 
     public ReviewsOfReviewFormResponse findAllByCode(String reviewFormCode, int page, int size,
         String displayType, long memberId) {
         Page<Review> reviews = reviewService.findAllByCode(reviewFormCode, page, size);
         return ReviewsOfReviewFormResponse.of(memberId, reviews, displayType);
-    }
-
-    @Transactional
-    public ReviewFormCodeResponse update(long memberId, String reviewFormCode, ReviewFormUpdateRequest request) {
-        ReviewForm reviewForm = reviewFormService.update(memberId, reviewFormCode, request);
-        return ReviewFormCodeResponse.from(reviewForm);
-    }
-
-    @Transactional
-    public void delete(long memberId, String reviewFormCode) {
-        reviewFormService.deleteByCode(memberId, reviewFormCode);
     }
 
     /* -- 회고 답변 관련 메서드 -- */

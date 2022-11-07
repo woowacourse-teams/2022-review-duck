@@ -1,7 +1,6 @@
 package com.reviewduck.review.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,8 +24,6 @@ import com.reviewduck.review.dto.service.ServiceDtoConverter;
 import com.reviewduck.review.repository.ReviewFormRepository;
 import com.reviewduck.review.repository.ReviewRepository;
 import com.reviewduck.review.vo.ReviewFormSortType;
-import com.reviewduck.template.domain.Template;
-import com.reviewduck.template.repository.TemplateRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -64,7 +61,7 @@ public class ReviewFormService {
     }
 
     @Transactional
-    public ReviewForm update(long memberId, String code, ReviewFormUpdateRequest updateRequest) {
+    public ReviewFormCodeResponse update(long memberId, String code, ReviewFormUpdateRequest updateRequest) {
         ReviewForm reviewForm = getReviewFormByCode(code);
         validateReviewFormIsMine(memberId, reviewForm, "본인이 생성한 회고 폼이 아니면 수정할 수 없습니다.");
 
@@ -73,7 +70,7 @@ public class ReviewFormService {
             ServiceDtoConverter.toReviewFormQuestionUpdateDtos(updateRequest.getQuestions())
         );
 
-        return reviewForm;
+        return ReviewFormCodeResponse.from(reviewForm);
     }
 
     @Transactional

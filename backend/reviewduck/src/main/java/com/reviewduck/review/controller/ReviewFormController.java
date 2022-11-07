@@ -110,7 +110,7 @@ public class ReviewFormController {
 
         info("/api/review-forms/" + reviewFormCode, "PUT", request.toString());
 
-        return aggregator.update(member.getId(), reviewFormCode, request);
+        return reviewFormService.update(member.getId(), reviewFormCode, request);
     }
 
     @Operation(summary = "회고 폼을 삭제한다.")
@@ -120,6 +120,6 @@ public class ReviewFormController {
 
         info("/api/review-forms/" + reviewFormCode, "DELETE", "");
 
-        aggregator.delete(member.getId(), reviewFormCode);
+        reviewFormService.deleteByCode(member.getId(), reviewFormCode);
     }
 }
