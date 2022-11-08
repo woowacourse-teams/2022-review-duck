@@ -36,20 +36,27 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
         HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
 
+        String token = extractToken(request);
+        Member member = resolveMemberFromToken(token);
+
+        return MemberDto.from(member);
+    }
+
+    private String extractToken(HttpServletRequest request) {
+        validateAuthorization(request);
+        return AuthorizationExtractor.extract(request);
+    }
+
+    private void validateAuthorization(HttpServletRequest request) {
         if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
-            return MemberDto.getMemberNotLogin();
+            throw new AuthorizationException("권한이 없는 사용자입니다.");
         }
+    }
 
-        String token = AuthorizationExtractor.extract(request);
-
+    private Member resolveMemberFromToken(String token) {
         jwtTokenProvider.validateAccessToken(token);
 
         long memberId = Long.parseLong(jwtTokenProvider.getAccessTokenPayload(token));
-
-        return MemberDto.from(findMemberById(memberId));
-    }
-
-    private Member findMemberById(long memberId) {
         return memberService.findById(memberId);
     }
 }
