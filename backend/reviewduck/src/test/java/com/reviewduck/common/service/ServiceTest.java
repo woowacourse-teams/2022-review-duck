@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.repository.ReviewFormRepository;
 import com.reviewduck.review.service.ReviewFormService;
@@ -34,15 +35,17 @@ public class ServiceTest {
     protected MemberService memberService;
     @Autowired
     protected ReviewFormService reviewFormService;
+    @Autowired
+    protected MemberRepository memberRepository;
 
     @BeforeEach
     void setUp() {
         Member tempMember1 = new Member("1", "jason", "제이슨", "testUrl1");
-        member1 = memberService.save(tempMember1);
+        member1 = memberRepository.save(tempMember1);
         memberId1 = member1.getId();
 
         Member tempMember2 = new Member("2", "woni", "워니", "testUrl2");
-        member2 = memberService.save(tempMember2);
+        member2 = memberRepository.save(tempMember2);
         memberId2 = member2.getId();
     }
 }

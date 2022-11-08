@@ -36,7 +36,7 @@ public class ReviewFormAggregator {
 
     public ReviewFormResponse findByCode(String reviewFormCode, long memberId) {
         ReviewForm reviewForm = reviewFormService.findByCode(reviewFormCode);
-        List<Member> members = memberService.findAllParticipantsByCode(reviewForm);
+        List<Member> members = memberService.findAllParticipantsByReviewForm(reviewForm);
         return ReviewFormResponse.of(reviewForm, reviewForm.isMine(memberId), members);
     }
 

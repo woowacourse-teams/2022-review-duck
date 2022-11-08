@@ -17,7 +17,8 @@ import com.reviewduck.admin.dto.response.AdminReviewFormResponse;
 import com.reviewduck.admin.dto.response.AdminReviewFormsResponse;
 import com.reviewduck.admin.dto.response.AdminReviewResponse;
 import com.reviewduck.admin.dto.response.AdminReviewsResponse;
-import com.reviewduck.admin.service.AdminReviewAggregator;
+import com.reviewduck.admin.service.AdminReviewService;
+import com.reviewduck.admin.service.AdminReviewFormService;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.support.AdminAuthenticationPrincipal;
 import com.reviewduck.common.util.Logging;
@@ -33,7 +34,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AdminReviewController {
 
-    private final AdminReviewAggregator adminReviewAggregator;
+    private final AdminReviewService adminReviewService;
+    private final AdminReviewFormService adminReviewFormService;
 
     @Operation(summary = "생성된 회고 폼을 모두 조회한다")
     @GetMapping("/review-forms")
@@ -43,7 +45,7 @@ public class AdminReviewController {
         Logging.info("api/admin/review-forms", "GET", "");
 
         validateAdmin(member);
-        return adminReviewAggregator.findAllReviewForms();
+        return adminReviewFormService.findAllReviewForms();
     }
 
     @Operation(summary = "사용자가 작성한 회고 폼을 모두 조회한다.")
@@ -55,7 +57,7 @@ public class AdminReviewController {
         info("/api/review-forms?memberId=" + memberId, "GET", "");
 
         validateAdmin(member);
-        return adminReviewAggregator.findMemberReviewForms(memberId);
+        return adminReviewFormService.findMemberReviewForms(memberId);
     }
 
     @Operation(summary = "단일 회고 폼을 조회한다")
@@ -67,7 +69,7 @@ public class AdminReviewController {
         Logging.info("api/admin/review-forms/" + reviewFormCode, "GET", "");
 
         validateAdmin(member);
-        return adminReviewAggregator.findReviewForm(reviewFormCode);
+        return adminReviewFormService.findReviewForm(reviewFormCode);
     }
 
     @Transactional
@@ -79,7 +81,7 @@ public class AdminReviewController {
         Logging.info("api/admin/review-forms/" + reviewFormId, "DELETE", "");
 
         validateAdmin(member);
-        adminReviewAggregator.deleteReviewForm(reviewFormId);
+        adminReviewFormService.deleteReviewForm(reviewFormId);
     }
 
     @Operation(summary = "작성된 회고 답변을 모두 조회한다")
@@ -90,7 +92,7 @@ public class AdminReviewController {
         Logging.info("api/admin/reviews", "GET", "");
 
         validateAdmin(member);
-        return adminReviewAggregator.findAllReviews();
+        return adminReviewService.findAllReviews();
     }
 
     @Operation(summary = "단일 회고 답변을 조회한다")
@@ -102,7 +104,7 @@ public class AdminReviewController {
         Logging.info("api/admin/reviews/" + reviewId, "GET", "");
 
         validateAdmin(member);
-        return adminReviewAggregator.findReview(reviewId);
+        return adminReviewService.findReview(reviewId);
     }
 
     @Operation(summary = "사용자가 작성한 회고 답변을 모두 조회한다.")
@@ -114,7 +116,7 @@ public class AdminReviewController {
         info("/api/reviews?memberId=" + memberId, "GET", "");
 
         validateAdmin(member);
-        return adminReviewAggregator.findMemberReviews(memberId);
+        return adminReviewService.findMemberReviews(memberId);
     }
 
     @Transactional
@@ -126,7 +128,7 @@ public class AdminReviewController {
         Logging.info("api/admin/reviews/" + reviewId, "DELETE", "");
 
         validateAdmin(member);
-        adminReviewAggregator.deleteReview(reviewId);
+        adminReviewService.deleteReview(reviewId);
     }
 
     private void validateAdmin(AdminMemberDto member) {

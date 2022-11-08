@@ -1,7 +1,5 @@
 package com.reviewduck.member.dto.response;
 
-import java.util.Objects;
-
 import com.reviewduck.member.domain.Member;
 
 import lombok.AccessLevel;
@@ -25,7 +23,7 @@ public class MemberResponse {
             member.getSocialNickname(),
             member.getNickname(),
             member.getProfileUrl()
-            );
+        );
     }
 
     public static MemberResponse of(Member member, long myMemberId) {

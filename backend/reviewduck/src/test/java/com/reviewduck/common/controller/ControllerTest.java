@@ -19,7 +19,6 @@ import com.reviewduck.auth.service.AuthService;
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.controller.MemberController;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.service.MemberAggregator;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.controller.ReviewController;
 import com.reviewduck.review.controller.ReviewFormController;
@@ -54,7 +53,7 @@ public class ControllerTest {
     @MockBean
     protected TemplateService TemplateService;
     @MockBean
-    protected MemberAggregator memberAggregator;
+    protected MemberService memberAggregator;
     @MockBean
     protected TemplateAggregator templateAggregator;
     @MockBean

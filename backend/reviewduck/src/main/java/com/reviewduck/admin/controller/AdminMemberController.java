@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.reviewduck.admin.dto.AdminMemberDto;
 import com.reviewduck.admin.dto.response.AdminMemberResponse;
 import com.reviewduck.admin.dto.response.AdminMembersResponse;
-import com.reviewduck.admin.service.AdminMemberAggregator;
+import com.reviewduck.admin.service.AdminMemberService;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.support.AdminAuthenticationPrincipal;
 import com.reviewduck.common.util.Logging;
@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AdminMemberController {
 
-    private final AdminMemberAggregator adminMemberAggregator;
+    private final AdminMemberService adminMemberService;
 
     @Operation(summary = "가입한 사용자를 전원 조회한다")
     @GetMapping()
@@ -38,7 +38,7 @@ public class AdminMemberController {
         Logging.info("api/admin/members", "GET", "");
 
         validateAdmin(member);
-        return adminMemberAggregator.findAllMembers();
+        return adminMemberService.findAllMembers();
     }
 
     @Operation(summary = "단일 사용자를 조회한다")
@@ -50,7 +50,7 @@ public class AdminMemberController {
         Logging.info("api/admin/members" + memberId, "GET", "");
 
         validateAdmin(member);
-        return adminMemberAggregator.findMember(memberId);
+        return adminMemberService.findMember(memberId);
     }
 
     @Operation(summary = "사용자를 탈퇴시킨다")
@@ -62,7 +62,7 @@ public class AdminMemberController {
         Logging.info("api/admin/members/" + memberId, "DELETE", "");
 
         validateAdmin(member);
-        adminMemberAggregator.deleteMember(member);
+        adminMemberService.deleteMember(memberId);
     }
 
     private void validateAdmin(AdminMemberDto member) {

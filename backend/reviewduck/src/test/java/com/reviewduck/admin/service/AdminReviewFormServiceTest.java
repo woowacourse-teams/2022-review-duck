@@ -14,9 +14,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import com.reviewduck.admin.dto.response.AdminReviewFormInfoResponse;
+import com.reviewduck.admin.dto.response.AdminReviewFormsResponse;
+import com.reviewduck.admin.repository.AdminMemberRepository;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
@@ -34,7 +36,7 @@ public class AdminReviewFormServiceTest {
     private ReviewFormService reviewFormService;
 
     @Autowired
-    private MemberService memberService;
+    private AdminMemberRepository adminMemberRepository;
 
     private Member member1;
     private Member member2;
@@ -42,10 +44,10 @@ public class AdminReviewFormServiceTest {
     @BeforeEach
     void setUp() {
         Member tempMember1 = new Member("1", "jason", "제이슨", "testUrl1");
-        member1 = memberService.save(tempMember1);
+        member1 = adminMemberRepository.save(tempMember1);
 
         Member tempMember2 = new Member("2", "woni", "워니", "testUrl2");
-        member2 = memberService.save(tempMember2);
+        member2 = adminMemberRepository.save(tempMember2);
     }
 
     @Test
@@ -56,13 +58,13 @@ public class AdminReviewFormServiceTest {
         saveReviewForm(member2);
 
         // when
-        List<ReviewForm> reviewForms = adminReviewFormService.findAllReviewForms();
-
+        AdminReviewFormsResponse reviewFormsResponse = adminReviewFormService.findAllReviewForms();
+        List<AdminReviewFormInfoResponse> reviewForms = reviewFormsResponse.getReviewForms();
         // then
         assertAll(
             () -> assertThat(reviewForms).hasSize(2),
-            () -> assertThat(reviewForms.get(0).getMember()).isEqualTo(member1),
-            () -> assertThat(reviewForms.get(1).getMember()).isEqualTo(member2)
+            () -> assertThat(reviewForms.get(0).getMemberId()).isEqualTo(member1.getId()),
+            () -> assertThat(reviewForms.get(1).getMemberId()).isEqualTo(member2.getId())
         );
     }
 
@@ -73,7 +75,7 @@ public class AdminReviewFormServiceTest {
         ReviewForm reviewForm = saveReviewForm(member1);
 
         // when
-        adminReviewFormService.deleteReviewFormById(reviewForm.getId());
+        adminReviewFormService.deleteReviewForm(reviewForm.getId());
 
         // then
         assertThatThrownBy(() -> reviewFormService.findByCode(reviewForm.getCode()))
@@ -85,7 +87,7 @@ public class AdminReviewFormServiceTest {
     @DisplayName("존재하지 않는 회고 폼을 삭제할 수 없다.")
     void failToDeleteReviewForm() {
         // when, then
-        assertThatThrownBy(() -> adminReviewFormService.deleteReviewFormById(9999L))
+        assertThatThrownBy(() -> adminReviewFormService.deleteReviewForm(9999L))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 회고 폼입니다.");
     }

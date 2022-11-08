@@ -50,7 +50,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     private Member findMemberById(long memberId) {
-        return memberService.getById(memberId)
-            .orElseThrow(() -> new AuthorizationException("존재하지 않는 사용자입니다."));
+        return memberService.findById(memberId);
     }
 }
