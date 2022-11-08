@@ -40,7 +40,6 @@ public class AdminReviewFormController {
 
         Logging.info("api/admin/review-forms", "GET", "");
 
-        validateAdmin(member);
         return adminReviewFormService.findAllReviewForms();
     }
 
@@ -52,7 +51,6 @@ public class AdminReviewFormController {
 
         info("/api/review-forms?memberId=" + memberId, "GET", "");
 
-        validateAdmin(member);
         return adminReviewFormService.findMemberReviewForms(memberId);
     }
 
@@ -64,7 +62,6 @@ public class AdminReviewFormController {
 
         Logging.info("api/admin/review-forms/" + reviewFormCode, "GET", "");
 
-        validateAdmin(member);
         return adminReviewFormService.findReviewForm(reviewFormCode);
     }
 
@@ -76,13 +73,6 @@ public class AdminReviewFormController {
 
         Logging.info("api/admin/review-forms/" + reviewFormId, "DELETE", "");
 
-        validateAdmin(member);
         adminReviewFormService.deleteReviewForm(reviewFormId);
-    }
-
-    private void validateAdmin(AdminMemberDto member) {
-        if (!member.isAdmin()) {
-            throw new AuthorizationException("어드민 권한이 없습니다.");
-        }
     }
 }

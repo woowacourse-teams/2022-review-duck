@@ -39,7 +39,6 @@ public class AdminTemplateController {
 
         info("api/admin/templates", "GET", "");
 
-        validateAdmin(member);
         return adminTemplateService.findAllTemplates();
     }
 
@@ -51,7 +50,6 @@ public class AdminTemplateController {
 
         info("api/admin/templates/" + templateId, "GET", "");
 
-        validateAdmin(member);
         return adminTemplateService.findTemplate(templateId);
     }
 
@@ -63,7 +61,6 @@ public class AdminTemplateController {
 
         info("/api/templates?memberId=" + memberId, "GET", "");
 
-        validateAdmin(member);
         return adminTemplateService.findMemberTemplates(memberId);
     }
 
@@ -75,13 +72,6 @@ public class AdminTemplateController {
 
         info("api/admin/templates/" + templateId, "DELETE", "");
 
-        validateAdmin(member);
         adminTemplateService.deleteTemplate(templateId);
-    }
-
-    private void validateAdmin(AdminMemberDto member) {
-        if (!member.isAdmin()) {
-            throw new AuthorizationException("어드민 권한이 없습니다.");
-        }
     }
 }

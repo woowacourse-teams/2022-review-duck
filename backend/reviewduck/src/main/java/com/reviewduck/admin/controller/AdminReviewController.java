@@ -40,7 +40,6 @@ public class AdminReviewController {
 
         Logging.info("api/admin/reviews", "GET", "");
 
-        validateAdmin(member);
         return adminReviewService.findAllReviews();
     }
 
@@ -52,7 +51,6 @@ public class AdminReviewController {
 
         Logging.info("api/admin/reviews/" + reviewId, "GET", "");
 
-        validateAdmin(member);
         return adminReviewService.findReview(reviewId);
     }
 
@@ -64,7 +62,6 @@ public class AdminReviewController {
 
         info("/api/reviews?memberId=" + memberId, "GET", "");
 
-        validateAdmin(member);
         return adminReviewService.findMemberReviews(memberId);
     }
 
@@ -76,13 +73,6 @@ public class AdminReviewController {
 
         Logging.info("api/admin/reviews/" + reviewId, "DELETE", "");
 
-        validateAdmin(member);
         adminReviewService.deleteReview(reviewId);
-    }
-
-    private void validateAdmin(AdminMemberDto member) {
-        if (!member.isAdmin()) {
-            throw new AuthorizationException("어드민 권한이 없습니다.");
-        }
     }
 }

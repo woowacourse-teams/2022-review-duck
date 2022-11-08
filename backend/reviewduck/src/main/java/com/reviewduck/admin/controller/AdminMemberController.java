@@ -37,7 +37,6 @@ public class AdminMemberController {
 
         Logging.info("api/admin/members", "GET", "");
 
-        validateAdmin(member);
         return adminMemberService.findAllMembers();
     }
 
@@ -49,7 +48,6 @@ public class AdminMemberController {
 
         Logging.info("api/admin/members" + memberId, "GET", "");
 
-        validateAdmin(member);
         return adminMemberService.findMember(memberId);
     }
 
@@ -61,13 +59,6 @@ public class AdminMemberController {
 
         Logging.info("api/admin/members/" + memberId, "DELETE", "");
 
-        validateAdmin(member);
         adminMemberService.deleteMember(memberId);
-    }
-
-    private void validateAdmin(AdminMemberDto member) {
-        if (!member.isAdmin()) {
-            throw new AuthorizationException("어드민 권한이 없습니다.");
-        }
     }
 }
