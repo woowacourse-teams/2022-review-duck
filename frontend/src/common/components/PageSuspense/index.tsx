@@ -22,7 +22,9 @@ function SuspenseContainer({ children }: ProviderProps) {
   const { fallbackRef } = fallbackContext;
 
   const FallbackComponent = () => {
-    setPageLoaded && setPageLoaded(false);
+    useEffect(() => {
+      setPageLoaded && setPageLoaded(false);
+    }, []);
     return <div className={styles.fallback}>{fallbackRef.current}</div>;
   };
 
