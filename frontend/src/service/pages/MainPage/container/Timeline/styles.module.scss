@@ -1,0 +1,21 @@
+@import 'styles/@global.scss';
+
+.container {
+  @include mobile {
+    display: block;
+    padding: 0 1.5rem;
+  }
+
+  position: relative;
+  display: grid;
+  padding: 1.5rem 0;
+
+  grid-template-columns: 25% 70%;
+  gap: 5%;
+}
+
+.question-edit {
+  position: absolute;
+  top: 2rem;
+  right: 1.5rem;
+}
