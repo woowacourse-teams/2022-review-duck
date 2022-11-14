@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/admin/members")
 @AllArgsConstructor
-@Transactional(readOnly = true)
 @Slf4j
 public class AdminMemberController {
 

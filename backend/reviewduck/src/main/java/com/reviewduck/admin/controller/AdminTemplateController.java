@@ -25,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/admin/templates")
 @AllArgsConstructor
-@Transactional(readOnly = true)
 @Slf4j
 public class AdminTemplateController {
 
