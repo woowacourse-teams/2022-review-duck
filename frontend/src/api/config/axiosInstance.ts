@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 import { API_REQUEST_TIMEOUT } from 'constant';
 
 const axiosInstance = axios.create({

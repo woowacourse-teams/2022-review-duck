@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
 
-import setDebounceCallback from 'common/utils/setDebounceCallback';
+import setDebounceCallback from 'utils/setDebounceCallback';
 
 import styles from './styles.module.scss';
 

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,10 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.reviewduck.common.service.ServiceTest;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
+import com.reviewduck.common.service.ServiceTest;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
@@ -25,6 +27,13 @@ import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
+import com.reviewduck.review.dto.controller.response.ReviewLikesResponse;
+import com.reviewduck.review.dto.controller.response.ReviewResponse;
+import com.reviewduck.review.dto.controller.response.ReviewSynchronizedResponse;
+import com.reviewduck.review.dto.controller.response.ReviewsOfReviewFormResponse;
+import com.reviewduck.review.dto.controller.response.ReviewsResponse;
+import com.reviewduck.review.dto.controller.response.TimelineReviewsResponse;
+import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
 import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
 
 public class ReviewServiceTest extends ServiceTest {
@@ -47,24 +56,6 @@ public class ReviewServiceTest extends ServiceTest {
         this.reviewForm2 = reviewFormRepository.save(reviewForm2);
     }
 
-    private Review saveReview(ReviewForm reviewForm, Member member, boolean isPrivate) throws InterruptedException {
-        Thread.sleep(1);
-
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, "title",
-            List.of(
-                new ReviewContentCreateRequest(
-                    reviewForm.getQuestions().get(0).getId(),
-                    new AnswerCreateRequest("answer1")
-                ),
-                new ReviewContentCreateRequest(
-                    reviewForm.getQuestions().get(1).getId(),
-                    new AnswerCreateRequest("answer2")
-                )
-            ));
-
-        return reviewService.save(member.getId(), reviewForm.getCode(), reviewCreateRequest);
-    }
-
     @Nested
     @DisplayName("회고 저장")
     class saveReview {
@@ -83,17 +74,11 @@ public class ReviewServiceTest extends ServiceTest {
                 ));
 
             // when
-            Review savedReview = reviewService.save(memberId1, reviewForm1.getCode(), reviewCreateRequest);
+            long reviewId = reviewService.save(memberId1, reviewForm1.getCode(), reviewCreateRequest);
+            Review savedReview = findById(reviewId);
 
             // then
-            assertAll(
-                () -> assertThat(savedReview.getId()).isNotNull(),
-                () -> assertThat(savedReview.getMember().getNickname()).isEqualTo(member1.getNickname()),
-                () -> assertThat(savedReview.getQuestionAnswers().get(0).getAnswer().getValue())
-                    .isEqualTo("answer1"),
-                () -> assertThat(savedReview.getQuestionAnswers().get(0).getPosition())
-                    .isEqualTo(0)
-            );
+            assertThat(savedReview.getId()).isNotNull();
         }
 
         @Test
@@ -141,10 +126,10 @@ public class ReviewServiceTest extends ServiceTest {
             Review saved = saveReview(reviewForm1, member1, false);
 
             // when
-            Review actual = reviewService.findById(saved.getId());
+            ReviewSynchronizedResponse reviewEditResponse = (ReviewSynchronizedResponse)reviewService.findById(saved.getId());
 
             // then
-            assertThat(actual).isEqualTo(saved);
+            assertThat(saved.getTitle()).isEqualTo(reviewEditResponse.getReviewTitle());
         }
 
         @Test
@@ -173,15 +158,14 @@ public class ReviewServiceTest extends ServiceTest {
             // when
             int page = 0;
             int size = 3;
-            List<Review> myReviews = reviewService.findAllBySocialId(member1, memberId1, page,
-                size).getContent();
+            ReviewsResponse reviewsResponse = reviewService.findAllBySocialId(member1.getSocialId(), memberId1, page,
+                size);
 
             // then
             assertAll(
-                () -> assertThat(myReviews).hasSize(2),
-                () -> assertThat(myReviews.get(0)).isNotNull(),
-                () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo("제이슨"),
-                () -> assertThat(myReviews.get(0).getUpdatedAt()).isEqualTo(review.getUpdatedAt())
+                () -> assertThat(reviewsResponse.getReviews()).hasSize(2),
+                () -> assertThat(reviewsResponse.getReviews().get(0).getId()).isEqualTo(review.getId()),
+                () -> assertThat(reviewsResponse.getIsMine()).isTrue()
             );
         }
 
@@ -196,15 +180,14 @@ public class ReviewServiceTest extends ServiceTest {
             // when
             int page = 0;
             int size = 3;
-            List<Review> myReviews = reviewService.findAllBySocialId(member1, memberId2, page,
-                size).getContent();
+            ReviewsResponse reviewsResponse = reviewService.findAllBySocialId(member1.getSocialId(), memberId2, page,
+                size);
 
             // then
             assertAll(
-                () -> assertThat(myReviews).hasSize(2),
-                () -> assertThat(myReviews.get(0)).isNotNull(),
-                () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo(member1.getNickname()),
-                () -> assertThat(myReviews.get(0).getUpdatedAt()).isEqualTo(review.getUpdatedAt())
+                () -> assertThat(reviewsResponse.getReviews()).hasSize(2),
+                () -> assertThat(reviewsResponse.getReviews().get(0).getId()).isEqualTo(review.getId()),
+                () -> assertThat(reviewsResponse.getIsMine()).isFalse()
             );
         }
 
@@ -215,16 +198,16 @@ public class ReviewServiceTest extends ServiceTest {
             Review savedReview = saveReview(reviewForm1, member1, false);
 
             // when
-            reviewFormRepository.delete(reviewForm1);
+            reviewFormService.deleteByCode(memberId1, reviewForm1.getCode());
             int page = 0;
             int size = 3;
-            List<Review> myReviews = reviewService.findAllBySocialId(member1, member2.getId(), page,
-                size).getContent();
+            ReviewsResponse reviewsResponse = reviewService.findAllBySocialId(member1.getSocialId(), memberId2, page,
+                size);
 
             // then
             assertAll(
-                () -> assertThat(myReviews).hasSize(1),
-                () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo(member1.getNickname())
+                () -> assertThat(reviewsResponse.getReviews()).hasSize(1),
+                () -> assertThat(reviewsResponse.getReviews().get(0).getId()).isEqualTo(savedReview.getId())
             );
         }
 
@@ -246,13 +229,18 @@ public class ReviewServiceTest extends ServiceTest {
             int page = 1;
             int size = 1;
 
-            List<Review> reviews = reviewService.findAllByCode(reviewForm1.getCode(), page, size).getContent();
+            ReviewsOfReviewFormResponse result = reviewService.findAllByCode(reviewForm1.getCode(), page, size,
+                "list", member1.getId());
+
+            List<ReviewResponse> reviewResponses = result.getReviews().stream()
+                .map(it -> (ReviewResponse)it)
+                .collect(Collectors.toUnmodifiableList());
 
             // then
             assertAll(
-                () -> assertThat(reviews).hasSize(1),
-                () -> assertThat(reviews.get(0).getId()).isEqualTo(review.getId()),
-                () -> assertThat(reviews.get(0).getTitle()).isEqualTo(review.getTitle())
+                () -> assertThat(reviewResponses).hasSize(1),
+                () -> assertThat(reviewResponses.get(0).getId()).isEqualTo(review.getId()),
+                () -> assertThat(reviewResponses.get(0).getReviewTitle()).isEqualTo(review.getTitle())
             );
         }
 
@@ -260,7 +248,7 @@ public class ReviewServiceTest extends ServiceTest {
         @DisplayName("존재하지 않는 회고 폼으로 조회할 수 없다.")
         void invalidCode() {
             // when, then
-            assertThatThrownBy(() -> reviewService.findAllByCode("aaaaaa", 0, 1))
+            assertThatThrownBy(() -> reviewService.findAllByCode(invalidCode, 0, 1, "list", memberId1))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
@@ -283,13 +271,13 @@ public class ReviewServiceTest extends ServiceTest {
             int size = 1;
             String sort = "latest";
 
-            List<Review> reviews = reviewService.findAllPublic(page, size, sort).getContent();
+            TimelineReviewsResponse reviewsResponse = reviewService.findAllPublic(page, size, sort, memberId1);
 
             // then
             assertAll(
-                () -> assertThat(reviews).hasSize(1),
-                () -> assertThat(reviews.get(0).getId()).isEqualTo(review.getId()),
-                () -> assertThat(reviews.get(0).getTitle()).isEqualTo(review.getTitle())
+                () -> assertThat(reviewsResponse.getReviews()).hasSize(1),
+                () -> assertThat(reviewsResponse.getReviews().get(0).getId()).isEqualTo(review.getId()),
+                () -> assertThat(reviewsResponse.getReviews().get(0).getReviewTitle()).isEqualTo(review.getTitle())
             );
         }
 
@@ -311,13 +299,13 @@ public class ReviewServiceTest extends ServiceTest {
             int size = 1;
             String sort = "trend";
 
-            List<Review> reviews = reviewService.findAllPublic(page, size, sort).getContent();
+            TimelineReviewsResponse reviewsResponse = reviewService.findAllPublic(page, size, sort, memberId1);
 
             // then
             assertAll(
-                () -> assertThat(reviews).hasSize(1),
-                () -> assertThat(reviews.get(0).getId()).isEqualTo(review2.getId()),
-                () -> assertThat(reviews.get(0).getLikes()).isEqualTo(300)
+                () -> assertThat(reviewsResponse.getReviews()).hasSize(1),
+                () -> assertThat(reviewsResponse.getReviews().get(0).getId()).isEqualTo(review2.getId()),
+                () -> assertThat(reviewsResponse.getReviews().get(0).getLikes()).isEqualTo(300)
             );
         }
     }
@@ -341,15 +329,15 @@ public class ReviewServiceTest extends ServiceTest {
 
             reviewService.update(memberId1, savedReview.getId(), updateRequest);
 
-            Review updatedReview = reviewService.findById(savedReview.getId());
+            ReviewSynchronizedResponse result = (ReviewSynchronizedResponse)reviewService.findById(savedReview.getId());
+
 
             // then
             assertAll(
-                () -> assertThat(updatedReview.getId()).isNotNull(),
-                () -> assertThat(updatedReview.getMember().getNickname()).isEqualTo(member1.getNickname()),
-                () -> assertThat(updatedReview.getQuestionAnswers().get(0).getAnswer().getValue())
+                () -> assertThat(result.getReviewTitle()).isEqualTo(updateRequest.getTitle()),
+                () -> assertThat(result.getContents().get(0).getAnswer().getValue())
                     .isEqualTo("editedAnswer1"),
-                () -> assertThat(updatedReview.isPrivate()).isFalse()
+                () -> assertThat(result.getIsPrivate()).isFalse()
             );
         }
 
@@ -421,7 +409,8 @@ public class ReviewServiceTest extends ServiceTest {
             reviewService.delete(memberId1, savedReview.getId());
 
             // then
-            assertThat(reviewService.findAllByCode(reviewForm1.getCode(), 0, 1)).hasSize(0);
+            assertThat(reviewService.findAllByCode(reviewForm1.getCode(), 0, 1, "list", memberId1)
+                .getReviews()).hasSize(0);
         }
 
         @Test
@@ -463,15 +452,15 @@ public class ReviewServiceTest extends ServiceTest {
             int likeCount = 50;
             // 두 번 증가시킨다
             reviewService.increaseLikes(id, likeCount);
-            int likes = reviewService.increaseLikes(id, likeCount);
+            ReviewLikesResponse likes = reviewService.increaseLikes(id, likeCount);
 
-            Review review = reviewService.findById(id);
+            Review review = findById(id);
             int actual = review.getLikes();
 
             // then
             assertAll(
                 () -> assertThat(actual).isEqualTo(100),
-                () -> assertThat(actual).isEqualTo(likes)
+                () -> assertThat(actual).isEqualTo(likes.getLikes())
             );
         }
 
@@ -499,14 +488,31 @@ public class ReviewServiceTest extends ServiceTest {
 
             // 초기 수정 시간
             // DB에 들어가서 뒷 자리수가 반올림 된 결과로 비교해야 하기 때문에 조회한다.
-            LocalDateTime updatedAt = reviewService.findById(id).getUpdatedAt();
+            LocalDateTime updatedAt = findById(id).getUpdatedAt();
             // when
             reviewService.increaseLikes(id, 50);
 
             // 좋아요 더한 후 수정 시간
-            LocalDateTime updatedAtAfterIncreaseLikes = reviewService.findById(id).getUpdatedAt();
+            LocalDateTime updatedAtAfterIncreaseLikes = findById(id).getUpdatedAt();
             // then
             assertThat(updatedAtAfterIncreaseLikes.isEqual(updatedAt)).isTrue();
         }
+    }
+
+    private Review saveReview(ReviewForm reviewForm, Member member, boolean isPrivate) throws InterruptedException {
+        Thread.sleep(1);
+
+        List<QuestionAnswerCreateDto> questionAnswers = reviewForm.getQuestions().stream()
+            .map(it -> new QuestionAnswerCreateDto(it, new Answer("answer")))
+            .collect(Collectors.toUnmodifiableList());
+
+        Review review = new Review("title", member, reviewForm, questionAnswers, isPrivate);
+
+        return reviewRepository.save(review);
+    }
+
+    private Review findById(long id) {
+        return reviewRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
     }
 }

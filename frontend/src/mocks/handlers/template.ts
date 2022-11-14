@@ -1,8 +1,8 @@
-import { API_URI, FILTER } from 'constant';
-import { rest } from 'msw';
-
 import { dummyTemplates, dummyTemplate, dummyFormcode } from 'mocks/data';
 import { reviewduckAPI } from 'mocks/hosts';
+import { rest } from 'msw';
+
+import { API_URI, FILTER } from 'constant';
 
 const templateHandlers = [
   rest.get(reviewduckAPI(API_URI.TEMPLATE.GET_TEMPLATES), (req, res, ctx) => {

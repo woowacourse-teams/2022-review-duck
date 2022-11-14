@@ -21,6 +21,12 @@ import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
+import com.reviewduck.review.dto.controller.response.ReviewEditResponse;
+import com.reviewduck.review.dto.controller.response.ReviewEditResponseBuilder;
+import com.reviewduck.review.dto.controller.response.ReviewLikesResponse;
+import com.reviewduck.review.dto.controller.response.ReviewsOfReviewFormResponse;
+import com.reviewduck.review.dto.controller.response.ReviewsResponse;
+import com.reviewduck.review.dto.controller.response.TimelineReviewsResponse;
 import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
 import com.reviewduck.review.dto.service.QuestionAnswerUpdateDto;
 import com.reviewduck.review.repository.ReviewFormQuestionRepository;
@@ -41,44 +47,52 @@ public class ReviewService {
     private final MemberRepository memberRepository;
 
     @Transactional
-    public Review save(long memberId, String code, ReviewCreateRequest request) {
+    public long save(long memberId, String code, ReviewCreateRequest request) {
         ReviewForm reviewForm = findReviewFormByCode(code);
         List<QuestionAnswerCreateDto> questionAnswerCreateDtos = getReviewCreateDtos(request);
         Member member = findMemberById(memberId);
         Review review = new Review(request.getTitle(), member, reviewForm, questionAnswerCreateDtos,
             request.getIsPrivate());
-        return reviewRepository.save(review);
+        return reviewRepository.save(review).getId();
     }
 
-    public Review findById(long id) {
-        return reviewRepository.findById(id)
+    public ReviewEditResponse findById(long id) {
+        Review review = reviewRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
+        return ReviewEditResponseBuilder.createResponseFrom(review);
     }
 
-    public Page<Review> findAllBySocialId(Member owner, long memberId, int page, int size) {
-        Sort sort = Sort.by(Sort.Direction.DESC, ReviewSortType.LATEST.getSortBy());
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
-        return getReviewsByOwner(memberId, owner, pageRequest);
-    }
-
-    public Page<Review> findAllByCode(String code, int page, int size) {
-        ReviewForm reviewForm = findReviewFormByCode(code);
+    public ReviewsResponse findAllBySocialId(String socialId, long memberId, int page, int size) {
+        Member owner = findMemberBySocialId(socialId);
 
         Sort sort = Sort.by(Sort.Direction.DESC, ReviewSortType.LATEST.getSortBy());
         PageRequest pageRequest = PageRequest.of(page, size, sort);
+        Page<Review> reviews = getReviewsByOwner(memberId, owner, pageRequest);
 
-        return reviewRepository.findByReviewForm(reviewForm, pageRequest);
+        return ReviewsResponse.of(reviews, owner.isSameId(memberId));
     }
 
-    public Page<Review> findAllPublic(int page, int size, String sort) {
+    public ReviewsOfReviewFormResponse findAllByCode(String reviewFormCode, int page, int size,
+        String displayType, long memberId) {
+        ReviewForm reviewForm = findReviewFormByCode(reviewFormCode);
+
+        Sort sort = Sort.by(Sort.Direction.DESC, ReviewSortType.LATEST.getSortBy());
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+        Page<Review> reviews = reviewRepository.findByReviewForm(reviewForm, pageRequest);
+
+        return ReviewsOfReviewFormResponse.of(memberId, reviews, displayType);
+    }
+
+    public TimelineReviewsResponse findAllPublic(int page, int size, String sort, long memberId) {
         String sortType = ReviewSortType.getSortBy(sort);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, sortType));
-        return getTimelineReviews(sort, pageRequest);
+        Page<Review> reviews = getTimelineReviews(sort, pageRequest);
+        return TimelineReviewsResponse.of(reviews, memberId);
     }
 
     @Transactional
     public void update(long memberId, long id, ReviewUpdateRequest request) {
-        Review review = findById(id);
+        Review review = findReviewById(id);
         validateMyReview(memberId, review, "본인이 생성한 회고가 아니면 수정할 수 없습니다.");
 
         List<QuestionAnswerUpdateDto> questionAnswerUpdateDtos = getQuestionAnswerUpdateDtos(request);
@@ -87,18 +101,24 @@ public class ReviewService {
     }
 
     @Transactional
-    public int increaseLikes(long id, int likeCount) {
-        Review review = findById(id);
+    public ReviewLikesResponse increaseLikes(long id, int likeCount) {
+        Review review = findReviewById(id);
         reviewRepository.increaseLikes(review, likeCount);
-        return findById(id).getLikes();
+        int likes = findReviewById(id).getLikes();
+        return new ReviewLikesResponse(likes);
     }
 
     @Transactional
     public void delete(long memberId, long id) {
-        Review review = findById(id);
+        Review review = findReviewById(id);
         validateMyReview(memberId, review, "본인이 생성한 회고가 아니면 삭제할 수 없습니다.");
 
         reviewRepository.deleteById(id);
+    }
+
+    private Review findReviewById(long id) {
+        return reviewRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
     }
 
     private void validateMyReview(long memberId, Review review, String message) {
@@ -152,6 +172,11 @@ public class ReviewService {
     /* -- 연관 Entity 조회용 메서드 -- */
     private Member findMemberById(long memberId) {
         return memberRepository.findById(memberId)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
+    }
+
+    private Member findMemberBySocialId(String socialId) {
+        return memberRepository.findBySocialId(socialId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
     }
 

@@ -8,43 +8,46 @@ type DisplayState = 'appear' | 'disappear' | 'hidden' | 'visible';
 type EffectType = 'fade' | 'drop' | 'unset';
 
 interface TransitionDivProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onAnimationEnd'> {
-  appear: EffectType;
-  disappear: EffectType;
+  appear?: EffectType;
+  disappear?: EffectType;
   all?: EffectType;
-  duration: number;
-  direction: 'up' | 'down' | 'left' | 'right';
-  isVisible?: boolean;
+  duration?: number;
+  direction?: 'up' | 'down' | 'left' | 'right';
+  visible?: boolean;
+  children: React.ReactNode;
   onAppear?: React.AnimationEventHandler<HTMLDivElement>;
   onDisappear?: React.AnimationEventHandler<HTMLDivElement>;
-  children: React.ReactNode;
 }
 
 function TransitionDiv({
   className,
-  appear,
-  disappear,
+  appear = 'unset',
+  disappear = 'unset',
   all,
-  duration,
-  direction,
-  isVisible,
+  duration = 500,
+  direction = 'down',
+  visible = true,
+  children,
   onAppear,
   onDisappear,
-  children,
-  ...rest
+  ...args
 }: TransitionDivProps) {
   const duplicatedChildren = useRef<JSX.Element>();
-  const [displayState, setDisplayState] = useState<DisplayState>(isVisible ? 'visible' : 'hidden');
+  const [displayState, setDisplayState] = useState<DisplayState>(visible ? 'visible' : 'hidden');
 
-  useLayoutEffect(() => {
-    const isConditionAppear = isVisible;
-    const isConditionDisappear = displayState === 'visible' && !isVisible;
+  useLayoutEffect(
+    function checkDisplayStatus() {
+      const isConditionAppear = visible;
+      const isConditionDisappear = displayState === 'visible' && !visible;
 
-    if (!isConditionAppear && !isConditionDisappear) return;
+      if (!isConditionAppear && !isConditionDisappear) return;
 
-    setDisplayState(isVisible ? 'appear' : 'disappear');
-  }, [isVisible]);
+      setDisplayState(visible ? 'appear' : 'disappear');
+    },
+    [visible],
+  );
 
-  const isUnmounted = isVisible === false && displayState === 'hidden';
+  const isUnmounted = visible === false && displayState === 'hidden';
 
   if (isUnmounted) {
     return <></>;
@@ -54,7 +57,7 @@ function TransitionDiv({
     duplicatedChildren.current = React.cloneElement(<>{children}</>);
   }
 
-  const onTransitionEnd = (event: React.AnimationEvent<HTMLDivElement>) => {
+  const handleUpdateDisplayState = (event: React.AnimationEvent<HTMLDivElement>) => {
     const { target, currentTarget } = event;
     const isEventCapturing = target !== currentTarget;
 
@@ -71,7 +74,7 @@ function TransitionDiv({
     }
   };
 
-  const currentEffect = all || (isVisible ? appear : disappear);
+  const currentEffect = all || (visible ? appear : disappear);
   const animationDuration = `${(duration / 1000).toFixed(2)}s`;
   const isEffectActivated = displayState === 'appear' || displayState === 'disappear';
 
@@ -80,21 +83,13 @@ function TransitionDiv({
       className={cn(className, styles[direction], styles[displayState], {
         [styles[currentEffect]]: isEffectActivated,
       })}
-      onAnimationEnd={onTransitionEnd}
+      onAnimationEnd={handleUpdateDisplayState}
       style={{ animationDuration }}
-      {...rest}
+      {...args}
     >
       {displayState === 'disappear' ? duplicatedChildren.current : children}
     </div>
   );
 }
-
-TransitionDiv.defaultProps = {
-  appear: 'unset',
-  disappear: 'unset',
-  direction: 'down',
-  duration: 500,
-  isVisible: true,
-};
 
 export default TransitionDiv;

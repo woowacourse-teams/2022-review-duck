@@ -3,17 +3,16 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { QueryClientProvider } from '@tanstack/react-query';
 
-import PageRoutes from 'PageRoutes';
-import { RecoilRoot } from 'recoil';
-
-import { ErrorBoundary, SnackbarProvider } from 'common/components';
-
-import ModalProvider from 'service/@shared/components/ModalProvider';
-
 import queryClient from 'api/config/queryClient';
 import UserAgentProvider from 'common/contexts/UserAgent';
-import ErrorPage from 'service/@shared/pages/ErrorPage';
+import { RecoilRoot } from 'recoil';
+import ErrorPage from 'service/pages/ErrorPage';
 import 'styles/@app.scss';
+
+import PageRoutes from 'routes';
+
+import { ErrorBoundary, Snackbar, PageSuspense } from 'common/components';
+import ModalProvider from 'service/components/ModalProvider';
 
 function ContextWrapper({ children }: { children: ReactNode }) {
   return (
@@ -21,7 +20,9 @@ function ContextWrapper({ children }: { children: ReactNode }) {
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <ModalProvider />
-          <UserAgentProvider>{children}</UserAgentProvider>
+          <UserAgentProvider>
+            <PageSuspense.Provider>{children}</PageSuspense.Provider>
+          </UserAgentProvider>
         </QueryClientProvider>
       </BrowserRouter>
     </RecoilRoot>
@@ -31,7 +32,7 @@ function ContextWrapper({ children }: { children: ReactNode }) {
 function App() {
   return (
     <ContextWrapper>
-      <SnackbarProvider />
+      <Snackbar.Provider />
       <Suspense>
         <ErrorBoundary fallback={ErrorPage}>
           <PageRoutes />

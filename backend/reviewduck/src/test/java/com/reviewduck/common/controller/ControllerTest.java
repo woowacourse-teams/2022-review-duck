@@ -1,7 +1,6 @@
 package com.reviewduck.common.controller;
 
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.*;
 
 import java.util.Optional;
@@ -19,15 +18,13 @@ import com.reviewduck.auth.service.AuthService;
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.controller.MemberController;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.service.MemberAggregator;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.controller.ReviewController;
 import com.reviewduck.review.controller.ReviewFormController;
-import com.reviewduck.review.service.ReviewFormAggregator;
 import com.reviewduck.review.service.ReviewFormService;
-import com.reviewduck.review.service.ReviewAggregator;
 import com.reviewduck.review.service.ReviewService;
 import com.reviewduck.template.controller.TemplateController;
-import com.reviewduck.template.service.TemplateAggregator;
 import com.reviewduck.template.service.TemplateService;
 
 @WebMvcTest({AuthController.class, MemberController.class, ReviewController.class,
@@ -53,13 +50,7 @@ public class ControllerTest {
     @MockBean
     protected TemplateService TemplateService;
     @MockBean
-    protected MemberService memberAggregator;
-    @MockBean
-    protected TemplateAggregator templateAggregator;
-    @MockBean
-    protected ReviewFormAggregator reviewFormAggregator;
-    @MockBean
-    protected ReviewAggregator reviewAggregator;
+    protected MemberAggregator memberAggregator;
 
     protected final String ACCESS_TOKEN = "access_token";
     protected final Long INVALID_REVIEW_ID = 1L;

@@ -14,14 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
-import com.reviewduck.admin.dto.response.AdminReviewFormInfoResponse;
-import com.reviewduck.admin.dto.response.AdminReviewFormsResponse;
-import com.reviewduck.admin.repository.AdminMemberRepository;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.dto.controller.response.ReviewFormCodeResponse;
 import com.reviewduck.review.service.ReviewFormService;
 
 @SpringBootTest
@@ -36,7 +35,7 @@ public class AdminReviewFormServiceTest {
     private ReviewFormService reviewFormService;
 
     @Autowired
-    private AdminMemberRepository adminMemberRepository;
+    private MemberService memberService;
 
     private Member member1;
     private Member member2;
@@ -44,10 +43,10 @@ public class AdminReviewFormServiceTest {
     @BeforeEach
     void setUp() {
         Member tempMember1 = new Member("1", "jason", "제이슨", "testUrl1");
-        member1 = adminMemberRepository.save(tempMember1);
+        member1 = memberService.save(tempMember1);
 
         Member tempMember2 = new Member("2", "woni", "워니", "testUrl2");
-        member2 = adminMemberRepository.save(tempMember2);
+        member2 = memberService.save(tempMember2);
     }
 
     @Test
@@ -58,13 +57,13 @@ public class AdminReviewFormServiceTest {
         saveReviewForm(member2);
 
         // when
-        AdminReviewFormsResponse reviewFormsResponse = adminReviewFormService.findAllReviewForms();
-        List<AdminReviewFormInfoResponse> reviewForms = reviewFormsResponse.getReviewForms();
+        List<ReviewForm> reviewForms = adminReviewFormService.findAllReviewForms();
+
         // then
         assertAll(
             () -> assertThat(reviewForms).hasSize(2),
-            () -> assertThat(reviewForms.get(0).getMemberId()).isEqualTo(member1.getId()),
-            () -> assertThat(reviewForms.get(1).getMemberId()).isEqualTo(member2.getId())
+            () -> assertThat(reviewForms.get(0).getMember()).isEqualTo(member1),
+            () -> assertThat(reviewForms.get(1).getMember()).isEqualTo(member2)
         );
     }
 
@@ -72,13 +71,14 @@ public class AdminReviewFormServiceTest {
     @DisplayName("회고 폼을 삭제한다.")
     void deleteReviewForm() {
         // given
-        ReviewForm reviewForm = saveReviewForm(member1);
+        String reviewFormCode = saveReviewForm(member1).getReviewFormCode();
+        long reviewFormId = adminReviewFormService.findByCode(reviewFormCode).getId();
 
         // when
-        adminReviewFormService.deleteReviewForm(reviewForm.getId());
+        adminReviewFormService.deleteReviewFormById(reviewFormId);
 
         // then
-        assertThatThrownBy(() -> reviewFormService.findByCode(reviewForm.getCode()))
+        assertThatThrownBy(() -> reviewFormService.findByCode(reviewFormCode, member1.getId()))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 회고 폼입니다.");
     }
@@ -87,12 +87,12 @@ public class AdminReviewFormServiceTest {
     @DisplayName("존재하지 않는 회고 폼을 삭제할 수 없다.")
     void failToDeleteReviewForm() {
         // when, then
-        assertThatThrownBy(() -> adminReviewFormService.deleteReviewForm(9999L))
+        assertThatThrownBy(() -> adminReviewFormService.deleteReviewFormById(9999L))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 회고 폼입니다.");
     }
 
-    private ReviewForm saveReviewForm(Member member) {
+    private ReviewFormCodeResponse saveReviewForm(Member member) {
         List<ReviewFormQuestionCreateRequest> createRequests = List.of(
             new ReviewFormQuestionCreateRequest("question1", "description1"),
             new ReviewFormQuestionCreateRequest("question2", "description2"));
