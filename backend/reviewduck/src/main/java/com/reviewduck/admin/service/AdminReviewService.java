@@ -50,7 +50,7 @@ public class AdminReviewService {
         return adminReviewRepository.findAllByReviewForm(reviewForm);
     }
 
-    private Review findById(long reviewId) {
+    Review findById(long reviewId) {
         return adminReviewRepository.findById(reviewId)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
     }

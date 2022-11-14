@@ -45,7 +45,7 @@ public class ReviewFormService {
 
     public ReviewFormResponse findByCode(String reviewFormCode, long memberId) {
         ReviewForm reviewForm = getReviewFormByCode(reviewFormCode);
-        List<Member> members = memberRepository.findAllParticipantsByReviewFormCode(reviewForm);
+        List<Member> members = memberRepository.findAllParticipantsByReviewForm(reviewForm);
 
         return ReviewFormResponse.of(reviewForm, reviewForm.isMine(memberId), members);
     }

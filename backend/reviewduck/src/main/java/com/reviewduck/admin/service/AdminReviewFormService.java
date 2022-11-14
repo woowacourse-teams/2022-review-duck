@@ -49,7 +49,7 @@ public class AdminReviewFormService {
         adminReviewFormRepository.delete(reviewForm);
     }
 
-    private ReviewForm findByCode(String reviewFormCode) {
+    ReviewForm findByCode(String reviewFormCode) {
         return adminReviewFormRepository.findByCode(reviewFormCode);
     }
 

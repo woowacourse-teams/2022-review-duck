@@ -19,5 +19,4 @@ public interface MemberRepository extends Repository<Member, Long> {
 
     @Query("select m from Member m where m.id in (select distinct r.member.id from Review r where r.reviewForm = :form)")
     List<Member> findAllParticipantsByReviewForm(ReviewForm form);
-
 }

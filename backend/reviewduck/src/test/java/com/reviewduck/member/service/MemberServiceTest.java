@@ -20,7 +20,9 @@ public class MemberServiceTest extends ServiceTest {
         Member foundMember = memberService.findById(member1.getId());
 
         // then
-        assertThat(foundMember).usingRecursiveComparison().isEqualTo(member1);
+        assertThat(foundMember).usingRecursiveComparison()
+            .ignoringFields("createdAt", "updatedAt")
+            .isEqualTo(member1);
     }
 
     @ParameterizedTest

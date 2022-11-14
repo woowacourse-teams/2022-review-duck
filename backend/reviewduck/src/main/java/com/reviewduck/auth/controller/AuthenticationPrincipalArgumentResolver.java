@@ -9,7 +9,6 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
-import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.auth.support.AuthorizationExtractor;
 import com.reviewduck.auth.support.JwtTokenProvider;
@@ -36,21 +35,23 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
         HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
 
-        String token = extractToken(request);
+        return resolveMemberFormRequest(request);
+    }
+
+    private MemberDto resolveMemberFormRequest(HttpServletRequest request) {
+
+        if(isUnauthorized(request)) {
+            return MemberDto.getMemberNotLogin();
+        }
+
+        String token = AuthorizationExtractor.extract(request);
         Member member = resolveMemberFromToken(token);
 
         return MemberDto.from(member);
     }
 
-    private String extractToken(HttpServletRequest request) {
-        validateAuthorization(request);
-        return AuthorizationExtractor.extract(request);
-    }
-
-    private void validateAuthorization(HttpServletRequest request) {
-        if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
-            throw new AuthorizationException("권한이 없는 사용자입니다.");
-        }
+    private boolean isUnauthorized(HttpServletRequest request) {
+        return request.getHeader(HttpHeaders.AUTHORIZATION) == null;
     }
 
     private Member resolveMemberFromToken(String token) {

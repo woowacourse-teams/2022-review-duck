@@ -1,8 +1,11 @@
 package com.reviewduck.common.service;
 
+import java.util.Objects;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.CacheManager;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.member.domain.Member;
@@ -40,6 +43,8 @@ public class ServiceTest {
     protected ReviewFormService reviewFormService;
     @Autowired
     protected MemberRepository memberRepository;
+    @Autowired
+    private CacheManager cacheManager;
 
     @BeforeEach
     void setUp() {
@@ -50,5 +55,13 @@ public class ServiceTest {
         Member tempMember2 = new Member("2", "woni", "워니", "testUrl2");
         member2 = memberRepository.save(tempMember2);
         memberId2 = member2.getId();
+
+        clearCache();
+    }
+
+    private void clearCache() {
+        for (String name : cacheManager.getCacheNames()) {
+            Objects.requireNonNull(cacheManager.getCache(name)).clear();
+        }
     }
 }

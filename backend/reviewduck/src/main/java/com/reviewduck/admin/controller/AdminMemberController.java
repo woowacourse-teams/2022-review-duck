@@ -13,7 +13,6 @@ import com.reviewduck.admin.dto.AdminMemberDto;
 import com.reviewduck.admin.dto.response.AdminMemberResponse;
 import com.reviewduck.admin.dto.response.AdminMembersResponse;
 import com.reviewduck.admin.service.AdminMemberService;
-import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.support.AdminAuthenticationPrincipal;
 import com.reviewduck.common.util.Logging;
 

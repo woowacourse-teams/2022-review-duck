@@ -41,10 +41,6 @@ public class MemberService {
         member.updateNickname(nickname);
     }
 
-    public List<Member> findAllParticipantsByReviewForm(ReviewForm reviewForm) {
-        return memberRepository.findAllParticipantsByReviewForm(reviewForm);
-    }
-
     public Member findById(long id) {
         return memberRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));

@@ -14,17 +14,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
+import com.reviewduck.admin.dto.response.AdminReviewInfoResponse;
+import com.reviewduck.admin.dto.response.AdminReviewsResponse;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.Review;
-import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
-import com.reviewduck.review.repository.ReviewFormRepository;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
@@ -43,7 +44,7 @@ public class AdminReviewServiceTest {
     private ReviewService reviewService;
 
     @Autowired
-    private MemberService memberService;
+    private MemberRepository memberRepository;
 
     private Member member1;
     private Member member2;
@@ -51,10 +52,10 @@ public class AdminReviewServiceTest {
     @BeforeEach
     void setUp() {
         Member tempMember1 = new Member("1", "jason", "제이슨", "testUrl1");
-        member1 = memberService.save(tempMember1);
+        member1 = memberRepository.save(tempMember1);
 
         Member tempMember2 = new Member("2", "woni", "워니", "testUrl2");
-        member2 = memberService.save(tempMember2);
+        member2 = memberRepository.save(tempMember2);
     }
 
     @Test
@@ -65,13 +66,15 @@ public class AdminReviewServiceTest {
         saveReview(member2);
 
         // when
-        List<Review> reviews = adminReviewService.findAllReviews();
+        AdminReviewsResponse reviewsResponse = adminReviewService.findAllReviews();
+
+        List<AdminReviewInfoResponse> reviews = reviewsResponse.getReviews();
 
         // then
         assertAll(
             () -> assertThat(reviews).hasSize(2),
-            () -> assertThat(reviews.get(0).getMember()).isEqualTo(member1),
-            () -> assertThat(reviews.get(1).getMember()).isEqualTo(member2)
+            () -> assertThat(reviews.get(0).getMemberId()).isEqualTo(member1.getId()),
+            () -> assertThat(reviews.get(1).getMemberId()).isEqualTo(member2.getId())
         );
     }
 
@@ -82,7 +85,7 @@ public class AdminReviewServiceTest {
         long reviewId = saveReview(member1);
 
         // when
-        adminReviewService.deleteReviewById(reviewId);
+        adminReviewService.deleteReview(reviewId);
 
         // then
         assertThatThrownBy(() -> adminReviewService.findById(reviewId))
@@ -94,7 +97,7 @@ public class AdminReviewServiceTest {
     @DisplayName("존재하지 않는 회고 폼을 삭제할 수 없다.")
     void failToDeleteReviewForm() {
         // when, then
-        assertThatThrownBy(() -> adminReviewService.deleteReviewById(9999L))
+        assertThatThrownBy(() -> adminReviewService.deleteReview(9999L))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 회고입니다.");
     }

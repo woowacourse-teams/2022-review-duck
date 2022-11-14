@@ -13,6 +13,8 @@ import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.member.repository.MemberRepository;
+import com.reviewduck.member.service.MemberService;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ValidatableResponse;
@@ -28,7 +30,7 @@ public class AcceptanceTest {
     protected JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    protected MemberService memberService;
+    protected MemberRepository memberRepository;
 
     @Autowired
     protected CacheManager cacheManager;
@@ -57,10 +59,10 @@ public class AcceptanceTest {
 
     private void createMemberAndGetAccessToken() {
         Member member1 = new Member("1", "panda", "제이슨", "profileUrl1");
-        savedMember = memberService.save(member1);
+        savedMember = memberRepository.save(member1);
 
         Member member2 = new Member("2", "ariari", "브리", "profileUrl2");
-        savedMember2 = memberService.save(member2);
+        savedMember2 = memberRepository.save(member2);
 
         accessToken1 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember.getId()));
         accessToken2 = jwtTokenProvider.createAccessToken(String.valueOf(savedMember2.getId()));

@@ -16,7 +16,6 @@ import com.reviewduck.admin.dto.AdminMemberDto;
 import com.reviewduck.admin.dto.response.AdminReviewFormResponse;
 import com.reviewduck.admin.dto.response.AdminReviewFormsResponse;
 import com.reviewduck.admin.service.AdminReviewFormService;
-import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.support.AdminAuthenticationPrincipal;
 import com.reviewduck.common.util.Logging;
 

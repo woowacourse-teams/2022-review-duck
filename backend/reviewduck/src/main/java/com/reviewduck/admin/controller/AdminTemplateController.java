@@ -16,7 +16,6 @@ import com.reviewduck.admin.dto.AdminMemberDto;
 import com.reviewduck.admin.dto.response.AdminTemplateResponse;
 import com.reviewduck.admin.dto.response.AdminTemplatesResponse;
 import com.reviewduck.admin.service.AdminTemplateService;
-import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.support.AdminAuthenticationPrincipal;
 
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,7 +1,7 @@
 package com.reviewduck.common.controller;
 
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 
@@ -18,7 +18,6 @@ import com.reviewduck.auth.service.AuthService;
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.controller.MemberController;
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.service.MemberAggregator;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.controller.ReviewController;
 import com.reviewduck.review.controller.ReviewFormController;
@@ -49,8 +48,6 @@ public class ControllerTest {
     protected ReviewFormService reviewFormService;
     @MockBean
     protected TemplateService TemplateService;
-    @MockBean
-    protected MemberAggregator memberAggregator;
 
     protected final String ACCESS_TOKEN = "access_token";
     protected final Long INVALID_REVIEW_ID = 1L;
@@ -59,7 +56,7 @@ public class ControllerTest {
     @BeforeEach
     void createMemberAndGetAccessToken() {
         Optional<Member> member = Optional.of(new Member(1L, "1", "panda", "제이슨", "profileUrl"));
-        given(jwtTokenProvider.getAccessTokenPayload(anyString())).willReturn("1");
-        given(memberService.getById(anyLong())).willReturn(member);
+        when(jwtTokenProvider.getAccessTokenPayload(anyString())).thenReturn("1");
+        when(memberService.findById(anyLong())).thenReturn(member.get());
     }
 }
