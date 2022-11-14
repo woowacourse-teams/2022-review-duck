@@ -2,12 +2,12 @@ package com.reviewduck.admin.service;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.admin.dto.response.AdminReviewResponse;
 import com.reviewduck.admin.dto.response.AdminReviewsResponse;
 import com.reviewduck.admin.repository.AdminReviewRepository;
-import com.reviewduck.common.annotation.Aggregator;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.review.domain.Review;
@@ -15,7 +15,7 @@ import com.reviewduck.review.domain.ReviewForm;
 
 import lombok.AllArgsConstructor;
 
-@Aggregator
+@Service
 @AllArgsConstructor
 @Transactional(readOnly = true)
 public class AdminReviewService {

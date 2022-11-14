@@ -3,20 +3,21 @@ package com.reviewduck.admin.service;
 import java.util.List;
 
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.reviewduck.admin.dto.response.AdminTemplateResponse;
 import com.reviewduck.admin.dto.response.AdminTemplatesResponse;
 import com.reviewduck.admin.repository.AdminTemplateRepository;
-import com.reviewduck.common.annotation.Aggregator;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.template.domain.Template;
 
 import lombok.AllArgsConstructor;
 
-@Aggregator
+@Service
 @AllArgsConstructor
+@Transactional(readOnly = true)
 public class AdminTemplateService {
 
     private final AdminMemberService adminMemberService;
