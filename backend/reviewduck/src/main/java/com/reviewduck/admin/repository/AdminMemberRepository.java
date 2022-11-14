@@ -9,6 +9,8 @@ import com.reviewduck.member.domain.Member;
 
 public interface AdminMemberRepository extends Repository<Member, Long> {
 
+    Member save(Member member);
+
     List<Member> findAll();
 
     Optional<Member> findById(Long memberId);

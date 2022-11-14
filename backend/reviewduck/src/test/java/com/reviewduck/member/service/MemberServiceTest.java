@@ -14,26 +14,15 @@ import com.reviewduck.member.exception.MemberException;
 public class MemberServiceTest extends ServiceTest {
 
     @Test
-    @DisplayName("멤버를 저장한다.")
-    void saveMember() {
-        // given
-        Member member = new Member("9999", "panda", "제이슨", "testUrl");
-
-        // when
-        Member savedMember = memberService.save(member);
-
-        // then
-        assertThat(savedMember).usingRecursiveComparison().isEqualTo(savedMember);
-    }
-
-    @Test
     @DisplayName("아이디로 멤버를 조회한다.")
     void findMemberById() {
         // when
         Member foundMember = memberService.findById(member1.getId());
 
         // then
-        assertThat(foundMember).usingRecursiveComparison().isEqualTo(member1);
+        assertThat(foundMember).usingRecursiveComparison()
+            .ignoringFields("createdAt", "updatedAt")
+            .isEqualTo(member1);
     }
 
     @ParameterizedTest

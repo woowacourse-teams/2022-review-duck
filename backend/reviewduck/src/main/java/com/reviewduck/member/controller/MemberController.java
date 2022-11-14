@@ -19,7 +19,7 @@ import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.dto.request.MemberUpdateNicknameRequest;
 import com.reviewduck.member.dto.MemberDto;
 import com.reviewduck.member.dto.response.MemberResponse;
-import com.reviewduck.member.service.MemberAggregator;
+import com.reviewduck.member.service.MemberService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -29,7 +29,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class MemberController {
 
-    private final MemberAggregator aggregator;
+    private final MemberService memberService;
 
     @Operation(summary = "사용자 정보를 조회한다.")
     @GetMapping("/{socialId}")
@@ -39,7 +39,7 @@ public class MemberController {
 
         info("/api/members/" + socialId, "GET", "");
 
-        return aggregator.findMemberInfo(socialId, member.getId());
+        return memberService.findMemberInfo(socialId, member.getId());
     }
 
     @Operation(summary = "본인의 사용자 정보를 조회한다.")
@@ -49,7 +49,7 @@ public class MemberController {
 
         info("/api/members/me", "GET", "");
 
-        return aggregator.findMyInfo(member.getId());
+        return memberService.findMyInfo(member.getId());
     }
 
     @Operation(summary = "본인의 닉네임을 변경한다.")
@@ -64,6 +64,6 @@ public class MemberController {
 
         info("/api/members/me", "PUT", request.toString());
 
-        aggregator.updateNickname(member.getId(), request.getNickname());
+        memberService.updateNickname(member.getId(), request.getNickname());
     }
 }
