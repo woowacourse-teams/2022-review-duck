@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,9 +25,9 @@ import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
-import com.reviewduck.template.domain.Template;
 import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
+import com.reviewduck.template.dto.controller.response.TemplateIdResponse;
 
 public class ReviewFormServiceTest extends ServiceTest {
 
@@ -99,7 +98,7 @@ public class ReviewFormServiceTest extends ServiceTest {
 
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 questions);
-            long templateId = templateService.save(member1, templateRequest).getId();
+            long templateId = templateService.save(memberId1, templateRequest).getTemplateId();
 
             // when
             // 템플릿 기반 회고 폼 생성
@@ -128,7 +127,7 @@ public class ReviewFormServiceTest extends ServiceTest {
                     .isEqualTo(expected),
                 // template usedCount ++
                 // DB에 반영된 usedCount를 확인하기 위해 새로 조회
-                () -> assertThat(templateService.findById(templateId).getUsedCount()).isEqualTo(1)
+                () -> assertThat(templateService.find(templateId, memberId1).getInfo().getUsedCount()).isEqualTo(1)
             );
         }
 
@@ -146,21 +145,21 @@ public class ReviewFormServiceTest extends ServiceTest {
 
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 questions);
-            Template savedTemplate = templateService.save(member1, templateRequest);
-            long templateId = savedTemplate.getId();
+            TemplateIdResponse response = templateService.save(memberId1, templateRequest);
+            long templateId = response.getTemplateId();
 
             // 초기 수정 시간
-            LocalDateTime updatedAt = templateService.findById(templateId).getUpdatedAt();
+            long updatedAt = templateService.find(templateId, memberId1).getInfo().getUpdatedAt();
 
             // when
             // 템플릿 기반 회고 폼 생성
             reviewFormService.saveFromTemplate(memberId1, templateId);
 
             // 템플릿 기반 회고 폼 생성 후 수정 시간
-            LocalDateTime updatedAtAfterCreateReviewForm = templateService.findById(templateId).getUpdatedAt();
+            long updatedAtAfterCreateReviewForm = templateService.find(templateId, memberId1).getInfo().getUpdatedAt();
 
             // then
-            assertThat(updatedAtAfterCreateReviewForm.isEqual(updatedAt)).isTrue();
+            assertThat(updatedAtAfterCreateReviewForm).isEqualTo(updatedAt);
         }
 
         @Test
@@ -177,7 +176,7 @@ public class ReviewFormServiceTest extends ServiceTest {
 
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 templateQuestions);
-            long templateId = templateService.save(member1, templateRequest).getId();
+            long templateId = templateService.save(memberId1, templateRequest).getTemplateId();
 
             String reviewFormTitle = "title";
             List<ReviewFormQuestionCreateRequest> reviewFromQuestions = List.of(
@@ -213,7 +212,7 @@ public class ReviewFormServiceTest extends ServiceTest {
                     .isEqualTo(expected),
                 // usedCount ++
                 // DB에 반영된 usedCount를 확인하기 위해 새로 조회
-                () -> assertThat(templateService.findById(templateId).getUsedCount()).isEqualTo(1)
+                () -> assertThat(templateService.find(templateId, memberId1).getInfo().getUsedCount()).isEqualTo(1)
             );
         }
 
@@ -232,7 +231,7 @@ public class ReviewFormServiceTest extends ServiceTest {
             TemplateCreateRequest templateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
                 templateQuestions);
 
-            long templateId = templateService.save(member1, templateRequest).getId();
+            long templateId = templateService.save(memberId1, templateRequest).getTemplateId();
 
             String reviewFormTitle = "title";
             List<ReviewFormQuestionCreateRequest> reviewFromQuestions = List.of(
@@ -251,7 +250,7 @@ public class ReviewFormServiceTest extends ServiceTest {
             }
 
             // 초기 수정 시간
-            LocalDateTime updatedAt = templateService.findById(templateId).getUpdatedAt();
+            long updatedAt = templateService.find(templateId, memberId1).getInfo().getUpdatedAt();
 
             // when
             // 템플릿 기반 회고 폼 생성
@@ -260,10 +259,12 @@ public class ReviewFormServiceTest extends ServiceTest {
                 createRequest);
 
             // 템플릿 기반 회고 폼 생성 후 수정 시간
-            LocalDateTime updatedAtAfterCreateReviewForm = templateService.findById(templateId).getUpdatedAt();
+            long updatedAtAfterCreateReviewForm = templateService.find(templateId, memberId1)
+                .getInfo()
+                .getUpdatedAt();
 
             // then
-            assertThat(updatedAtAfterCreateReviewForm.isEqual(updatedAt)).isTrue();
+            assertThat(updatedAtAfterCreateReviewForm).isEqualTo(updatedAt);
         }
 
     }
