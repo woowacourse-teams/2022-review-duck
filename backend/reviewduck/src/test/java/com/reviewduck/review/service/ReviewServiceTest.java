@@ -27,7 +27,6 @@ import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
-import com.reviewduck.review.dto.controller.response.ReviewEditResponse;
 import com.reviewduck.review.dto.controller.response.ReviewLikesResponse;
 import com.reviewduck.review.dto.controller.response.ReviewResponse;
 import com.reviewduck.review.dto.controller.response.ReviewSynchronizedResponse;
@@ -75,16 +74,11 @@ public class ReviewServiceTest extends ServiceTest {
                 ));
 
             // when
-
-            reviewService.newSave(memberId1, reviewForm1.getCode(), reviewCreateRequest);
-
-            Review savedReview = findById(1L);
+            long reviewId = reviewService.save(memberId1, reviewForm1.getCode(), reviewCreateRequest);
+            Review savedReview = findById(reviewId);
 
             // then
-            assertAll(
-                () -> assertThat(savedReview.getId()).isNotNull(),
-                () -> assertThat(savedReview.getMember().getNickname()).isEqualTo(member1.getNickname())
-            );
+            assertThat(savedReview.getId()).isNotNull();
         }
 
         @Test
@@ -98,7 +92,7 @@ public class ReviewServiceTest extends ServiceTest {
                 ));
 
             // when, then
-            assertThatThrownBy(() -> reviewService.newSave(memberId1, invalidCode, reviewCreateRequest))
+            assertThatThrownBy(() -> reviewService.save(memberId1, invalidCode, reviewCreateRequest))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
@@ -114,7 +108,7 @@ public class ReviewServiceTest extends ServiceTest {
                 ));
 
             // when, then
-            assertThatThrownBy(() -> reviewService.newSave(memberId1, reviewForm1.getCode(), reviewCreateRequest))
+            assertThatThrownBy(() -> reviewService.save(memberId1, reviewForm1.getCode(), reviewCreateRequest))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 질문입니다.");
         }
@@ -204,7 +198,7 @@ public class ReviewServiceTest extends ServiceTest {
             Review savedReview = saveReview(reviewForm1, member1, false);
 
             // when
-            reviewFormRepository.delete(reviewForm1);
+            reviewFormService.deleteByCode(memberId1, reviewForm1.getCode());
             int page = 0;
             int size = 3;
             ReviewsResponse reviewsResponse = reviewService.findAllBySocialId(member1.getSocialId(), memberId2, page,
@@ -235,7 +229,7 @@ public class ReviewServiceTest extends ServiceTest {
             int page = 1;
             int size = 1;
 
-            ReviewsOfReviewFormResponse result = reviewService.newFindAllByCode(reviewForm1.getCode(), page, size,
+            ReviewsOfReviewFormResponse result = reviewService.findAllByCode(reviewForm1.getCode(), page, size,
                 "list", member1.getId());
 
             List<ReviewResponse> reviewResponses = result.getReviews().stream()
@@ -254,7 +248,7 @@ public class ReviewServiceTest extends ServiceTest {
         @DisplayName("존재하지 않는 회고 폼으로 조회할 수 없다.")
         void invalidCode() {
             // when, then
-            assertThatThrownBy(() -> reviewService.newFindAllByCode(invalidCode, 0, 1, "list", memberId1))
+            assertThatThrownBy(() -> reviewService.findAllByCode(invalidCode, 0, 1, "list", memberId1))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
@@ -415,7 +409,7 @@ public class ReviewServiceTest extends ServiceTest {
             reviewService.delete(memberId1, savedReview.getId());
 
             // then
-            assertThat(reviewService.newFindAllByCode(reviewForm1.getCode(), 0, 1, "list", memberId1)
+            assertThat(reviewService.findAllByCode(reviewForm1.getCode(), 0, 1, "list", memberId1)
                 .getReviews()).hasSize(0);
         }
 

@@ -14,6 +14,7 @@ import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.dto.MemberDto;
 import com.reviewduck.member.repository.MemberRepository;
 import com.reviewduck.review.domain.ReviewForm;
+import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormUpdateRequest;
 import com.reviewduck.review.dto.controller.response.MemberReviewFormsResponse;

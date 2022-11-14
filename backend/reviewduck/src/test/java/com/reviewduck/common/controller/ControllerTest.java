@@ -22,7 +22,6 @@ import com.reviewduck.member.service.MemberAggregator;
 import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.controller.ReviewController;
 import com.reviewduck.review.controller.ReviewFormController;
-import com.reviewduck.review.service.ReviewFormAggregator;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 import com.reviewduck.template.controller.TemplateController;
@@ -52,8 +51,6 @@ public class ControllerTest {
     protected TemplateService TemplateService;
     @MockBean
     protected MemberAggregator memberAggregator;
-    @MockBean
-    protected ReviewFormAggregator reviewFormAggregator;
 
     protected final String ACCESS_TOKEN = "access_token";
     protected final Long INVALID_REVIEW_ID = 1L;

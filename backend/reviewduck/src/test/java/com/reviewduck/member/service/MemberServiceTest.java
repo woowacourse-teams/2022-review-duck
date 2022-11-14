@@ -26,7 +26,7 @@ public class MemberServiceTest extends ServiceTest {
         Member savedMember = memberService.save(member);
 
         // then
-        assertMember(savedMember, member1);
+        assertMember(savedMember, member);
     }
 
     @Test

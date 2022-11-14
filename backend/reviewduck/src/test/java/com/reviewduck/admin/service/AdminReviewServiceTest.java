@@ -24,6 +24,7 @@ import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.repository.ReviewFormRepository;
 import com.reviewduck.review.service.ReviewFormService;
 import com.reviewduck.review.service.ReviewService;
 
@@ -44,7 +45,6 @@ public class AdminReviewServiceTest {
     @Autowired
     private MemberService memberService;
 
-    private ReviewForm reviewForm;
     private Member member1;
     private Member member2;
 
@@ -55,14 +55,6 @@ public class AdminReviewServiceTest {
 
         Member tempMember2 = new Member("2", "woni", "워니", "testUrl2");
         member2 = memberService.save(tempMember2);
-
-        String reviewTitle = "title";
-        List<ReviewFormQuestionCreateRequest> questions = List.of(
-            new ReviewFormQuestionCreateRequest("question1", "description1"),
-            new ReviewFormQuestionCreateRequest("question2", "description2"));
-        ReviewFormCreateRequest createRequest = new ReviewFormCreateRequest(reviewTitle, questions);
-
-        this.reviewForm = reviewFormService.save(member1.getId(), createRequest);
     }
 
     @Test
@@ -87,13 +79,13 @@ public class AdminReviewServiceTest {
     @DisplayName("회고 폼을 삭제한다.")
     void deleteReviewForm() {
         // given
-        Review review = saveReview(member1);
+        long reviewId = saveReview(member1);
 
         // when
-        adminReviewService.deleteReviewById(review.getId());
+        adminReviewService.deleteReviewById(reviewId);
 
         // then
-        assertThatThrownBy(() -> adminReviewService.findById(review.getId()))
+        assertThatThrownBy(() -> adminReviewService.findById(reviewId))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 회고입니다.");
     }
@@ -107,12 +99,19 @@ public class AdminReviewServiceTest {
             .hasMessageContaining("존재하지 않는 회고입니다.");
     }
 
-    private Review saveReview(Member member) {
+    private long saveReview(Member member) {
         ReviewCreateRequest createRequest = new ReviewCreateRequest(false, "title", List.of(
             new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
             new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
         ));
 
-        return reviewService.save(member.getId(), reviewForm.getCode(), createRequest);
+        String reviewTitle = "title";
+        List<ReviewFormQuestionCreateRequest> questions = List.of(
+            new ReviewFormQuestionCreateRequest("question1", "description1"),
+            new ReviewFormQuestionCreateRequest("question2", "description2"));
+        ReviewFormCreateRequest reviewFormCreateRequest = new ReviewFormCreateRequest(reviewTitle, questions);
+        String reviewFormCode = reviewFormService.save(member1.getId(), reviewFormCreateRequest).getReviewFormCode();
+
+        return reviewService.save(member.getId(), reviewFormCode, createRequest);
     }
 }

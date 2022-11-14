@@ -20,6 +20,7 @@ import com.reviewduck.member.service.MemberService;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.ReviewFormCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewFormQuestionCreateRequest;
+import com.reviewduck.review.dto.controller.response.ReviewFormCodeResponse;
 import com.reviewduck.review.service.ReviewFormService;
 
 @SpringBootTest
@@ -70,13 +71,14 @@ public class AdminReviewFormServiceTest {
     @DisplayName("회고 폼을 삭제한다.")
     void deleteReviewForm() {
         // given
-        ReviewForm reviewForm = saveReviewForm(member1);
+        String reviewFormCode = saveReviewForm(member1).getReviewFormCode();
+        long reviewFormId = adminReviewFormService.findByCode(reviewFormCode).getId();
 
         // when
-        adminReviewFormService.deleteReviewFormById(reviewForm.getId());
+        adminReviewFormService.deleteReviewFormById(reviewFormId);
 
         // then
-        assertThatThrownBy(() -> reviewFormService.findByCode(reviewForm.getCode()))
+        assertThatThrownBy(() -> reviewFormService.findByCode(reviewFormCode, member1.getId()))
             .isInstanceOf(NotFoundException.class)
             .hasMessageContaining("존재하지 않는 회고 폼입니다.");
     }
@@ -90,7 +92,7 @@ public class AdminReviewFormServiceTest {
             .hasMessageContaining("존재하지 않는 회고 폼입니다.");
     }
 
-    private ReviewForm saveReviewForm(Member member) {
+    private ReviewFormCodeResponse saveReviewForm(Member member) {
         List<ReviewFormQuestionCreateRequest> createRequests = List.of(
             new ReviewFormQuestionCreateRequest("question1", "description1"),
             new ReviewFormQuestionCreateRequest("question2", "description2"));

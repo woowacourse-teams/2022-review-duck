@@ -27,8 +27,8 @@ import com.reviewduck.review.dto.controller.response.MemberReviewFormsResponse;
 import com.reviewduck.review.dto.controller.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.controller.response.ReviewFormResponse;
 import com.reviewduck.review.dto.controller.response.ReviewsOfReviewFormResponse;
-import com.reviewduck.review.service.ReviewFormAggregator;
 import com.reviewduck.review.service.ReviewFormService;
+import com.reviewduck.review.service.ReviewService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -38,8 +38,8 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class ReviewFormController {
 
-    private final ReviewFormAggregator aggregator;
     private final ReviewFormService reviewFormService;
+    private final ReviewService reviewService;
 
     @Operation(summary = "회고 폼을 생성한다.")
     @PostMapping
@@ -60,7 +60,7 @@ public class ReviewFormController {
 
         info("/api/review-forms/" + reviewFormCode, "POST", request.toString());
 
-        aggregator.createReview(member.getId(), reviewFormCode, request);
+        reviewService.save(member.getId(), reviewFormCode, request);
     }
 
     @Operation(summary = "특정 회고 폼의 정보를 조회한다.")
@@ -98,7 +98,7 @@ public class ReviewFormController {
 
         info("/api/review-forms/" + reviewFormCode + "/reviews?displayType=" + displayType, "GET", "");
 
-        return aggregator.findAllByCode(reviewFormCode, page - 1, size, displayType, member.getId());
+        return reviewService.findAllByCode(reviewFormCode, page - 1, size, displayType, member.getId());
     }
 
     @Operation(summary = "회고 폼을 수정한다.")

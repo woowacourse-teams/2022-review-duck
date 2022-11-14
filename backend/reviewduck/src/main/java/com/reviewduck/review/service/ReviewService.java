@@ -46,25 +46,14 @@ public class ReviewService {
     private final ReviewFormQuestionRepository reviewFormQuestionRepository;
     private final MemberRepository memberRepository;
 
-    // ReviewForm 관련 코드를 위해 남겨두었음.
     @Transactional
-    public Review save(long memberId, String code, ReviewCreateRequest request) {
+    public long save(long memberId, String code, ReviewCreateRequest request) {
         ReviewForm reviewForm = findReviewFormByCode(code);
         List<QuestionAnswerCreateDto> questionAnswerCreateDtos = getReviewCreateDtos(request);
         Member member = findMemberById(memberId);
         Review review = new Review(request.getTitle(), member, reviewForm, questionAnswerCreateDtos,
             request.getIsPrivate());
-        return reviewRepository.save(review);
-    }
-
-    @Transactional
-    public void newSave(long memberId, String code, ReviewCreateRequest request) {
-        ReviewForm reviewForm = findReviewFormByCode(code);
-        List<QuestionAnswerCreateDto> questionAnswerCreateDtos = getReviewCreateDtos(request);
-        Member member = findMemberById(memberId);
-        Review review = new Review(request.getTitle(), member, reviewForm, questionAnswerCreateDtos,
-            request.getIsPrivate());
-        reviewRepository.save(review);
+        return reviewRepository.save(review).getId();
     }
 
     public ReviewEditResponse findById(long id) {
@@ -83,17 +72,7 @@ public class ReviewService {
         return ReviewsResponse.of(reviews, owner.isSameId(memberId));
     }
 
-    //reviewForm 관련으로 인해 남겨두었음
-    public Page<Review> findAllByCode(String code, int page, int size) {
-        ReviewForm reviewForm = findReviewFormByCode(code);
-
-        Sort sort = Sort.by(Sort.Direction.DESC, ReviewSortType.LATEST.getSortBy());
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
-
-        return reviewRepository.findByReviewForm(reviewForm, pageRequest);
-    }
-
-    public ReviewsOfReviewFormResponse newFindAllByCode(String reviewFormCode, int page, int size,
+    public ReviewsOfReviewFormResponse findAllByCode(String reviewFormCode, int page, int size,
         String displayType, long memberId) {
         ReviewForm reviewForm = findReviewFormByCode(reviewFormCode);
 
