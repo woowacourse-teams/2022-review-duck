@@ -28,6 +28,7 @@ import com.reviewduck.review.dto.controller.response.ReviewFormCodeResponse;
 import com.reviewduck.review.dto.controller.response.ReviewFormResponse;
 import com.reviewduck.review.dto.controller.response.ReviewsOfReviewFormResponse;
 import com.reviewduck.review.service.ReviewFormAggregator;
+import com.reviewduck.review.service.ReviewFormService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
@@ -38,6 +39,7 @@ import lombok.AllArgsConstructor;
 public class ReviewFormController {
 
     private final ReviewFormAggregator aggregator;
+    private final ReviewFormService reviewFormService;
 
     @Operation(summary = "회고 폼을 생성한다.")
     @PostMapping
@@ -47,7 +49,7 @@ public class ReviewFormController {
 
         info("/api/review-forms", "POST", request.toString());
 
-        return aggregator.save(member.getId(), request);
+        return reviewFormService.save(member.getId(), request);
     }
 
     @Operation(summary = "회고 답변을 생성한다.")
@@ -69,7 +71,7 @@ public class ReviewFormController {
 
         info("/api/review-forms/" + reviewFormCode, "GET", "");
 
-        return aggregator.findByCode(reviewFormCode, member.getId());
+        return reviewFormService.findByCode(reviewFormCode, member.getId());
     }
 
     @Operation(summary = "사용자가 작성한 회고 질문지 중 특정 페이지를 조회한다.")
@@ -82,7 +84,7 @@ public class ReviewFormController {
 
         info("/api/review-forms?member=" + socialId + "page=" + page + " size=" + size, "GET", "");
 
-        return aggregator.findBySocialId(socialId, page - 1, size, member);
+        return reviewFormService.findBySocialId(socialId, page - 1, size, member);
     }
 
     @Operation(summary = "특정 회고 폼을 기반으로 작성된 회고 답변들을 모두 조회한다.")
@@ -108,7 +110,7 @@ public class ReviewFormController {
 
         info("/api/review-forms/" + reviewFormCode, "PUT", request.toString());
 
-        return aggregator.update(member.getId(), reviewFormCode, request);
+        return reviewFormService.update(member.getId(), reviewFormCode, request);
     }
 
     @Operation(summary = "회고 폼을 삭제한다.")
@@ -118,6 +120,6 @@ public class ReviewFormController {
 
         info("/api/review-forms/" + reviewFormCode, "DELETE", "");
 
-        aggregator.delete(member.getId(), reviewFormCode);
+        reviewFormService.deleteByCode(member.getId(), reviewFormCode);
     }
 }
