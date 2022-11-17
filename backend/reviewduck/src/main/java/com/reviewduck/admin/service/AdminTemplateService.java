@@ -2,44 +2,54 @@ package com.reviewduck.admin.service;
 
 import java.util.List;
 
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.reviewduck.admin.dto.response.AdminTemplateResponse;
+import com.reviewduck.admin.dto.response.AdminTemplatesResponse;
 import com.reviewduck.admin.repository.AdminTemplateRepository;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.template.domain.Template;
 
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 
 @Service
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Transactional(readOnly = true)
 public class AdminTemplateService {
 
-    private AdminMemberService adminMemberService;
-    private AdminTemplateRepository templateRepository;
+    private final AdminMemberService adminMemberService;
+    private final AdminTemplateRepository adminTemplateRepository;
 
-    public Template findById(long templateId) {
-        return templateRepository.findById(templateId)
-            .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
+    public AdminTemplatesResponse findAllTemplates() {
+        List<Template> templates = adminTemplateRepository.findAll();;
+        return AdminTemplatesResponse.from(templates);
     }
 
-    public List<Template> findAllTemplates() {
-        return templateRepository.findAll();
+    public AdminTemplateResponse findTemplate(long templateId) {
+        Template template = findById(templateId);
+        return AdminTemplateResponse.from(template);
     }
 
-    public List<Template> findTemplatesByMemberId(long memberId) {
+    public AdminTemplatesResponse findMemberTemplates(long memberId) {
         Member member = adminMemberService.findMemberById(memberId);
-        return templateRepository.findAllByMember(member);
+
+        List<Template> templates = adminTemplateRepository.findAllByMember(member);
+        return AdminTemplatesResponse.from(templates);
     }
 
+    @CacheEvict(value = "templateCacheStore", key = "#templateId")
     @Transactional
-    public void deleteTemplateById(long templateId) {
-        templateRepository.findById(templateId)
-            .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
+    public void deleteTemplate(long templateId) {
+        Template template = findById(templateId);
+        adminTemplateRepository.deleteById(template.getId());
+    }
 
-        templateRepository.deleteById(templateId);
+    private Template findById(long templateId) {
+        return adminTemplateRepository.findById(templateId)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 템플릿입니다."));
     }
 }
+

@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.reviewduck.admin.dto.AdminMemberDto;
 import com.reviewduck.admin.dto.response.AdminTemplateResponse;
 import com.reviewduck.admin.dto.response.AdminTemplatesResponse;
-import com.reviewduck.admin.service.AdminTemplateAggregator;
-import com.reviewduck.auth.exception.AuthorizationException;
+import com.reviewduck.admin.service.AdminTemplateService;
 import com.reviewduck.auth.support.AdminAuthenticationPrincipal;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,11 +25,10 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/admin/templates")
 @AllArgsConstructor
-@Transactional(readOnly = true)
 @Slf4j
 public class AdminTemplateController {
 
-    private final AdminTemplateAggregator adminTemplateAggregator;
+    private final AdminTemplateService adminTemplateService;
 
     @Operation(summary = "생성된 템플릿을 모두 조회한다")
     @GetMapping()
@@ -39,8 +37,7 @@ public class AdminTemplateController {
 
         info("api/admin/templates", "GET", "");
 
-        validateAdmin(member);
-        return adminTemplateAggregator.findAllTemplates();
+        return adminTemplateService.findAllTemplates();
     }
 
     @Operation(summary = "단일 템플릿을 조회한다")
@@ -51,8 +48,7 @@ public class AdminTemplateController {
 
         info("api/admin/templates/" + templateId, "GET", "");
 
-        validateAdmin(member);
-        return adminTemplateAggregator.findTemplate(templateId);
+        return adminTemplateService.findTemplate(templateId);
     }
 
     @Operation(summary = "사용자가 생성한 템플릿을 모두 조회한다.")
@@ -63,8 +59,7 @@ public class AdminTemplateController {
 
         info("/api/templates?memberId=" + memberId, "GET", "");
 
-        validateAdmin(member);
-        return adminTemplateAggregator.findMemberTemplates(memberId);
+        return adminTemplateService.findMemberTemplates(memberId);
     }
 
     @Transactional
@@ -75,13 +70,6 @@ public class AdminTemplateController {
 
         info("api/admin/templates/" + templateId, "DELETE", "");
 
-        validateAdmin(member);
-        adminTemplateAggregator.deleteTemplate(templateId);
-    }
-
-    private void validateAdmin(AdminMemberDto member) {
-        if (!member.isAdmin()) {
-            throw new AuthorizationException("어드민 권한이 없습니다.");
-        }
+        adminTemplateService.deleteTemplate(templateId);
     }
 }

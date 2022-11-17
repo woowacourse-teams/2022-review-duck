@@ -3,9 +3,9 @@ import {
   UserArticleList,
   GetUserReviewFormsResponse,
   GetUserTemplatesResponse,
-} from 'types';
+} from 'service/types';
 
-import { getElapsedTimeText } from 'service/@shared/utils';
+import { getElapsedTimeText } from 'utils';
 
 export const transformUserReviews = (data: GetUserReviewAnswerResponse): UserArticleList => {
   const { numberOfReviews, isMine, reviews } = data;

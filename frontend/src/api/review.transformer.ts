@@ -7,9 +7,9 @@ import {
   ReviewFormAnswerList,
   GetReviewPublicAnswerResponse,
   ReviewPublicAnswerList,
-} from 'types';
+} from 'service/types';
 
-import { getElapsedTimeText } from 'service/@shared/utils';
+import { getElapsedTimeText } from 'utils';
 
 export const transformForm = (data: GetReviewFormResponse): ReviewForm => {
   const { reviewFormTitle, questions, creator, isCreator, updatedAt, participants } = data;

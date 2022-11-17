@@ -1,6 +1,6 @@
-import PaginationBar from '.';
-
 import { ComponentStory } from '@storybook/react';
+
+import PaginationBar from '.';
 
 export default {
   title: 'common/components/PaginationBar',

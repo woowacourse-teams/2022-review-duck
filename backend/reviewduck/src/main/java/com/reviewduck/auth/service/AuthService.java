@@ -21,7 +21,6 @@ import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.support.JwtTokenProvider;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
-import com.reviewduck.member.service.MemberService;
 
 @Service
 @Transactional(readOnly = true)

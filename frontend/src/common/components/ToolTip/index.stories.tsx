@@ -1,6 +1,6 @@
-import ToolTip from '.';
-
 import { ComponentStory } from '@storybook/react';
+
+import ToolTip from '.';
 
 export default {
   title: 'common/components/ToolTip',

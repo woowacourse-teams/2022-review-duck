@@ -5,18 +5,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.reviewduck.common.service.ServiceTest;
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
+import com.reviewduck.common.service.ServiceTest;
 import com.reviewduck.member.domain.Member;
+import com.reviewduck.review.domain.Answer;
 import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.AnswerCreateRequest;
@@ -25,14 +28,34 @@ import com.reviewduck.review.dto.controller.request.ReviewContentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewContentUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewUpdateRequest;
+import com.reviewduck.review.dto.controller.response.ReviewLikesResponse;
+import com.reviewduck.review.dto.controller.response.ReviewResponse;
+import com.reviewduck.review.dto.controller.response.ReviewSynchronizedResponse;
+import com.reviewduck.review.dto.controller.response.ReviewsOfReviewFormResponse;
+import com.reviewduck.review.dto.controller.response.ReviewsResponse;
+import com.reviewduck.review.dto.controller.response.TimelineReviewsResponse;
+import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
 import com.reviewduck.review.dto.service.ReviewFormQuestionCreateDto;
+import com.reviewduck.review.repository.ReviewFormRepository;
+import com.reviewduck.review.repository.ReviewRepository;
 
 public class ReviewServiceTest extends ServiceTest {
 
     private static final String invalidCode = "aaaaaaaa";
 
-    private ReviewForm reviewForm1;
-    private ReviewForm reviewForm2;
+    private ReviewForm reviewForm;
+
+    @Autowired
+    private ReviewService reviewService;
+
+    @Autowired
+    private ReviewFormService reviewFormService;
+
+    @Autowired
+    private ReviewFormRepository reviewFormRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
 
     @BeforeEach
     void createReviewForm() {
@@ -42,27 +65,7 @@ public class ReviewServiceTest extends ServiceTest {
             new ReviewFormQuestionCreateDto("question2", "description2"));
 
         ReviewForm reviewForm1 = new ReviewForm(member1, reviewTitle, questions);
-        ReviewForm reviewForm2 = new ReviewForm(member1, reviewTitle, questions);
-        this.reviewForm1 = reviewFormRepository.save(reviewForm1);
-        this.reviewForm2 = reviewFormRepository.save(reviewForm2);
-    }
-
-    private Review saveReview(ReviewForm reviewForm, Member member, boolean isPrivate) throws InterruptedException {
-        Thread.sleep(1);
-
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(isPrivate, "title",
-            List.of(
-                new ReviewContentCreateRequest(
-                    reviewForm.getQuestions().get(0).getId(),
-                    new AnswerCreateRequest("answer1")
-                ),
-                new ReviewContentCreateRequest(
-                    reviewForm.getQuestions().get(1).getId(),
-                    new AnswerCreateRequest("answer2")
-                )
-            ));
-
-        return reviewService.save(member.getId(), reviewForm.getCode(), reviewCreateRequest);
+        this.reviewForm = reviewFormRepository.save(reviewForm1);
     }
 
     @Nested
@@ -73,8 +76,8 @@ public class ReviewServiceTest extends ServiceTest {
         @DisplayName("회고를 저장한다.")
         void saveReview() {
             // given
-            long questionId1 = reviewForm1.getQuestions().get(0).getId();
-            long questionId2 = reviewForm1.getQuestions().get(1).getId();
+            long questionId1 = reviewForm.getQuestions().get(0).getId();
+            long questionId2 = reviewForm.getQuestions().get(1).getId();
 
             ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, "title",
                 List.of(
@@ -83,17 +86,11 @@ public class ReviewServiceTest extends ServiceTest {
                 ));
 
             // when
-            Review savedReview = reviewService.save(memberId1, reviewForm1.getCode(), reviewCreateRequest);
+            long reviewId = reviewService.save(memberId1, reviewForm.getCode(), reviewCreateRequest);
+            Review savedReview = findById(reviewId);
 
             // then
-            assertAll(
-                () -> assertThat(savedReview.getId()).isNotNull(),
-                () -> assertThat(savedReview.getMember().getNickname()).isEqualTo(member1.getNickname()),
-                () -> assertThat(savedReview.getQuestionAnswers().get(0).getAnswer().getValue())
-                    .isEqualTo("answer1"),
-                () -> assertThat(savedReview.getQuestionAnswers().get(0).getPosition())
-                    .isEqualTo(0)
-            );
+            assertThat(savedReview.getId()).isNotNull();
         }
 
         @Test
@@ -123,7 +120,7 @@ public class ReviewServiceTest extends ServiceTest {
                 ));
 
             // when, then
-            assertThatThrownBy(() -> reviewService.save(memberId1, reviewForm1.getCode(), reviewCreateRequest))
+            assertThatThrownBy(() -> reviewService.save(memberId1, reviewForm.getCode(), reviewCreateRequest))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 질문입니다.");
         }
@@ -138,13 +135,14 @@ public class ReviewServiceTest extends ServiceTest {
         @DisplayName("id로 특정 회고를 조회한다.")
         void findById() throws InterruptedException {
             // given
-            Review saved = saveReview(reviewForm1, member1, false);
+            Review saved = saveReview(reviewForm, member1, false);
 
             // when
-            Review actual = reviewService.findById(saved.getId());
+            ReviewSynchronizedResponse reviewEditResponse = (ReviewSynchronizedResponse)reviewService.findById(
+                saved.getId());
 
             // then
-            assertThat(actual).isEqualTo(saved);
+            assertThat(saved.getTitle()).isEqualTo(reviewEditResponse.getReviewTitle());
         }
 
         @Test
@@ -166,22 +164,21 @@ public class ReviewServiceTest extends ServiceTest {
         @DisplayName("자신이 작성한 회고 중 최신순으로 첫 페이지를 조회한다.")
         void findPageOfMyReviewsOrderByLatest() throws InterruptedException {
             // given
-            saveReview(reviewForm1, member2, false);
-            saveReview(reviewForm1, member1, true);
-            Review review = saveReview(reviewForm1, member1, false);
+            saveReview(reviewForm, member2, false);
+            saveReview(reviewForm, member1, true);
+            Review review = saveReview(reviewForm, member1, false);
 
             // when
             int page = 0;
             int size = 3;
-            List<Review> myReviews = reviewService.findAllBySocialId(member1, memberId1, page,
-                size).getContent();
+            ReviewsResponse reviewsResponse = reviewService.findAllBySocialId(member1.getSocialId(), memberId1, page,
+                size);
 
             // then
             assertAll(
-                () -> assertThat(myReviews).hasSize(2),
-                () -> assertThat(myReviews.get(0)).isNotNull(),
-                () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo("제이슨"),
-                () -> assertThat(myReviews.get(0).getUpdatedAt()).isEqualTo(review.getUpdatedAt())
+                () -> assertThat(reviewsResponse.getReviews()).hasSize(2),
+                () -> assertThat(reviewsResponse.getReviews().get(0).getId()).isEqualTo(review.getId()),
+                () -> assertThat(reviewsResponse.getIsMine()).isTrue()
             );
         }
 
@@ -189,22 +186,21 @@ public class ReviewServiceTest extends ServiceTest {
         @DisplayName("타인이 작성한 회고 중 최신순으로 첫 페이지를 조회한다.")
         void findPageOfOtherReviewsOrderByUpdatedAtDesc() throws InterruptedException {
             // given
-            saveReview(reviewForm1, member1, false);
-            saveReview(reviewForm1, member1, true);
-            Review review = saveReview(reviewForm1, member1, false);
+            saveReview(reviewForm, member1, false);
+            saveReview(reviewForm, member1, true);
+            Review review = saveReview(reviewForm, member1, false);
 
             // when
             int page = 0;
             int size = 3;
-            List<Review> myReviews = reviewService.findAllBySocialId(member1, memberId2, page,
-                size).getContent();
+            ReviewsResponse reviewsResponse = reviewService.findAllBySocialId(member1.getSocialId(), memberId2, page,
+                size);
 
             // then
             assertAll(
-                () -> assertThat(myReviews).hasSize(2),
-                () -> assertThat(myReviews.get(0)).isNotNull(),
-                () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo(member1.getNickname()),
-                () -> assertThat(myReviews.get(0).getUpdatedAt()).isEqualTo(review.getUpdatedAt())
+                () -> assertThat(reviewsResponse.getReviews()).hasSize(2),
+                () -> assertThat(reviewsResponse.getReviews().get(0).getId()).isEqualTo(review.getId()),
+                () -> assertThat(reviewsResponse.getIsMine()).isFalse()
             );
         }
 
@@ -212,19 +208,19 @@ public class ReviewServiceTest extends ServiceTest {
         @DisplayName("특정 회고 폼을 삭제해도 자신이 생성한 회고를 조회할 수 있다.")
         void findPageOfReviewsByDeletedSpecificReviewForm() throws InterruptedException {
             // given
-            Review savedReview = saveReview(reviewForm1, member1, false);
+            Review savedReview = saveReview(reviewForm, member1, false);
 
             // when
-            reviewFormRepository.delete(reviewForm1);
+            reviewFormService.deleteByCode(memberId1, reviewForm.getCode());
             int page = 0;
             int size = 3;
-            List<Review> myReviews = reviewService.findAllBySocialId(member1, member2.getId(), page,
-                size).getContent();
+            ReviewsResponse reviewsResponse = reviewService.findAllBySocialId(member1.getSocialId(), memberId2, page,
+                size);
 
             // then
             assertAll(
-                () -> assertThat(myReviews).hasSize(1),
-                () -> assertThat(myReviews.get(0).getMember().getNickname()).isEqualTo(member1.getNickname())
+                () -> assertThat(reviewsResponse.getReviews()).hasSize(1),
+                () -> assertThat(reviewsResponse.getReviews().get(0).getId()).isEqualTo(savedReview.getId())
             );
         }
 
@@ -238,21 +234,26 @@ public class ReviewServiceTest extends ServiceTest {
         @DisplayName("최신순으로 특정 페이지를 조회한다.")
         void findAllOrderByTrend() throws InterruptedException {
             // given
-            saveReview(reviewForm1, member1, false);
-            Review review = saveReview(reviewForm1, member2, true);
-            saveReview(reviewForm1, member1, true);
+            saveReview(reviewForm, member1, false);
+            Review review = saveReview(reviewForm, member2, true);
+            saveReview(reviewForm, member1, true);
 
             // when
             int page = 1;
             int size = 1;
 
-            List<Review> reviews = reviewService.findAllByCode(reviewForm1.getCode(), page, size).getContent();
+            ReviewsOfReviewFormResponse result = reviewService.findAllByCode(reviewForm.getCode(), page, size,
+                "list", member1.getId());
+
+            List<ReviewResponse> reviewResponses = result.getReviews().stream()
+                .map(it -> (ReviewResponse)it)
+                .collect(Collectors.toUnmodifiableList());
 
             // then
             assertAll(
-                () -> assertThat(reviews).hasSize(1),
-                () -> assertThat(reviews.get(0).getId()).isEqualTo(review.getId()),
-                () -> assertThat(reviews.get(0).getTitle()).isEqualTo(review.getTitle())
+                () -> assertThat(reviewResponses).hasSize(1),
+                () -> assertThat(reviewResponses.get(0).getId()).isEqualTo(review.getId()),
+                () -> assertThat(reviewResponses.get(0).getReviewTitle()).isEqualTo(review.getTitle())
             );
         }
 
@@ -260,7 +261,7 @@ public class ReviewServiceTest extends ServiceTest {
         @DisplayName("존재하지 않는 회고 폼으로 조회할 수 없다.")
         void invalidCode() {
             // when, then
-            assertThatThrownBy(() -> reviewService.findAllByCode("aaaaaa", 0, 1))
+            assertThatThrownBy(() -> reviewService.findAllByCode(invalidCode, 0, 1, "list", memberId1))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 회고 폼입니다.");
         }
@@ -274,22 +275,22 @@ public class ReviewServiceTest extends ServiceTest {
         @DisplayName("최신순으로 특정 페이지를 조회한다.")
         void findAllOrderByLatest() throws InterruptedException {
             // given
-            saveReview(reviewForm1, member1, false);
-            Review review = saveReview(reviewForm1, member2, false);
-            saveReview(reviewForm1, member1, true);
+            saveReview(reviewForm, member1, false);
+            Review review = saveReview(reviewForm, member2, false);
+            saveReview(reviewForm, member1, true);
 
             // when
             int page = 0;
             int size = 1;
             String sort = "latest";
 
-            List<Review> reviews = reviewService.findAllPublic(page, size, sort).getContent();
+            TimelineReviewsResponse reviewsResponse = reviewService.findAllPublic(page, size, sort, memberId1);
 
             // then
             assertAll(
-                () -> assertThat(reviews).hasSize(1),
-                () -> assertThat(reviews.get(0).getId()).isEqualTo(review.getId()),
-                () -> assertThat(reviews.get(0).getTitle()).isEqualTo(review.getTitle())
+                () -> assertThat(reviewsResponse.getReviews()).hasSize(1),
+                () -> assertThat(reviewsResponse.getReviews().get(0).getId()).isEqualTo(review.getId()),
+                () -> assertThat(reviewsResponse.getReviews().get(0).getReviewTitle()).isEqualTo(review.getTitle())
             );
         }
 
@@ -297,10 +298,10 @@ public class ReviewServiceTest extends ServiceTest {
         @DisplayName("좋아요가 특정 개수 이상이며 생성일로 정렬된 특정 페이지를 조회한다.")
         void findAllOrderByTrend() throws InterruptedException {
             // given
-            Review review1 = saveReview(reviewForm1, member1, false);
-            Review review2 = saveReview(reviewForm1, member2, false);
-            Review review3 = saveReview(reviewForm1, member1, true); // 비밀글
-            Review review4 = saveReview(reviewForm1, member1, false);
+            Review review1 = saveReview(reviewForm, member1, false);
+            Review review2 = saveReview(reviewForm, member2, false);
+            Review review3 = saveReview(reviewForm, member1, true); // 비밀글
+            Review review4 = saveReview(reviewForm, member1, false);
 
             // when
             reviewService.increaseLikes(review1.getId(), 500);
@@ -311,13 +312,13 @@ public class ReviewServiceTest extends ServiceTest {
             int size = 1;
             String sort = "trend";
 
-            List<Review> reviews = reviewService.findAllPublic(page, size, sort).getContent();
+            TimelineReviewsResponse reviewsResponse = reviewService.findAllPublic(page, size, sort, memberId1);
 
             // then
             assertAll(
-                () -> assertThat(reviews).hasSize(1),
-                () -> assertThat(reviews.get(0).getId()).isEqualTo(review2.getId()),
-                () -> assertThat(reviews.get(0).getLikes()).isEqualTo(300)
+                () -> assertThat(reviewsResponse.getReviews()).hasSize(1),
+                () -> assertThat(reviewsResponse.getReviews().get(0).getId()).isEqualTo(review2.getId()),
+                () -> assertThat(reviewsResponse.getReviews().get(0).getLikes()).isEqualTo(300)
             );
         }
     }
@@ -330,7 +331,7 @@ public class ReviewServiceTest extends ServiceTest {
         @DisplayName("회고를 수정한다.")
         void updateReview() throws InterruptedException {
             // given
-            Review savedReview = saveReview(reviewForm1, member1, true);
+            Review savedReview = saveReview(reviewForm, member1, true);
 
             // when
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title",
@@ -341,15 +342,14 @@ public class ReviewServiceTest extends ServiceTest {
 
             reviewService.update(memberId1, savedReview.getId(), updateRequest);
 
-            Review updatedReview = reviewService.findById(savedReview.getId());
+            ReviewSynchronizedResponse result = (ReviewSynchronizedResponse)reviewService.findById(savedReview.getId());
 
             // then
             assertAll(
-                () -> assertThat(updatedReview.getId()).isNotNull(),
-                () -> assertThat(updatedReview.getMember().getNickname()).isEqualTo(member1.getNickname()),
-                () -> assertThat(updatedReview.getQuestionAnswers().get(0).getAnswer().getValue())
+                () -> assertThat(result.getReviewTitle()).isEqualTo(updateRequest.getTitle()),
+                () -> assertThat(result.getContents().get(0).getAnswer().getValue())
                     .isEqualTo("editedAnswer1"),
-                () -> assertThat(updatedReview.isPrivate()).isFalse()
+                () -> assertThat(result.getIsPrivate()).isFalse()
             );
         }
 
@@ -357,7 +357,7 @@ public class ReviewServiceTest extends ServiceTest {
         @DisplayName("본인이 생성한 회고가 아니면 수정할 수 없다.")
         void notMine() throws InterruptedException {
             // given
-            Review savedReview = saveReview(reviewForm1, member1, false);
+            Review savedReview = saveReview(reviewForm, member1, false);
 
             // when
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title",
@@ -392,7 +392,7 @@ public class ReviewServiceTest extends ServiceTest {
         @DisplayName("유효하지 않은 질문 번호로 수정할 수 없다.")
         void withInvalidQuestionId() throws InterruptedException {
             // given
-            Review savedReview = saveReview(reviewForm1, member1, false);
+            Review savedReview = saveReview(reviewForm, member1, false);
 
             ReviewUpdateRequest updateRequest = new ReviewUpdateRequest(false, "title",
                 List.of(
@@ -415,20 +415,21 @@ public class ReviewServiceTest extends ServiceTest {
         @DisplayName("회고를 삭제한다.")
         void deleteReview() throws InterruptedException {
             // given
-            Review savedReview = saveReview(reviewForm1, member1, false);
+            Review savedReview = saveReview(reviewForm, member1, false);
 
             // when
             reviewService.delete(memberId1, savedReview.getId());
 
             // then
-            assertThat(reviewService.findAllByCode(reviewForm1.getCode(), 0, 1)).hasSize(0);
+            assertThat(reviewService.findAllByCode(reviewForm.getCode(), 0, 1, "list", memberId1)
+                .getReviews()).hasSize(0);
         }
 
         @Test
         @DisplayName("본인이 생성한 회고가 아니면 삭제할 수 없다.")
         void notMine() throws InterruptedException {
             // given
-            Review savedReview = saveReview(reviewForm1, member1, false);
+            Review savedReview = saveReview(reviewForm, member1, false);
 
             // when, then
             assertThatThrownBy(() -> reviewService.delete(memberId2, savedReview.getId()))
@@ -456,22 +457,22 @@ public class ReviewServiceTest extends ServiceTest {
         @Transactional(propagation = Propagation.NOT_SUPPORTED)
         void increase() throws InterruptedException {
             // given
-            Review savedReview = saveReview(reviewForm1, member1, false);
+            Review savedReview = saveReview(reviewForm, member1, false);
             long id = savedReview.getId();
 
             // when
             int likeCount = 50;
             // 두 번 증가시킨다
             reviewService.increaseLikes(id, likeCount);
-            int likes = reviewService.increaseLikes(id, likeCount);
+            ReviewLikesResponse likes = reviewService.increaseLikes(id, likeCount);
 
-            Review review = reviewService.findById(id);
+            Review review = findById(id);
             int actual = review.getLikes();
 
             // then
             assertAll(
                 () -> assertThat(actual).isEqualTo(100),
-                () -> assertThat(actual).isEqualTo(likes)
+                () -> assertThat(actual).isEqualTo(likes.getLikes())
             );
         }
 
@@ -494,19 +495,36 @@ public class ReviewServiceTest extends ServiceTest {
         @DisplayName("좋아요를 더해도 수정 시간을 갱신하지 않는다.")
         void withNotUpdatedAt() throws InterruptedException {
             // given
-            Review savedReview = saveReview(reviewForm1, member1, false);
+            Review savedReview = saveReview(reviewForm, member1, false);
             long id = savedReview.getId();
 
             // 초기 수정 시간
             // DB에 들어가서 뒷 자리수가 반올림 된 결과로 비교해야 하기 때문에 조회한다.
-            LocalDateTime updatedAt = reviewService.findById(id).getUpdatedAt();
+            LocalDateTime updatedAt = findById(id).getUpdatedAt();
             // when
             reviewService.increaseLikes(id, 50);
 
             // 좋아요 더한 후 수정 시간
-            LocalDateTime updatedAtAfterIncreaseLikes = reviewService.findById(id).getUpdatedAt();
+            LocalDateTime updatedAtAfterIncreaseLikes = findById(id).getUpdatedAt();
             // then
             assertThat(updatedAtAfterIncreaseLikes.isEqual(updatedAt)).isTrue();
         }
+    }
+
+    private Review saveReview(ReviewForm reviewForm, Member member, boolean isPrivate) throws InterruptedException {
+        Thread.sleep(1);
+
+        List<QuestionAnswerCreateDto> questionAnswers = reviewForm.getQuestions().stream()
+            .map(it -> new QuestionAnswerCreateDto(it, new Answer("answer")))
+            .collect(Collectors.toUnmodifiableList());
+
+        Review review = new Review("title", member, reviewForm, questionAnswers, isPrivate);
+
+        return reviewRepository.save(review);
+    }
+
+    private Review findById(long id) {
+        return reviewRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("존재하지 않는 회고입니다."));
     }
 }

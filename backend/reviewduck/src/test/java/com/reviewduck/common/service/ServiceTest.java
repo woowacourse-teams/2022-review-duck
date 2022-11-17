@@ -1,22 +1,18 @@
 package com.reviewduck.common.service;
 
-import javax.transaction.Transactional;
+import java.util.Objects;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.CacheManager;
 import org.springframework.test.context.jdbc.Sql;
 
 import com.reviewduck.member.domain.Member;
-import com.reviewduck.member.service.MemberService;
-import com.reviewduck.review.repository.ReviewFormRepository;
-import com.reviewduck.review.service.ReviewFormService;
-import com.reviewduck.review.service.ReviewService;
-import com.reviewduck.template.service.TemplateService;
+import com.reviewduck.member.repository.MemberRepository;
 
 @SpringBootTest
 @Sql("classpath:truncate.sql")
-@Transactional
 public class ServiceTest {
 
     protected Member member1;
@@ -25,24 +21,26 @@ public class ServiceTest {
     protected long memberId2;
 
     @Autowired
-    protected TemplateService templateService;
+    protected MemberRepository memberRepository;
     @Autowired
-    protected ReviewFormRepository reviewFormRepository;
-    @Autowired
-    protected ReviewService reviewService;
-    @Autowired
-    protected MemberService memberService;
-    @Autowired
-    protected ReviewFormService reviewFormService;
+    private CacheManager cacheManager;
 
     @BeforeEach
     void setUp() {
         Member tempMember1 = new Member("1", "jason", "제이슨", "testUrl1");
-        member1 = memberService.save(tempMember1);
+        member1 = memberRepository.save(tempMember1);
         memberId1 = member1.getId();
 
         Member tempMember2 = new Member("2", "woni", "워니", "testUrl2");
-        member2 = memberService.save(tempMember2);
+        member2 = memberRepository.save(tempMember2);
         memberId2 = member2.getId();
+
+        clearCache();
+    }
+
+    private void clearCache() {
+        for (String name : cacheManager.getCacheNames()) {
+            Objects.requireNonNull(cacheManager.getCache(name)).clear();
+        }
     }
 }

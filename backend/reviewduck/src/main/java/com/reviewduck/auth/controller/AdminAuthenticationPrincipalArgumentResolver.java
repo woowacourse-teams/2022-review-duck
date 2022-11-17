@@ -15,6 +15,7 @@ import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.auth.support.AdminAuthenticationPrincipal;
 import com.reviewduck.auth.support.AuthorizationExtractor;
 import com.reviewduck.auth.support.JwtTokenProvider;
+import com.reviewduck.member.domain.Member;
 
 import lombok.AllArgsConstructor;
 
@@ -35,16 +36,40 @@ public class AdminAuthenticationPrincipalArgumentResolver implements HandlerMeth
 
         HttpServletRequest request = (HttpServletRequest)webRequest.getNativeRequest();
 
+        String token = extractToken(request);
+        Member member = resolveMemberFromToken(token);
+
+        return createAdmin(member);
+    }
+
+    private String extractToken(HttpServletRequest request) {
+        validateAuthorization(request);
+        return AuthorizationExtractor.extract(request);
+    }
+
+    private void validateAuthorization(HttpServletRequest request) {
         if (request.getHeader(HttpHeaders.AUTHORIZATION) == null) {
             throw new AuthorizationException("권한이 없는 사용자입니다.");
         }
+    }
 
-        String token = AuthorizationExtractor.extract(request);
-
+    private Member resolveMemberFromToken(String token) {
         jwtTokenProvider.validateAccessToken(token);
 
         long memberId = Long.parseLong(jwtTokenProvider.getAccessTokenPayload(token));
+        return adminMemberService.findMemberById(memberId);
+    }
 
-        return AdminMemberDto.from(adminMemberService.findMemberById(memberId));
+    private AdminMemberDto createAdmin(Member member) {
+        AdminMemberDto memberDto = AdminMemberDto.from(member);
+
+        validateAdmin(memberDto);
+        return memberDto;
+    }
+
+    private void validateAdmin(AdminMemberDto member) {
+        if (!member.isAdmin()) {
+            throw new AuthorizationException("어드민 권한이 없습니다.");
+        }
     }
 }

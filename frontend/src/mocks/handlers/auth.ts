@@ -1,8 +1,8 @@
-import { API_URI } from 'constant';
-import { rest } from 'msw';
-
 import { DUMMY_AUTH } from 'mocks/data';
 import { reviewduckAPI } from 'mocks/hosts';
+import { rest } from 'msw';
+
+import { API_URI } from 'constant';
 
 const authHandlers = [
   rest.get(reviewduckAPI(API_URI.AUTH.GET_ACCESS_TOKEN), (req, res, ctx) =>

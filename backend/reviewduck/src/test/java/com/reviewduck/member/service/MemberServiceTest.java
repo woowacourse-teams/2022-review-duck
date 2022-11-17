@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.reviewduck.common.service.ServiceTest;
 import com.reviewduck.member.domain.Member;
@@ -13,18 +14,8 @@ import com.reviewduck.member.exception.MemberException;
 
 public class MemberServiceTest extends ServiceTest {
 
-    @Test
-    @DisplayName("멤버를 저장한다.")
-    void saveMember() {
-        // given
-        Member member = new Member("9999", "panda", "제이슨", "testUrl");
-
-        // when
-        Member savedMember = memberService.save(member);
-
-        // then
-        assertThat(savedMember).usingRecursiveComparison().isEqualTo(savedMember);
-    }
+    @Autowired
+    private MemberService memberService;
 
     @Test
     @DisplayName("아이디로 멤버를 조회한다.")
@@ -33,7 +24,9 @@ public class MemberServiceTest extends ServiceTest {
         Member foundMember = memberService.findById(member1.getId());
 
         // then
-        assertThat(foundMember).usingRecursiveComparison().isEqualTo(member1);
+        assertThat(foundMember).usingRecursiveComparison()
+            .ignoringFields("createdAt", "updatedAt")
+            .isEqualTo(member1);
     }
 
     @ParameterizedTest

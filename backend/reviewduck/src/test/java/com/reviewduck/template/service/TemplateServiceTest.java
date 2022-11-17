@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
@@ -20,6 +21,9 @@ import com.reviewduck.template.dto.controller.request.TemplateCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionCreateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateQuestionUpdateRequest;
 import com.reviewduck.template.dto.controller.request.TemplateUpdateRequest;
+import com.reviewduck.template.dto.controller.response.TemplateInfoResponse;
+import com.reviewduck.template.dto.controller.response.TemplateResponse;
+import com.reviewduck.template.dto.controller.response.TemplateSummaryResponse;
 
 public class TemplateServiceTest extends ServiceTest {
 
@@ -30,6 +34,9 @@ public class TemplateServiceTest extends ServiceTest {
     private final List<TemplateQuestionCreateRequest> questions2 = List.of(
         new TemplateQuestionCreateRequest("question3", "description3"),
         new TemplateQuestionCreateRequest("question4", "description4"));
+
+    @Autowired
+    private TemplateService templateService;
 
     @Nested
     @DisplayName("템플릿 생성")
@@ -47,16 +54,17 @@ public class TemplateServiceTest extends ServiceTest {
                 new TemplateQuestionCreateRequest("question2", "description2"));
 
             // when
-            Template template = saveTemplate(member1, templateTitle, templateDescription, questions);
+            TemplateResponse response = saveTemplate(member1, templateTitle, templateDescription, questions);
+            TemplateInfoResponse savedTemplate = response.getInfo();
             List<TemplateQuestion> expected = convertRequestToQuestions(questions);
 
             // then
             assertAll(
-                () -> assertThat(template).isNotNull(),
-                () -> assertThat(template.getId()).isNotNull(),
-                () -> assertThat(template.getTemplateTitle()).isEqualTo(templateTitle),
-                () -> assertThat(template.getTemplateDescription()).isEqualTo(templateDescription),
-                () -> assertThat(template.getQuestions())
+                () -> assertThat(savedTemplate).isNotNull(),
+                () -> assertThat(savedTemplate.getId()).isNotNull(),
+                () -> assertThat(savedTemplate.getTitle()).isEqualTo(templateTitle),
+                () -> assertThat(savedTemplate.getDescription()).isEqualTo(templateDescription),
+                () -> assertThat(response.getQuestions())
                     .usingRecursiveComparison()
                     .ignoringFields("id", "template")
                     .isEqualTo(expected)
@@ -76,28 +84,27 @@ public class TemplateServiceTest extends ServiceTest {
             // 템플릿 생성
             String templateTitle = "title";
             String templateDescription = "description";
-            List<TemplateQuestionCreateRequest> questions = List.of(
-                new TemplateQuestionCreateRequest("question1", "description1"),
-                new TemplateQuestionCreateRequest("question2", "description2"));
 
-            Template template = null;
+            Long templateId = null;
             try {
-                template = saveTemplate(member1, templateTitle, templateDescription, questions);
+                templateId = saveTemplate(member1, templateTitle, templateDescription,
+                    questions1).getInfo().getId();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            List<TemplateQuestion> expected = convertRequestToQuestions(questions);
+            List<TemplateQuestion> expected = convertRequestToQuestions(questions1);
 
             // when
-            Template foundTemplate = templateService.findById(template.getId());
+            TemplateResponse response = templateService.find(templateId, memberId1);
+            TemplateInfoResponse foundTemplate = response.getInfo();
 
             // then
             assertAll(
                 () -> assertThat(foundTemplate).isNotNull(),
                 () -> assertThat(foundTemplate.getId()).isNotNull(),
-                () -> assertThat(foundTemplate.getTemplateTitle()).isEqualTo(templateTitle),
-                () -> assertThat(foundTemplate.getTemplateDescription()).isEqualTo(templateDescription),
-                () -> assertThat(foundTemplate.getQuestions())
+                () -> assertThat(foundTemplate.getTitle()).isEqualTo(templateTitle),
+                () -> assertThat(foundTemplate.getDescription()).isEqualTo(templateDescription),
+                () -> assertThat(response.getQuestions())
                     .usingRecursiveComparison()
                     .ignoringFields("id", "template")
                     .isEqualTo(expected)
@@ -108,7 +115,7 @@ public class TemplateServiceTest extends ServiceTest {
         @DisplayName("존재하지 않는 템플릿을 조회할 수 없다.")
         void findTemplateWithInvalidId() {
             // when, then
-            assertThatThrownBy(() -> templateService.findById(9999L))
+            assertThatThrownBy(() -> templateService.find(9999L, memberId1))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 템플릿입니다.");
         }
@@ -124,23 +131,26 @@ public class TemplateServiceTest extends ServiceTest {
         void findPageOrderByLatest() throws InterruptedException {
             // given
             // create template
-            Template template1 = saveTemplate(member1, "title1", "description1", questions1);
-            Template template2 = saveTemplate(member1, "title2", "description2", questions2);
+            TemplateInfoResponse template1 = saveTemplate(member1, "title1", "description1", questions1)
+                .getInfo();
+            saveTemplate(member1, "title2", "description2", questions2);
 
-            templateService.increaseUsedCount(template1.getId());
+            templateService.createReviewFormByTemplate(memberId1, template1.getId());
 
             // when
             int page = 0;
             int size = 1;
             String sort = "trend";
 
-            List<Template> templates = templateService.findAll(page, size, sort).getContent();
+            List<TemplateSummaryResponse> templates = templateService.findAll(page, size, sort, memberId1)
+                .getTemplates();
+            TemplateInfoResponse firstTemplate = templates.get(0).getInfo();
 
             // then
             assertAll(
                 () -> assertThat(templates).hasSize(1),
-                () -> assertThat(templates.get(0).getId()).isEqualTo(template1.getId()),
-                () -> assertThat(templates.get(0).getTemplateTitle()).isEqualTo(template1.getTemplateTitle())
+                () -> assertThat(firstTemplate.getId()).isEqualTo(template1.getId()),
+                () -> assertThat(firstTemplate.getTitle()).isEqualTo(template1.getTitle())
             );
         }
 
@@ -149,21 +159,23 @@ public class TemplateServiceTest extends ServiceTest {
         void findAllOrderByTrend() throws InterruptedException {
             // given
             // create template
-            Template template1 = saveTemplate(member1, "title1", "description1", questions1);
-            Template template2 = saveTemplate(member1, "title2", "description2", questions2);
+            saveTemplate(member1, "title1", "description1", questions1);
+            TemplateInfoResponse template2 = saveTemplate(member1, "title2", "description2", questions2).getInfo();
 
             // when
             int page = 0;
             int size = 1;
             String sort = "latest";
 
-            List<Template> templates = templateService.findAll(page, size, sort).getContent();
+            List<TemplateSummaryResponse> templates = templateService.findAll(page, size, sort, memberId1)
+                .getTemplates();
+            TemplateInfoResponse firstTemplate = templates.get(0).getInfo();
 
             // then
             assertAll(
                 () -> assertThat(templates).hasSize(1),
-                () -> assertThat(templates.get(0).getId()).isEqualTo(template2.getId()),
-                () -> assertThat(templates.get(0).getTemplateTitle()).isEqualTo(template2.getTemplateTitle())
+                () -> assertThat(firstTemplate.getId()).isEqualTo(template2.getId()),
+                () -> assertThat(firstTemplate.getTitle()).isEqualTo(template2.getTitle())
             );
         }
     }
@@ -178,10 +190,10 @@ public class TemplateServiceTest extends ServiceTest {
             // given
             // create template
 
-            Template template1 = saveTemplate(member1, "title1", "description1", questions1);
-            Template template2 = saveTemplate(member1, "title2", "description2", questions2);
-            Template template3 = saveTemplate(member2, "title3", "description1", questions1);
-            Template template4 = saveTemplate(member2, "title4", "description2", questions2);
+            saveTemplate(member1, "title1", "description1", questions1);
+            TemplateInfoResponse template2 = saveTemplate(member1, "title2", "description2", questions2).getInfo();
+            saveTemplate(member2, "title3", "description1", questions1);
+            saveTemplate(member2, "title4", "description2", questions2);
 
             // when
             int page = 0;
@@ -193,7 +205,7 @@ public class TemplateServiceTest extends ServiceTest {
             assertAll(
                 () -> assertThat(templates).hasSize(1),
                 () -> assertThat(templates.get(0).getId()).isEqualTo(template2.getId()),
-                () -> assertThat(templates.get(0).getTemplateTitle()).isEqualTo(template2.getTemplateTitle())
+                () -> assertThat(templates.get(0).getTemplateTitle()).isEqualTo(template2.getTitle())
             );
         }
 
@@ -211,7 +223,8 @@ public class TemplateServiceTest extends ServiceTest {
             String templateTitle = "title";
             String templateDescription = "description";
 
-            Template template = saveTemplate(member1, templateTitle, templateDescription, questions1);
+            long templateId = saveTemplate(member1, templateTitle, templateDescription, questions1).getInfo()
+                .getId();
 
             // when
             List<TemplateQuestionUpdateRequest> newQuestions = List.of(
@@ -219,7 +232,7 @@ public class TemplateServiceTest extends ServiceTest {
                 new TemplateQuestionUpdateRequest(2L, "question2", "description2"),
                 new TemplateQuestionUpdateRequest(null, "question3", "description3"));
 
-            templateService.update(memberId1, template.getId(),
+            templateService.update(memberId1, templateId,
                 new TemplateUpdateRequest("new title", "new description", newQuestions));
 
             List<TemplateQuestion> expectedTemplateQuestions = newQuestions.stream()
@@ -233,15 +246,16 @@ public class TemplateServiceTest extends ServiceTest {
                 reviewFormQuestion.setPosition(index++);
             }
 
-            Template updatedTemplate = templateService.findById(template.getId());
+            TemplateResponse response = templateService.find(templateId, memberId1);
+            TemplateInfoResponse updatedTemplate = response.getInfo();
 
             // then
             assertAll(
                 () -> assertThat(updatedTemplate).isNotNull(),
                 () -> assertThat(updatedTemplate.getId()).isNotNull(),
-                () -> assertThat(updatedTemplate.getTemplateTitle()).isEqualTo("new title"),
-                () -> assertThat(updatedTemplate.getTemplateDescription()).isEqualTo("new description"),
-                () -> assertThat(updatedTemplate.getQuestions())
+                () -> assertThat(updatedTemplate.getTitle()).isEqualTo("new title"),
+                () -> assertThat(updatedTemplate.getDescription()).isEqualTo("new description"),
+                () -> assertThat(response.getQuestions())
                     .usingRecursiveComparison()
                     .ignoringFields("id", "template")
                     .isEqualTo(expectedTemplateQuestions)
@@ -256,7 +270,8 @@ public class TemplateServiceTest extends ServiceTest {
             String templateTitle = "title";
             String templateDescription = "description";
 
-            Template template = saveTemplate(member1, templateTitle, templateDescription, questions1);
+            long templateId = saveTemplate(member1, templateTitle, templateDescription, questions1).getInfo()
+                .getId();
 
             // when
             List<TemplateQuestionUpdateRequest> newQuestions = List.of(
@@ -267,7 +282,7 @@ public class TemplateServiceTest extends ServiceTest {
                 newQuestions);
 
             // then
-            assertThatThrownBy(() -> templateService.update(memberId2, template.getId(), updateRequest))
+            assertThatThrownBy(() -> templateService.update(memberId2, templateId, updateRequest))
                 .isInstanceOf(AuthorizationException.class)
                 .hasMessageContaining("본인이 생성한 템플릿이 아니면 수정할 수 없습니다.");
         }
@@ -297,13 +312,14 @@ public class TemplateServiceTest extends ServiceTest {
             String templateTitle = "title";
             String templateDescription = "description";
 
-            Template template = saveTemplate(member1, templateTitle, templateDescription, questions1);
+            long templateId = saveTemplate(member1, templateTitle, templateDescription, questions1).getInfo()
+                .getId();
 
             // when
-            templateService.deleteById(memberId1, template.getId());
+            templateService.delete(memberId1, templateId);
 
             // then
-            assertThatThrownBy(() -> templateService.findById(template.getId()))
+            assertThatThrownBy(() -> templateService.find(templateId, memberId1))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 템플릿입니다.");
         }
@@ -316,9 +332,10 @@ public class TemplateServiceTest extends ServiceTest {
             String templateTitle = "title";
             String templateDescription = "description";
 
-            Template template = saveTemplate(member1, templateTitle, templateDescription, questions1);
+            long templateId = saveTemplate(member1, templateTitle, templateDescription, questions1).getInfo()
+                .getId();
 
-            assertThatThrownBy(() -> templateService.deleteById(memberId2, template.getId()))
+            assertThatThrownBy(() -> templateService.delete(memberId2, templateId))
                 .isInstanceOf(AuthorizationException.class)
                 .hasMessageContaining("본인이 생성한 템플릿이 아니면 삭제할 수 없습니다.");
         }
@@ -327,7 +344,7 @@ public class TemplateServiceTest extends ServiceTest {
         @DisplayName("존재하지 않는 템플릿을 삭제할 수 없다.")
         void invalidId() {
             // when, then
-            assertThatThrownBy(() -> templateService.deleteById(memberId1, 9999L))
+            assertThatThrownBy(() -> templateService.delete(memberId1, 9999L))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageContaining("존재하지 않는 템플릿입니다.");
         }
@@ -347,10 +364,12 @@ public class TemplateServiceTest extends ServiceTest {
         return expected;
     }
 
-    private Template saveTemplate(Member member, String templateTitle, String templateDescription,
+    private TemplateResponse saveTemplate(Member member, String templateTitle, String templateDescription,
         List<TemplateQuestionCreateRequest> questions) throws InterruptedException {
         Thread.sleep(1);
-        TemplateCreateRequest createRequest = new TemplateCreateRequest(templateTitle, templateDescription, questions);
-        return templateService.save(member, createRequest);
+        TemplateCreateRequest request = new TemplateCreateRequest(templateTitle, templateDescription,
+            questions);
+        Long templateId = templateService.save(member.getId(), request).getTemplateId();
+        return templateService.find(templateId, member.getId());
     }
 }
