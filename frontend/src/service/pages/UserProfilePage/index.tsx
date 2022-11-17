@@ -24,8 +24,6 @@ import Controller from './view/Controller';
 import styles from './styles.module.scss';
 
 function UserProfilePage() {
-  console.log('test');
-
   const navigate = useNavigate();
   const { socialId = '' } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
