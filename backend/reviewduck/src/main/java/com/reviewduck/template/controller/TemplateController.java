@@ -40,7 +40,7 @@ import lombok.AllArgsConstructor;
 @Validated
 public class TemplateController {
 
-    private final TemplateService service;
+    private final TemplateService templateService;
 
     @Operation(summary = "템플릿을 생성한다.")
     @PostMapping
@@ -50,7 +50,7 @@ public class TemplateController {
 
         info("/api/templates", "POST", request.toString());
 
-        return service.save(member.getId(), request);
+        return templateService.save(member.getId(), request);
     }
 
     @Operation(summary = "템플릿을 기반으로 작성된 후 수정된 회고 폼을 생성한다.")
@@ -62,7 +62,7 @@ public class TemplateController {
 
         info("/api/templates/" + templateId + "/review-forms/edited", "POST", request.toString());
 
-        return service.createReviewFormByTemplate(member.getId(), templateId, request);
+        return templateService.createReviewFormByTemplate(member.getId(), templateId, request);
     }
 
     @Operation(summary = "템플릿을 기반으로 회고 폼을 생성한다.")
@@ -73,7 +73,7 @@ public class TemplateController {
 
         info("/api/templates/" + templateId + "/review-forms", "POST", "");
 
-        return service.createReviewFormByTemplate(member.getId(), templateId);
+        return templateService.createReviewFormByTemplate(member.getId(), templateId);
     }
 
     @Operation(summary = "전체 템플릿을 조회한다.")
@@ -86,7 +86,7 @@ public class TemplateController {
 
         info("/api/templates?page=" + page + " size=" + size, "GET", "");
 
-        return service.findAll(page - 1, size, sort, member.getId());
+        return templateService.findAll(page - 1, size, sort, member.getId());
     }
 
     @Operation(summary = "사용자가 생성한 템플릿을 모두 조회한다.")
@@ -99,7 +99,7 @@ public class TemplateController {
 
         info("/api/templates?member=" + socialId + " page=" + page + " size=" + size, "GET", "");
 
-        return service.findAllBySocialId(socialId, page - 1, size, member.getId());
+        return templateService.findAllBySocialId(socialId, page - 1, size, member.getId());
     }
 
     @Operation(summary = "템플릿 검색 결과를 조회한다.")
@@ -112,7 +112,7 @@ public class TemplateController {
 
         info("/api/templates/search?query=" + query + " page=" + page + " size=" + size, "GET", "");
 
-        return service.search(query, page, size, member.getId());
+        return templateService.search(query, page, size, member.getId());
     }
 
     @Operation(summary = "특정 템플릿을 조회한다.")
@@ -122,7 +122,7 @@ public class TemplateController {
 
         info("/api/templates/" + templateId, "GET", "");
 
-        return service.find(templateId, member.getId());
+        return templateService.find(templateId, member.getId());
     }
 
     @Operation(summary = "템플릿을 수정한다.")
@@ -133,7 +133,7 @@ public class TemplateController {
 
         info("/api/templates/" + templateId, "PUT", "");
 
-        service.update(member.getId(), templateId, request);
+        templateService.update(member.getId(), templateId, request);
     }
 
     @Operation(summary = "템플릿을 삭제한다.")
@@ -143,7 +143,7 @@ public class TemplateController {
 
         info("/api/templates/" + templateId, "DELETE", "");
 
-        service.delete(member.getId(), templateId);
+        templateService.delete(member.getId(), templateId);
     }
 
 }
