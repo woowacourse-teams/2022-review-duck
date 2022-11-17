@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.reviewduck.auth.exception.AuthorizationException;
 import com.reviewduck.common.exception.NotFoundException;
@@ -33,6 +34,9 @@ public class TemplateServiceTest extends ServiceTest {
     private final List<TemplateQuestionCreateRequest> questions2 = List.of(
         new TemplateQuestionCreateRequest("question3", "description3"),
         new TemplateQuestionCreateRequest("question4", "description4"));
+
+    @Autowired
+    private TemplateService templateService;
 
     @Nested
     @DisplayName("템플릿 생성")

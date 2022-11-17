@@ -6,12 +6,16 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.reviewduck.common.service.ServiceTest;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.exception.MemberException;
 
 public class MemberServiceTest extends ServiceTest {
+
+    @Autowired
+    private MemberService memberService;
 
     @Test
     @DisplayName("아이디로 멤버를 조회한다.")
