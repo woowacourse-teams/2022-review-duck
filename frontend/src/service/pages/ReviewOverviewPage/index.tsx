@@ -153,7 +153,7 @@ function ReviewOverViewPage() {
                         question={`${index + 1}. ${question.value}`}
                         description={description}
                       >
-                        {answer.value}
+                        {answer?.value}
                       </Questions.Answer>
                     ))}
 
