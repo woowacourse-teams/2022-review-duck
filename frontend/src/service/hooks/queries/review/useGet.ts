@@ -44,7 +44,7 @@ function useGetReviewAnswer(
 function useGetInfiniteReviewFormAnswer(reviewFormCode: string, display?: DisplayModeType) {
   return useInfiniteScrollQuery(
     [QUERY_KEY.DATA.REVIEW, QUERY_KEY.API.GET_REVIEWS, { display, reviewFormCode }],
-    (page) => reviewAPI.getFormAnswer({ pageNumber: page, reviewFormCode }),
+    (page) => reviewAPI.getFormAnswer({ pageNumber: page, reviewFormCode, display }),
     'isLastPage',
   );
 }
