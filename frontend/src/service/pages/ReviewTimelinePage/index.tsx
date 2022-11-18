@@ -152,7 +152,7 @@ function ReviewTimelinePage() {
                     question={question.value}
                     description={question.description}
                   >
-                    {answer.value}
+                    {answer?.value}
                   </Questions.Answer>
                 ))}
 
