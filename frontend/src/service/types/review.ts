@@ -9,7 +9,7 @@ export interface Question {
 
 export interface AnsweredQuestion<RequiredAnswerId = true>
   extends RequiredPartialType<Question, 'id'> {
-  answer: RequiredAnswerId extends true ? Required<Answer> : Answer;
+  answer?: RequiredAnswerId extends true ? Required<Answer> : Answer;
 }
 export interface Answer {
   id?: number;

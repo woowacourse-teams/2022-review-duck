@@ -50,7 +50,7 @@ public class Review extends BaseDate {
     @Column(nullable = false)
     private int likes;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "review", fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "review", fetch = FetchType.LAZY, orphanRemoval = true)
     @OrderBy("position asc")
     @JsonIgnore
     private final List<QuestionAnswer> questionAnswers = new ArrayList<>();
