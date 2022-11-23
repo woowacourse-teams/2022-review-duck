@@ -7,7 +7,7 @@ import queryClient from 'api/config/queryClient';
 import UserAgentProvider from 'common/contexts/UserAgent';
 import { RecoilRoot } from 'recoil';
 import ErrorPage from 'service/pages/ErrorPage';
-import 'styles/@app.scss';
+import 'styles/@global.scss';
 
 import PageRoutes from 'routes';
 
