@@ -112,7 +112,7 @@ public class TemplateController {
 
         info("/api/templates/search?query=" + query + " page=" + page + " size=" + size, "GET", "");
 
-        return templateService.search(query, page, size, member.getId());
+        return templateService.search(query, page - 1, size, member.getId());
     }
 
     @Operation(summary = "특정 템플릿을 조회한다.")

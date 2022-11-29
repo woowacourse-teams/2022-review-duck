@@ -22,7 +22,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    @Cacheable(value = "memberCacheStore", key = "#myMemberId")
+    @Cacheable(value = "memberCacheStore", key = "#socialId")
     public MemberResponse findMemberInfo(String socialId, long myMemberId) {
         Member member = findBySocialId(socialId);
         return MemberResponse.of(member, myMemberId);
