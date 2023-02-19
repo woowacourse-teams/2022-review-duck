@@ -1,6 +1,8 @@
 import { UseMutationOptions } from '@tanstack/react-query';
 
-import { ErrorResponse } from 'types';
+import { AxiosError } from 'axios';
+
+export type ErrorResponse = AxiosError<{ message: string }> | Error;
 
 export type UseCustomMutationOptions<TData = unknown> = UseMutationOptions<
   TData,

@@ -1,7 +1,7 @@
 import { useQuery, UseQueryOptions } from '@tanstack/react-query';
 
 import { authAPI } from 'api';
-import { UserProfileResponse, CreateRefreshResponse } from 'types';
+import { UserProfileResponse, CreateRefreshResponse } from 'models/auth';
 import { ErrorResponse } from 'types';
 
 import { ACCESS_TOKEN_REFRESH_TIME, PERMISSION_VALID_TIME, QUERY_KEY } from 'constant';

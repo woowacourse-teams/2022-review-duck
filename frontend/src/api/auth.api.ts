@@ -1,4 +1,8 @@
-import { CreateRefreshTokenRequest, CreateRefreshResponse, UserProfileResponse } from 'types';
+import type {
+  CreateRefreshTokenRequest,
+  CreateRefreshResponse,
+  UserProfileResponse,
+} from 'models/auth';
 
 import axiosInstance from './config/axiosInstance';
 
