@@ -13,7 +13,8 @@
     "baseUrl": "src",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true
   },
-  "exclude": ["node_modules", "build", "storybook-static"]
+  "exclude": ["node_modules", "build", "storybook-static", "cypress"]
 }

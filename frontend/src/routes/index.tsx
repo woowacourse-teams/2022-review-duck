@@ -2,16 +2,15 @@ import { useContext } from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { UserAgentContext } from 'common/contexts/UserAgent';
-import MainLayout from 'service/layout/MainLayout';
-import ReviewLayout from 'service/layout/ReviewLayout';
-import ErrorPage from 'service/pages/ErrorPage';
-import MainPage from 'service/pages/MainPage';
+import Page from 'components/Page';
+import useAuth from 'hooks/useAuth';
+import MainLayout from 'layout/MainLayout';
+import ReviewLayout from 'layout/ReviewLayout';
 
 import * as lazy from 'routes/lazy';
 
-import useAuth from 'service/hooks/useAuth';
-
-import Page from 'service/components/Page';
+import ErrorPage from 'pages/ErrorPage';
+import MainPage from 'pages/MainPage';
 
 import { PAGE_LIST, PERMISSION } from 'constant';
 
