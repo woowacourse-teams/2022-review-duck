@@ -27,18 +27,18 @@ export const fetchGetReviewForm = async ({
   return response.data;
 };
 
-export type RequestGetReviewFormAnswerList = {
-  reviewID: string;
+export type RequestGetReview = {
+  reviewId: number;
 };
-export type ResponseGetReviewFormAnswerList = {
+export type ResponseGetReview = {
   reviewTitle: string;
   contents: Array<ReviewContentDTO>;
   isPrivate: boolean;
 };
-export const fetchGetReviewFormAnswerList = async ({
-  reviewID,
-}: RequestGetReviewFormAnswerList): Promise<ResponseGetReviewFormAnswerList> => {
-  const response = await axiosInstance.get(`/api/reviews/${reviewID}`);
+export const fetchGetReviewFormReview = async ({
+  reviewId,
+}: RequestGetReview): Promise<ResponseGetReview> => {
+  const response = await axiosInstance.get(`/api/reviews/${reviewId}`);
 
   return response.data;
 };
@@ -67,21 +67,21 @@ export const fetchGetReviewFormReviewList = async ({
   return response.data;
 };
 
-export type RequestGetPublicReviewFormList = {
+export type RequestGetPublicReviewList = {
   page: number;
   size: number;
   filter: 'latest' | 'trend';
 };
-export type ResponseGetPublicReviewFormList = {
+export type ResponseGetPublicReviewList = {
   numberOfReviews: number;
   isLastPage: boolean;
   reviews: Array<ReviewFormDTO>;
 };
-export const fetchGetPublicReviewFormList = async ({
+export const fetchGetPublicReviewList = async ({
   page = 1,
   size = 5,
   filter = 'trend',
-}: RequestGetPublicReviewFormList): Promise<ResponseGetPublicReviewFormList> => {
+}: RequestGetPublicReviewList): Promise<ResponseGetPublicReviewList> => {
   const response = await axiosInstance.get(
     `/api/reviews/public?page=${page}&size=${size}&sort=${filter}`,
   );
@@ -178,8 +178,10 @@ export type RequestDeleteReviewForm = {
   reviewFormCode: ReviewFormDTO['reviewFormCode'];
 };
 export type ResponseDeleteReviewForm = void;
-export const fetchDeleteReviewForm = async ({ reviewFormCode }: RequestDeleteReviewForm) => {
-  const response = await axiosInstance.post(`/api/review-forms/${reviewFormCode}`);
+export const fetchDeleteReviewForm = async ({
+  reviewFormCode,
+}: RequestDeleteReviewForm): Promise<ResponseDeleteReviewForm> => {
+  const response = await axiosInstance.delete(`/api/review-forms/${reviewFormCode}`);
 
   return response.data;
 };
@@ -188,8 +190,10 @@ export type RequestDeleteReview = {
   reviewId: number;
 };
 export type ResponseDeleteReview = void;
-export const fetchDeleteReview = async ({ reviewId }: RequestDeleteReview) => {
-  const response = await axiosInstance.post(`/api/reviews/${reviewId}`);
+export const fetchDeleteReview = async ({
+  reviewId,
+}: RequestDeleteReview): Promise<ResponseDeleteReview> => {
+  const response = await axiosInstance.delete(`/api/reviews/${reviewId}`);
 
   return response.data;
 };

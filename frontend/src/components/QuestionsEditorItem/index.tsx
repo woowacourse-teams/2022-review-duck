@@ -45,10 +45,10 @@ function QuestionsEditorItem({
   };
 
   const handleKeyDownTextBox = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.target.value || event.key !== 'Backspace') return;
+    if (event.currentTarget.value || event.key !== 'Backspace') return;
 
     event.preventDefault();
-    onDeleteQuestion && !event.target.value && onDeleteQuestion(event);
+    onDeleteQuestion && !event.currentTarget.value && onDeleteQuestion(event);
   };
 
   return (
