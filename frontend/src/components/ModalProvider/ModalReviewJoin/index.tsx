@@ -7,10 +7,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useModal from 'components/ModalProvider/useModal';
 import { validateReviewFormCode } from 'validator';
 
-import { Button, FieldSet, TextBox } from 'common/components';
+import { Button, ButtonGroup, FieldSet, TextBox } from 'common/components';
 
 import { MODAL_LIST, PAGE_LIST } from 'constant';
 import { getErrorMessage } from 'utils';
+
+import styles from './styles.module.scss';
 
 function ModalReviewJoin() {
   const navigate = useNavigate();
@@ -41,7 +43,7 @@ function ModalReviewJoin() {
 
   return (
     <form onSubmit={onSubmitReviewFormCode}>
-      <FieldSet>
+      <FieldSet className={styles.fieldSet}>
         <FieldSet.Title>참여 코드</FieldSet.Title>
         <TextBox
           name="reviewFormCode"
@@ -51,7 +53,7 @@ function ModalReviewJoin() {
         <FieldSet.Description>회고 참여를 위한 코드를 입력해주세요.</FieldSet.Description>
       </FieldSet>
 
-      <div className="button-container horizontal">
+      <ButtonGroup>
         <Button size="medium" theme="outlined" onClick={onCancel}>
           <FontAwesomeIcon icon={faBan} />
           <span>취소하기</span>
@@ -61,7 +63,7 @@ function ModalReviewJoin() {
           <FontAwesomeIcon icon={faRightToBracket} />
           <span>참여하기</span>
         </Button>
-      </div>
+      </ButtonGroup>
     </form>
   );
 }

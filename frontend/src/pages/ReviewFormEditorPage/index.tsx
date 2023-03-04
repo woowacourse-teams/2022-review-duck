@@ -7,6 +7,8 @@ import { validateReviewForm } from 'validator';
 
 import useSnackbar from 'common/hooks/useSnackbar';
 
+import { ButtonGroup } from 'common/components';
+
 import { PAGE_LIST } from 'constant';
 import { getErrorMessage } from 'utils';
 import { isNumberString } from 'utils/validator';
@@ -116,12 +118,12 @@ function ReviewFormEditorPage() {
         <Editor.TitleInput title={reviewFormTitle} onTitleChange={handleChangeReviewTitle} />
         <QuestionsEditor value={questions} onChange={handleChangeQuestions} />
 
-        <div className={cn('button-container horizontal')}>
+        <ButtonGroup>
           <Editor.CancelButton onCancel={handleCancel}>취소하기</Editor.CancelButton>
           <Editor.SubmitButton onSubmit={handleSubmitReviewForm} disabled={isSubmitLoading}>
             {isEditMode ? '수정하기' : '생성하기'}
           </Editor.SubmitButton>
-        </div>
+        </ButtonGroup>
       </Editor>
     </>
   );
