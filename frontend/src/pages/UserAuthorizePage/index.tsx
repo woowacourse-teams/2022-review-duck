@@ -29,6 +29,8 @@ function UserAuthorizePage() {
       return;
     }
 
+    if (createRefreshToken.isSuccess) return;
+
     createRefreshToken.mutate(
       { code },
       {

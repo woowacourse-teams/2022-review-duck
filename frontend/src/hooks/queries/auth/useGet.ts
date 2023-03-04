@@ -5,6 +5,7 @@ import { UserProfileResponse, CreateRefreshResponse } from 'models/auth';
 import { ErrorResponse } from 'types';
 
 import { ACCESS_TOKEN_REFRESH_TIME, PERMISSION_VALID_TIME, QUERY_KEY } from 'constant';
+import { axiosInstanceUtils } from 'utils';
 
 function useGetAccessToken(queryOptions?: UseQueryOptions<CreateRefreshResponse, ErrorResponse>) {
   return useQuery<CreateRefreshResponse, ErrorResponse>(
@@ -17,6 +18,13 @@ function useGetAccessToken(queryOptions?: UseQueryOptions<CreateRefreshResponse,
       refetchIntervalInBackground: true,
       refetchOnReconnect: true,
       ...queryOptions,
+
+      onSuccess: ({ accessToken }) => {
+        axiosInstanceUtils.setHeader('Authorization', `Bearer ${accessToken}`);
+      },
+      onError: () => {
+        axiosInstanceUtils.removeHeader('Authorization');
+      },
     },
   );
 }

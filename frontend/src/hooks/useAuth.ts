@@ -1,5 +1,3 @@
-import { axiosInstanceUtils } from 'utils';
-
 import {
   useGetAccessToken,
   useGetAuthProfile,
@@ -8,26 +6,13 @@ import {
 } from './queries/auth';
 
 function useAuth() {
+  const getAccessTokenQuery = useGetAccessToken();
+  const getUserProfileQuery = useGetAuthProfile();
+
   const createRefreshToken = useCreateRefreshToken();
 
-  const deleteRefreshToken = useDeleteRefreshToken({
-    onSuccess: () => {
-      axiosInstanceUtils.removeHeader('Authorization');
-    },
-  });
+  const deleteRefreshToken = useDeleteRefreshToken();
 
-  const getAccessTokenQuery = useGetAccessToken({
-    onSuccess: ({ accessToken }) => {
-      axiosInstanceUtils.setHeader('Authorization', `Bearer ${accessToken}`);
-    },
-    onError: () => {
-      axiosInstanceUtils.removeHeader('Authorization');
-    },
-  });
-
-  const getUserProfileQuery = useGetAuthProfile({
-    enabled: getAccessTokenQuery.isSuccess,
-  });
   const isLogin = getUserProfileQuery.isSuccess;
 
   return {
