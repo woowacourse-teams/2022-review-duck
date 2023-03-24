@@ -3,7 +3,6 @@ import { Route, Routes } from 'react-router-dom';
 
 import { UserAgentContext } from 'common/contexts/UserAgent';
 import Page from 'components/Page';
-import { useGetAccessToken, useGetAuthProfile } from 'hooks/queries/auth';
 import MainLayout from 'layout/MainLayout';
 import ReviewLayout from 'layout/ReviewLayout';
 
@@ -18,12 +17,6 @@ import { PAGE_LIST, PERMISSION } from 'constant';
 // prettier-ignore
 function PageRoutes() {
   const { isPC } = useContext(UserAgentContext);
-
-  useGetAccessToken();
-  useGetAuthProfile({
-    retry: 2,
-    retryDelay: 50,
-  })
 
   return (
     <Routes>
