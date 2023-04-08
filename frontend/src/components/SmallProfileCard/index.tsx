@@ -1,5 +1,4 @@
 import cn from 'classnames';
-import PropTypes from 'prop-types';
 
 import { Text } from 'common/components';
 
@@ -35,16 +34,5 @@ function SmallProfileCard({
     </div>
   );
 }
-
-SmallProfileCard.propTypes = {
-  size: PropTypes.oneOf(propSizeTypes),
-  profileUrl: PropTypes.string.isRequired,
-  primaryText: PropTypes.string.isRequired,
-  secondaryText: PropTypes.string.isRequired,
-};
-
-SmallProfileCard.defaultProps = {
-  size: 'medium',
-};
 
 export default SmallProfileCard;
