@@ -64,6 +64,18 @@ module.exports = (env = {}, options = {}) => {
           use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
         },
         {
+          test: /\.(js?x|ts?x)$/,
+          use: [
+            { loader: 'babel-loader' },
+            {
+              loader: '@linaria/webpack-loader',
+              options: {
+                sourceMap: process.env.NODE_ENV !== 'production',
+              },
+            },
+          ],
+        },
+        {
           test: /\.module\.s[ac]ss$/i,
           use: [
             MiniCssExtractPlugin.loader,
