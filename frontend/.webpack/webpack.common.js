@@ -55,7 +55,7 @@ module.exports = (env = {}, options = {}) => {
         },
         {
           test: /\.css$/i,
-          exclude: /\.module\.css$/i,
+          exclude: /\.(module\.css|linaria\.css)$/i,
           use: [MiniCssExtractPlugin.loader, 'postcss-loader', 'css-loader'],
         },
         {
@@ -64,7 +64,12 @@ module.exports = (env = {}, options = {}) => {
           use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
         },
         {
+          test: /\.linaria\.css$/,
+          use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
+        },
+        {
           test: /\.(js?x|ts?x)$/,
+          exclude: /node_modules/,
           use: [
             { loader: 'babel-loader' },
             {
