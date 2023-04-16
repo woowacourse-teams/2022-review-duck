@@ -58,6 +58,6 @@ public class ReviewCommentController {
 
         info("/api/reviews/" + reviewId + "/comments/" + commentId, "PUT", request.toString());
 
-        reviewCommentService.update(member.getId(), reviewId, commentId, request);
+        reviewCommentService.update(member.getId(), commentId, request);
     }
 }
