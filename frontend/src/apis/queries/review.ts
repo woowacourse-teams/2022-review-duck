@@ -4,15 +4,12 @@ import { queryKeys } from 'apis/keys';
 import {
   fetchGetPublicReviewList,
   fetchGetReviewForm,
-  fetchGetReviewFormReview,
   fetchGetReviewFormReviewList,
   RequestGetPublicReviewList,
   RequestGetReviewForm,
-  RequestGetReview,
   RequestGetReviewFormReviewList,
   ResponseGetPublicReviewList,
   ResponseGetReviewForm,
-  ResponseGetReview,
   ResponseGetReviewFormReviewList,
 } from 'apis/review';
 import { CustomQueryOptions } from 'models/@shared';
@@ -24,17 +21,6 @@ export function useGetReviewFormQuery(
   return useQuery<ResponseGetReviewForm>({
     queryKey: queryKeys.review.getReviewForm(params),
     queryFn: () => fetchGetReviewForm(params),
-    ...options,
-  });
-}
-
-export function useGetReviewQuery(
-  params: RequestGetReview,
-  options: CustomQueryOptions<ResponseGetReview> = {},
-) {
-  return useQuery<ResponseGetReview>({
-    queryKey: queryKeys.review.getReview(params),
-    queryFn: () => fetchGetReviewFormReview(params),
     ...options,
   });
 }

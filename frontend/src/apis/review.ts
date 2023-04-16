@@ -1,24 +1,17 @@
 import axiosInstance from 'api/config/axiosInstance';
 import {
-  UserProfileDTO,
   QuestionDTO,
-  ReviewContentDTO,
   ReviewFormDTO,
   TemplateDTO,
   AnswerDTO,
+  ReviewDTO,
+  ReviewFormCodeDTO,
 } from 'models/review';
 
 export type RequestGetReviewForm = {
-  reviewFormCode: string;
+  reviewFormCode: ReviewFormCodeDTO;
 };
-export type ResponseGetReviewForm = {
-  reviewFormTitle: string;
-  updatedAt: number;
-  creator: UserProfileDTO;
-  isCreator: boolean;
-  questions: Array<QuestionDTO>;
-  participants: Array<UserProfileDTO>;
-};
+export type ResponseGetReviewForm = ReviewFormDTO;
 export const fetchGetReviewForm = async ({
   reviewFormCode,
 }: RequestGetReviewForm): Promise<ResponseGetReviewForm> => {
@@ -27,24 +20,8 @@ export const fetchGetReviewForm = async ({
   return response.data;
 };
 
-export type RequestGetReview = {
-  reviewId: number;
-};
-export type ResponseGetReview = {
-  reviewTitle: string;
-  contents: Array<ReviewContentDTO>;
-  isPrivate: boolean;
-};
-export const fetchGetReviewFormReview = async ({
-  reviewId,
-}: RequestGetReview): Promise<ResponseGetReview> => {
-  const response = await axiosInstance.get(`/api/reviews/${reviewId}`);
-
-  return response.data;
-};
-
 export type RequestGetReviewFormReviewList = {
-  reviewFormCode: string;
+  reviewFormCode: ReviewFormCodeDTO;
   display: 'list' | 'sheet';
   page: number;
   size: number;
@@ -52,7 +29,7 @@ export type RequestGetReviewFormReviewList = {
 export type ResponseGetReviewFormReviewList = {
   numberOfReviews: number; // 회고 갯수
   isLastPage: boolean;
-  reviews: Array<ReviewFormDTO>;
+  reviews: Array<ReviewDTO>;
 };
 export const fetchGetReviewFormReviewList = async ({
   reviewFormCode,
@@ -75,7 +52,7 @@ export type RequestGetPublicReviewList = {
 export type ResponseGetPublicReviewList = {
   numberOfReviews: number;
   isLastPage: boolean;
-  reviews: Array<ReviewFormDTO>;
+  reviews: Array<ReviewDTO>;
 };
 export const fetchGetPublicReviewList = async ({
   page = 1,
@@ -90,11 +67,11 @@ export const fetchGetPublicReviewList = async ({
 };
 
 export type RequestPostCreateReviewForm = {
-  reviewFormTitle: ReviewFormDTO['reviewTitle'];
+  reviewFormTitle: ReviewFormDTO['reviewFormTitle'];
   questions: Array<QuestionDTO>;
 };
 export type ResponsePostCreateReviewForm = {
-  reviewFormCode: ReviewFormDTO['reviewFormCode'];
+  reviewFormCode: ReviewFormCodeDTO;
 };
 export const fetchPostCreateReviewForm = async (
   params: RequestPostCreateReviewForm,
@@ -106,11 +83,11 @@ export const fetchPostCreateReviewForm = async (
 
 export type RequestPostCreateReviewFormByTemplate = {
   templateId: TemplateDTO['info']['id'];
-  reviewFormTitle: ReviewFormDTO['reviewTitle'];
+  reviewFormTitle: ReviewFormDTO['reviewFormTitle'];
   questions: QuestionDTO[];
 };
 export type ResponsePostCreateReviewFormByTemplate = {
-  reviewFormCode: ReviewFormDTO['reviewFormCode'];
+  reviewFormCode: ReviewFormCodeDTO;
 };
 export const fetchPostCreateReviewFormByTemplate = async ({
   templateId,
@@ -125,8 +102,8 @@ export const fetchPostCreateReviewFormByTemplate = async ({
 };
 
 export type RequestPostCreateReview = {
-  reviewFormCode: ReviewFormDTO['reviewFormCode'];
-  reviewTitle: ReviewFormDTO['reviewTitle'];
+  reviewFormCode: ReviewFormCodeDTO;
+  reviewTitle: ReviewFormDTO['reviewFormTitle'];
   contents: Array<{
     questionId: Required<QuestionDTO['id']>;
     answer: AnswerDTO;
@@ -144,8 +121,8 @@ export const fetchPostCreateReview = async ({
 };
 
 export type RequestPutUpdateReviewForm = {
-  reviewFormCode: string;
-  reviewFormTitle: string;
+  reviewFormCode: ReviewFormCodeDTO;
+  reviewFormTitle: ReviewFormDTO['reviewFormTitle'];
   questions: QuestionDTO[];
 };
 export type ResponsePutUpdateReviewForm = void;
@@ -175,7 +152,7 @@ export const fetchPostUpdateReviewLike = async ({
 };
 
 export type RequestDeleteReviewForm = {
-  reviewFormCode: ReviewFormDTO['reviewFormCode'];
+  reviewFormCode: ReviewFormCodeDTO;
 };
 export type ResponseDeleteReviewForm = void;
 export const fetchDeleteReviewForm = async ({

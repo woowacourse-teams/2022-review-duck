@@ -1,11 +1,6 @@
 import { GithubNickname, GithubProfileURL, GithubUniqueUserId } from 'models/@shared';
 
-export interface UserProfileDTO {
-  id: GithubUniqueUserId;
-  nickname: string;
-  socialNickname: GithubNickname;
-  profileUrl: GithubProfileURL;
-}
+export type ReviewFormCodeDTO = string;
 
 export interface QuestionDTO {
   id?: number;
@@ -23,15 +18,39 @@ export interface ReviewContentDTO {
   answer: AnswerDTO;
 }
 
+export interface UserProfileDTO {
+  id: GithubUniqueUserId;
+  nickname: string;
+  socialNickname: GithubNickname;
+  profileUrl: GithubProfileURL;
+}
+
 export interface ReviewFormDTO {
   id: number;
-  reviewFormCode: string;
-  reviewTitle: string;
-  contents: Array<ReviewContentDTO>;
+  reviewFormTitle: string;
+  questions: Array<QuestionDTO>;
   creator: UserProfileDTO;
-  likes: number;
   updatedAt: number;
   isCreator: boolean;
+  participants: Array<UserProfileDTO>;
+}
+
+// ReviewFormDTO와 통일 필요
+export interface MyReviewFormDTO {
+  title: string;
+  code: string;
+  updatedAt: number;
+  questions: Array<QuestionDTO>;
+}
+
+export interface ReviewDTO {
+  id: number;
+  reviewTitle: string;
+  updatedAt: number;
+  likes: number;
+  creator: UserProfileDTO;
+  isCreator: boolean;
+  contents: Array<ReviewContentDTO>;
 }
 
 export interface TemplateDTO {

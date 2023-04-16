@@ -45,8 +45,7 @@ export default function useReviewMutations(
   });
   const updateReviewLike = useMutation(fetchPostUpdateReviewLike, {
     ...mutationOptions,
-    onSuccess: (_, { reviewId }) => {
-      queryClient.invalidateQueries(queryKeys.review.getReview({ reviewId }));
+    onSuccess: () => {
       queryClient.invalidateQueries(queryKeys.review.getPublicReviewList());
     },
   });
