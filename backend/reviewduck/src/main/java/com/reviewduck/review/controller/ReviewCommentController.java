@@ -3,6 +3,7 @@ package com.reviewduck.review.controller;
 import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.dto.MemberDto;
 import com.reviewduck.review.dto.controller.request.ReviewCommentCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewCommentUpdateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.response.ReviewCommentsResponse;
 import com.reviewduck.review.service.ReviewCommentService;
@@ -43,8 +44,20 @@ public class ReviewCommentController {
     public void createComment(@AuthenticationPrincipal MemberDto member, @PathVariable long reviewId,
                               @RequestBody @Valid ReviewCommentCreateRequest request) {
 
-        info("/api/reviews/{reviewId}/comments", "POST", request.toString());
+        info("/api/reviews/" + reviewId + "/comments", "POST", request.toString());
 
         reviewCommentService.save(member.getId(), reviewId, request);
+    }
+
+    @Operation(summary = "회고에 달린 댓글을 수정한다.")
+    @PostMapping("/{reviewId}/comments/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateComment(@AuthenticationPrincipal MemberDto member, @PathVariable long reviewId,
+                              @PathVariable long commentId,
+                              @RequestBody @Valid ReviewCommentUpdateRequest request) {
+
+        info("/api/reviews/" + reviewId + "/comments/" + commentId, "PUT", request.toString());
+
+        reviewCommentService.update(member.getId(), reviewId, commentId, request);
     }
 }

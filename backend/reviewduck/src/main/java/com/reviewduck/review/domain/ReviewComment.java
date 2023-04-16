@@ -34,4 +34,8 @@ public class ReviewComment extends BaseDate {
         this.memberId = memberId;
         this.content = content;
     }
+
+    public void update(String content) {
+        this.content = content;
+    }
 }

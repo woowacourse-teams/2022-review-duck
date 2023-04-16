@@ -7,6 +7,7 @@ import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewComment;
 import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.ReviewCommentCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewCommentUpdateRequest;
 import com.reviewduck.review.dto.controller.response.ReviewCommentsResponse;
 import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
 import com.reviewduck.review.repository.ReviewCommentRepository;
@@ -45,5 +46,11 @@ public class ReviewCommentService {
     private Member findMemberById(long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
+    }
+
+    public void update(long memberId, long reviewId, long commentId, ReviewCommentUpdateRequest request) {
+        Member member = findMemberById(memberId);
+        ReviewComment reviewComment = reviewCommentRepository.findById(commentId);
+        reviewComment.update(request.getContent());
     }
 }
