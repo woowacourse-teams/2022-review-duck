@@ -11,6 +11,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 @Getter
+@Table(name = "review_comment")
 public class ReviewComment extends BaseDate {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
