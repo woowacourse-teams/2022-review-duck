@@ -49,7 +49,7 @@ public class ReviewCommentController {
     }
 
     @Operation(summary = "회고에 달린 댓글을 수정한다.")
-    @PostMapping("/{reviewId}/comments/{commentId}")
+    @PutMapping("/{reviewId}/comments/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateComment(@AuthenticationPrincipal MemberDto member, @PathVariable long reviewId,
                               @PathVariable long commentId,
@@ -61,7 +61,7 @@ public class ReviewCommentController {
     }
 
     @Operation(summary = "회고에 달린 댓글을 삭제한다.")
-    @PostMapping("/{reviewId}/comments/{commentId}")
+    @DeleteMapping("/{reviewId}/comments/{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteComment(@AuthenticationPrincipal MemberDto member, @PathVariable long reviewId,
                               @PathVariable long commentId) {
