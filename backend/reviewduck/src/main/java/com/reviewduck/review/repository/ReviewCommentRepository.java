@@ -12,4 +12,6 @@ public interface ReviewCommentRepository extends Repository<ReviewComment, Long>
     ReviewComment save(ReviewComment reviewComment);
 
     ReviewComment findById(long id);
+
+    void delete(ReviewComment reviewComment);
 }

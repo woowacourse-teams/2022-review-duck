@@ -3,13 +3,10 @@ package com.reviewduck.review.service;
 import com.reviewduck.common.exception.NotFoundException;
 import com.reviewduck.member.domain.Member;
 import com.reviewduck.member.repository.MemberRepository;
-import com.reviewduck.review.domain.Review;
 import com.reviewduck.review.domain.ReviewComment;
-import com.reviewduck.review.domain.ReviewForm;
 import com.reviewduck.review.dto.controller.request.ReviewCommentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCommentUpdateRequest;
 import com.reviewduck.review.dto.controller.response.ReviewCommentsResponse;
-import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
 import com.reviewduck.review.repository.ReviewCommentRepository;
 import com.reviewduck.review.vo.ReviewSortType;
 import lombok.AllArgsConstructor;
@@ -18,8 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -43,14 +38,20 @@ public class ReviewCommentService {
         return reviewCommentRepository.save(reviewComment).getId();
     }
 
+    public void update(long memberId, long commentId, ReviewCommentUpdateRequest request) {
+        ReviewComment reviewComment = reviewCommentRepository.findById(commentId);
+        if (!reviewComment.isCommenter(memberId)) throw new IllegalArgumentException("댓글 작성자가 아니면 수정할 수 없습니다.");
+        reviewComment.update(request.getContent());
+    }
+
+    public void delete(long memberId, long commentId) {
+        ReviewComment reviewComment = reviewCommentRepository.findById(commentId);
+        if (!reviewComment.isCommenter(memberId)) throw new IllegalArgumentException("댓글 작성자가 아니면 삭제할 수 없습니다.");
+        reviewCommentRepository.delete(reviewComment);
+    }
+
     private Member findMemberById(long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(() -> new NotFoundException("존재하지 않는 사용자입니다."));
-    }
-
-    public void update(long memberId, long commentId, ReviewCommentUpdateRequest request) {
-        Member member = findMemberById(memberId);
-        ReviewComment reviewComment = reviewCommentRepository.findById(commentId);
-        reviewComment.update(request.getContent());
     }
 }

@@ -1,14 +1,10 @@
 package com.reviewduck.review.domain;
 
 import com.reviewduck.common.domain.BaseDate;
-import com.reviewduck.member.domain.Member;
-import com.reviewduck.review.dto.service.QuestionAnswerCreateDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-
-import java.util.List;
 
 import static lombok.AccessLevel.PROTECTED;
 
@@ -37,5 +33,9 @@ public class ReviewComment extends BaseDate {
 
     public void update(String content) {
         this.content = content;
+    }
+
+    public boolean isCommenter(long memberId) {
+        return this.memberId == memberId;
     }
 }

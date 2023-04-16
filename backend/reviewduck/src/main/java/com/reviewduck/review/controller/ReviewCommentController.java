@@ -4,7 +4,6 @@ import com.reviewduck.auth.support.AuthenticationPrincipal;
 import com.reviewduck.member.dto.MemberDto;
 import com.reviewduck.review.dto.controller.request.ReviewCommentCreateRequest;
 import com.reviewduck.review.dto.controller.request.ReviewCommentUpdateRequest;
-import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.response.ReviewCommentsResponse;
 import com.reviewduck.review.service.ReviewCommentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -59,5 +58,16 @@ public class ReviewCommentController {
         info("/api/reviews/" + reviewId + "/comments/" + commentId, "PUT", request.toString());
 
         reviewCommentService.update(member.getId(), commentId, request);
+    }
+
+    @Operation(summary = "회고에 달린 댓글을 삭제한다.")
+    @PostMapping("/{reviewId}/comments/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteComment(@AuthenticationPrincipal MemberDto member, @PathVariable long reviewId,
+                              @PathVariable long commentId) {
+
+        info("/api/reviews/" + reviewId + "/comments/" + commentId, "DELETE", "");
+
+        reviewCommentService.delete(member.getId(), commentId);
     }
 }
