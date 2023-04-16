@@ -1,10 +1,10 @@
-CREATE TABLE review_comment
+create table review_comment
 (
-    id         BITINT        NOT NULL AUTO_INCREMENT,
-    review_id  BIGINT        NOT NULL,
-    member_id  BIGINT        NOT NULL,
-    content    VARCHAR(8000) NOT NULL,
-    created_at DATETIME      NOT NULL,
-    updated_at DATETIME      NOT NULL,
-    PRIMARY KEY (id);
+    id         bigint        not null auto_increment,
+    review_id  bigint,
+    member_id  bigint,
+    content    varchar(8000) not null,
+    created_at DATETIME      not null,
+    updated_at DATETIME      not null,
+    primary key (id)
 );

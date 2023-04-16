@@ -23,18 +23,19 @@ public class ReviewCommentService {
     private final ReviewCommentRepository reviewCommentRepository;
     private final MemberRepository memberRepository;
 
-    public ReviewCommentsResponse findAll(long reviewId, int page, int size) {
+    public ReviewCommentsResponse findAll(long memberId, long reviewId, int page, int size) {
         Sort sort = Sort.by(Sort.Direction.ASC, "updatedAt");
         PageRequest pageRequest = PageRequest.of(page, size, sort);
 
         Page<ReviewComment> reviewComments = reviewCommentRepository.findByReviewId(reviewId, pageRequest);
-        return ReviewCommentsResponse.from(reviewComments);
+
+        return ReviewCommentsResponse.of(memberId, reviewComments);
     }
 
     @Transactional
     public long save(long memberId, long reviewId, ReviewCommentCreateRequest request) {
         Member member = findMemberById(memberId);
-        ReviewComment reviewComment = new ReviewComment(reviewId, memberId, request.getContent());
+        ReviewComment reviewComment = new ReviewComment(reviewId, member, request.getContent());
         return reviewCommentRepository.save(reviewComment).getId();
     }
 
