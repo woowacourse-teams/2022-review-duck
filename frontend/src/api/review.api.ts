@@ -1,7 +1,7 @@
 import axiosInstance from 'api/config/axiosInstance';
+import * as ReviewType from 'types/review';
 
 import { API_URI, FILTER, PAGE_OPTION } from '../constant';
-import * as ReviewType from '../service/types/review';
 import * as transformer from './review.transformer';
 
 export const getForm = async (reviewFormCode = ''): Promise<ReviewType.ReviewForm> => {

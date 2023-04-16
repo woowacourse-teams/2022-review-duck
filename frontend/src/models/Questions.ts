@@ -1,4 +1,4 @@
-import { Question } from 'service/types';
+import { Question } from 'types';
 
 class QuestionsModel {
   static trim(questions: Question[]) {

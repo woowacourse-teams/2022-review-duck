@@ -1,7 +1,7 @@
 import axiosInstance from 'api/config/axiosInstance';
+import * as UserType from 'types';
 
 import { API_URI, FILTER, PAGE_OPTION } from '../constant';
-import * as UserType from '../service/types';
 import * as transformer from './user.transformer';
 
 export const getUserReviewAnswers = async (

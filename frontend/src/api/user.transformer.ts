@@ -3,7 +3,7 @@ import {
   UserArticleList,
   GetUserReviewFormsResponse,
   GetUserTemplatesResponse,
-} from 'service/types';
+} from 'types';
 
 import { getElapsedTimeText } from 'utils';
 
