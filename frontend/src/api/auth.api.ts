@@ -1,8 +1,9 @@
-import {
+import type {
   CreateRefreshTokenRequest,
   CreateRefreshResponse,
   UserProfileResponse,
-} from '../service/types';
+} from 'models/auth';
+
 import axiosInstance from './config/axiosInstance';
 
 export const createRefreshToken = async (

@@ -7,7 +7,7 @@ import {
   ReviewFormAnswerList,
   GetReviewPublicAnswerResponse,
   ReviewPublicAnswerList,
-} from 'service/types';
+} from 'types';
 
 import { getElapsedTimeText } from 'utils';
 

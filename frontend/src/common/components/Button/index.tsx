@@ -6,13 +6,21 @@ import styles from './styles.module.scss';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
-  size: 'small' | 'medium' | 'large';
-  theme: 'default' | 'outlined' | 'circle';
-  filled: boolean;
+  size?: 'small' | 'medium' | 'large';
+  theme?: 'default' | 'outlined' | 'circle';
+  filled?: boolean;
   children: React.ReactNode;
 }
 
-function Button({ className, size, theme, filled, onClick, children, ...rest }: ButtonProps) {
+function Button({
+  className,
+  size = 'medium',
+  theme = 'default',
+  filled = false,
+  onClick,
+  children,
+  ...rest
+}: ButtonProps) {
   const [rippleEffect, setRippleEffect] = useState({ isRippling: false, clickX: -1, clickY: -1 });
 
   const handleRippleEffect = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -49,12 +57,5 @@ function Button({ className, size, theme, filled, onClick, children, ...rest }: 
     </button>
   );
 }
-
-Button.defaultProps = {
-  theme: 'default',
-  size: 'medium',
-  filled: false,
-  disabled: false,
-};
 
 export default Button;

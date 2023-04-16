@@ -55,13 +55,30 @@ module.exports = (env = {}, options = {}) => {
         },
         {
           test: /\.css$/i,
-          exclude: /\.module\.css$/i,
+          exclude: /\.(module\.css|linaria\.css)$/i,
           use: [MiniCssExtractPlugin.loader, 'postcss-loader', 'css-loader'],
         },
         {
           test: /\.s[ac]ss$/i,
           exclude: /\.module\.s[ac]ss$/i,
           use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
+        },
+        {
+          test: /\.linaria\.css$/,
+          use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
+        },
+        {
+          test: /\.(js?x|ts?x)$/,
+          exclude: /node_modules/,
+          use: [
+            { loader: 'babel-loader' },
+            {
+              loader: '@linaria/webpack-loader',
+              options: {
+                sourceMap: process.env.NODE_ENV !== 'production',
+              },
+            },
+          ],
         },
         {
           test: /\.module\.s[ac]ss$/i,

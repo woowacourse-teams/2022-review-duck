@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 
-import { ErrorResponse } from 'service/types';
+import { ErrorResponse } from 'types';
 
 import useDebounce from 'common/hooks/useDebounce';
 

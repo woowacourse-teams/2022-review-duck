@@ -19,3 +19,4 @@ export { default as TagLabel } from './TagLabel';
 export { default as Carousel } from './Carousel';
 export { default as PageSuspense } from './PageSuspense';
 export { default as SelectPopup } from './SelectPopup';
+export { default as ButtonGroup } from './ButtonGroup';

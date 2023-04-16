@@ -1,5 +1,3 @@
-import { API_URI, FILTER, PAGE_OPTION } from 'constant';
-
 import {
   CreateFormResponse,
   TemplateFilterType,
@@ -8,7 +6,10 @@ import {
   UpdateTemplateRequest,
   GetTemplateResponse,
   GetTemplatesResponse,
-} from '../service/types/template';
+} from 'types/template';
+
+import { API_URI, FILTER, PAGE_OPTION } from 'constant';
+
 import axiosInstance from './config/axiosInstance';
 
 export const getTemplates = async (
