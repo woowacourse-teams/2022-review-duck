@@ -8,4 +8,6 @@ import org.springframework.data.repository.Repository;
 
 public interface ReviewCommentRepository extends Repository<ReviewComment, Long> {
     Page<ReviewComment> findByReviewId(long reviewId, PageRequest pageRequest);
+
+    ReviewComment save(ReviewComment reviewComment);
 }

@@ -1,11 +1,17 @@
 package com.reviewduck.review.controller;
 
+import com.reviewduck.auth.support.AuthenticationPrincipal;
+import com.reviewduck.member.dto.MemberDto;
+import com.reviewduck.review.dto.controller.request.ReviewCommentCreateRequest;
+import com.reviewduck.review.dto.controller.request.ReviewCreateRequest;
 import com.reviewduck.review.dto.controller.response.ReviewCommentsResponse;
 import com.reviewduck.review.service.ReviewCommentService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 import static com.reviewduck.common.util.Logging.info;
 import static com.reviewduck.common.vo.PageConstant.DEFAULT_PAGE;
@@ -29,5 +35,16 @@ public class ReviewCommentController {
         info("/api/reviews/" + reviewId + "comments" + "&page=" + page + "&size=" + size, "GET", "");
 
         return reviewCommentService.findAll(reviewId, page - 1, size);
+    }
+
+    @Operation(summary = "회고에 댓글을 생성한다.")
+    @PostMapping("/{reviewId}/comments")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createComment(@AuthenticationPrincipal MemberDto member, @PathVariable long reviewId,
+                              @RequestBody @Valid ReviewCommentCreateRequest request) {
+
+        info("/api/reviews/{reviewId}/comments", "POST", request.toString());
+
+        reviewCommentService.save(member.getId(), reviewId, request);
     }
 }
