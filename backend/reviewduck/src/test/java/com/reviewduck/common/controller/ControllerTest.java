@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 
+import com.reviewduck.notification.service.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -48,6 +49,9 @@ public class ControllerTest {
     protected ReviewFormService reviewFormService;
     @MockBean
     protected TemplateService TemplateService;
+
+    @MockBean
+    protected NotificationService notificationService;
 
     protected final String ACCESS_TOKEN = "access_token";
     protected final Long INVALID_REVIEW_ID = 1L;

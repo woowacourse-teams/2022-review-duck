@@ -6,6 +6,8 @@ import static com.reviewduck.common.vo.PageConstant.*;
 
 import javax.validation.Valid;
 
+import com.reviewduck.notification.service.NotificationService;
+import com.reviewduck.notification.vo.NotificationType;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +42,7 @@ public class ReviewFormController {
 
     private final ReviewFormService reviewFormService;
     private final ReviewService reviewService;
+    private final NotificationService notificationService;
 
     @Operation(summary = "회고 폼을 생성한다.")
     @PostMapping
@@ -60,7 +63,8 @@ public class ReviewFormController {
 
         info("/api/review-forms/" + reviewFormCode, "POST", request.toString());
 
-        reviewService.save(member.getId(), reviewFormCode, request);
+        long reviewId = reviewService.save(member.getId(), reviewFormCode, request);
+        notificationService.save(member.getId(), NotificationType.NEW_REVIEW, reviewFormCode);
     }
 
     @Operation(summary = "특정 회고 폼의 정보를 조회한다.")

@@ -14,7 +14,7 @@ import static com.reviewduck.common.vo.PageConstant.DEFAULT_PAGE;
 import static com.reviewduck.common.vo.PageConstant.DEFAULT_SIZE;
 
 @RestController
-@RequestMapping("/api/notification")
+@RequestMapping("/api/notifications")
 @AllArgsConstructor
 public class NotificationController {
 
@@ -28,7 +28,7 @@ public class NotificationController {
                                               @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size) {
 
 
-        info("/api/notification", "GET", "");
+        info("/api/notifications", "GET", "");
 
         return notificationService.findAllByMember(member.getId(), page, size);
     }

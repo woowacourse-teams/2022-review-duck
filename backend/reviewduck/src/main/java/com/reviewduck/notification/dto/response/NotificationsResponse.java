@@ -29,4 +29,8 @@ public class NotificationsResponse {
                 notificationResponses
         );
     }
+
+    public boolean getIsLastPage() {
+        return isLastPage;
+    }
 }

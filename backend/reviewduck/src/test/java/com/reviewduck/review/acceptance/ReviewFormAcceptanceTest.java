@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
+import com.reviewduck.notification.dto.response.NotificationsResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -38,14 +39,14 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             // given
             String reviewTitle = "title";
             List<ReviewFormQuestionCreateRequest> questions = List.of(
-                new ReviewFormQuestionCreateRequest("question1", "description1"),
-                new ReviewFormQuestionCreateRequest("question2", "description2"));
+                    new ReviewFormQuestionCreateRequest("question1", "description1"),
+                    new ReviewFormQuestionCreateRequest("question2", "description2"));
             ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
 
             // when, then
             post("/api/review-forms", request, accessToken1)
-                .statusCode(HttpStatus.CREATED.value())
-                .assertThat().body("reviewFormCode", notNullValue());
+                    .statusCode(HttpStatus.CREATED.value())
+                    .assertThat().body("reviewFormCode", notNullValue());
         }
 
         @Test
@@ -71,27 +72,27 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             String templateTitle = "template title";
             String templateDescription = "template description";
             List<TemplateQuestionCreateRequest> templateQuestions = List.of(
-                new TemplateQuestionCreateRequest("question1", "description1"),
-                new TemplateQuestionCreateRequest("question2", "description2"));
+                    new TemplateQuestionCreateRequest("question1", "description1"),
+                    new TemplateQuestionCreateRequest("question2", "description2"));
             TemplateCreateRequest templateCreateRequest = new TemplateCreateRequest(templateTitle, templateDescription,
-                templateQuestions);
+                    templateQuestions);
 
             long templateId = post("/api/templates", templateCreateRequest, accessToken1)
-                .extract()
-                .as(TemplateIdResponse.class)
-                .getTemplateId();
+                    .extract()
+                    .as(TemplateIdResponse.class)
+                    .getTemplateId();
 
             // when
             String reviewTitle = "title";
             List<ReviewFormQuestionCreateRequest> questions = List.of(
-                new ReviewFormQuestionCreateRequest("question3", "description3"),
-                new ReviewFormQuestionCreateRequest("question4", "description4"));
+                    new ReviewFormQuestionCreateRequest("question3", "description3"),
+                    new ReviewFormQuestionCreateRequest("question4", "description4"));
             ReviewFormCreateRequest reviewFormCreateRequest = new ReviewFormCreateRequest(reviewTitle, questions);
 
             // then
             post("/api/review-forms?templateId=" + templateId, reviewFormCreateRequest, accessToken1)
-                .statusCode(HttpStatus.CREATED.value())
-                .assertThat().body("reviewFormCode", notNullValue());
+                    .statusCode(HttpStatus.CREATED.value())
+                    .assertThat().body("reviewFormCode", notNullValue());
         }
 
         @Test
@@ -122,12 +123,12 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // 리뷰생성
             ReviewCreateRequest createRequest = new ReviewCreateRequest(false, "title", List.of(
-                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
-                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+                    new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                    new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
             ));
 
             post("/api/review-forms/" + code, createRequest, accessToken1)
-                .statusCode(HttpStatus.CREATED.value());
+                    .statusCode(HttpStatus.CREATED.value());
         }
 
         @Test
@@ -138,12 +139,12 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // 리뷰생성
             ReviewCreateRequest createRequest = new ReviewCreateRequest(false, "title", List.of(
-                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
-                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+                    new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                    new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
             ));
 
             post("/api/review-forms/" + code, createRequest)
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                    .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
         @Test
@@ -159,14 +160,56 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // 리뷰생성
             ReviewCreateRequest createRequest = new ReviewCreateRequest(false, "title", List.of(
-                new ReviewContentCreateRequest(888L, new AnswerCreateRequest("answer1")),
-                new ReviewContentCreateRequest(999L, new AnswerCreateRequest("answer2"))
+                    new ReviewContentCreateRequest(888L, new AnswerCreateRequest("answer1")),
+                    new ReviewContentCreateRequest(999L, new AnswerCreateRequest("answer2"))
             ));
 
             post("/api/review-forms/" + code, createRequest, accessToken1)
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                    .statusCode(HttpStatus.NOT_FOUND.value());
         }
 
+        @Test
+        @DisplayName("회고 답변 생성 후 새로운 알림을 생성한다")
+        void createNotification() {
+            // given
+            String reviewTitle = "title";
+            String code = createReviewFormAndGetCode(reviewTitle, accessToken1);
+
+            // when
+            // 질문조회
+            assertReviewTitleFromFoundReviewForm(code, reviewTitle, accessToken1);
+
+            // 리뷰생성
+            ReviewCreateRequest createRequest = new ReviewCreateRequest(false, "title", List.of(
+                    new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                    new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+            ));
+
+            NotificationsResponse beforeResponses = get("/api/notifications", accessToken1).statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(NotificationsResponse.class);
+
+            long numberOfNotifications = beforeResponses.getNumberOfNotifications();
+
+            post("/api/review-forms/" + code, createRequest, accessToken1)
+                    .statusCode(HttpStatus.CREATED.value());
+
+            // then
+            NotificationsResponse responses = get("/api/notifications", accessToken1).statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(NotificationsResponse.class);
+
+            long expectedNumberOfNotifications = numberOfNotifications + 1;
+
+            int expectedSize = expectedNumberOfNotifications >= DEFAULT_SIZE ? DEFAULT_SIZE : (int) expectedNumberOfNotifications;
+
+            assertAll(
+                    () -> assertThat(responses.getNumberOfNotifications()).isEqualTo(expectedNumberOfNotifications),
+                    () -> assertThat(responses.getNotifications()).hasSize(expectedSize),
+                    () -> assertThat(responses.getNotifications().get(0).getType()).isEqualTo("NEW_REVIEW"),
+                    () -> assertThat(responses.getNotifications().get(0).getContent()).isEqualTo(code)
+            );
+        }
     }
 
     @Nested
@@ -182,14 +225,14 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // when
             ReviewFormResponse response = get("/api/review-forms/" + reviewFormCode, accessToken1)
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .as(ReviewFormResponse.class);
+                    .statusCode(HttpStatus.OK.value())
+                    .extract()
+                    .as(ReviewFormResponse.class);
 
             // then
             assertAll(
-                () -> assertThat(response.getReviewFormTitle()).isEqualTo(reviewTitle),
-                () -> assertThat(response.getQuestions()).hasSize(2)
+                    () -> assertThat(response.getReviewFormTitle()).isEqualTo(reviewTitle),
+                    () -> assertThat(response.getQuestions()).hasSize(2)
             );
         }
 
@@ -227,7 +270,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // when, then
             get("/api/review-forms?member=1", accessToken1).statusCode(HttpStatus.OK.value())
-                .assertThat().body("reviewForms", hasSize(DEFAULT_SIZE));
+                    .assertThat().body("reviewForms", hasSize(DEFAULT_SIZE));
         }
 
         @Test
@@ -246,12 +289,12 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // then
             get("/api/review-forms?member=1&page=1&size=2", accessToken1)
-                .statusCode(HttpStatus.OK.value())
-                .assertThat()
-                .body("isMine", equalTo(true))
-                .body("reviewForms", hasSize(2))
-                .body("reviewForms[0].title", equalTo(reviewTitle2))
-                .body("isLastPage", equalTo(true));
+                    .statusCode(HttpStatus.OK.value())
+                    .assertThat()
+                    .body("isMine", equalTo(true))
+                    .body("reviewForms", hasSize(2))
+                    .body("reviewForms[0].title", equalTo(reviewTitle2))
+                    .body("isLastPage", equalTo(true));
         }
 
         @Test
@@ -270,12 +313,12 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // then
             get("/api/review-forms?member=1&page=1&size=2", accessToken2)
-                .statusCode(HttpStatus.OK.value())
-                .assertThat()
-                .body("isMine", equalTo(false))
-                .body("reviewForms", hasSize(2))
-                .body("reviewForms[0].title", equalTo(reviewTitle2))
-                .body("isLastPage", equalTo(true));
+                    .statusCode(HttpStatus.OK.value())
+                    .assertThat()
+                    .body("isMine", equalTo(false))
+                    .body("reviewForms", hasSize(2))
+                    .body("reviewForms[0].title", equalTo(reviewTitle2))
+                    .body("isLastPage", equalTo(true));
         }
 
         @Test
@@ -297,24 +340,24 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             String code = createReviewFormAndGetCode(accessToken1);
 
             ReviewCreateRequest createRequest = new ReviewCreateRequest(false, "title", List.of(
-                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
-                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+                    new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                    new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
             ));
 
             post("/api/review-forms/" + code, createRequest, accessToken1);
 
             String newReviewTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
-                new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
+                    new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
 
             put("/api/review-forms/" + code, updateRequest, accessToken1);
 
             // when, then
             get("/api/review-forms/" + code + "/reviews?displayType=", accessToken1)
-                .statusCode(HttpStatus.OK.value())
-                .assertThat()
-                .body("reviews", hasSize(1));
+                    .statusCode(HttpStatus.OK.value())
+                    .assertThat()
+                    .body("reviews", hasSize(1));
         }
 
         @Test
@@ -324,24 +367,24 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             String code = createReviewFormAndGetCode(accessToken1);
 
             ReviewCreateRequest createRequest = new ReviewCreateRequest(false, "title", List.of(
-                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
-                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+                    new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                    new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
             ));
 
             post("/api/review-forms/" + code, createRequest, accessToken1);
 
             String newReviewTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
-                new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
+                    new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
 
             put("/api/review-forms/" + code, updateRequest, accessToken1);
 
             // when, then
             get("/api/review-forms/" + code + "/reviews?displayType=wrong", accessToken1)
-                .statusCode(HttpStatus.OK.value())
-                .assertThat()
-                .body("reviews", hasSize(1));
+                    .statusCode(HttpStatus.OK.value())
+                    .assertThat()
+                    .body("reviews", hasSize(1));
         }
     }
 
@@ -361,10 +404,10 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // when, then
             get("/api/review-forms/" + code + "/reviews?displayType=list", accessToken1)
-                .statusCode(HttpStatus.OK.value())
-                .assertThat()
-                .body("numberOfReviews", equalTo(DEFAULT_SIZE + 5))
-                .body("reviews", hasSize(DEFAULT_SIZE));
+                    .statusCode(HttpStatus.OK.value())
+                    .assertThat()
+                    .body("numberOfReviews", equalTo(DEFAULT_SIZE + 5))
+                    .body("reviews", hasSize(DEFAULT_SIZE));
         }
 
         @Test
@@ -378,11 +421,11 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // when, then
             get("/api/review-forms/" + code + "/reviews?page=1&size=1&displayType=list", accessToken1)
-                .statusCode(HttpStatus.OK.value())
-                .assertThat()
-                .body("numberOfReviews", equalTo(2))
-                .body("reviews", hasSize(1))
-                .body("isLastPage", equalTo(false));
+                    .statusCode(HttpStatus.OK.value())
+                    .assertThat()
+                    .body("numberOfReviews", equalTo(2))
+                    .body("reviews", hasSize(1))
+                    .body("isLastPage", equalTo(false));
         }
 
         @Test
@@ -394,9 +437,9 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // when, then
             get("/api/review-forms/" + code + "/reviews?displayType=list")
-                .statusCode(HttpStatus.OK.value())
-                .assertThat()
-                .body("reviews", hasSize(1));
+                    .statusCode(HttpStatus.OK.value())
+                    .assertThat()
+                    .body("reviews", hasSize(1));
         }
 
         @Test
@@ -408,7 +451,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // when, then
             get("/api/review-forms/" + code + "/reviews?displayType=list", INVALID_TOKEN)
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                    .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
         @Test
@@ -416,7 +459,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         void invalidCode() {
             // when, then
             get("/api/review-forms/" + INVALID_CODE + "/reviews?displayType=list", accessToken1)
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                    .statusCode(HttpStatus.NOT_FOUND.value());
         }
 
     }
@@ -437,10 +480,10 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // when, then
             get("/api/review-forms/" + code + "/reviews?displayType=sheet", accessToken1)
-                .statusCode(HttpStatus.OK.value())
-                .assertThat()
-                .body("numberOfReviews", equalTo(DEFAULT_SIZE + 5))
-                .body("reviews", hasSize(DEFAULT_SIZE));
+                    .statusCode(HttpStatus.OK.value())
+                    .assertThat()
+                    .body("numberOfReviews", equalTo(DEFAULT_SIZE + 5))
+                    .body("reviews", hasSize(DEFAULT_SIZE));
         }
 
         @Test
@@ -454,17 +497,17 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             String newReviewTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
-                new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
+                    new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
 
             put("/api/review-forms/" + code, updateRequest, accessToken1);
 
             // when, then
             get("/api/review-forms/" + code + "/reviews?displayType=sheet&page=1&size=1", accessToken2)
-                .statusCode(HttpStatus.OK.value())
-                .assertThat()
-                .body("numberOfReviews", equalTo(2))
-                .body("isLastPage", equalTo(false));
+                    .statusCode(HttpStatus.OK.value())
+                    .assertThat()
+                    .body("numberOfReviews", equalTo(2))
+                    .body("isLastPage", equalTo(false));
         }
 
         @Test
@@ -476,9 +519,9 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // when, then
             get("/api/review-forms/" + code + "/reviews?displayType=sheet")
-                .statusCode(HttpStatus.OK.value())
-                .assertThat()
-                .body("numberOfReviews", equalTo(1));
+                    .statusCode(HttpStatus.OK.value())
+                    .assertThat()
+                    .body("numberOfReviews", equalTo(1));
         }
 
         @Test
@@ -490,7 +533,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // when, then
             get("/api/review-forms/" + code + "/reviews?displayType=sheet", INVALID_TOKEN)
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                    .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
         @Test
@@ -498,7 +541,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         void invalidCode() {
             // when, then
             get("/api/review-forms/" + INVALID_CODE + "/reviews?displayType=sheet", accessToken1)
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                    .statusCode(HttpStatus.NOT_FOUND.value());
         }
     }
 
@@ -515,23 +558,23 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             // when, then
             String newReviewTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
-                new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
+                    new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
 
             put("/api/review-forms/" + reviewFormCode, updateRequest, accessToken1)
-                .statusCode(HttpStatus.OK.value())
-                .assertThat().body("reviewFormCode", equalTo(reviewFormCode));
+                    .statusCode(HttpStatus.OK.value())
+                    .assertThat().body("reviewFormCode", equalTo(reviewFormCode));
 
             ReviewFormResponse getResponse = get("/api/review-forms/" + reviewFormCode, accessToken1)
-                .extract()
-                .as(ReviewFormResponse.class);
+                    .extract()
+                    .as(ReviewFormResponse.class);
 
             assertAll(
-                () -> assertThat(getResponse.getReviewFormTitle()).isEqualTo(newReviewTitle),
-                () -> assertThat(getResponse.getQuestions()).hasSize(1),
-                () -> assertThat(getResponse.getQuestions().get(0).getId()).isEqualTo(1L),
-                () -> assertThat(getResponse.getQuestions().get(0).getValue()).isEqualTo("new question1"),
-                () -> assertThat(getResponse.getQuestions().get(0).getDescription()).isEqualTo("new description1")
+                    () -> assertThat(getResponse.getReviewFormTitle()).isEqualTo(newReviewTitle),
+                    () -> assertThat(getResponse.getQuestions()).hasSize(1),
+                    () -> assertThat(getResponse.getQuestions().get(0).getId()).isEqualTo(1L),
+                    () -> assertThat(getResponse.getQuestions().get(0).getValue()).isEqualTo("new question1"),
+                    () -> assertThat(getResponse.getQuestions().get(0).getDescription()).isEqualTo("new description1")
             );
         }
 
@@ -544,11 +587,11 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             // when, then
             String newReviewTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
-                new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
+                    new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
 
             put("/api/review-forms/" + createReviewFormCode, updateRequest)
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                    .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
         @Test
@@ -557,11 +600,11 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             // when, then
             String newReviewTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
-                new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
+                    new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
 
             put("/api/review-forms/aaaaaaaa", updateRequest, accessToken1)
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                    .statusCode(HttpStatus.NOT_FOUND.value());
         }
 
         @Test
@@ -573,12 +616,12 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
             // when, then
             String newReviewTitle = "new title";
             List<ReviewFormQuestionUpdateRequest> updateQuestions = List.of(
-                new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
+                    new ReviewFormQuestionUpdateRequest(1L, "new question1", "new description1"));
             ReviewFormUpdateRequest updateRequest = new ReviewFormUpdateRequest(newReviewTitle, updateQuestions);
 
             // then
             put("/api/review-forms/" + createReviewFormCode, updateRequest, accessToken2)
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                    .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
     }
@@ -596,10 +639,10 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // when, then
             delete("/api/review-forms/" + createReviewFormCode, accessToken1)
-                .statusCode(HttpStatus.NO_CONTENT.value());
+                    .statusCode(HttpStatus.NO_CONTENT.value());
 
             get("/api/review-forms/" + createReviewFormCode, accessToken1)
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                    .statusCode(HttpStatus.NOT_FOUND.value());
         }
 
         @Test
@@ -610,10 +653,10 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // when, then
             delete("/api/review-forms/" + createReviewFormCode, accessToken1)
-                .statusCode(HttpStatus.NO_CONTENT.value());
+                    .statusCode(HttpStatus.NO_CONTENT.value());
 
             get("/api/review-forms/" + createReviewFormCode, accessToken1)
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                    .statusCode(HttpStatus.NOT_FOUND.value());
         }
 
         @Test
@@ -624,7 +667,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // when, then
             delete("/api/review-forms/" + createReviewFormCode)
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                    .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
         @Test
@@ -632,7 +675,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
         void invalidReviewForm() {
             // when, then
             delete("/api/review-forms/aaaaaaaa", accessToken1)
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                    .statusCode(HttpStatus.NOT_FOUND.value());
         }
 
         @Test
@@ -643,7 +686,7 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
             // when, then
             delete("/api/review-forms/" + createReviewFormCode, accessToken2)
-                .statusCode(HttpStatus.UNAUTHORIZED.value());
+                    .statusCode(HttpStatus.UNAUTHORIZED.value());
         }
 
     }
@@ -654,30 +697,30 @@ public class ReviewFormAcceptanceTest extends AcceptanceTest {
 
     private String createReviewFormAndGetCode(String reviewTitle, String accessToken) {
         List<ReviewFormQuestionCreateRequest> questions = List.of(
-            new ReviewFormQuestionCreateRequest("question1", "description1"),
-            new ReviewFormQuestionCreateRequest("question2", "description2"));
+                new ReviewFormQuestionCreateRequest("question1", "description1"),
+                new ReviewFormQuestionCreateRequest("question2", "description2"));
 
         ReviewFormCreateRequest request = new ReviewFormCreateRequest(reviewTitle, questions);
 
         return post("/api/review-forms", request, accessToken)
-            .extract()
-            .as(ReviewFormCodeResponse.class)
-            .getReviewFormCode();
+                .extract()
+                .as(ReviewFormCodeResponse.class)
+                .getReviewFormCode();
     }
 
     private void createReview(String reviewFormCode) {
         ReviewCreateRequest createRequest = new ReviewCreateRequest(false, "title", List.of(
-            new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
-            new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
+                new ReviewContentCreateRequest(1L, new AnswerCreateRequest("answer1")),
+                new ReviewContentCreateRequest(2L, new AnswerCreateRequest("answer2"))
         ));
         post("/api/review-forms/" + reviewFormCode, createRequest, accessToken1);
     }
 
     private void assertReviewTitleFromFoundReviewForm(String code, String reviewTitle, String accessToken) {
         ReviewFormResponse reviewFormResponse = get("/api/review-forms/" + code, accessToken)
-            .statusCode(HttpStatus.OK.value())
-            .extract()
-            .as(ReviewFormResponse.class);
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(ReviewFormResponse.class);
         assertThat(reviewFormResponse.getReviewFormTitle()).isEqualTo(reviewTitle);
     }
 }

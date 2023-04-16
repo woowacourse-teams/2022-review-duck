@@ -29,4 +29,12 @@ public class Notification extends BaseDate {
     private boolean isRead;
 
     private boolean isSent;
+
+    public Notification(Member member, NotificationType type, String content) {
+        this.member = member;
+        this.type = type;
+        this.content = content;
+        this.isRead = false;
+        this.isSent = false;
+    }
 }

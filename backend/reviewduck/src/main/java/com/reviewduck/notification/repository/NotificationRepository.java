@@ -8,5 +8,7 @@ import org.springframework.data.repository.Repository;
 
 public interface NotificationRepository extends Repository<Notification, Long> {
 
+    Notification save(Notification notification);
+
     Page<Notification> findByMember(Member member, Pageable pageable);
 }
