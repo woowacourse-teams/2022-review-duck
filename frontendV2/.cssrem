@@ -1,0 +1,10 @@
+{
+  "rootFontSize": 16,
+  "fixedDigits": 3,
+  "cssrem.autoRemovePrefixZero": false,
+  "cssrem.languages": [
+    "js",
+    "css",
+    "scss"
+  ]
+}

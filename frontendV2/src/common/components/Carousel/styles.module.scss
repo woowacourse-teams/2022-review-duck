@@ -1,0 +1,134 @@
+@import 'styles/@variables.scss';
+
+.component-carousel {
+  position: relative;
+  width: 100%;
+
+  .button {
+    cursor: pointer;
+    user-select: none;
+    pointer-events: all;
+
+    position: absolute;
+    top: 50%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    color: #fff;
+    border: none;
+    font-size: 1.5rem;
+
+    padding: 1rem;
+
+    border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+    background-color: $GLOBAL_COLOR_BLACK_600;
+    box-shadow: 0px 12px 48px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(30px);
+    filter: blur(1rem);
+
+    transition: all 0.35s ease;
+    opacity: 0;
+    z-index: 5;
+
+    @include mobile {
+      display: none;
+    }
+  }
+
+  .button.previous {
+    left: 1rem;
+  }
+
+  .button.next {
+    right: 1rem;
+  }
+}
+
+.component-carousel:hover {
+  .button {
+    position: absolute;
+    top: 50%;
+    opacity: 1;
+    transform: translateY(-50%);
+    filter: blur(0px);
+  }
+
+  .button:active {
+    transform: translateY(-50%) scale(1.2);
+  }
+
+  .button.hidden {
+    visibility: hidden;
+    opacity: 0;
+    filter: blur(30px);
+  }
+}
+
+.component-carousel .scroll-container {
+  @include hide-scroll-bar;
+
+  position: relative;
+  width: 100%;
+  overflow-x: scroll;
+  overflow-y: visible;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: none;
+  scroll-behavior: smooth;
+
+  .correct-screen {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    overflow-y: visible;
+
+    &:not(.disabled) {
+      transform: translateX(calc(max(100vw, 1024px) / 2 - 524px));
+
+      @include mobile {
+        transform: unset;
+        padding: 0 1.5rem;
+      }
+    }
+
+    &::after {
+      content: '';
+      display: flex;
+
+      width: 1rem;
+      height: 1rem;
+      flex-shrink: 0;
+    }
+
+    > * {
+      flex-shrink: 0;
+      flex-grow: 0;
+      scroll-snap-align: end;
+    }
+  }
+}
+
+.component-carousel .control-wrapper {
+  position: absolute;
+  top: 0;
+
+  width: 5%;
+  min-width: 3.5rem;
+  height: 100%;
+  pointer-events: none;
+
+  z-index: 5;
+
+  &.previous {
+    left: 0px;
+  }
+
+  &.next {
+    right: 0;
+  }
+
+  .control-button {
+  }
+}

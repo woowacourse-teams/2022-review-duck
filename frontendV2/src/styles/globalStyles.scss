@@ -1,0 +1,16 @@
+.button-container {
+  display: grid;
+
+  &.horizontal {
+    grid-template-columns: repeat(auto-fit, minmax(20%, auto));
+    gap: 1.375rem;
+    margin-top: 3rem;
+    text-align: center;
+  }
+}
+
+.global-content-container {
+  width: 1056px;
+  padding: 0 1rem;
+  margin: 0 auto;
+}

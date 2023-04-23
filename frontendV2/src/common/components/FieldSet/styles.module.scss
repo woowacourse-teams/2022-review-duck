@@ -1,0 +1,26 @@
+@import 'styles/@variables.scss';
+
+.title {
+  color: $THEME_COLOR_THEME_TEXT_600;
+  line-height: 160%;
+}
+
+.description {
+  font-weight: lighter;
+  font-size: 0.8rem;
+  color: $THEME_COLOR_THEME_TEXT_400;
+  line-height: 160%;
+}
+
+.size-medium {
+  & > .title {
+    font-size: 0.875rem;
+  }
+}
+
+.size-large {
+  & > .title {
+    font-size: 1rem;
+    font-weight: lighter;
+  }
+}

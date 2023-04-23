@@ -1,0 +1,17 @@
+@import 'styles/@variables.scss';
+
+.main-page-container {
+  overflow: hidden;
+  padding-bottom: 5rem;
+}
+
+.main-card {
+  width: 18rem;
+  margin-right: 2.5rem;
+  padding: 2rem;
+}
+
+.intro-text {
+  word-break: keep-all;
+  line-height: 350%;
+}

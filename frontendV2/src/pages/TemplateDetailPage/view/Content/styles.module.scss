@@ -1,0 +1,30 @@
+@import 'styles/@variables.scss';
+
+.component-page-content {
+  @include mobile {
+    padding: 2.5rem 0;
+  }
+
+  .detail {
+    min-height: 30vh;
+    gap: 3.5rem;
+
+    .title {
+      color: $THEME_COLOR_STATUS_PRIMARY_600;
+    }
+
+    .description {
+      white-space: pre-line;
+      line-height: 160%;
+    }
+  }
+
+  .more-buttons {
+    @include tablet {
+      min-width: 800px;
+    }
+
+    padding: 1rem 0;
+    border-bottom: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
+  }
+}

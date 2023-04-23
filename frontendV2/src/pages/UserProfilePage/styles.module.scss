@@ -1,0 +1,90 @@
+@import 'styles/@variables.scss';
+
+.page-profile {
+  @include mobile {
+    position: relative;
+    width: 100%;
+  }
+}
+
+.profile-background {
+  position: fixed;
+  top: 5.625rem;
+  width: 100%;
+  height: 17.25rem;
+
+  background-position: center;
+  z-index: 0;
+
+  @include mobile {
+    position: absolute;
+    top: 0;
+    width: 90%;
+    height: 13.5rem;
+    margin: 0 5%;
+    border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+    overflow: hidden;
+  }
+
+  &::after {
+    content: '';
+
+    display: block;
+    width: 100%;
+    height: 100%;
+
+    background-color: $GLOBAL_COLOR_WHITE_200;
+    background-position: center;
+    backdrop-filter: blur(5rem) brightness(0.95);
+
+    @include mobile {
+      backdrop-filter: blur(10rem) brightness(0.75);
+      background-color: unset;
+    }
+  }
+
+  @include animation(25s linear infinite) {
+    0% {
+      background-size: 30%;
+    }
+
+    50% {
+      background-size: 60%;
+    }
+
+    100% {
+      background-size: 30%;
+    }
+  }
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 21.58% 74.6%;
+  gap: 3.82%;
+
+  @include mobile {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+}
+
+.review-container {
+  padding: 1rem 2rem 2rem;
+  border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+  background-color: $THEME_COLOR_THEME_BACKGROUND_100;
+
+  box-shadow: 0px 2px 2px $GLOBAL_COLOR_BLACK_20, 0px 0.575rem 1.56rem $GLOBAL_COLOR_BLACK_100;
+  border-top: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
+}
+
+.line {
+  width: 2rem;
+  margin: 2rem 0;
+  border-color: $THEME_COLOR_STATUS_PRIMARY_100;
+
+  @include mobile {
+    display: none;
+  }
+}

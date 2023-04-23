@@ -1,0 +1,59 @@
+@import 'styles/@variables.scss';
+
+.component-progress-bar {
+  width: 100%;
+  height: 4px;
+  position: relative;
+  border-radius: 0.1875rem;
+  background-color: $THEME_COLOR_STATUS_PRIMARY_100;
+
+  .percent {
+    width: 0%;
+    height: 100%;
+    transition: width 0.5s ease;
+    border-radius: 0.1875rem;
+    background-color: $THEME_COLOR_STATUS_PRIMARY_500;
+  }
+}
+
+.component-progress-bar.animation-play {
+  .percent {
+    animation-play-state: running;
+    animation-fill-mode: forwards;
+    animation-timing-function: linear;
+
+    @include setAnimationContent {
+      from {
+        width: 0%;
+      }
+
+      to {
+        width: 100%;
+      }
+    }
+  }
+}
+
+.component-progress-bar.animation-done {
+  @include animation(0.2s linear forwards 0.5s) {
+    from {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0;
+    }
+  }
+
+  .percent {
+    @include animation(0.2s ease-in forwards) {
+      from {
+        width: 0%;
+      }
+
+      to {
+        width: 100%;
+      }
+    }
+  }
+}

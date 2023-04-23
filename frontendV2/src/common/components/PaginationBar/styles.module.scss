@@ -1,0 +1,83 @@
+@import 'styles/@variables.scss';
+
+.component-pagination-bar {
+  @include tablet {
+    min-width: 840px;
+  }
+  width: 100%;
+
+  .page-button-container {
+    border-radius: $GLOBAL_BORDERRADIUS_SMALL;
+    border: 1px solid $LIGHT_COLOR_STATUS_PRIMARY_100;
+  }
+
+  .to-first::after {
+    @include mobile {
+      content: '<<';
+    }
+    content: '처음으로';
+  }
+
+  .previous::after {
+    @include mobile {
+      content: '<';
+    }
+    content: '이전';
+  }
+
+  .next::after {
+    @include mobile {
+      content: '>';
+    }
+    content: '다음';
+  }
+
+  .to-last::after {
+    @include mobile {
+      content: '>>';
+    }
+    content: '마지막으로';
+  }
+
+  .page-button {
+    &::after {
+      @include mobile {
+        display: block;
+        font-weight: bold;
+        transform: scaleY(0.5);
+      }
+    }
+    background-color: transparent;
+    border: none;
+    border-right: 1px solid $LIGHT_COLOR_STATUS_PRIMARY_100;
+    padding: 0.5rem 0.7rem;
+    color: $THEME_COLOR_THEME_TEXT_600;
+    cursor: pointer;
+
+    &:last-child {
+      border-right: none;
+    }
+
+    &:hover:not(.current-page):not(.disabled) {
+      opacity: 0.7;
+      background-color: $THEME_COLOR_STATUS_PRIMARY_100;
+    }
+  }
+
+  .disabled {
+    cursor: default;
+    opacity: 0.5;
+
+    &:hover {
+      opacity: 0.5;
+      background-color: transparent;
+    }
+  }
+
+  .current-page {
+    font-weight: bold;
+    background-color: $THEME_COLOR_STATUS_PRIMARY_400;
+    color: $THEME_COLOR_STATUS_PRIMARY_100;
+    cursor: default;
+  }
+}

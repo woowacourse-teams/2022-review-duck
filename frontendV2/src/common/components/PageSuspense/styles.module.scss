@@ -1,0 +1,35 @@
+@import 'styles/@variables.scss';
+
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 355;
+  width: 100%;
+}
+
+.fallback {
+  pointer-events: none;
+
+  @include animation(0.2s ease forwards) {
+    from {
+      opacity: 1;
+    }
+
+    to {
+      opacity: 0.3;
+    }
+  }
+}
+
+.content {
+  @include animation(0.2s ease backwards) {
+    from {
+      opacity: 0.3;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+}

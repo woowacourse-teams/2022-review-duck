@@ -1,0 +1,42 @@
+@import 'styles/@variables.scss';
+
+.textarea {
+  resize: none;
+  width: 100%;
+  min-height: 6.25rem;
+  border: none;
+  border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+  background-color: $THEME_COLOR_THEME_BACKGROUND_200;
+  line-height: 160%;
+  overflow: hidden;
+  border: 1px solid $THEME_COLOR_THEME_BACKGROUND_200;
+
+  &:focus {
+    outline: none;
+    border: 1px solid $THEME_COLOR_STATUS_PRIMARY_100;
+  }
+}
+
+.size-small {
+  font-size: 0.8rem;
+  padding: 0.5rem 1rem;
+
+  &.theme-underline {
+    padding: 0.5rem 0.3rem;
+  }
+}
+
+.size-medium {
+  font-size: 0.9rem;
+  padding: 0.75rem 1.25rem;
+}
+
+.size-large {
+  font-size: 1rem;
+  padding: 1rem 1.5rem;
+
+  &.theme-underline {
+    font-size: 1.5rem;
+    padding: 0.75rem 0rem;
+  }
+}

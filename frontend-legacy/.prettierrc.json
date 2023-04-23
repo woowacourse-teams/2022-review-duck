@@ -1,0 +1,23 @@
+{
+  "singleQuote": true,
+  "semi": true,
+  "useTabs": false,
+  "tabWidth": 2,
+  "trailingComma": "all",
+  "printWidth": 120,
+  "endOfLine": "lf",
+  "importOrder": [
+    "^react",
+    "^@",
+    "<THIRD_PARTY_MODULES>",
+    "^(common|service)/types(.*|$)",
+    "^routes(.*|$)",
+    "^(common|service)/hooks(.*|$)",
+    "^(common|service)/components(.*|$)",
+    "^pages(.*|$)",
+    "^(constant|assets|utils)(.*|$)",
+    "^((.|..)/(?!styles))(.*|$)",
+    "^(./styles.module)(.*|$)"
+  ],
+  "importOrderSeparation": true
+}

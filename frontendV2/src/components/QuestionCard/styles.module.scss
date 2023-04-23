@@ -1,0 +1,52 @@
+@import 'styles/@variables.scss';
+
+.container {
+  padding: 1.5rem;
+  gap: 1rem;
+
+  border-radius: 1.5rem;
+  background-color: $THEME_COLOR_THEME_BACKGROUND_100;
+  box-shadow: 0px 15px 50px $GLOBAL_COLOR_BLACK_50;
+
+  @include animation(0.5s ease) {
+    from {
+      opacity: 0;
+      filter: blur(0.5rem);
+      transform: scale(1.1) translateY(50%);
+    }
+
+    to {
+      opacity: 1;
+      filter: blur(0rem);
+      transform: scale(1) translateY(0%);
+    }
+  }
+}
+
+.header {
+  justify-content: space-between;
+  align-items: center;
+
+  .numbering {
+    color: $THEME_COLOR_STATUS_PRIMARY_500;
+  }
+
+  .type {
+    color: $THEME_COLOR_THEME_TEXT_400;
+  }
+}
+
+.line {
+  width: 100%;
+  margin: 0 0 0.25rem;
+}
+
+.title {
+  word-break: break-word;
+  color: $THEME_COLOR_STATUS_PRIMARY_700;
+}
+
+.description {
+  white-space: pre-wrap;
+  word-break: break-word;
+}

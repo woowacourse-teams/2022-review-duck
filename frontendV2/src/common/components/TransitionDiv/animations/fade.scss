@@ -1,0 +1,11 @@
+.fade {
+  @include setAnimationContent {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+}

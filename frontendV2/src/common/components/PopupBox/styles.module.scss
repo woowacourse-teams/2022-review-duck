@@ -1,0 +1,57 @@
+@import 'styles/@variables.scss';
+
+.container {
+  position: relative;
+  display: inline-block;
+  overflow: visible;
+
+  &:hover,
+  & > .popup-container:hover {
+    .popup-container {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .children-container {
+      transform: translateX(-50%) translateY(0%) scale(1);
+    }
+  }
+}
+
+.popup-container {
+  position: absolute;
+  z-index: 5;
+  opacity: 1;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  padding-top: 0.5rem;
+
+  bottom: 0rem;
+  left: 50%;
+  min-width: 100%;
+  transform: translateY(100%);
+}
+
+.children-container {
+  position: relative;
+  border-radius: $GLOBAL_BORDERRADIUS_MEDIUM;
+  background-color: $THEME_COLOR_THEME_BACKGROUND_100;
+  box-shadow: 0 0 25px 5px $GLOBAL_COLOR_BLACK_50;
+
+  transition: transform 0.2s ease;
+  transform: translateX(-50%) translateY(0%) scale(0.7);
+  transform-origin: top center;
+
+  &::after {
+    content: '';
+
+    position: absolute;
+    border-bottom: 10px solid $THEME_COLOR_THEME_BACKGROUND_100;
+    border-right: 10px solid transparent;
+    border-left: 10px solid transparent;
+    top: -10px;
+
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}

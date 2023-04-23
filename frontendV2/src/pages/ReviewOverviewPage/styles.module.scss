@@ -1,0 +1,21 @@
+@import 'styles/@variables.scss';
+
+.layout {
+  position: relative;
+  display: inline-block;
+  min-width: 100%;
+  min-height: 100vh;
+  background-color: $THEME_COLOR_THEME_BACKGROUND_200;
+  padding-top: 6.5rem;
+}
+
+.profile {
+  width: 5.75rem;
+  margin-right: 1.25rem;
+}
+
+.form-info {
+  @include mobile {
+    display: none;
+  }
+}
