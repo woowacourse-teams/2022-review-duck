@@ -1,0 +1,18 @@
+@import 'styles/@variables.scss';
+
+.status-container {
+  gap: 2.5rem;
+
+  &.sticky {
+    position: sticky;
+    top: 3rem;
+  }
+
+  @include mobile {
+    display: none;
+  }
+
+  @include tablet {
+    display: none;
+  }
+}

@@ -56,16 +56,16 @@ module.exports = (env = {}, options = {}) => {
         {
           test: /\.css$/i,
           exclude: /\.(module\.css|linaria\.css)$/i,
-          use: [MiniCssExtractPlugin.loader, 'postcss-loader', 'css-loader'],
+          use: [MiniCssExtractPlugin.loader, 'css-loader'],
         },
         {
           test: /\.s[ac]ss$/i,
           exclude: /\.module\.s[ac]ss$/i,
-          use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
+          use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
         },
         {
           test: /\.linaria\.css$/,
-          use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
+          use: [MiniCssExtractPlugin.loader, 'css-loader'],
         },
         {
           test: /\.(js?x|ts?x)$/,
@@ -88,13 +88,11 @@ module.exports = (env = {}, options = {}) => {
               loader: 'css-loader',
               options: {
                 modules: {
-                  localIdentName:
-                    mode === 'development' ? '[local]--[hash:base64:5]' : '[hash:base64:5]',
+                  localIdentName: mode === 'development' ? '[local]--[hash:base64:5]' : '[hash:base64:5]',
                   exportLocalsConvention: 'camelCase',
                 },
               },
             },
-            'postcss-loader',
             'sass-loader',
           ],
         },
@@ -105,11 +103,7 @@ module.exports = (env = {}, options = {}) => {
         'process.env': JSON.stringify(parsedEnv),
         __MSW_DIR__: JSON.stringify(parsedEnv.MOCKING ? './mocks/browser.js' : ''),
       }),
-      new webpack.LoaderOptionsPlugin({
-        options: {
-          postcss: [autoprefixer()],
-        },
-      }),
+      new webpack.LoaderOptionsPlugin({}),
       new HtmlWebpackPlugin({
         template: './public/index.html',
         favicon: './public/favicon.ico',

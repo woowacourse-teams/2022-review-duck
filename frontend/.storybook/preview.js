@@ -1,6 +1,6 @@
 import { withRootAttribute } from 'storybook-addon-root-attribute';
 
-import 'styles/@app.scss';
+import 'styles/@global.scss';
 
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },

@@ -1,0 +1,59 @@
+@import 'styles/@variables.scss';
+
+.container {
+  @include tablet {
+    width: 48%;
+  }
+
+  @include mobile {
+    width: 48%;
+  }
+
+  cursor: pointer;
+  width: 23.5%;
+
+  border-radius: $GLOBAL_BORDERRADIUS_XLARGE;
+  background-color: $THEME_COLOR_THEME_BACKGROUND_100;
+  padding: 1.5rem;
+  transition: transform 0.3s ease;
+  gap: 0.75rem;
+
+  box-shadow: 0 10px 10px 10px $GLOBAL_COLOR_BLACK_20;
+
+  &:hover {
+    transform: translateY(-3%);
+  }
+}
+
+.title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: $LIGHT_COLOR_STATUS_PRIMARY_800;
+}
+
+.info {
+  gap: 0.25rem;
+  color: $LIGHT_COLOR_THEME_TEXT_100;
+  font-size: 0.75rem;
+}
+
+.description {
+  $line-count: 4;
+
+  display: -webkit-box;
+  -webkit-line-clamp: $line-count;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  box-orient: vertical;
+  color: $THEME_COLOR_THEME_TEXT_400;
+  line-height: 160%;
+  min-height: calc(1.6rem * $line-count);
+  margin-bottom: 20%;
+}
+
+.line {
+  margin: 0;
+  width: 2rem;
+  border-color: $THEME_COLOR_STATUS_PRIMARY_100;
+}

@@ -1,0 +1,21 @@
+@import 'styles/@variables.scss';
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding: 2.5rem 0;
+
+  @include mobile {
+    gap: 3rem;
+    padding: 0 0 8rem;
+  }
+}
+
+.no-result {
+  margin-top: 17.25rem;
+
+  @include mobile {
+    margin: 0;
+  }
+}

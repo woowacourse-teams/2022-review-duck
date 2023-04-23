@@ -1,0 +1,21 @@
+@import 'styles/@variables.scss';
+
+.component-feed {
+  .title {
+    color: $THEME_COLOR_STATUS_PRIMARY_600;
+    font-weight: bold;
+  }
+
+  .review-answer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    position: relative;
+    padding: 1.5rem;
+
+    border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+    background-color: $THEME_COLOR_THEME_BACKGROUND_100;
+    box-shadow: 0 8px 8px 8px rgba(0, 0, 0, 0.02);
+  }
+}

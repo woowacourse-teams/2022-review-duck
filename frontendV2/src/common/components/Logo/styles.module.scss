@@ -1,0 +1,24 @@
+@import 'styles/@variables.scss';
+
+.component-logo {
+  fill: $THEME_COLOR_STATUS_PRIMARY_500;
+
+  .svg {
+    height: 100%;
+  }
+}
+
+.small {
+  width: 3.125rem;
+  height: 3.125rem;
+}
+
+.medium {
+  width: 4.5rem;
+  height: 4.5rem;
+}
+
+.large {
+  width: 6rem;
+  height: 6rem;
+}

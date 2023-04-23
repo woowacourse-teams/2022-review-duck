@@ -1,0 +1,186 @@
+@import 'styles/@variables.scss';
+
+.component-snackbar {
+  $snackbarIndex: 10;
+
+  position: fixed;
+  top: 3rem;
+  right: 5rem;
+  padding: 1.25rem;
+  user-select: none;
+
+  border-radius: $GLOBAL_BORDERRADIUS_MEDIUM;
+  background-color: $THEME_COLOR_THEME_BACKGROUND_BLUR;
+  backdrop-filter: blur(0.7rem);
+  box-shadow: 0 0.1875rem 2.25rem $GLOBAL_COLOR_BLACK_100;
+  transition: margin 0.2s ease;
+
+  @include mobile {
+    top: unset;
+    right: unset;
+    bottom: 7rem;
+
+    width: 90%;
+    margin: 0 5%;
+    box-shadow: 0 0.1875rem 2.25rem $GLOBAL_COLOR_BLACK_200;
+  }
+
+  &:nth-of-type(1) {
+    z-index: $snackbarIndex;
+
+    .progress .percent {
+      animation-play-state: running;
+    }
+  }
+
+  @each $index in (2, 3) {
+    $stacked: $index - 1;
+
+    &:nth-of-type(#{$index}) {
+      margin: #{$stacked * -0.75}rem;
+      z-index: #{$snackbarIndex - $stacked};
+
+      @include mobile {
+        margin: #{$stacked * 0.75}rem 5%;
+      }
+    }
+  }
+}
+
+.content {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
+
+  .icon {
+    font-size: 2.25rem;
+    color: $THEME_COLOR_STATUS_PRIMARY_500;
+  }
+
+  .text {
+    width: 20rem;
+  }
+
+  .title {
+    margin-bottom: 0.5rem;
+    width: 100%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    &:only-child {
+      margin: 0;
+    }
+
+    &:only-child::before {
+      content: '회고덕 알림';
+      display: block;
+
+      font-size: 0.875rem;
+      font-weight: normal;
+
+      color: $THEME_COLOR_THEME_TEXT_100;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .description {
+    color: $THEME_COLOR_THEME_TEXT_100;
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  .close {
+    cursor: pointer;
+  }
+}
+
+.progress {
+  content: '';
+
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 5px;
+  width: 100%;
+
+  border-radius: 0 0 $GLOBAL_BORDERRADIUS_MEDIUM $GLOBAL_BORDERRADIUS_MEDIUM;
+  background-color: $THEME_COLOR_STATUS_PRIMARY_100;
+
+  & > .percent {
+    width: 0%;
+    height: 100%;
+
+    box-shadow: 0px 4px 12px rgba(100, 230, 233, 1);
+    border-radius: 0 0 0 $GLOBAL_BORDERRADIUS_MEDIUM;
+    background-color: $THEME_COLOR_STATUS_PRIMARY_500;
+
+    @include animation(3s linear forwards paused) {
+      from {
+        width: 0%;
+      }
+
+      99% {
+        border-radius: 0 0 0 $GLOBAL_BORDERRADIUS_MEDIUM;
+      }
+
+      to {
+        width: 100%;
+        border-radius: 0 0 $GLOBAL_BORDERRADIUS_MEDIUM $GLOBAL_BORDERRADIUS_MEDIUM;
+      }
+    }
+  }
+}
+
+.primary {
+  $color: $THEME_COLOR_STATUS_PRIMARY_500;
+
+  .icon {
+    color: $color;
+  }
+  .percent {
+    background-color: $color;
+  }
+}
+
+.success {
+  $color: $THEME_COLOR_STATUS_SUCCESS_400;
+
+  .icon {
+    color: $color;
+  }
+  .percent {
+    background-color: $color;
+    box-shadow: 0px 4px 12px $color;
+  }
+}
+
+.warning {
+  $color: $THEME_COLOR_STATUS_WARNING_500;
+
+  .icon {
+    color: $color;
+  }
+  .percent {
+    background-color: $color;
+    box-shadow: 0px 4px 12px $color;
+  }
+}
+
+.danger {
+  $color: $THEME_COLOR_STATUS_DANGER_400;
+
+  .icon {
+    color: $color;
+  }
+  .percent {
+    background-color: $color;
+    box-shadow: 0px 4px 12px $color;
+  }
+}

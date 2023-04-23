@@ -1,0 +1,136 @@
+@import 'styles/@variables.scss';
+
+.page-component-side-menu {
+  position: sticky;
+  top: 5.625rem;
+  align-self: start;
+
+  @include mobile {
+    position: relative;
+    top: unset;
+    align-self: unset;
+  }
+
+  .profile {
+    @include mobile {
+      align-items: center;
+      width: 100%;
+      gap: 1.5rem;
+      padding: 1.5rem 0;
+    }
+
+    .image {
+      margin: 2.5rem 0;
+      position: relative;
+      width: 12.25rem;
+      height: 12.25rem;
+      overflow: visible;
+
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      background-color: $GLOBAL_COLOR_WHITE_900;
+
+      @include mobile {
+        width: 6rem;
+        height: 6rem;
+        margin: 0;
+      }
+    }
+
+    .name-card {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 2rem 0 1.5rem;
+      color: $THEME_COLOR_STATUS_PRIMARY_600;
+
+      @include mobile {
+        align-items: center;
+        color: $GLOBAL_COLOR_WHITE_800;
+        padding: 0;
+      }
+    }
+  }
+
+  .profile-manage {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    @include mobile {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(47.5%, auto));
+      gap: 2.5%;
+      margin: 1.5rem 0;
+
+      & > a:only-child button {
+        grid-column: 2 span;
+      }
+    }
+  }
+
+  .side-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+
+    @include mobile {
+      flex-direction: row;
+      align-items: flex-end;
+      padding: 1.5rem 0.25rem;
+      border-bottom: 1px solid $THEME_COLOR_STATUS_PRIMARY_100;
+    }
+
+    .title {
+      color: $THEME_COLOR_THEME_TEXT_400;
+
+      @include mobile {
+        display: none;
+      }
+    }
+
+    .item {
+      cursor: pointer;
+      color: $THEME_COLOR_THEME_TEXT_800;
+      font-size: 1.25rem;
+      transition: all ease 0.2s;
+
+      @include mobile {
+        font-size: 1rem;
+      }
+
+      &.focus {
+        color: $THEME_COLOR_STATUS_PRIMARY_700;
+        font-weight: bold;
+
+        @include mobile {
+          font-size: 1.25rem;
+        }
+      }
+
+      &:hover {
+        color: $THEME_COLOR_STATUS_PRIMARY_500;
+      }
+    }
+  }
+
+  .counter-container {
+    width: 60%;
+
+    .counter {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1rem;
+
+      border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+      background-color: $THEME_COLOR_THEME_BACKGROUND_200;
+
+      .number {
+        color: $THEME_COLOR_STATUS_PRIMARY_500;
+      }
+    }
+  }
+}

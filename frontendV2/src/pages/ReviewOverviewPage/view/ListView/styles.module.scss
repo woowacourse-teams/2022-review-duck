@@ -1,0 +1,146 @@
+@import 'styles/@variables.scss';
+
+.container {
+  display: grid;
+  grid-template-columns: 63% 32%;
+  gap: 5%;
+  padding: 1.5rem 0;
+  height: 100%;
+  margin: 0 auto;
+
+  @include mobile {
+    gap: 3rem;
+    grid-template-columns: 100%;
+  }
+}
+
+.content-container {
+  @include mobile {
+    order: 1;
+  }
+}
+
+.card-box {
+  width: 100%;
+  padding: 2rem;
+
+  background-color: $THEME_COLOR_THEME_BACKGROUND_100;
+  border-radius: 2rem;
+
+  .title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .button-review-form-edit {
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: row;
+    gap: 0.5rem;
+    align-items: center;
+
+    background-color: transparent;
+    border: none;
+    color: $THEME_COLOR_STATUS_SUCCESS_400;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .no-result {
+    padding: 0;
+  }
+}
+
+.participant-list {
+  @include mobile {
+    display: none;
+  }
+}
+
+.review-container {
+  & > hr {
+    margin: 1.5rem 0;
+  }
+}
+
+.side-menu {
+  align-self: start;
+  position: sticky;
+  top: 8rem;
+  min-width: 15.3125rem;
+
+  @include mobile {
+    position: relative;
+    order: 0;
+    top: unset;
+    min-width: unset;
+  }
+}
+
+.form-detail {
+  gap: 1.5rem;
+
+  .info-text {
+    .name {
+      color: $THEME_COLOR_THEME_TEXT_600;
+    }
+
+    .content {
+      color: $THEME_COLOR_THEME_TEXT_400;
+    }
+  }
+
+  .form-copy-link {
+    .title {
+      color: $GLOBAL_COLOR_GRAY_500;
+      margin-bottom: 0.5rem;
+    }
+
+    .copy-box {
+      position: relative;
+      border-radius: $GLOBAL_BORDERRADIUS_MAX;
+      overflow: hidden;
+    }
+
+    .copy-input {
+      color: $GLOBAL_COLOR_GRAY_300;
+    }
+
+    .copy-text {
+      position: absolute;
+      color: #1267e7;
+
+      display: flex;
+      user-select: none;
+      padding-right: 0.8rem;
+      justify-content: right;
+      align-items: center;
+
+      position: absolute;
+      width: 25%;
+      height: 100%;
+      top: 0;
+      right: 0;
+
+      background-image: linear-gradient(
+        90deg,
+        transparent 0%,
+        $THEME_COLOR_THEME_BACKGROUND_200 40%
+      );
+      transition: transform 0.1s ease;
+      transform-origin: right center;
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      &:active {
+        transform: scale(0.9);
+      }
+    }
+  }
+}

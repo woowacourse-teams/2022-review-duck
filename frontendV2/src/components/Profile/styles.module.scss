@@ -1,0 +1,82 @@
+@import 'styles/@variables.scss';
+
+.profile-image {
+  position: relative;
+  display: block;
+
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+
+  &.size-small {
+    width: 3rem;
+    height: 3rem;
+
+    &.theme-rectangle {
+      height: 4rem;
+    }
+  }
+
+  &.size-medium {
+    width: 4rem;
+    height: 4rem;
+
+    &.theme-rectangle {
+      height: 6rem;
+    }
+  }
+
+  &.size-large {
+    width: 5.75rem;
+    height: 6rem;
+
+    &.theme-rectangle {
+      height: 7.75rem;
+    }
+  }
+
+  &.edge-round {
+    border-radius: $GLOBAL_BORDERRADIUS_MAX;
+  }
+
+  &.edge-pointed {
+    border-radius: $GLOBAL_BORDERRADIUS_LARGE;
+  }
+}
+
+.nickname {
+  color: $THEME_COLOR_THEME_TEXT_900;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.description {
+  color: $THEME_COLOR_THEME_TEXT_150;
+}
+
+.profile-container {
+  &.align-left {
+    text-align: left;
+  }
+
+  &.align-center {
+    text-align: center;
+  }
+
+  &.align-right {
+    text-align: right;
+  }
+
+  .text {
+    width: 100%;
+
+    p {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      line-height: 100%;
+    }
+  }
+}

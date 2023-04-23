@@ -1,0 +1,18 @@
+@import 'styles/@variables.scss';
+
+.content-header {
+  padding: 2rem 0 1rem;
+
+  .title {
+    color: $THEME_COLOR_STATUS_PRIMARY_600;
+    font-weight: bold;
+  }
+
+  @include mobile {
+    padding: 1rem 1.5rem;
+  }
+}
+
+.card-list {
+  padding: 0.75rem 0;
+}

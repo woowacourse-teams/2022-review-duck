@@ -1,0 +1,66 @@
+.text {
+  &h1,
+  &h2,
+  &h3,
+  &h4,
+  &h5,
+  &h6 {
+    font-weight: bold;
+  }
+}
+
+p.text {
+  word-break: break-word;
+}
+
+.size-12 {
+  font-size: 0.75rem;
+}
+
+.size-14 {
+  font-size: 0.875rem;
+}
+
+.size-16 {
+  font-size: 1rem;
+}
+
+.size-18 {
+  font-size: 1.125rem;
+}
+
+.size-20 {
+  font-size: 1.25rem;
+}
+
+.size-24 {
+  font-size: 1.5rem;
+}
+
+.size-28 {
+  font-size: 1.75rem;
+}
+
+.size-32 {
+  font-size: 2rem;
+}
+
+.size-40 {
+  font-size: 2.5rem;
+}
+
+.size-48 {
+  font-size: 3rem;
+}
+
+.weight-lighter {
+  font-weight: lighter;
+}
+
+.weight-normal {
+  font-weight: normal;
+}
+
+.weight-bold {
+  font-weight: bold;
+}

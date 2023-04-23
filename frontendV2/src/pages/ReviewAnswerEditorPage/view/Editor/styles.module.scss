@@ -1,0 +1,33 @@
+@import 'styles/@variables.scss';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 5rem 3rem;
+
+  @include mobile {
+    margin: 0 1.5rem;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: $GLOBAL_BORDERRADIUS_XLARGE;
+    box-shadow: 0 0.5rem 0.5rem 0.5rem $GLOBAL_COLOR_BLACK_50;
+  }
+}
+
+.review-form-title {
+  margin-bottom: 1rem;
+}
+
+.private-check-box {
+  .tip-icon {
+    font-size: 0.9em;
+    color: $THEME_COLOR_THEME_TEXT_150;
+    margin-left: 0.5rem;
+  }
+}
+.confirm-buttons {
+  display: grid;
+  grid-template-columns: 47.5% 47.5%;
+  gap: 5%;
+}

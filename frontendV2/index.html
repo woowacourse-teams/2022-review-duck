@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0" />
+    <meta charset="UTF-8" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="회고덕" />
+    <meta name="description" content="함께 성장하는 회고 플랫폼." />
+    <link rel="apple-touch-icon" sizes="192x192" href="./static/app-icon.png" />
+    <link rel="manifest" href="./static/manifest.json" />
+    <link rel="icon" type="image/png" href="./static/favicon.ico" />
+    <title>회고덕</title>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="module" src="/src/main.tsx"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-86WBFEJWRL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag('js', new Date());
+
+      gtag('config', 'G-86WBFEJWRL');
+    </script>
+  </body>
+</html>
