@@ -1,4 +1,4 @@
-import Snackbar from './';
+import Snackbar from '.';
 
 export default {
   title: 'common/components/Snackbar',
