@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, UseInfiniteQueryOptions, useQuery } from '@tanstack/react-query';
 
 import { queryKeys } from 'apis/keys';
 import {
@@ -44,5 +44,25 @@ export function useGetPublicReviewListQuery(
     queryKey: queryKeys.review.getPublicReviewList(params),
     queryFn: () => fetchGetPublicReviewList(params),
     ...options,
+  });
+}
+
+export function useGetInfiniteReviewPublicAnswer(
+  params: RequestGetPublicReviewList,
+  queryOptions: UseInfiniteQueryOptions<ResponseGetPublicReviewList> = {},
+) {
+  const DEFAULT_PAGE_SIZE = params.size || 5;
+
+  return useInfiniteQuery<ResponseGetPublicReviewList>({
+    ...queryOptions,
+
+    queryKey: queryKeys.review.getInfinitePublicReviewList(params),
+    queryFn: ({ pageParam = params.page }) => fetchGetPublicReviewList({ ...params, page: pageParam }),
+    getNextPageParam: (currentPage, allPages) => {
+      const nextPageNumber = allPages.length;
+      const isMorePage = currentPage.numberOfReviews > allPages.length * DEFAULT_PAGE_SIZE;
+
+      return isMorePage ? nextPageNumber : undefined;
+    },
   });
 }

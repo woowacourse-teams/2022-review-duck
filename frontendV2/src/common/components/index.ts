@@ -21,3 +21,4 @@ export { default as PageSuspense } from './PageSuspense';
 export { default as SelectPopup } from './SelectPopup';
 export { default as ButtonGroup } from './ButtonGroup';
 export { default as Divider } from './Divider';
+export { default as Intersection } from './Intersection/Intersection';

@@ -36,9 +36,9 @@ export const fetchGetReviewFormReviewList = async ({
 };
 
 export type RequestGetPublicReviewList = {
-  page: number;
-  size: number;
-  filter: 'latest' | 'trend';
+  page?: number;
+  size?: number;
+  filter?: 'latest' | 'trend';
 };
 export type ResponseGetPublicReviewList = {
   numberOfReviews: number;
