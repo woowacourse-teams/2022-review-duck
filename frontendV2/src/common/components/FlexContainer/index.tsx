@@ -1,40 +1,26 @@
-import React from 'react';
+import { styled } from '@linaria/react';
 
-import cn from 'classnames';
-
-import styles from './styles.module.scss';
-
-export interface FlexContainerProps extends React.HTMLAttributes<HTMLDivElement | HTMLFormElement> {
-  as?: 'div' | 'ul' | 'section' | 'header' | 'main' | 'footer' | 'aside' | 'form';
-  direction?: 'row' | 'column' | 'rows-reverse' | 'column-reverse';
-  justify?: 'left' | 'center' | 'right' | 'space-between';
-  align?: 'start' | 'center' | 'end';
+export interface FlexProps {
+  className?: string;
+  direction?: React.CSSProperties['flexDirection'];
+  justify?: React.CSSProperties['justifyContent'];
+  align?: React.CSSProperties['alignItems'];
   gap?: 'small' | 'medium' | 'large' | 'xlarge';
 }
 
-function FlexContainer(
-  {
-    as = 'div',
-    className,
-    direction = 'column',
-    justify,
-    align,
-    gap,
-    children,
-    ...rest
-  }: FlexContainerProps,
-  ref?: React.ForwardedRef<unknown>,
-) {
-  const classNames = cn(
-    className,
-    styles.container,
-    styles[`direction-${direction}`],
-    styles[`justify-${justify}`],
-    styles[`align-${align}`],
-    styles[`gap-${gap}`],
-  );
+const GAP: Record<Required<FlexProps>['gap'], `${number}rem`> = {
+  small: '0.5rem',
+  medium: '1rem',
+  large: '2rem',
+  xlarge: '3rem',
+};
 
-  return React.createElement(as, { ref, className: classNames, ...rest }, children);
-}
+const FlexContainer = styled.div<FlexProps>`
+  display: flex;
+  flex-direction: ${({ direction }) => direction || 'column'};
+  justify-content: ${({ justify }) => justify || ''};
+  align-items: ${({ align }) => align || 'normal'};
+  gap: ${({ gap }) => (gap ? GAP[gap] : '0')};
+`;
 
-export default React.forwardRef(FlexContainer);
+export default FlexContainer;
