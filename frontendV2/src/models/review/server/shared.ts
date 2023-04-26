@@ -54,6 +54,7 @@ export interface MyReviewFormDTO {
 export interface ReviewDTO {
   id: number;
   reviewTitle: string;
+  reviewFormCode: string;
   updatedAt: number;
   likes: number;
   creator: UserProfileDTO;

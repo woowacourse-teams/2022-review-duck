@@ -13,9 +13,7 @@ function SuspenseFallbackProvider({ children }: React.PropsWithChildren) {
   };
 
   return (
-    <SuspenseFallbackContext.Provider value={{ fallbackRef, setFallback }}>
-      {children}
-    </SuspenseFallbackContext.Provider>
+    <SuspenseFallbackContext.Provider value={{ fallbackRef, setFallback }}>{children}</SuspenseFallbackContext.Provider>
   );
 }
 

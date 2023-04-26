@@ -29,17 +29,16 @@ function Header() {
   const snackbar = useSnackbar();
   const modal = useModal();
 
-  const { profileUrl: profileImage = imageDefaultProfile, socialId } =
-    getUserProfileQuery.data || {};
+  const { profileUrl: profileImage = imageDefaultProfile, socialId } = getUserProfileQuery.data || {};
 
   const handleReviewModalOpen = () => {
     modal.show({ key: MODAL_LIST.REVIEW_START });
   };
 
-  const handleSubmitSearchTemplate = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitSearchTemplate: React.FormEventHandler = (event) => {
     event.preventDefault();
 
-    const formData = new FormData(event.currentTarget);
+    const formData = new FormData(event.currentTarget as HTMLFormElement);
     const searchKeyword = formData.get('search')?.toString() || '';
 
     try {
@@ -59,21 +58,11 @@ function Header() {
       <nav className={styles.navbar}>
         <FlexContainer direction="row" align="center">
           <Link to={PAGE_LIST.HOME}>
-            <Logo
-              className={styles.logo}
-              theme={isPC ? 'border' : 'filled'}
-              weight="bold"
-              size="small"
-            />
+            <Logo className={styles.logo} theme={isPC ? 'border' : 'filled'} weight="bold" size="small" />
           </Link>
         </FlexContainer>
 
-        <FlexContainer
-          as="form"
-          direction="row"
-          align="center"
-          onSubmit={handleSubmitSearchTemplate}
-        >
+        <FlexContainer as="form" direction="row" align="center" onSubmit={handleSubmitSearchTemplate}>
           <TextBox
             name="search"
             placeholder="회고를 위한 템플릿 검색"
@@ -118,12 +107,7 @@ function Header() {
           {isLogin ? (
             <SelectPopup
               justify="right"
-              fallback={
-                <div
-                  className={styles.profile}
-                  style={{ backgroundImage: `url(${profileImage})` }}
-                />
-              }
+              fallback={<div className={styles.profile} style={{ backgroundImage: `url(${profileImage})` }} />}
             >
               <FlexContainer
                 className={styles.popupMenu}

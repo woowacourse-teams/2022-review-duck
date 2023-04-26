@@ -1,14 +1,9 @@
-import { Link } from 'react-router-dom';
-
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import cn from 'classnames';
-import { TimelineFilterType } from 'types';
 
 import { FlexContainer, Text } from 'common/components';
-
-import { FILTER, PAGE_LIST } from 'constant';
 
 import styles from './styles.module.scss';
 
@@ -40,7 +35,7 @@ interface ListProps {
   children: React.ReactNode;
 }
 
-function List({ children }: ListProps) {
+function Wrapper({ children }: ListProps) {
   return (
     <FlexContainer as="ul" className={styles.list}>
       {children}
@@ -49,26 +44,23 @@ function List({ children }: ListProps) {
 }
 
 interface MenuProps {
-  isCurrentTab: boolean;
-  filter: TimelineFilterType;
+  selected?: boolean;
   icon: IconDefinition;
   children: string;
 }
 
-function Menu({ isCurrentTab, filter, icon, children }: MenuProps) {
+function Item({ selected, icon, children }: MenuProps) {
   return (
-    <Link to={`${PAGE_LIST.TIMELINE}?${FILTER.SORT}=${filter}`}>
-      <li className={cn(styles.menu, { [styles.focus]: isCurrentTab })}>
-        <FontAwesomeIcon icon={icon} /> {children}
-      </li>
-    </Link>
+    <li className={cn(styles.menu, { [styles.focus]: selected })}>
+      <FontAwesomeIcon icon={icon} /> {children}
+    </li>
   );
 }
 
 const SideMenu = Object.assign(Container, {
   Title,
-  List,
-  Menu,
+  Wrapper,
+  Item,
 });
 
 export default SideMenu;

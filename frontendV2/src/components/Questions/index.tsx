@@ -32,14 +32,7 @@ interface CoverProfileProps {
   textAlign?: 'left' | 'center' | 'right';
 }
 
-function CoverProfile({
-  socialId,
-  image,
-  title,
-  description,
-  size,
-  textAlign = 'center',
-}: CoverProfileProps) {
+function CoverProfile({ socialId, image, title, description, size, textAlign = 'center' }: CoverProfileProps) {
   return (
     <Profile socialId={socialId} align="center" textAlign={textAlign} textGap="medium">
       <Profile.Image src={image} size={size} />
@@ -58,13 +51,13 @@ interface TitleProps {
 function Title({ subtitle, lockIcon, children }: TitleProps) {
   return (
     <FlexContainer className={styles.titleContainer} gap="small">
-      <Text as="h1" className={styles.title} size={24} weight="bold">
+      <Text as="h3" className={styles.title} size={24} weight="bold">
         {children}
         {lockIcon && <FontAwesomeIcon className={styles.lock} icon={faLock} />}
       </Text>
 
       {subtitle && (
-        <Text as="h3" className={styles.subTitle} size={16} weight="bold">
+        <Text as="h5" className={styles.subTitle} size={16} weight="bold">
           {subtitle}
         </Text>
       )}
@@ -84,12 +77,7 @@ function EditButtons({ className, isVisible, onClickEdit, onClickDelete }: EditB
   if (!isVisible) return null;
 
   return (
-    <FlexContainer
-      className={cn(styles.inlineButtons, className)}
-      direction="row"
-      gap="large"
-      justify="right"
-    >
+    <FlexContainer className={cn(styles.inlineButtons, className)} direction="row" gap="large" justify="right">
       <FlexContainer className={styles.button} direction="row" align="center" onClick={onClickEdit}>
         <FontAwesomeIcon icon={faPenToSquare} />
         <Text className={styles.text} size={14}>
@@ -97,12 +85,7 @@ function EditButtons({ className, isVisible, onClickEdit, onClickDelete }: EditB
         </Text>
       </FlexContainer>
 
-      <FlexContainer
-        className={styles.button}
-        direction="row"
-        align="center"
-        onClick={onClickDelete}
-      >
+      <FlexContainer className={styles.button} direction="row" align="center" onClick={onClickDelete}>
         <FontAwesomeIcon icon={faTrash} />
         <Text className={styles.text} size={14}>
           삭제
@@ -146,11 +129,7 @@ interface ReactionProps {
 
 function Reaction({ likeCount, onClickLike, onClickBookmark }: ReactionProps) {
   return (
-    <FlexContainer
-      className={cn(styles.inlineButtons, styles.reaction)}
-      direction="row"
-      gap="large"
-    >
+    <FlexContainer className={cn(styles.inlineButtons, styles.reaction)} direction="row" gap="large">
       <Reactions>
         <Reactions.LikeButton count={likeCount} onClick={onClickLike} />
       </Reactions>

@@ -4,6 +4,7 @@ import PageProgress from './PagePrgress';
 import PageSuspenseProvider, { SetPageLoadedContext, SuspenseFallbackContext } from './Provider';
 
 import styles from './styles.module.scss';
+import { useLocation } from 'react-router-dom';
 
 interface ProviderProps {
   children: React.ReactNode;
@@ -14,9 +15,7 @@ function SuspenseContainer({ children }: ProviderProps) {
   const fallbackContext = useContext(SuspenseFallbackContext);
 
   if (!fallbackContext) {
-    throw new Error(
-      'SuspenseFallbackProvider가 호출되지 않았거나, 상태 업데이트에 문제가 있습니다.',
-    );
+    throw new Error('SuspenseFallbackProvider가 호출되지 않았거나, 상태 업데이트에 문제가 있습니다.');
   }
 
   const { fallbackRef } = fallbackContext;
@@ -41,9 +40,7 @@ function PageChildrenWrapper(children: JSX.Element) {
   const setPageLoaded = useContext(SetPageLoadedContext);
 
   if (!context) {
-    throw new Error(
-      'SuspenseFallbackProvider가 호출되지 않았거나, 상태 업데이트에 문제가 있습니다.',
-    );
+    throw new Error('SuspenseFallbackProvider가 호출되지 않았거나, 상태 업데이트에 문제가 있습니다.');
   }
 
   useEffect(() => {

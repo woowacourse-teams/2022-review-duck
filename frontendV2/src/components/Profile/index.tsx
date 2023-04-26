@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import cn from 'classnames';
 
 import { Text } from 'common/components';
-import FlexContainer, { FlexContainerProps } from 'common/components/FlexContainer';
+import FlexContainer, { FlexProps } from 'common/components/FlexContainer';
 import { TextProps } from 'common/components/Text';
 
 import { PAGE_LIST } from 'constant';
@@ -19,13 +19,7 @@ interface ImageProps {
   src?: string;
 }
 
-function Image({
-  className,
-  size = 'medium',
-  theme = 'rectangle',
-  edge = 'round',
-  src = '',
-}: ImageProps) {
+function Image({ className, size = 'medium', theme = 'rectangle', edge = 'round', src = '' }: ImageProps) {
   const sizeToPixel = {
     small: 48,
     medium: 64,
@@ -70,10 +64,10 @@ function Description({ className, size = 14, children }: ProfileTextProps) {
   );
 }
 
-interface ContainerProps extends Partial<FlexContainerProps> {
+interface ContainerProps extends Partial<FlexProps> {
   socialId: number;
   textAlign?: 'left' | 'center' | 'right';
-  textGap?: Pick<FlexContainerProps, 'gap'>['gap'];
+  textGap?: Pick<FlexProps, 'gap'>['gap'];
   children: React.ReactNode;
 }
 

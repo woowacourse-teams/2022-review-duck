@@ -1,7 +1,6 @@
+import { styled } from '@linaria/react';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { css } from '@linaria/core';
-import { styled } from '@linaria/react';
 
 export interface PlainButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: IconDefinition;
@@ -11,7 +10,7 @@ export interface PlainButtonProps extends React.ButtonHTMLAttributes<HTMLButtonE
 function PlainButton({ icon, children, ...args }: PlainButtonProps) {
   const childrenWithIcon = icon && (
     <>
-      <FontAwesomeIcon className={cssIcon} icon={icon} />
+      <FontAwesomeIcon icon={icon} />
       <span>{children}</span>
     </>
   );
@@ -19,12 +18,24 @@ function PlainButton({ icon, children, ...args }: PlainButtonProps) {
   return <BasedButton {...args}>{childrenWithIcon || children}</BasedButton>;
 }
 
-const cssIcon = css`
-  color: blue;
-`;
-
 const BasedButton = styled.button`
-  ${cssIcon} {
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+
+  font-size: 0.875rem;
+
+  background-color: unset;
+  border: none;
+  outline: none;
+  border-radius: unset;
+
+  &:hover {
+    text-decoration: underline;
   }
 `;
 

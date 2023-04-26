@@ -19,7 +19,7 @@ interface TitleProps {
 const Title = ({ children }: TitleProps) => {
   return (
     <LayoutContainer className={styles.contentHeader}>
-      <Text className={styles.title} as="h1" size={24}>
+      <Text className={styles.title} as="h4" size={24}>
         {children}
       </Text>
     </LayoutContainer>
