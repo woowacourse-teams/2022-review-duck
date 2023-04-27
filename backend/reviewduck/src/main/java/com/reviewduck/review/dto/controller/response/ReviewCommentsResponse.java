@@ -15,17 +15,15 @@ import java.util.stream.Collectors;
 @Getter
 public class ReviewCommentsResponse {
     private long numberOfReviews;
-    private boolean isMine;
     private boolean isLastPage;
     private List<ReviewCommentResponse> comments;
 
-    public static ReviewCommentsResponse from(Page<ReviewComment> reviewComments) {
+    public static ReviewCommentsResponse of(long memberId, Page<ReviewComment> reviewComments) {
         return new ReviewCommentsResponse(
                 reviewComments.getTotalElements(),
-                true,
                 reviewComments.isLast(),
                 reviewComments.getContent().stream()
-                        .map(ReviewCommentResponse::from)
+                        .map(reviewComment -> ReviewCommentResponse.of(memberId, reviewComment))
                         .collect(Collectors.toList())
         );
     }

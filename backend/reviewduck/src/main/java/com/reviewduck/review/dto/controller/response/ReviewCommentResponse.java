@@ -6,16 +6,24 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class ReviewCommentResponse {
 
     private String content;
+    private boolean isMine;
+    private LocalDateTime updatedAt;
 
-    public static ReviewCommentResponse from(ReviewComment reviewComment) {
+    private CreatorResponse creator;
+    public static ReviewCommentResponse of(long memberId, ReviewComment reviewComment) {
         return new ReviewCommentResponse(
-                reviewComment.getContent()
+                reviewComment.getContent(),
+                reviewComment.isCommenter(memberId),
+                reviewComment.getUpdatedAt(),
+                CreatorResponse.from(reviewComment.getMember())
         );
     }
 }

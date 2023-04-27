@@ -22,6 +22,8 @@ public class ReviewCommentServiceTest extends ServiceTest {
 
     private ReviewForm reviewForm;
 
+    private long reviewId;
+
     @Autowired
     private ReviewService reviewService;
 
@@ -41,7 +43,7 @@ public class ReviewCommentServiceTest extends ServiceTest {
     private ReviewCommentService reviewCommentService;
 
     @BeforeEach
-    void createReviewForm() {
+    void createReview() {
         String reviewTitle = "title";
         List<ReviewFormQuestionCreateDto> questions = List.of(
                 new ReviewFormQuestionCreateDto("question1", "description1"),
@@ -49,12 +51,7 @@ public class ReviewCommentServiceTest extends ServiceTest {
 
         ReviewForm reviewForm1 = new ReviewForm(member1, reviewTitle, questions);
         this.reviewForm = reviewFormRepository.save(reviewForm1);
-    }
 
-    @Test
-    @DisplayName("회고에 댓글을 작성한다.")
-    void saveReviewComment() {
-        // given
         long questionId1 = reviewForm.getQuestions().get(0).getId();
         long questionId2 = reviewForm.getQuestions().get(1).getId();
 
@@ -64,7 +61,12 @@ public class ReviewCommentServiceTest extends ServiceTest {
                         new ReviewContentCreateRequest(questionId2, new AnswerCreateRequest("answer2"))
                 ));
 
-        long reviewId = reviewService.save(memberId1, reviewForm.getCode(), reviewCreateRequest);
+        this.reviewId = reviewService.save(memberId1, reviewForm.getCode(), reviewCreateRequest);
+    }
+
+    @Test
+    @DisplayName("회고에 댓글을 작성한다.")
+    void saveReviewComment() {
         // when
         ReviewCommentCreateRequest request = new ReviewCommentCreateRequest("reviewComment");
         long reviewCommentId = reviewCommentService.save(memberId1, reviewId, request);
@@ -77,16 +79,6 @@ public class ReviewCommentServiceTest extends ServiceTest {
     @DisplayName("회고에 달린 댓글을 모두 조회한다.")
     void getReviewComments() {
         // given
-        long questionId1 = reviewForm.getQuestions().get(0).getId();
-        long questionId2 = reviewForm.getQuestions().get(1).getId();
-
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, "title",
-                List.of(
-                        new ReviewContentCreateRequest(questionId1, new AnswerCreateRequest("answer1")),
-                        new ReviewContentCreateRequest(questionId2, new AnswerCreateRequest("answer2"))
-                ));
-
-        long reviewId = reviewService.save(memberId1, reviewForm.getCode(), reviewCreateRequest);
         // 리뷰에 댓글 2개 달기
         ReviewCommentCreateRequest request1 = new ReviewCommentCreateRequest("reviewComment1");
         ReviewCommentCreateRequest request2 = new ReviewCommentCreateRequest("reviewComment2");
@@ -96,7 +88,7 @@ public class ReviewCommentServiceTest extends ServiceTest {
         // when
         int page = 0;
         int size = 2;
-        ReviewCommentsResponse response = reviewCommentService.findAll(reviewId, page, size);
+        ReviewCommentsResponse response = reviewCommentService.findAll(memberId1, reviewId, page, size);
 
         // then
         assertThat(response.isLastPage()).isEqualTo(true);
@@ -109,16 +101,6 @@ public class ReviewCommentServiceTest extends ServiceTest {
     @DisplayName("회고에 달린 댓글을 수정한다.")
     void updateReviewComments() {
         // given
-        long questionId1 = reviewForm.getQuestions().get(0).getId();
-        long questionId2 = reviewForm.getQuestions().get(1).getId();
-
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, "title",
-                List.of(
-                        new ReviewContentCreateRequest(questionId1, new AnswerCreateRequest("answer1")),
-                        new ReviewContentCreateRequest(questionId2, new AnswerCreateRequest("answer2"))
-                ));
-
-        long reviewId = reviewService.save(memberId1, reviewForm.getCode(), reviewCreateRequest);
         ReviewCommentCreateRequest createRequest = new ReviewCommentCreateRequest("reviewComment1");
         reviewCommentService.save(memberId1, reviewId, createRequest);
 
@@ -127,7 +109,7 @@ public class ReviewCommentServiceTest extends ServiceTest {
         reviewCommentService.update(memberId1, reviewId, request);
         int page = 0;
         int size = 1;
-        ReviewCommentsResponse response = reviewCommentService.findAll(reviewId, page, size);
+        ReviewCommentsResponse response = reviewCommentService.findAll(memberId1, reviewId, page, size);
 
         // then
         assertThat(response.getComments().get(0).getContent()).isEqualTo("reviewUpdateComment");
@@ -137,16 +119,6 @@ public class ReviewCommentServiceTest extends ServiceTest {
     @DisplayName("회고에 달린 댓글을 삭제한다.")
     void deleteReviewComments() {
         // given
-        long questionId1 = reviewForm.getQuestions().get(0).getId();
-        long questionId2 = reviewForm.getQuestions().get(1).getId();
-
-        ReviewCreateRequest reviewCreateRequest = new ReviewCreateRequest(false, "title",
-                List.of(
-                        new ReviewContentCreateRequest(questionId1, new AnswerCreateRequest("answer1")),
-                        new ReviewContentCreateRequest(questionId2, new AnswerCreateRequest("answer2"))
-                ));
-
-        long reviewId = reviewService.save(memberId1, reviewForm.getCode(), reviewCreateRequest);
         ReviewCommentCreateRequest createRequest = new ReviewCommentCreateRequest("reviewComment1");
         long commentId = reviewCommentService.save(memberId1, reviewId, createRequest);
 
@@ -154,7 +126,7 @@ public class ReviewCommentServiceTest extends ServiceTest {
         reviewCommentService.delete(memberId1, commentId);
         int page = 0;
         int size = 1;
-        ReviewCommentsResponse response = reviewCommentService.findAll(reviewId, page, size);
+        ReviewCommentsResponse response = reviewCommentService.findAll(memberId1, reviewId, page, size);
 
         // then
         assertThat(response.getNumberOfReviews()).isEqualTo(0);

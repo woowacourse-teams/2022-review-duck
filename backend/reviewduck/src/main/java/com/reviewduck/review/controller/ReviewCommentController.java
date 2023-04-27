@@ -28,13 +28,14 @@ public class ReviewCommentController {
     @GetMapping("/{reviewId}/comments")
     @ResponseStatus(HttpStatus.OK)
     public ReviewCommentsResponse findAll(
+            @AuthenticationPrincipal MemberDto member,
             @PathVariable long reviewId,
             @RequestParam(required = false, defaultValue = DEFAULT_PAGE) int page,
             @RequestParam(required = false, defaultValue = DEFAULT_SIZE) int size
     ) {
         info("/api/reviews/" + reviewId + "comments" + "&page=" + page + "&size=" + size, "GET", "");
 
-        return reviewCommentService.findAll(reviewId, page - 1, size);
+        return reviewCommentService.findAll(member.getId(), reviewId, page - 1, size);
     }
 
     @Operation(summary = "회고에 댓글을 생성한다.")

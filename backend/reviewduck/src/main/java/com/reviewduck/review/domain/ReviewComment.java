@@ -1,6 +1,7 @@
 package com.reviewduck.review.domain;
 
 import com.reviewduck.common.domain.BaseDate;
+import com.reviewduck.member.domain.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -20,15 +21,15 @@ public class ReviewComment extends BaseDate {
     @Column(nullable = false)
     private Long reviewId;
 
-    @Column(nullable = false)
-    private Long memberId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Member member;
 
     @Column(nullable = false)
     private String content;
 
-    public ReviewComment(Long reviewId, Long memberId, String content) {
+    public ReviewComment(Long reviewId, Member member, String content) {
         this.reviewId = reviewId;
-        this.memberId = memberId;
+        this.member = member;
         this.content = content;
     }
 
@@ -37,6 +38,6 @@ public class ReviewComment extends BaseDate {
     }
 
     public boolean isCommenter(long memberId) {
-        return this.memberId == memberId;
+        return this.member.isSameId(memberId);
     }
 }
